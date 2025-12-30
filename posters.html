@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>My Movie Poster Grid</title>
+  <style>
+    body { font-family: system-ui, Arial, sans-serif; margin: 20px; }
+    h1 { font-size: 20px; margin: 0 0 12px; }
+    .controls { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+    input { padding: 10px; min-width: 280px; }
+    button { padding: 10px 12px; cursor: pointer; }
+    .meta { font-size: 13px; opacity: 0.8; margin: 6px 0 14px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 14px;
+    }
+    .card {
+      border: 1px solid rgba(0,0,0,0.12);
+      border-radius: 10px;
+      overflow: hidden;
+      background: white;
+      display: flex;
+      flex-direction: column;
+      min-height: 260px;
+    }
+    .posterWrap {
+      aspect-ratio: 2 / 3;
+      background: rgba(0,0,0,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .posterWrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .title {
+      padding: 10px;
+      font-size: 13px;
+      line-height: 1.2;
+    }
+    .small {
+      font-size: 12px;
+      opacity: 0.75;
+      margin-top: 4px;
+    }
+    .missing {
+      padding: 10px;
+      font-size: 12px;
+      opacity: 0.75;
+    }
+    .errorBox { margin-top: 10px; font-size: 13px; color: #b00020; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h1>Movie Poster Grid</h1>
+
+  <div class="controls">
+    <input id="filter" placeholder="Filter titles (optional)..." />
+    <button id="loadBtn">Load posters</button>
+  </div>
+
+  <div class="meta" id="meta"></div>
+  <div class="grid" id="grid"></div>
+  <div class="errorBox" id="errors"></div>
+
+  <script>
+    // ✅ Paste your TMDB API key here (note: in a pure static page, this key is visible to anyone who views source)
+    const TMDB_API_KEY = "e516578c74a767192a850553dfea5d36";
+
+    // Poster base (a common size). TMDB documents the pattern of base URL + size + poster_path.
+    const POSTER_BASE = "https://image.tmdb.org/t/p/w342";
+
+    const movies = [
+      "The Perfection",
+      "Boys Don’t Cry",
+      "Greenland",
+      "Salt",
+      "The Reader",
+      "Romy and Michele’s High School Reunion",
+      "Precious",
+      "The Tomorrow War",
+      "Flight",
+      "Still Alice",
+      "Elysium",
+      "Sisu",
+      "Dark Waters",
+      "Lights Out",
+      "M3GAN",
+      "Tetris",
+      "Upgrade",
+      "The Beekeeper",
+      "Straight Outta Compton",
+      "The Equalizer",
+      "The Hunchback of Notre Dame",
+      "Gone with the Wind",
+      "Cruel Intentions",
+      "Fall",
+      "Gran Torino",
+      "Erin Brockovich",
+      "The Ring",
+      "Don’t Breathe",
+      "Million Dollar Baby",
+      "Braveheart",
+      "Signs",
+      "The Purge",
+      "Game Night",
+      "Hidden Figures",
+      "We Need to Talk About Kevin",
+      "The Help",
+      "Napoleon Dynamite",
+      "Nobody",
+      "Ted",
+      "Wonder Woman",
+      "It Follows",
+      "Promising Young Woman",
+      "Silver Linings Playbook",
+      "Annihilation",
+      "Hacksaw Ridge",
+      "The Greatest Showman",
+      "Train to Busan",
+      "Furiosa: A Mad Max Saga",
+      "The Nice Guys",
+      "Ex Machina",
+      "The Black Phone",
+      "Joker",
+      "Whiplash",
+      "Interstellar",
+      "Barbie",
+      "The Grand Budapest Hotel",
+      "The Menu",
+      "Kill Bill: Vol. 1",
+      "Poor Things",
+      "Deadpool",
+      "Jojo Rabbit",
+      "Arrival",
+      "Her",
+      "Nightcrawler",
+      "A Quiet Place",
+      "28 Days Later",
+      "The Conjuring",
+      "Kill Bill: Vol. 2",
+      "Three Billboards Outside Ebbing, Missouri",
+      "Florence Foster Jenkins",
+      "The Lobster",
+      "Children of Men",
+      "District 9",
+      "The Cider House Rules",
+      "Chick Fight",
+      "The House That Jack Built",
+      "Doctor Sleep",
+      "Happy Death Day",
+      "Dallas Buyers Club",
+      "Coherence",
+      "Snowpiercer",
+      "Frozen",
+      "The Accountant",
+      "Me Before You",
+      "Escape from Pretoria",
+      "The Wife",
+      "Stir of Echoes",
+      "Pay It Forward",
+      "Spice World",
+      "The Lost Bus",
+      "John Q",
+      "Searching for Sugar Man",
+      "Bernie",
+      "American Mary",
+      "The Cell",
+      "The Lincoln Lawyer",
+      "Hedwig and the Angry Inch"
+    ];
+
+    const grid = document.getElementById("grid");
+    const meta = document.getElementById("meta");
+    const errorsEl = document.getElementById("errors");
+    const filterEl = document.getElementById("filter");
+    const loadBtn = document.getElementById("loadBtn");
+
+    function escapeHtml(str) {
+      return str.replace(/[&<>"']/g, m => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
+      }[m]));
+    }
+
+    async function tmdbSearch(title) {
+      const url = new URL("https://api.themoviedb.org/3/search/movie");
+      url.searchParams.set("api_key", TMDB_API_KEY);
+      url.searchParams.set("query", title);
+      url.searchParams.set("include_adult", "false");
+
+      const res = await fetch(url.toString());
+      if (!res.ok) throw new Error(`TMDB search failed (${res.status}) for: ${title}`);
+      const data = await res.json();
+
+      // Pick the first result; you can improve this by matching year, exact title, etc.
+      return data.results && data.results.length ? data.results[0] : null;
+    }
+
+    function renderCard({ title, posterUrl, year, tmdbUrl, note }) {
+      const safeTitle = escapeHtml(title);
+      const safeYear = year ? escapeHtml(year) : "";
+
+      const linkOpen = tmdbUrl ? `<a href="${tmdbUrl}" target="_blank" rel="noreferrer" style="color:inherit;text-decoration:none;">` : "";
+      const linkClose = tmdbUrl ? `</a>` : "";
+
+      const posterHtml = posterUrl
+        ? `<img src="${posterUrl}" alt="${safeTitle} poster" loading="lazy" />`
+        : `<div class="missing">No poster found</div>`;
+
+      const noteHtml = note ? `<div class="small">${escapeHtml(note)}</div>` : "";
+
+      return `
+        <div class="card">
+          ${linkOpen}
+          <div class="posterWrap">${posterHtml}</div>
+          ${linkClose}
+          <div class="title">
+            <div>${safeTitle}</div>
+            <div class="small">${safeYear}</div>
+            ${noteHtml}
+          </div>
+        </div>
+      `;
+    }
+
+    async function loadPosters() {
+      errorsEl.textContent = "";
+      grid.innerHTML = "";
+      const filter = filterEl.value.trim().toLowerCase();
+
+      const list = filter
+        ? movies.filter(t => t.toLowerCase().includes(filter))
+        : movies.slice();
+
+      meta.textContent = `Loading ${list.length} titles…`;
+
+      if (!TMDB_API_KEY || TMDB_API_KEY.includes("PASTE_")) {
+        errorsEl.textContent = "Paste your TMDB API key into TMDB_API_KEY first.";
+        meta.textContent = "";
+        return;
+      }
+
+      let ok = 0, missing = 0;
+      const errorLines = [];
+
+      // Basic throttling so you don’t hammer the API
+      for (let i = 0; i < list.length; i++) {
+        const title = list[i];
+        try {
+          const result = await tmdbSearch(title);
+
+          if (!result) {
+            missing++;
+            grid.insertAdjacentHTML("beforeend", renderCard({ title, posterUrl: null, year: "", tmdbUrl: "", note: "No match" }));
+          } else {
+            const posterUrl = result.poster_path ? `${POSTER_BASE}${result.poster_path}` : null;
+            const year = result.release_date ? result.release_date.slice(0, 4) : "";
+            const tmdbUrl = result.id ? `https://www.themoviedb.org/movie/${result.id}` : "";
+
+            if (!posterUrl) missing++;
+            else ok++;
+
+            grid.insertAdjacentHTML("beforeend", renderCard({ title, posterUrl, year, tmdbUrl, note: "" }));
+          }
+        } catch (err) {
+          missing++;
+          errorLines.push(String(err));
+          grid.insertAdjacentHTML("beforeend", renderCard({ title, posterUrl: null, year: "", tmdbUrl: "", note: "Error" }));
+        }
+
+        meta.textContent = `Loaded ${i + 1}/${list.length} — posters: ${ok}, missing: ${missing}`;
+        await new Promise(r => setTimeout(r, 120)); // small delay
+      }
+
+      if (errorLines.length) {
+        errorsEl.textContent = errorLines.join("\n");
+      }
+    }
+
+    loadBtn.addEventListener("click", loadPosters);
+  </script>
+</body>
+</html>

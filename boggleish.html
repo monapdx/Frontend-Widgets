@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Boggle-ish (4x4 Shake Grid)</title>
+  <style>
+    :root{
+      --bg:#0b0f17;
+      --panel:#111827;
+      --tile:#0f172a;
+      --tile2:#111c3a;
+      --ink:#e5e7eb;
+      --muted:#94a3b8;
+      --accent:#60a5fa;
+      --ok:#34d399;
+      --bad:#fb7185;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 16px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      background: radial-gradient(1200px 800px at 20% 10%, #0b1b3a 0%, transparent 60%),
+                  radial-gradient(900px 700px at 90% 30%, #2a0b3a 0%, transparent 55%),
+                  var(--bg);
+      color:var(--ink);
+      font: 15px/1.3 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      padding: 24px;
+    }
+    .app{
+      width:min(920px, 96vw);
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 18px;
+    }
+    @media (max-width: 860px){
+      .app{grid-template-columns: 1fr; }
+    }
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    header{
+      padding: 16px 18px 12px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      display:flex;
+      align-items:baseline;
+      justify-content:space-between;
+      gap: 12px;
+    }
+    header h1{
+      margin:0;
+      font-size: 16px;
+      letter-spacing: .2px;
+      font-weight: 650;
+    }
+    header .hint{
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .boardWrap{
+      padding: 18px;
+      display:grid;
+      gap: 14px;
+    }
+
+    .board{
+      width: min(420px, 92vw);
+      aspect-ratio: 1/1;
+      margin: 0 auto;
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      padding: 12px;
+      border-radius: 22px;
+      background: rgba(0,0,0,.25);
+      border: 1px solid rgba(255,255,255,.08);
+      position: relative;
+      transform-origin: center;
+    }
+    .tile{
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border: 1px solid rgba(255,255,255,.10);
+      display:grid;
+      place-items:center;
+      position:relative;
+      user-select:none;
+      cursor:pointer;
+      transition: transform .12s ease, border-color .12s ease;
+      overflow:hidden;
+    }
+    .tile:hover{ transform: translateY(-1px); border-color: rgba(96,165,250,.55); }
+    .tile .letter{
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-shadow: 0 4px 14px rgba(0,0,0,.35);
+    }
+    .tile .sub{
+      position:absolute;
+      bottom:8px;
+      right:10px;
+      font-size: 11px;
+      color: rgba(148,163,184,.9);
+    }
+    .tile.locked{
+      border-color: rgba(52,211,153,.55);
+      box-shadow: inset 0 0 0 2px rgba(52,211,153,.18);
+    }
+    .tile.locked::before{
+      content:"🔒";
+      position:absolute;
+      top:8px;
+      left:10px;
+      font-size: 12px;
+      opacity:.9;
+    }
+
+    .controls{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:center;
+    }
+    button{
+      appearance:none;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      color: var(--ink);
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor:pointer;
+      font-weight: 650;
+      letter-spacing:.2px;
+      transition: transform .06s ease, background .12s ease, border-color .12s ease;
+    }
+    button:hover{ background: rgba(255,255,255,.09); border-color: rgba(96,165,250,.5); }
+    button:active{ transform: translateY(1px) scale(.99); }
+    button.primary{
+      background: linear-gradient(180deg, rgba(96,165,250,.28), rgba(96,165,250,.12));
+      border-color: rgba(96,165,250,.5);
+    }
+    button.danger{
+      background: linear-gradient(180deg, rgba(251,113,133,.20), rgba(251,113,133,.10));
+      border-color: rgba(251,113,133,.35);
+    }
+    .row{
+      display:flex;
+      gap: 10px;
+      flex-wrap:wrap;
+      justify-content:center;
+      align-items:center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .pill{
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.20);
+    }
+
+    /* shake animation */
+    .shaking{
+      animation: shake .42s ease-in-out;
+    }
+    @keyframes shake{
+      0%{ transform: translateX(0) rotate(0); }
+      15%{ transform: translateX(-6px) rotate(-1.2deg); }
+      30%{ transform: translateX(6px) rotate(1.2deg); }
+      45%{ transform: translateX(-5px) rotate(-.9deg); }
+      60%{ transform: translateX(5px) rotate(.9deg); }
+      75%{ transform: translateX(-3px) rotate(-.6deg); }
+      100%{ transform: translateX(0) rotate(0); }
+    }
+
+    /* right panel */
+    .side{
+      display:grid;
+      grid-template-rows: auto 1fr;
+      min-height: 520px;
+    }
+    .sideBody{
+      padding: 16px 18px 18px;
+      display:grid;
+      gap: 14px;
+    }
+    .wordEntry{
+      display:flex;
+      gap: 10px;
+    }
+    input[type="text"]{
+      width:100%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.20);
+      color: var(--ink);
+      outline:none;
+    }
+    input[type="text"]:focus{
+      border-color: rgba(96,165,250,.6);
+      box-shadow: 0 0 0 4px rgba(96,165,250,.12);
+    }
+    .list{
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      overflow:hidden;
+      min-height: 220px;
+    }
+    .listHeader{
+      display:flex;
+      justify-content:space-between;
+      padding: 10px 12px;
+      font-size: 12px;
+      color: var(--muted);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .items{
+      padding: 10px 12px 12px;
+      display:flex;
+      flex-wrap:wrap;
+      gap: 8px;
+      align-content:flex-start;
+    }
+    .tag{
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      font-weight: 650;
+      letter-spacing:.2px;
+      font-size: 12px;
+    }
+    .tag.ok{ border-color: rgba(52,211,153,.35); }
+    .tag.bad{ border-color: rgba(251,113,133,.35); text-decoration: line-through; opacity:.75; }
+
+    .tiny{
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .kbd{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.22);
+      color: rgba(229,231,235,.92);
+      margin-left: 6px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <!-- LEFT: BOARD -->
+    <section class="card">
+      <header>
+        <h1>Boggle-ish Shake Grid</h1>
+        <div class="hint">Click a tile to lock it • <span class="kbd">Space</span> to shake</div>
+      </header>
+
+      <div class="boardWrap">
+        <div class="board" id="board" aria-label="4x4 letter grid"></div>
+
+        <div class="controls">
+          <button class="primary" id="shakeBtn">Shake</button>
+          <button id="newBtn">New Letters</button>
+          <button class="danger" id="clearLocksBtn">Clear Locks</button>
+        </div>
+
+        <div class="row">
+          <div class="pill">Mode: <strong id="modeLabel">frequency</strong></div>
+          <div class="pill">Locked: <strong id="lockedCount">0</strong>/16</div>
+          <button id="toggleModeBtn" title="Switch letter distribution">Toggle A–Z / Frequency</button>
+        </div>
+
+        <div class="tiny" style="text-align:center">
+          (This is just the *shake + grid* vibe. No dictionary validation yet.)
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT: SIMPLE WORD LIST / TIMER -->
+    <section class="card side">
+      <header>
+        <h1>Words (optional)</h1>
+        <div class="hint">Enter a word and hit <span class="kbd">Enter</span></div>
+      </header>
+
+      <div class="sideBody">
+        <div class="row" style="justify-content:space-between">
+          <div class="pill">Timer: <strong id="timer">03:00</strong></div>
+          <div class="pill">Score: <strong id="score">0</strong></div>
+          <button id="startStopBtn" class="primary">Start</button>
+          <button id="resetBtn">Reset</button>
+        </div>
+
+        <div class="wordEntry">
+          <input id="wordInput" type="text" placeholder="type a word (e.g., STONE)..." autocomplete="off" />
+          <button id="addWordBtn">Add</button>
+        </div>
+
+        <div class="list" role="region" aria-label="Entered words list">
+          <div class="listHeader">
+            <div>Entered</div>
+            <div><span id="wordCount">0</span> words</div>
+          </div>
+          <div class="items" id="words"></div>
+        </div>
+
+        <div class="tiny">
+          Scoring is basic: 3–4 letters = 1 pt, 5 = 2, 6 = 3, 7 = 5, 8+ = 11.
+          (No path checking — just a fun scratchpad.)
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // ----- CONFIG -----
+    const SIZE = 4;
+    const TOTAL = SIZE * SIZE;
+
+    // Rough English letter frequencies (not perfect, but feels better than uniform).
+    // Values roughly based on typical letter frequency distributions.
+    const FREQ_BAG = [
+      ["E", 12], ["T", 9], ["A", 8], ["O", 8], ["I", 7], ["N", 7],
+      ["S", 6], ["H", 6], ["R", 6], ["D", 4], ["L", 4], ["C", 3],
+      ["U", 3], ["M", 2], ["W", 2], ["F", 2], ["G", 2], ["Y", 2],
+      ["P", 2], ["B", 1.5], ["V", 1], ["K", 0.8], ["J", 0.3],
+      ["X", 0.3], ["Q", 0.2], ["Z", 0.2]
+    ];
+
+    // If you want Boggle-ish "Qu" tiles, flip this on:
+    const USE_QU_TILE = true;
+
+    // ----- STATE -----
+    let mode = "frequency"; // "frequency" or "uniform"
+    let letters = Array(TOTAL).fill("A");
+    let locked = Array(TOTAL).fill(false);
+
+    // timer / score (optional)
+    let timerSec = 180;
+    let ticking = false;
+    let tickHandle = null;
+    let words = new Set();
+    let score = 0;
+
+    // ----- HELPERS -----
+    const $ = (id) => document.getElementById(id);
+
+    function weightedPick(bag){
+      const totalWeight = bag.reduce((sum, [,w]) => sum + w, 0);
+      let r = Math.random() * totalWeight;
+      for (const [ch, w] of bag){
+        r -= w;
+        if (r <= 0) return ch;
+      }
+      return bag[bag.length - 1][0];
+    }
+
+    function randomLetter(){
+      if (mode === "uniform"){
+        const code = "A".charCodeAt(0) + Math.floor(Math.random() * 26);
+        return String.fromCharCode(code);
+      }
+      let ch = weightedPick(FREQ_BAG);
+      if (USE_QU_TILE && ch === "Q") return "Qu"; // classic boggle-ish feel
+      return ch;
+    }
+
+    function generateLetters(){
+      const next = letters.slice();
+      for (let i=0; i<TOTAL; i++){
+        if (!locked[i]) next[i] = randomLetter();
+      }
+      letters = next;
+      renderBoard();
+    }
+
+    function shuffleGrid(){
+      // Keep locked tiles in place; shuffle only the unlocked letter positions.
+      const idxs = [];
+      const pool = [];
+      for (let i=0; i<TOTAL; i++){
+        if (!locked[i]) {
+          idxs.push(i);
+          pool.push(letters[i]);
+        }
+      }
+      // Fisher-Yates shuffle pool
+      for (let i=pool.length-1; i>0; i--){
+        const j = Math.floor(Math.random() * (i+1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+      }
+      const next = letters.slice();
+      idxs.forEach((gridIndex, k) => next[gridIndex] = pool[k]);
+      letters = next;
+      renderBoard();
+    }
+
+    function shake(){
+      const board = $("board");
+      board.classList.remove("shaking");
+      // Force reflow so animation can replay
+      void board.offsetWidth;
+      board.classList.add("shaking");
+
+      // small delay to feel like letters are "tumbling"
+      setTimeout(() => {
+        // emulate boggle: change letters AND shuffle their placement
+        generateLetters();
+        shuffleGrid();
+      }, 180);
+    }
+
+    function renderBoard(){
+      const board = $("board");
+      board.innerHTML = "";
+      for (let i=0; i<TOTAL; i++){
+        const tile = document.createElement("div");
+        tile.className = "tile" + (locked[i] ? " locked" : "");
+        tile.setAttribute("role","button");
+        tile.setAttribute("tabindex","0");
+        tile.setAttribute("aria-label", `tile ${i+1}, ${letters[i]}${locked[i] ? ", locked" : ""}`);
+
+        const letter = document.createElement("div");
+        letter.className = "letter";
+        letter.textContent = letters[i];
+        tile.appendChild(letter);
+
+        const sub = document.createElement("div");
+        sub.className = "sub";
+        sub.textContent = `${Math.floor(i / SIZE)+1},${(i % SIZE)+1}`;
+        tile.appendChild(sub);
+
+        const toggleLock = () => {
+          locked[i] = !locked[i];
+          updateLockedCount();
+          renderBoard();
+        };
+
+        tile.addEventListener("click", toggleLock);
+        tile.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            toggleLock();
+          }
+        });
+
+        board.appendChild(tile);
+      }
+      $("modeLabel").textContent = mode;
+    }
+
+    function updateLockedCount(){
+      const n = locked.filter(Boolean).length;
+      $("lockedCount").textContent = String(n);
+    }
+
+    // ----- WORD LIST / TIMER (OPTIONAL) -----
+    function fmtTime(sec){
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      return String(m).padStart(2,"0") + ":" + String(s).padStart(2,"0");
+    }
+
+    function updateTimerUI(){
+      $("timer").textContent = fmtTime(timerSec);
+    }
+
+    function wordPoints(w){
+      const len = w.length;
+      if (len <= 2) return 0;
+      if (len <= 4) return 1;
+      if (len === 5) return 2;
+      if (len === 6) return 3;
+      if (len === 7) return 5;
+      return 11;
+    }
+
+    function renderWords(){
+      const container = $("words");
+      container.innerHTML = "";
+      const arr = Array.from(words).sort((a,b) => b.length - a.length || a.localeCompare(b));
+      for (const w of arr){
+        const tag = document.createElement("div");
+        tag.className = "tag ok";
+        tag.textContent = w;
+        container.appendChild(tag);
+      }
+      $("wordCount").textContent = String(words.size);
+      $("score").textContent = String(score);
+    }
+
+    function addWord(){
+      const input = $("wordInput");
+      let w = input.value.trim().toUpperCase();
+      if (!w) return;
+
+      // Basic normalization for QU tiles: allow "QU" etc.
+      w = w.replace(/[^A-Z]/g,"");
+      input.value = "";
+
+      if (words.has(w)) return;
+
+      const pts = wordPoints(w);
+      words.add(w);
+      score += pts;
+      renderWords();
+    }
+
+    function startStop(){
+      if (ticking){
+        ticking = false;
+        clearInterval(tickHandle);
+        tickHandle = null;
+        $("startStopBtn").textContent = "Start";
+        return;
+      }
+      if (timerSec <= 0) timerSec = 180;
+
+      ticking = true;
+      $("startStopBtn").textContent = "Pause";
+      tickHandle = setInterval(() => {
+        timerSec -= 1;
+        if (timerSec <= 0){
+          timerSec = 0;
+          updateTimerUI();
+          startStop(); // auto-pause
+          // little “time up” feedback
+          document.title = "⏰ Time!";
+          setTimeout(() => document.title = "Boggle-ish (4x4 Shake Grid)", 900);
+          return;
+        }
+        updateTimerUI();
+      }, 1000);
+    }
+
+    function resetGame(){
+      // reset timer/words/score; keep current grid unless you want to shake too
+      timerSec = 180;
+      ticking = false;
+      if (tickHandle) clearInterval(tickHandle);
+      tickHandle = null;
+      $("startStopBtn").textContent = "Start";
+      words = new Set();
+      score = 0;
+      renderWords();
+      updateTimerUI();
+      $("wordInput").focus();
+    }
+
+    // ----- WIRE UP -----
+    $("shakeBtn").addEventListener("click", shake);
+
+    $("newBtn").addEventListener("click", () => {
+      generateLetters();
+      shuffleGrid();
+    });
+
+    $("clearLocksBtn").addEventListener("click", () => {
+      locked = Array(TOTAL).fill(false);
+      updateLockedCount();
+      renderBoard();
+    });
+
+    $("toggleModeBtn").addEventListener("click", () => {
+      mode = (mode === "frequency") ? "uniform" : "frequency";
+      $("modeLabel").textContent = mode;
+      // refresh letters so you immediately feel the change
+      generateLetters();
+      shuffleGrid();
+    });
+
+    $("addWordBtn").addEventListener("click", addWord);
+    $("wordInput").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") addWord();
+    });
+
+    $("startStopBtn").addEventListener("click", startStop);
+    $("resetBtn").addEventListener("click", resetGame);
+
+    // Spacebar = shake (unless typing in input)
+    window.addEventListener("keydown", (e) => {
+      const active = document.activeElement;
+      const typing = active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA");
+      if (!typing && e.code === "Space"){
+        e.preventDefault();
+        shake();
+      }
+    });
+
+    // init
+    generateLetters();
+    shuffleGrid();
+    updateLockedCount();
+    updateTimerUI();
+  </script>
+</body>
+</html>
