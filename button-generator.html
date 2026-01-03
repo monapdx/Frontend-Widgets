@@ -1,0 +1,848 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Frontend Button Generator</title>
+
+  <!-- html2canvas for image export -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+  <!-- Some popular fonts via Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto:wght@400;700&family=Montserrat:wght@400;700&family=Open+Sans:wght@400;700&family=Lato:wght@400;700&family=Poppins:wght@400;700&family=Source+Sans+3:wght@400;700&family=Playfair+Display:wght@400;700&family=Merriweather:wght@400;700&family=Nunito:wght@400;700&family=Raleway:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg: #0b0f16;
+      --panel: #111827;
+      --panel2: #0f172a;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --border: rgba(255,255,255,.10);
+      --accent: #60a5fa;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: radial-gradient(1200px 600px at 20% 0%, rgba(96,165,250,.20), transparent 60%),
+                  radial-gradient(900px 600px at 90% 20%, rgba(167,139,250,.18), transparent 55%),
+                  var(--bg);
+      color: var(--text);
+    }
+    .wrap{
+      max-width: 1100px;
+      margin: 28px auto;
+      padding: 0 16px 40px;
+    }
+    header{
+      display:flex; align-items:baseline; justify-content:space-between;
+      gap:12px; flex-wrap:wrap;
+      margin-bottom:16px;
+    }
+    h1{ margin:0; font-size: 20px; letter-spacing:.2px; }
+    .hint{ color:var(--muted); font-size: 13px; }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 380px 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 980px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+
+    .panel{
+      background: linear-gradient(180deg, rgba(255,255,255,.03), transparent 22%), var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      box-shadow: 0 12px 30px rgba(0,0,0,.28);
+    }
+    .panel h2{
+      margin: 0 0 10px;
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing:.3px;
+      text-transform: uppercase;
+    }
+
+    .controls{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .row{ grid-column: 1 / -1; }
+    label{
+      display:block;
+      font-size: 12px;
+      color: var(--muted);
+      margin: 0 0 6px;
+    }
+    input[type="text"], input[type="url"], input[type="number"], select, textarea{
+      width:100%;
+      background: var(--panel2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 10px;
+      outline: none;
+    }
+    textarea{
+      min-height: 110px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      font-size: 12px;
+      line-height: 1.35;
+      resize: vertical;
+    }
+    input:focus, select:focus, textarea:focus{
+      border-color: rgba(96,165,250,.55);
+      box-shadow: 0 0 0 3px rgba(96,165,250,.18);
+    }
+
+    .mini{
+      display:flex; gap:10px; align-items:center;
+    }
+    .mini > *{ flex:1; }
+    input[type="color"]{
+      height: 40px;
+      padding: 0;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: transparent;
+      width: 54px;
+      flex: 0 0 54px;
+    }
+
+    .toggles{
+      display:flex; gap:10px; flex-wrap:wrap;
+      padding: 10px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+    .chip{
+      display:flex; align-items:center; gap:8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,.18);
+      user-select:none;
+      cursor:pointer;
+      font-size: 12px;
+      color: var(--text);
+    }
+    .chip input{ accent-color: var(--accent); }
+    .chip span{ color: var(--muted); }
+
+    .split{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .previewStage{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .previewBox{
+      background: linear-gradient(180deg, rgba(255,255,255,.03), transparent 30%),
+                  rgba(255,255,255,.02);
+      border: 1px dashed rgba(255,255,255,.22);
+      border-radius: 16px;
+      padding: 18px;
+      min-height: 150px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:auto;
+    }
+    .toolbar{
+      display:flex; gap:10px; flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .btn{
+      background: rgba(96,165,250,.14);
+      border: 1px solid rgba(96,165,250,.35);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor:pointer;
+      font-weight: 600;
+      font-size: 13px;
+    }
+    .btn:active{ transform: translateY(1px); }
+    .btn.secondary{
+      background: rgba(255,255,255,.06);
+      border-color: var(--border);
+      font-weight: 600;
+    }
+    .note{
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    /* The preview button wrapper is what we screenshot */
+    #captureArea{
+      display:inline-block;
+      padding: 12px;
+      border-radius: 18px;
+      background: transparent;
+    }
+
+    /* The generated button itself (we'll set vars via JS) */
+    .genButton{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap: 8px;
+      text-decoration:none;
+      border: 0;
+      cursor:pointer;
+
+      /* default fallback values (overridden live via CSS vars) */
+      font-family: var(--fontFamily, Inter, system-ui);
+      font-size: var(--fontSize, 16px);
+      font-weight: var(--fontWeight, 600);
+      font-style: var(--fontStyle, normal);
+      text-decoration: var(--textDecor, none);
+
+      color: var(--textColor, #ffffff);
+
+      padding: var(--padY, 12px) var(--padX, 18px);
+      border-radius: var(--radius, 14px);
+      border: var(--borderWidth, 0px) solid var(--borderColor, transparent);
+
+      background: var(--bgFill, #2563eb);
+
+      width: var(--btnWidth, auto);
+      height: var(--btnHeight, auto);
+
+      box-shadow: var(--btnShadow, none);
+      text-shadow: var(--txtShadow, none);
+
+      transition: transform .06s ease, filter .15s ease;
+    }
+    .genButton:hover{ filter: brightness(1.03); }
+    .genButton:active{ transform: translateY(1px); }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Frontend Button Generator</h1>
+      <div class="hint">Live preview • HTML/CSS output • PNG export</div>
+    </header>
+
+    <div class="grid">
+      <!-- Controls -->
+      <section class="panel">
+        <h2>Controls</h2>
+
+        <div class="controls">
+          <div class="row">
+            <label for="text">Button text</label>
+            <input id="text" type="text" value="Click me" />
+          </div>
+
+          <div class="row">
+            <label for="url">Button URL (optional)</label>
+            <input id="url" type="url" placeholder="https://example.com" value="" />
+          </div>
+
+          <div>
+            <label for="font">Font</label>
+            <select id="font">
+              <option value="Inter">Inter</option>
+              <option value="Roboto">Roboto</option>
+              <option value="Open Sans">Open Sans</option>
+              <option value="Lato">Lato</option>
+              <option value="Montserrat">Montserrat</option>
+              <option value="Poppins">Poppins</option>
+              <option value="Source Sans 3">Source Sans 3</option>
+              <option value="Nunito">Nunito</option>
+              <option value="Raleway">Raleway</option>
+              <option value="Merriweather">Merriweather</option>
+              <option value="Playfair Display">Playfair Display</option>
+              <option value="system-ui">System UI</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="fontSize">Font size (px)</label>
+            <input id="fontSize" type="number" min="8" max="96" value="16" />
+          </div>
+
+          <div class="row">
+            <label>Text formatting</label>
+            <div class="toggles">
+              <label class="chip"><input id="bold" type="checkbox" /> <span>Bold</span></label>
+              <label class="chip"><input id="italic" type="checkbox" /> <span>Italic</span></label>
+              <label class="chip"><input id="underline" type="checkbox" /> <span>Underline</span></label>
+            </div>
+          </div>
+
+          <div class="row split">
+            <div>
+              <label>Text color</label>
+              <div class="mini">
+                <input id="textColorPick" type="color" value="#ffffff" />
+                <input id="textColorHex" type="text" value="#ffffff" />
+              </div>
+            </div>
+
+            <div>
+              <label>Border (optional)</label>
+              <div class="mini">
+                <input id="borderColorPick" type="color" value="#000000" />
+                <input id="borderColorHex" type="text" value="#000000" />
+              </div>
+            </div>
+          </div>
+
+          <div class="row split">
+            <div>
+              <label for="borderWidth">Border width (px)</label>
+              <input id="borderWidth" type="number" min="0" max="20" value="0" />
+            </div>
+
+            <div>
+              <label for="radius">Corner radius (px)</label>
+              <input id="radius" type="number" min="0" max="60" value="14" />
+            </div>
+          </div>
+
+          <div class="row">
+            <label>Fill type</label>
+            <div class="toggles">
+              <label class="chip"><input id="fillSolid" type="radio" name="fillType" checked /> <span>Solid</span></label>
+              <label class="chip"><input id="fillGrad" type="radio" name="fillType" /> <span>Gradient</span></label>
+            </div>
+          </div>
+
+          <div class="row split">
+            <div>
+              <label>Solid color</label>
+              <div class="mini">
+                <input id="solidPick" type="color" value="#2563eb" />
+                <input id="solidHex" type="text" value="#2563eb" />
+              </div>
+            </div>
+
+            <div>
+              <label>Gradient angle (deg)</label>
+              <input id="gradAngle" type="number" min="0" max="360" value="135" />
+            </div>
+          </div>
+
+          <div class="row split">
+            <div>
+              <label>Gradient color A</label>
+              <div class="mini">
+                <input id="grad1Pick" type="color" value="#22c55e" />
+                <input id="grad1Hex" type="text" value="#22c55e" />
+              </div>
+            </div>
+            <div>
+              <label>Gradient color B</label>
+              <div class="mini">
+                <input id="grad2Pick" type="color" value="#3b82f6" />
+                <input id="grad2Hex" type="text" value="#3b82f6" />
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <label>Button sizing</label>
+            <div class="toggles">
+              <label class="chip"><input id="fitToText" type="checkbox" checked /> <span>Fit to text</span></label>
+            </div>
+          </div>
+
+          <div class="row split">
+            <div>
+              <label for="btnWidth">Width (px)</label>
+              <input id="btnWidth" type="number" min="40" max="1200" value="220" />
+            </div>
+            <div>
+              <label for="btnHeight">Height (px)</label>
+              <input id="btnHeight" type="number" min="20" max="400" value="48" />
+            </div>
+          </div>
+
+          <div class="row split">
+            <div>
+              <label for="padX">Padding X (px)</label>
+              <input id="padX" type="number" min="0" max="80" value="18" />
+            </div>
+            <div>
+              <label for="padY">Padding Y (px)</label>
+              <input id="padY" type="number" min="0" max="80" value="12" />
+            </div>
+          </div>
+
+          <div class="row">
+            <label>Shadows</label>
+            <div class="toggles">
+              <label class="chip"><input id="btnShadowOn" type="checkbox" checked /> <span>Button shadow</span></label>
+              <label class="chip"><input id="txtShadowOn" type="checkbox" /> <span>Text shadow</span></label>
+            </div>
+          </div>
+
+          <div class="row split">
+            <div>
+              <label for="btnShadow">Button shadow strength</label>
+              <select id="btnShadow">
+                <option value="soft" selected>Soft</option>
+                <option value="medium">Medium</option>
+                <option value="strong">Strong</option>
+              </select>
+            </div>
+            <div>
+              <label for="txtShadow">Text shadow strength</label>
+              <select id="txtShadow">
+                <option value="soft" selected>Soft</option>
+                <option value="medium">Medium</option>
+                <option value="strong">Strong</option>
+              </select>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Preview + output -->
+      <section class="panel previewStage">
+        <h2>Preview & Output</h2>
+
+        <div class="previewBox">
+          <div id="captureArea">
+            <!-- We'll swap between <a> and <button> live -->
+            <a id="previewEl" class="genButton" href="#" target="_blank" rel="noopener noreferrer">Click me</a>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn" id="copyHTML">Copy HTML</button>
+            <button class="btn" id="copyCSS">Copy CSS</button>
+            <button class="btn secondary" id="copyBoth">Copy HTML + CSS</button>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn" id="exportPNG">Export PNG</button>
+          </div>
+        </div>
+
+        <div class="note">
+          PNG export screenshots the preview element. (Some browsers may slightly change font rendering vs production.)
+        </div>
+
+        <div class="split">
+          <div>
+            <label for="outHTML">Generated HTML</label>
+            <textarea id="outHTML" readonly></textarea>
+          </div>
+          <div>
+            <label for="outCSS">Generated CSS</label>
+            <textarea id="outCSS" readonly></textarea>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    // ---------- Helpers ----------
+    const $ = (id) => document.getElementById(id);
+
+    function normalizeHex(v){
+      if(!v) return null;
+      v = v.trim();
+      if(!v.startsWith("#")) v = "#" + v;
+      // accept #RGB or #RRGGBB
+      const ok = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(v);
+      return ok ? v : null;
+    }
+
+    function setPickerAndHex(picker, hexInput){
+      const norm = normalizeHex(hexInput.value);
+      if(norm){
+        hexInput.value = norm.toLowerCase();
+        picker.value = norm;
+      }
+    }
+
+    function setHexFromPicker(picker, hexInput){
+      hexInput.value = picker.value.toLowerCase();
+    }
+
+    function shadowPreset(kind){
+      // keep simple + safe defaults (no color picker needed here)
+      if(kind === "soft") return "0 8px 18px rgba(0,0,0,.25)";
+      if(kind === "medium") return "0 12px 26px rgba(0,0,0,.35)";
+      return "0 16px 36px rgba(0,0,0,.45)";
+    }
+    function textShadowPreset(kind){
+      if(kind === "soft") return "0 1px 2px rgba(0,0,0,.35)";
+      if(kind === "medium") return "0 2px 4px rgba(0,0,0,.45)";
+      return "0 3px 6px rgba(0,0,0,.55)";
+    }
+
+    // ---------- Live preview + codegen ----------
+    const captureArea = $("captureArea");
+    let previewEl = $("previewEl");
+
+    function ensureCorrectElementType(){
+      // If URL provided, use <a>; otherwise use <button>
+      const url = $("url").value.trim();
+      const wantsLink = url.length > 0;
+
+      const currentIsLink = previewEl.tagName.toLowerCase() === "a";
+      if(wantsLink && !currentIsLink){
+        const a = document.createElement("a");
+        a.id = "previewEl";
+        a.className = "genButton";
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.href = "#";
+        a.textContent = previewEl.textContent;
+        previewEl.replaceWith(a);
+        previewEl = a;
+      }
+      if(!wantsLink && currentIsLink){
+        const b = document.createElement("button");
+        b.id = "previewEl";
+        b.className = "genButton";
+        b.type = "button";
+        b.textContent = previewEl.textContent;
+        previewEl.replaceWith(b);
+        previewEl = b;
+      }
+    }
+
+    function applyStylesAndUpdateOutputs(){
+      ensureCorrectElementType();
+
+      // Text
+      const text = $("text").value || "Button";
+      previewEl.textContent = text;
+
+      // URL
+      const url = $("url").value.trim();
+      if(previewEl.tagName.toLowerCase() === "a"){
+        previewEl.href = url || "#";
+      }
+
+      // Font
+      const fontChoice = $("font").value;
+      const fontFamily = (fontChoice === "system-ui")
+        ? "system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial"
+        : `"${fontChoice}", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial`;
+
+      // Formatting
+      const weight = $("bold").checked ? 700 : 600;
+      const style = $("italic").checked ? "italic" : "normal";
+      const decor = $("underline").checked ? "underline" : "none";
+
+      // Sizes
+      const fontSize = Math.max(8, Math.min(96, Number($("fontSize").value || 16)));
+
+      const fitToText = $("fitToText").checked;
+      const btnW = Math.max(40, Math.min(1200, Number($("btnWidth").value || 220)));
+      const btnH = Math.max(20, Math.min(400, Number($("btnHeight").value || 48)));
+
+      const padX = Math.max(0, Math.min(80, Number($("padX").value || 18)));
+      const padY = Math.max(0, Math.min(80, Number($("padY").value || 12)));
+
+      // Colors
+      const textColor = normalizeHex($("textColorHex").value) || "#ffffff";
+      const borderWidth = Math.max(0, Math.min(20, Number($("borderWidth").value || 0)));
+      const borderColor = normalizeHex($("borderColorHex").value) || "#000000";
+
+      // Fill
+      const solid = normalizeHex($("solidHex").value) || "#2563eb";
+      const grad1 = normalizeHex($("grad1Hex").value) || "#22c55e";
+      const grad2 = normalizeHex($("grad2Hex").value) || "#3b82f6";
+      const gradAngle = Math.max(0, Math.min(360, Number($("gradAngle").value || 135)));
+
+      const isGrad = $("fillGrad").checked;
+      const bgFill = isGrad
+        ? `linear-gradient(${gradAngle}deg, ${grad1}, ${grad2})`
+        : solid;
+
+      // Radius
+      const radius = Math.max(0, Math.min(60, Number($("radius").value || 14)));
+
+      // Shadows
+      const btnShadowOn = $("btnShadowOn").checked;
+      const txtShadowOn = $("txtShadowOn").checked;
+      const btnShadow = btnShadowOn ? shadowPreset($("btnShadow").value) : "none";
+      const txtShadow = txtShadowOn ? textShadowPreset($("txtShadow").value) : "none";
+
+      // Apply as CSS variables (keeps preview + screenshot consistent)
+      previewEl.style.setProperty("--fontFamily", fontFamily);
+      previewEl.style.setProperty("--fontSize", fontSize + "px");
+      previewEl.style.setProperty("--fontWeight", weight);
+      previewEl.style.setProperty("--fontStyle", style);
+      previewEl.style.setProperty("--textDecor", decor);
+
+      previewEl.style.setProperty("--textColor", textColor);
+
+      previewEl.style.setProperty("--padX", padX + "px");
+      previewEl.style.setProperty("--padY", padY + "px");
+
+      previewEl.style.setProperty("--radius", radius + "px");
+      previewEl.style.setProperty("--borderWidth", borderWidth + "px");
+      previewEl.style.setProperty("--borderColor", borderWidth > 0 ? borderColor : "transparent");
+
+      previewEl.style.setProperty("--bgFill", bgFill);
+
+      previewEl.style.setProperty("--btnShadow", btnShadow);
+      previewEl.style.setProperty("--txtShadow", txtShadow);
+
+      // width/height
+      if(fitToText){
+        previewEl.style.setProperty("--btnWidth", "auto");
+        previewEl.style.setProperty("--btnHeight", "auto");
+      } else {
+        previewEl.style.setProperty("--btnWidth", btnW + "px");
+        previewEl.style.setProperty("--btnHeight", btnH + "px");
+      }
+
+      // Outputs
+      $("outCSS").value = buildCSS({
+        fontFamily, fontSize, weight, style, decor,
+        textColor, padX, padY, radius,
+        borderWidth, borderColor,
+        bgFill,
+        btnShadow, txtShadow,
+        fitToText, btnW, btnH
+      });
+
+      $("outHTML").value = buildHTML({
+        text,
+        url: url || "",
+        isLink: url.length > 0
+      });
+    }
+
+    function buildCSS(s){
+      const wh = s.fitToText
+        ? `  width: auto;\n  height: auto;`
+        : `  width: ${s.btnW}px;\n  height: ${s.btnH}px;`;
+
+      const border = (s.borderWidth > 0)
+        ? `  border: ${s.borderWidth}px solid ${s.borderColor};`
+        : `  border: 0;`;
+
+      const bg = `  background: ${s.bgFill};`;
+
+      const btnShadowLine = (s.btnShadow && s.btnShadow !== "none")
+        ? `  box-shadow: ${s.btnShadow};`
+        : `  box-shadow: none;`;
+
+      const txtShadowLine = (s.txtShadow && s.txtShadow !== "none")
+        ? `  text-shadow: ${s.txtShadow};`
+        : `  text-shadow: none;`;
+
+      return `.genButton{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  cursor: pointer;
+
+  font-family: ${s.fontFamily};
+  font-size: ${s.fontSize}px;
+  font-weight: ${s.weight};
+  font-style: ${s.style};
+  text-decoration: ${s.decor};
+  color: ${s.textColor};
+
+  padding: ${s.padY}px ${s.padX}px;
+  border-radius: ${s.radius}px;
+${border}
+${bg}
+
+${wh}
+
+${btnShadowLine}
+${txtShadowLine}
+
+  transition: transform .06s ease, filter .15s ease;
+}
+.genButton:hover{ filter: brightness(1.03); }
+.genButton:active{ transform: translateY(1px); }
+`;
+    }
+
+    function escapeHtml(s){
+      return s
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function buildHTML({text, url, isLink}){
+      const safeText = escapeHtml(text);
+      if(isLink){
+        const safeUrl = escapeHtml(url);
+        return `<a class="genButton" href="${safeUrl}" target="_blank" rel="noopener noreferrer">${safeText}</a>`;
+      }
+      return `<button class="genButton" type="button">${safeText}</button>`;
+    }
+
+    // ---------- Clipboard + PNG ----------
+    async function copyToClipboard(str){
+      await navigator.clipboard.writeText(str);
+    }
+
+    function flashButton(el, msg){
+      const old = el.textContent;
+      el.textContent = msg;
+      el.disabled = true;
+      setTimeout(() => { el.textContent = old; el.disabled = false; }, 700);
+    }
+
+    async function exportPNG(){
+      // Use html2canvas on the capture area only
+      const canvas = await html2canvas(captureArea, {
+        backgroundColor: null,
+        scale: 2
+      });
+      canvas.toBlob((blob) => {
+        if(!blob) return;
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "button.png";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }, "image/png");
+    }
+
+    // ---------- Wire up live updates ----------
+    const liveInputs = [
+      "text","url","font","fontSize",
+      "bold","italic","underline",
+      "borderWidth","radius",
+      "fillSolid","fillGrad","gradAngle",
+      "fitToText","btnWidth","btnHeight","padX","padY",
+      "btnShadowOn","txtShadowOn","btnShadow","txtShadow",
+      "textColorPick","textColorHex",
+      "borderColorPick","borderColorHex",
+      "solidPick","solidHex",
+      "grad1Pick","grad1Hex",
+      "grad2Pick","grad2Hex",
+    ];
+
+    // Sync pickers <-> hex and update live
+    function attachColorSync(pickId, hexId){
+      const p = $(pickId);
+      const h = $(hexId);
+
+      p.addEventListener("input", () => {
+        setHexFromPicker(p, h);
+        applyStylesAndUpdateOutputs();
+      });
+      h.addEventListener("input", () => {
+        // Don't force-correct mid-typing; update if valid
+        const norm = normalizeHex(h.value);
+        if(norm){
+          h.value = norm.toLowerCase();
+          p.value = norm;
+          applyStylesAndUpdateOutputs();
+        } else {
+          // Still update preview with last valid (keeps stable)
+          applyStylesAndUpdateOutputs();
+        }
+      });
+      h.addEventListener("blur", () => {
+        // On blur, if it's valid, snap; if invalid, revert to picker
+        const norm = normalizeHex(h.value);
+        if(norm){
+          h.value = norm.toLowerCase();
+          p.value = norm;
+        } else {
+          h.value = p.value.toLowerCase();
+        }
+        applyStylesAndUpdateOutputs();
+      });
+    }
+
+    attachColorSync("textColorPick","textColorHex");
+    attachColorSync("borderColorPick","borderColorHex");
+    attachColorSync("solidPick","solidHex");
+    attachColorSync("grad1Pick","grad1Hex");
+    attachColorSync("grad2Pick","grad2Hex");
+
+    // Other inputs update live
+    for(const id of liveInputs){
+      const el = $(id);
+      if(!el) continue;
+
+      const evt = (el.type === "checkbox" || el.type === "radio" || el.tagName === "SELECT")
+        ? "change"
+        : "input";
+
+      el.addEventListener(evt, () => {
+        // Special: Fit-to-text disables width/height inputs visually (optional UX)
+        const fit = $("fitToText").checked;
+        $("btnWidth").disabled = fit;
+        $("btnHeight").disabled = fit;
+
+        applyStylesAndUpdateOutputs();
+      });
+    }
+
+    // Clipboard buttons
+    $("copyHTML").addEventListener("click", async () => {
+      await copyToClipboard($("outHTML").value);
+      flashButton($("copyHTML"), "Copied!");
+    });
+    $("copyCSS").addEventListener("click", async () => {
+      await copyToClipboard($("outCSS").value);
+      flashButton($("copyCSS"), "Copied!");
+    });
+    $("copyBoth").addEventListener("click", async () => {
+      const combined =
+`<!-- HTML -->
+${$("outHTML").value}
+
+<style>
+/* CSS */
+${$("outCSS").value}
+</style>`;
+      await copyToClipboard(combined);
+      flashButton($("copyBoth"), "Copied!");
+    });
+
+    $("exportPNG").addEventListener("click", async () => {
+      $("exportPNG").disabled = true;
+      const old = $("exportPNG").textContent;
+      $("exportPNG").textContent = "Rendering…";
+      try{
+        await exportPNG();
+      } finally {
+        $("exportPNG").textContent = old;
+        $("exportPNG").disabled = false;
+      }
+    });
+
+    // Init
+    $("btnWidth").disabled = $("fitToText").checked;
+    $("btnHeight").disabled = $("fitToText").checked;
+    applyStylesAndUpdateOutputs();
+  </script>
+</body>
+</html>

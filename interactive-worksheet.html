@@ -1,0 +1,1083 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Escort Worksheet — Light Tabs</title>
+
+  <style>
+    :root{
+      --page:#f6f7fb; --card:#fff;
+      --line:#cfd5e3; --line2:#e6e9f2;
+      --ink:#111827; --muted:#4b5563; --muted2:#6b7280;
+      --brand:#6d28d9; --brand2:#2563eb;
+      --good:#0f766e; --warn:#b45309; --bad:#b91c1c;
+      --shadow: 0 1px 0 rgba(17,24,39,.06), 0 6px 18px rgba(17,24,39,.08);
+      --shadow2: 0 1px 2px rgba(17,24,39,.08);
+      --r:10px; --r2:14px;
+      --font: system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--font);
+      color:var(--ink);
+      background: linear-gradient(#fff,#fff 240px,var(--page) 240px);
+    }
+    .wrap{max-width:1100px;margin:0 auto;padding:18px 18px 70px}
+
+    header{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin:10px 0 14px}
+    .brand{display:flex;gap:12px;align-items:center;min-width:0}
+    .logo{
+      width:44px;height:44px;border-radius:12px;border:1px solid var(--line);
+      background:linear-gradient(#fff,#f2f5ff);box-shadow:var(--shadow2);
+      display:grid;place-items:center;color:var(--brand);font-weight:900;user-select:none
+    }
+    .title{min-width:0}
+    .title h1{margin:0;font-size:20px;letter-spacing:-.02em}
+    .title p{margin:6px 0 0;color:var(--muted);font-size:13px;line-height:1.35;max-width:72ch}
+
+    .actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;align-items:center}
+    .status{
+      display:flex;gap:8px;align-items:center;
+      padding:8px 10px;border:1px solid var(--line);
+      background:#fff;border-radius:999px;box-shadow:var(--shadow2);
+      font-size:12px;color:var(--muted);user-select:none
+    }
+    .dot{width:10px;height:10px;border-radius:999px;background:var(--good)}
+    .dot.saving{background:var(--warn)}
+    .dot.offline{background:var(--bad)}
+
+    button{
+      font:inherit;border-radius:9px;border:1px solid var(--line);
+      background:linear-gradient(#fff,#f3f5fb);
+      box-shadow:var(--shadow2);
+      padding:9px 10px;cursor:pointer;color:var(--ink);
+      transition:background .12s ease,border-color .12s ease,transform .06s ease;
+      display:inline-flex;align-items:center;gap:8px;white-space:nowrap
+    }
+    button:hover{border-color:#b9c2d8;background:linear-gradient(#fff,#eef2ff)}
+    button:active{transform:translateY(1px)}
+    button:focus-visible{outline:3px solid rgba(109,40,217,.16);outline-offset:1px}
+    .btnPrimary{border-color:rgba(109,40,217,.35);background:linear-gradient(#fff,#efe8ff)}
+    .btnGhost{background:#fff}
+
+    .tabs{
+      display:flex;flex-wrap:wrap;gap:6px;padding:8px;
+      border:1px solid var(--line);background:#fff;border-radius:var(--r2);
+      box-shadow:var(--shadow)
+    }
+    .tab{
+      padding:10px 10px;border-radius:10px;border:1px solid transparent;
+      background:transparent;box-shadow:none;color:var(--muted);font-size:13px;user-select:none
+    }
+    .tab:hover{background:#f4f7ff;border-color:#dbe3f7}
+    .tab.active{background:linear-gradient(#fff,#f3efff);border-color:#dccbff;color:var(--ink);box-shadow:0 1px 0 rgba(17,24,39,.06)}
+    .tab .mini{display:block;font-size:11px;color:var(--muted2);margin-top:2px;max-width:26ch;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .tab .check{
+      display:inline-grid;place-items:center;width:18px;height:18px;border-radius:999px;
+      border:1px solid var(--line);background:#fff;color:var(--muted);font-size:12px;margin-right:8px;vertical-align:middle
+    }
+    .tab.done .check{border-color:rgba(15,118,110,.35);background:rgba(15,118,110,.08);color:var(--good)}
+
+    .grid{display:grid;grid-template-columns:1fr 320px;gap:14px;margin-top:12px;align-items:start}
+    .panel{border:1px solid var(--line);background:var(--card);border-radius:var(--r2);box-shadow:var(--shadow)}
+    .main{padding:14px}
+    .side{padding:14px}
+
+    .sectionBar{
+      padding:10px 12px;margin:-14px -14px 12px;background:var(--brand);color:#fff;
+      font-weight:900;letter-spacing:.02em;text-transform:uppercase;border-radius:var(--r2) var(--r2) 0 0;font-size:14px
+    }
+
+    .mainTop{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:2px 2px 12px;border-bottom:1px solid var(--line2);margin-bottom:12px}
+    .mainTop h2{margin:0;font-size:18px;letter-spacing:-.01em}
+    .mainTop p{margin:6px 0 0;color:var(--muted);font-size:13px;line-height:1.4;max-width:76ch}
+
+    .sectionTitle{margin:0 0 8px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted2)}
+    .progressRow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0 8px;font-size:12.5px;color:var(--muted)}
+    .bar{height:12px;border-radius:999px;background:#efe8ff;border:1px solid #dccbff;overflow:hidden}
+    .bar>i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--brand),var(--brand2));transition:width .22s ease}
+    .miniCard{border:1px solid var(--line2);background:#fff;border-radius:var(--r);padding:10px;box-shadow:0 1px 0 rgba(17,24,39,.04)}
+    .miniCard+.miniCard{margin-top:10px}
+    .hint{color:var(--muted);font-size:12.5px;line-height:1.35}
+
+    form{display:grid;gap:12px;margin-top:10px}
+    .field{display:grid;gap:6px}
+    label{font-size:13px;color:var(--ink);font-weight:800;letter-spacing:.01em;text-transform:uppercase}
+    label .req{color:#dc2626;margin-left:4px}
+    .sub{font-size:12.5px;color:var(--muted);line-height:1.35}
+
+    input[type="text"], textarea, select{
+      width:100%;border:1px solid var(--line);border-radius:10px;background:#fff;padding:10px;
+      font:inherit;color:var(--ink);box-shadow:inset 0 1px 0 rgba(17,24,39,.03);
+      transition:border-color .12s ease,box-shadow .12s ease
+    }
+    textarea{min-height:120px;resize:vertical}
+    input:focus, textarea:focus, select:focus{border-color:rgba(109,40,217,.65);box-shadow:0 0 0 4px rgba(109,40,217,.16);outline:none}
+
+    /* Choice lists (default = vertical) */
+    .choiceList{
+      display:grid;gap:8px;padding:10px;border:1px solid var(--line2);border-radius:10px;background:#fff
+    }
+    .choice{
+      display:flex;gap:10px;align-items:flex-start;
+      text-transform:none;font-weight:600;letter-spacing:0;color:var(--ink)
+    }
+    .choice input{margin-top:2px}
+
+    /* Inline (horizontal) layout for radios (and only when requested) */
+    .choiceList.inline{
+      display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center
+    }
+    .choiceList.inline .choice{
+      width:auto;align-items:center;padding:6px 10px;border-radius:999px;border:1px solid transparent
+    }
+    .choiceList.inline .choice:hover{background:#f6f7ff;border-color:#e5e7ff}
+    .choiceList.inline .choice input{margin:0}
+
+    /* "Other: [text]" row */
+    .choice .otherRow{display:flex;gap:10px;align-items:center;width:100%}
+    .choice .otherRow input[type="text"]{flex:1;min-width:220px}
+
+    .matrixWrap{overflow:auto;border:1px solid var(--line2);border-radius:10px;background:#fff}
+    table.matrix{border-collapse:collapse;width:100%;min-width:520px}
+    .matrix th,.matrix td{border-bottom:1px solid var(--line2);padding:10px;text-align:center;font-size:12.5px}
+    .matrix th:first-child,.matrix td:first-child{text-align:left;color:var(--muted);font-weight:700}
+    .matrix thead th{position:sticky;top:0;background:#fafafe;z-index:1}
+    .matrix tr:last-child td{border-bottom:none}
+
+    .navRow{display:flex;justify-content:space-between;gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line2);flex-wrap:wrap}
+    .kbd{font-size:11px;color:var(--muted2);border:1px solid var(--line2);background:#fff;border-radius:7px;padding:4px 6px;display:inline-block;margin-left:6px}
+
+    .toast{
+      position:fixed;left:50%;bottom:18px;transform:translateX(-50%);
+      border:1px solid var(--line);background:#fff;border-radius:999px;padding:10px 12px;box-shadow:var(--shadow);
+      font-size:12.5px;color:var(--muted);opacity:0;pointer-events:none;transition:opacity .15s ease,transform .15s ease;
+      max-width:min(92vw,860px);text-align:center
+    }
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(-2px)}
+
+    @media (max-width:980px){.grid{grid-template-columns:1fr}}
+    @media (max-width:520px){.status{display:none}.tab .mini{display:none}}
+    @media (max-width:420px){
+      .choiceList.inline{display:grid}
+      .choiceList.inline .choice{width:100%}
+      .choice .otherRow input[type="text"]{min-width:0}
+    }
+    @media (prefers-reduced-motion: reduce){*{transition:none !important}}
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true">E</div>
+        <div class="title">
+          <h1>Escort Business Plan</h1>
+          <p>If you're considering giving sex work a try, you'll want to spend some time thinking about your answers to the questions I've put together here for you. Best of luck!</p>
+        </div>
+      </div>
+
+      <div class="actions">
+        <div class="status" title="Local autosave status">
+          <span class="dot" id="saveDot"></span>
+          <span id="saveLabel">Saved</span>
+        </div>
+        <button class="btnGhost" id="btnReset" title="Reset all answers">↺ Reset</button>
+        <button class="btnPrimary" id="btnExport" title="Export your answers as JSON">⬇ Export</button>
+        <button class="btnGhost" id="btnImport" title="Import a JSON export">⬆ Import</button>
+        <button class="btnPrimary" id="btnPrettyExport" title="Export a styled report">✨ Pretty Export</button>
+
+        <input type="file" id="fileImport" accept="application/json" hidden/>
+      </div>
+    </header>
+
+    <nav class="tabs" id="tabs" aria-label="Worksheet sections (tabs)"></nav>
+
+    <div class="grid">
+      <main class="panel main" aria-label="Active section">
+        <div class="sectionBar" id="sectionBar">SECTION</div>
+
+        <div class="mainTop">
+          <div>
+            <h2 id="stepTitle">Loading…</h2>
+            <p id="stepDesc">Please wait.</p>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end">
+            <button class="btnGhost" id="btnMarkDone" title="Mark this section done">✓ Mark done</button>
+          </div>
+        </div>
+
+        <form id="fields" autocomplete="off"></form>
+
+        <div class="navRow">
+          <button type="button" id="btnPrev">← Back</button>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end">
+            <button type="button" class="btnGhost" id="btnCopySummary" title="Copy a concise summary">⧉ Copy summary</button>
+            <button type="button" class="btnPrimary" id="btnNext">
+              Next →
+              <span class="kbd">Ctrl/⌘ + Enter</span>
+            </button>
+          </div>
+        </div>
+      </main>
+
+      <aside class="panel side" aria-label="Progress and tools">
+        <div class="sectionTitle">Progress</div>
+        <div class="progressRow">
+          <span id="progressText">0% complete</span>
+          <span id="stepCount">0 / 0</span>
+        </div>
+        <div class="bar" aria-label="Progress bar"><i id="barFill"></i></div>
+
+        <div class="miniCard" style="margin-top:12px">
+          <div class="sectionTitle" style="margin:0 0 6px">Keyboard</div>
+          <div class="hint">
+            <b>Ctrl/⌘ + Enter</b> = Next<br/>
+            <b>Ctrl/⌘ + Shift + Enter</b> = Back
+          </div>
+        </div>
+
+        <div class="miniCard">
+          <div class="sectionTitle" style="margin:0 0 6px">Tools</div>
+          <div style="display:grid; gap:8px">
+            <button class="btnGhost" id="btnPrint" type="button">🖨 Print</button>
+          </div>
+        </div>
+
+        <div class="miniCard">
+          <div class="sectionTitle" style="margin:0 0 6px">Quick summary</div>
+          <div class="hint" id="quickSummary">Fill a couple fields and this will update.</div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <span id="toastText">Saved</span>
+  </div>
+
+  <script>
+    /* =========================================================
+       DATA (keep as-is; edit questions anytime)
+       ========================================================= */
+
+    const STEPS = [
+      {
+        id: "menu",
+        title: "Your Escort Menu",
+        desc: "",
+        fields: [
+          { key:"services", type:"checkboxes", required:true, label:"Which services will you offer?",
+            options:["Full service","GFE","BBBJ","Greek","PSE"], other:true },
+
+          { key:"hardLimits", type:"textarea", required:true, label:"What are your hard limits?", placeholder:"Your answer" },
+
+          { key:"fetishFriendly", type:"radio", layout:"inline", required:true, label:"Are you fetish friendly?",
+            options:["Yes","No","Maybe"] },
+
+          { key:"kissingGFE", type:"radio", layout:"inline", required:true, label:"Are you comfortable kissing and offering GFE?",
+            options:["Yes","No","Maybe"] },
+
+          { key:"hourRate", type:"text", required:true, label:"How much will you charge for an hour of your time?", placeholder:"Your answer" },
+
+          { key:"shorterAppts", type:"radio", layout:"inline", required:true, label:"Will you offer shorter appointments?",
+            options:["Yes","No","Maybe"] },
+
+          { key:"overnights", type:"radio", layout:"inline", required:true, label:"Will you offer overnight bookings?",
+            options:["Yes","No","Maybe"] },
+
+          { key:"multiHourDiscount", type:"radio", layout:"inline", required:true, label:"Will you offer a discount to clients who book multiple hours?",
+            options:["Yes","No","Maybe"] },
+
+          { key:"paymentMethods", type:"checkboxes", required:true, label:"Which methods of payment will you accept?",
+            options:["Cash","Credit cards","Cash App","Venmo","Paypal","Stripe","Gift cards"], other:true },
+
+          { key:"barter", type:"radio", layout:"inline", required:true, label:"Are you willing to consider trades or bartering?",
+            options:["Yes","No","Maybe"] },
+
+          { key:"availability", type:"matrix", required:true, label:"Which days and hours will you be available?",
+            rows:["Mornings","Afternoons","Evenings","Late"],
+            cols:["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"] },
+
+          { key:"recording", type:"radio", layout:"inline", required:true, label:"Will you charge extra to let clients record your sessions?",
+            options:["Yes","No","Maybe"] }
+        ]
+      },
+
+      {
+        id: "incall",
+        title: "Incall vs. Outcall",
+        desc: "",
+        fields: [
+          { key:"ableToHost", type:"radio", layout:"inline", required:true, label:"Are you able to host?",
+            options:["Yes","No","Maybe"] },
+
+          { key:"travelToClients", type:"radio", layout:"inline", required:true, label:"Are you able to travel to clients?",
+            options:["Yes","No","Maybe"] },
+
+          { key:"driveDistance", type:"text", required:true, label:"How far are you willing to drive to meet them?", placeholder:"Your answer" },
+
+          { key:"meetHotels", type:"radio", layout:"inline", required:true, label:"Are you willing to meet clients at hotels?",
+            options:["Yes","No","Maybe"] },
+
+          { key:"meetArcades", type:"radio", layout:"inline", required:true, label:"Are you willing to meet at video arcades or adult stores?",
+            options:["Yes","No","Maybe"] },
+
+          { key:"carDates", type:"radio", layout:"inline", required:true, label:"Will you allow car dates?",
+            options:["Yes","No","Maybe"] }
+        ]
+      },
+
+      {
+        id: "clients",
+        title: "Finding Clients",
+        desc: "",
+        fields: [
+          { key:"idealClient", type:"textarea", required:true, label:"Who is your ideal client?", placeholder:"Your answer" },
+
+          { key:"preferredAgeRange", type:"radio", layout:"inline", required:true, label:"Do you have a preferred age range?",
+            options:["Yes","No","Maybe"] },
+
+          { key:"howPersonal", type:"textarea", required:true, label:"How personal are you comfortable getting with clients?", placeholder:"Your answer" }
+        ]
+      },
+
+      {
+        id: "safety",
+        title: "Safety Plan",
+        desc: "",
+        fields: [
+          { key:"screenPlan", type:"textarea", required:true, label:"How do you plan to screen new clients?", placeholder:"Your answer" },
+
+          { key:"requireRefs", type:"radio", layout:"inline", required:true, label:"Will you require provider references to book new clients?",
+            options:["Yes","No","Maybe"] },
+
+          { key:"meetGreetWhere", type:"textarea", required:true, label:"Where might you suggest a meet & greet prior to booking an appointment?", placeholder:"Your answer" },
+
+          { key:"trustedContact", type:"text", required:true, label:"Who will be your trusted contact?", placeholder:"Your answer" },
+
+          { key:"weaponsPepper", type:"radio", layout:"inline", required:true, label:"Will you carry any weapons or pepper spray?",
+            options:["Yes","No","Maybe"] }
+        ]
+      },
+
+      {
+        id: "adcopy",
+        title: "Ad Copy",
+        desc: "",
+        fields: [
+          { key:"headline1", type:"text", required:true, label:"Ad headline idea #1", placeholder:"Your answer" },
+          { key:"headline2", type:"text", required:true, label:"Ad headline idea #2", placeholder:"Your answer" },
+          { key:"headline3", type:"text", required:true, label:"Ad headline idea #3", placeholder:"Your answer" },
+          { key:"adBody", type:"textarea", required:true, label:"Ad body text", placeholder:"Your answer" },
+
+          { key:"postWhere", type:"checkboxes", required:true, label:"Where will you post your ad?",
+            options:["TNA Board","Skip the Games","Slixa","Tryst","Mega Personals"], other:true }
+        ]
+      },
+
+      {
+        id: "rates",
+        title: "Notes",
+        desc: "",
+        fields: [
+          { key:"rateNotes", type:"textarea", required:false, label:"Any extra rate/policy notes you want to remember?",
+            placeholder:"Deposits, cancellations, minimums, etc." }
+        ]
+      }
+    ];
+
+    /* =========================================================
+       APP STATE + AUTOSAVE
+       ========================================================= */
+
+    const STORAGE_KEY = "escort-worksheet.light.v3";
+    const el = (id)=>document.getElementById(id);
+
+    const tabsEl = el("tabs");
+    const fieldsEl = el("fields");
+    const sectionBar = el("sectionBar");
+    const stepTitleEl = el("stepTitle");
+    const stepDescEl = el("stepDesc");
+
+    const btnPrev = el("btnPrev");
+    const btnNext = el("btnNext");
+    const btnMarkDone = el("btnMarkDone");
+    const btnReset = el("btnReset");
+    const btnExport = el("btnExport");
+    const btnImport = el("btnImport");
+    const fileImport = el("fileImport");
+    const btnCopySummary = el("btnCopySummary");
+    const btnPrint = el("btnPrint");
+
+    const barFill = el("barFill");
+    const progressText = el("progressText");
+    const stepCount = el("stepCount");
+    const quickSummary = el("quickSummary");
+
+    const saveDot = el("saveDot");
+    const saveLabel = el("saveLabel");
+    const toast = el("toast");
+    const toastText = el("toastText");
+
+    const state = { active: 0, answers: {}, done: {}, lastSavedAt: 0 };
+
+    const clamp = (n,min,max)=>Math.max(min,Math.min(max,n));
+    const now = ()=>Date.now();
+    const safeJSONParse = (s)=>{ try{return JSON.parse(s)}catch{return null} };
+const btnPrettyExport = document.getElementById("btnPrettyExport");
+
+// 1) Your templates live here.
+// Replace the CSS + header layout with YOUR template styles.
+// You can add multiple templates and switch by id.
+const EXPORT_TEMPLATES = {
+  "clean-form": ({ title, subtitle, sectionsHtml }) => `
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>${escapeHTML(title)}</title>
+  <style>
+    :root{
+      --ink:#111827; --muted:#6b7280; --line:#e5e7eb; --paper:#ffffff;
+      --accent:#6d28d9;
+    }
+    body{ margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial; color:var(--ink); background:#f3f4f6; }
+    .page{ max-width: 900px; margin: 24px auto; background:var(--paper); border:1px solid var(--line); border-radius:16px; overflow:hidden; }
+    .hero{
+      padding: 18px 20px;
+      background: linear-gradient(90deg, var(--accent), #2563eb);
+      color: #fff;
+    }
+    .hero h1{ margin:0; font-size: 22px; letter-spacing:-.02em; }
+    .hero p{ margin:6px 0 0; opacity:.92; font-size: 13px; }
+    .meta{ padding: 14px 20px; border-bottom:1px solid var(--line); color:var(--muted); font-size: 12.5px; display:flex; gap:14px; flex-wrap:wrap; }
+    .content{ padding: 18px 20px 26px; }
+    .section{ border:1px solid var(--line); border-radius:14px; overflow:hidden; margin-bottom: 14px; }
+    .sectionHead{ padding:10px 12px; background:#fafafa; font-weight: 800; text-transform: uppercase; font-size:12px; letter-spacing:.12em; }
+    .qa{ padding: 12px; display:grid; gap:10px; }
+    .q{ font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing:.08em; color:#374151; }
+    .a{ white-space: pre-wrap; padding: 10px 12px; border:1px solid var(--line); border-radius:12px; background:#fff; line-height:1.45; }
+    .empty{ color: var(--muted); font-style: italic; }
+    @media print{
+      body{ background:#fff; }
+      .page{ margin:0; border:none; border-radius:0; }
+      .section{ break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="hero">
+      <h1>${escapeHTML(title)}</h1>
+      <p>${escapeHTML(subtitle)}</p>
+    </div>
+    <div class="meta">
+      <div><b>Generated:</b> ${new Date().toLocaleString()}</div>
+      <div><b>Sections:</b> ${STEPS.length}</div>
+    </div>
+    <div class="content">
+      ${sectionsHtml}
+    </div>
+  </div>
+</body>
+</html>
+`
+};
+
+// 2) Build “sections HTML” from your current STEPS + answers
+function buildPrettySectionsHtml(){
+  return STEPS.map(step => {
+    const qa = step.fields.map(f => {
+      const raw = state.answers[f.key];
+      const val = prettyValue(raw, f);
+      return `
+        <div>
+          <div class="q">${escapeHTML(f.label)}</div>
+          <div class="a ${val ? "" : "empty"}">${val ? escapeHTML(val) : "—"}</div>
+        </div>
+      `;
+    }).join("");
+
+    return `
+      <section class="section">
+        <div class="sectionHead">${escapeHTML(step.title)}</div>
+        <div class="qa">${qa}</div>
+      </section>
+    `;
+  }).join("");
+}
+
+// 3) Convert values into something report-friendly
+function prettyValue(v, field){
+  if(v == null) return "";
+  if(typeof v === "number") return String(v);
+  if(typeof v === "string") return v.trim();
+  if(Array.isArray(v)) return v.join(", ");
+
+  // matrix -> list checked cells
+  if(field?.type === "matrix" && typeof v === "object"){
+    const picks = [];
+    for(const r of Object.keys(v)){
+      for(const c of Object.keys(v[r] || {})){
+        if(v[r][c]) picks.push(`${r} — ${c}`);
+      }
+    }
+    return picks.join("\n");
+  }
+
+  if(typeof v === "object") return JSON.stringify(v, null, 2);
+  return String(v);
+}
+
+// 4) Download helper
+function downloadTextFile(filename, content, mime="text/html"){
+  const blob = new Blob([content], { type: mime });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+// 5) Wire it up
+btnPrettyExport.addEventListener("click", ()=>{
+  const title = "Escort Worksheet";
+  const subtitle = "A clean, printable summary of your answers";
+  const sectionsHtml = buildPrettySectionsHtml();
+
+  // choose template (later you can add a dropdown)
+  const html = EXPORT_TEMPLATES["clean-form"]({ title, subtitle, sectionsHtml });
+
+  downloadTextFile(`escort-worksheet-pretty-${new Date().toISOString().slice(0,10)}.html`, html, "text/html");
+  showToast("Pretty export downloaded");
+});
+
+    function showToast(msg){
+      toastText.textContent = msg;
+      toast.classList.add("show");
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(()=>toast.classList.remove("show"), 1400);
+    }
+
+    function setSaveStatus(mode){
+      saveDot.classList.remove("saving","offline");
+      if(mode==="saving"){ saveDot.classList.add("saving"); saveLabel.textContent="Saving…"; }
+      else if(mode==="offline"){ saveDot.classList.add("offline"); saveLabel.textContent="Offline"; }
+      else { saveLabel.textContent="Saved"; }
+    }
+
+    let saveTimer = null;
+    function queueSave(){
+      setSaveStatus("saving");
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(save, 220);
+    }
+
+    function save(){
+      try{
+        const payload = { v:3, ts: now(), active: state.active, answers: state.answers, done: state.done };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+        state.lastSavedAt = payload.ts;
+        setSaveStatus("saved");
+      }catch(e){
+        console.warn("Save failed", e);
+        setSaveStatus("offline");
+      }
+      updateProgress();
+      updateQuickSummary();
+      renderTabs();
+    }
+
+    function load(){
+      const raw = localStorage.getItem(STORAGE_KEY);
+      const data = raw ? safeJSONParse(raw) : null;
+      if(data && (data.v===3 || data.v===2 || data.v===1)){
+        state.active = clamp(data.active ?? 0, 0, STEPS.length-1);
+        state.answers = data.answers ?? {};
+        state.done = data.done ?? {};
+        state.lastSavedAt = data.ts ?? 0;
+      }
+    }
+
+    function escapeHTML(str){
+      return String(str)
+        .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+    }
+
+    function anyMatrixChecked(obj){
+      if(!obj || typeof obj !== "object") return false;
+      for(const r of Object.keys(obj)){
+        const row = obj[r];
+        if(row && typeof row === "object"){
+          for(const c of Object.keys(row)){
+            if(row[c]) return true;
+          }
+        }
+      }
+      return false;
+    }
+
+    function isFilled(val){
+      if(typeof val === "number") return true;
+      if(typeof val === "string") return val.trim().length > 0;
+      if(Array.isArray(val)) return val.length > 0;
+      if(val && typeof val === "object") return anyMatrixChecked(val) || Object.keys(val).length>0;
+      return false;
+    }
+
+    function isStepComplete(step){
+      const keys = step.fields.map(f=>f.key);
+      let filled = 0;
+      for(const k of keys) if(isFilled(state.answers[k])) filled += 1;
+      return filled / Math.max(1, keys.length) >= 0.6;
+    }
+
+    function setValue(key, value){
+      state.answers[key] = value;
+      state.done[STEPS[state.active].id] = isStepComplete(STEPS[state.active]);
+      queueSave();
+    }
+
+    /* =========================================================
+       RENDER
+       ========================================================= */
+
+    function renderTabs(){
+      tabsEl.innerHTML = "";
+      STEPS.forEach((s, idx)=>{
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "tab";
+        const done = !!state.done[s.id];
+        if(done) b.classList.add("done");
+        if(idx===state.active) b.classList.add("active");
+        b.innerHTML = `
+          <span class="check">${done ? "✓" : (idx+1)}</span>
+          <span>${escapeHTML(s.title)}</span>
+          <span class="mini">${escapeHTML(s.desc)}</span>
+        `;
+        b.addEventListener("click", ()=>{
+          state.active = idx;
+          queueSave();
+          renderActiveStep(true);
+          renderTabs();
+        });
+        tabsEl.appendChild(b);
+      });
+    }
+
+    function renderActiveStep(focusFirst=false){
+      const step = STEPS[state.active];
+      sectionBar.textContent = step.title.toUpperCase();
+      stepTitleEl.textContent = step.title;
+      stepDescEl.textContent = step.desc;
+
+      fieldsEl.innerHTML = "";
+
+      for(const f of step.fields){
+        const wrap = document.createElement("div");
+        wrap.className = "field";
+
+        const lab = document.createElement("label");
+        lab.htmlFor = f.key;
+        lab.innerHTML = `${escapeHTML(f.label)}${f.required ? `<span class="req">*</span>` : ""}`;
+        wrap.appendChild(lab);
+
+        if(f.hint){
+          const sub = document.createElement("div");
+          sub.className = "sub";
+          sub.textContent = f.hint;
+          wrap.appendChild(sub);
+        }
+
+        if(f.type==="textarea"){
+          const input = document.createElement("textarea");
+          input.id = f.key;
+          input.value = (state.answers[f.key] ?? "");
+          input.placeholder = f.placeholder ?? "";
+          input.addEventListener("input", ()=>setValue(f.key, input.value));
+          wrap.appendChild(input);
+        }
+        else if(f.type==="text"){
+          const input = document.createElement("input");
+          input.type = "text";
+          input.id = f.key;
+          input.value = (state.answers[f.key] ?? "");
+          input.placeholder = f.placeholder ?? "";
+          input.addEventListener("input", ()=>setValue(f.key, input.value));
+          wrap.appendChild(input);
+        }
+        else if(f.type==="radio"){
+          const list = document.createElement("div");
+          list.className = "choiceList" + (f.layout === "inline" ? " inline" : "");
+          const current = String(state.answers[f.key] ?? "");
+
+          f.options.forEach((opt, i)=>{
+            const row = document.createElement("label");
+            row.className = "choice";
+            const id = `${f.key}__${i}`;
+
+            const input = document.createElement("input");
+            input.type = "radio";
+            input.name = f.key;
+            input.id = id;
+            input.value = opt;
+            input.checked = (current === opt);
+            input.addEventListener("change", ()=>setValue(f.key, opt));
+
+            const span = document.createElement("span");
+            span.textContent = opt;
+
+            row.appendChild(input);
+            row.appendChild(span);
+            list.appendChild(row);
+          });
+
+          wrap.appendChild(list);
+        }
+        else if(f.type==="checkboxes"){
+          const list = document.createElement("div");
+          list.className = "choiceList"; // keep vertical
+          const currentArr = Array.isArray(state.answers[f.key]) ? state.answers[f.key] : [];
+          const otherTextKey = `${f.key}__otherText`;
+
+          function toggle(val, checked){
+            const set = new Set(Array.isArray(state.answers[f.key]) ? state.answers[f.key] : []);
+            if(checked) set.add(val); else set.delete(val);
+            setValue(f.key, [...set]);
+          }
+
+          f.options.forEach((opt, i)=>{
+            const row = document.createElement("label");
+            row.className = "choice";
+            const id = `${f.key}__${i}`;
+
+            const input = document.createElement("input");
+            input.type = "checkbox";
+            input.id = id;
+            input.checked = currentArr.includes(opt);
+            input.addEventListener("change", ()=>toggle(opt, input.checked));
+
+            const span = document.createElement("span");
+            span.textContent = opt;
+
+            row.appendChild(input);
+            row.appendChild(span);
+            list.appendChild(row);
+          });
+
+          if(f.other){
+            const otherRow = document.createElement("div");
+            otherRow.className = "choice";
+
+            const chk = document.createElement("input");
+            chk.type = "checkbox";
+            chk.checked = currentArr.includes("Other");
+
+            const otherWrap = document.createElement("div");
+            otherWrap.className = "otherRow";
+
+            const otherLabel = document.createElement("span");
+            otherLabel.textContent = "Other:";
+
+            const otherInput = document.createElement("input");
+            otherInput.type = "text";
+            otherInput.placeholder = "Type here…";
+            otherInput.value = String(state.answers[otherTextKey] ?? "");
+            otherInput.disabled = !chk.checked;
+
+            chk.addEventListener("change", ()=>{
+              toggle("Other", chk.checked);
+              otherInput.disabled = !chk.checked;
+              if(!chk.checked){
+                state.answers[otherTextKey] = "";
+                queueSave();
+              }
+            });
+
+            otherInput.addEventListener("input", ()=>{
+              state.answers[otherTextKey] = otherInput.value;
+              queueSave();
+            });
+
+            otherWrap.appendChild(otherLabel);
+            otherWrap.appendChild(otherInput);
+            otherRow.appendChild(chk);
+            otherRow.appendChild(otherWrap);
+            list.appendChild(otherRow);
+          }
+
+          wrap.appendChild(list);
+        }
+        else if(f.type==="matrix"){
+          const matrixObj = (state.answers[f.key] && typeof state.answers[f.key]==="object") ? state.answers[f.key] : {};
+          const box = document.createElement("div");
+          box.className = "matrixWrap";
+
+          const table = document.createElement("table");
+          table.className = "matrix";
+
+          const thead = document.createElement("thead");
+          const hr = document.createElement("tr");
+          const corner = document.createElement("th");
+          corner.textContent = "";
+          hr.appendChild(corner);
+          f.cols.forEach(c=>{
+            const th = document.createElement("th");
+            th.textContent = c;
+            hr.appendChild(th);
+          });
+          thead.appendChild(hr);
+          table.appendChild(thead);
+
+          const tbody = document.createElement("tbody");
+          f.rows.forEach(rname=>{
+            const tr = document.createElement("tr");
+            const td0 = document.createElement("td");
+            td0.textContent = rname;
+            tr.appendChild(td0);
+
+            f.cols.forEach(cname=>{
+              const td = document.createElement("td");
+              const chk = document.createElement("input");
+              chk.type = "checkbox";
+              chk.checked = !!(matrixObj?.[rname]?.[cname]);
+
+              chk.addEventListener("change", ()=>{
+                const next = structuredClone(matrixObj || {});
+                if(!next[rname]) next[rname] = {};
+                next[rname][cname] = chk.checked;
+                setValue(f.key, next);
+              });
+
+              td.appendChild(chk);
+              tr.appendChild(td);
+            });
+
+            tbody.appendChild(tr);
+          });
+          table.appendChild(tbody);
+
+          box.appendChild(table);
+          wrap.appendChild(box);
+        }
+
+        fieldsEl.appendChild(wrap);
+      }
+
+      btnPrev.disabled = state.active === 0;
+      btnNext.disabled = state.active === STEPS.length-1;
+
+      state.done[step.id] = isStepComplete(step);
+      updateProgress();
+      updateQuickSummary();
+      renderTabs();
+
+      if(focusFirst){
+        const first = fieldsEl.querySelector("input[type=text],textarea,select");
+        if(first) first.focus();
+      }
+    }
+
+    function updateProgress(){
+      const total = STEPS.length;
+      const doneCount = STEPS.filter(s=>!!state.done[s.id]).length;
+      const pct = Math.round((doneCount/total)*100);
+      progressText.textContent = `${pct}% complete`;
+      stepCount.textContent = `${doneCount} / ${total}`;
+      barFill.style.width = `${pct}%`;
+    }
+
+    function normalizeForSummary(v){
+      if(typeof v === "number") return String(v);
+      if(typeof v === "string") return v.trim() || "—";
+      if(Array.isArray(v)) return v.length ? v.join(", ") : "—";
+      if(v && typeof v === "object"){
+        if(anyMatrixChecked(v)){
+          const picks = [];
+          for(const r of Object.keys(v)){
+            for(const c of Object.keys(v[r]||{})){
+              if(v[r][c]) picks.push(`${r} / ${c}`);
+            }
+          }
+          return picks.length ? picks.join("; ") : "—";
+        }
+        return Object.keys(v).length ? "[object]" : "—";
+      }
+      return "—";
+    }
+
+    function buildSummary(){
+      const lines = [];
+      lines.push("Escort Worksheet — Summary");
+      lines.push("Generated: " + new Date().toLocaleString());
+      lines.push("");
+      for(const step of STEPS){
+        lines.push(step.title);
+        for(const f of step.fields){
+          const val = normalizeForSummary(state.answers[f.key]);
+          lines.push(`- ${f.label}: ${val}`);
+          const otherTextKey = `${f.key}__otherText`;
+          if(state.answers[otherTextKey] && String(state.answers[otherTextKey]).trim()){
+            lines.push(`  (Other): ${String(state.answers[otherTextKey]).trim()}`);
+          }
+        }
+        lines.push("");
+      }
+      return lines.join("\n");
+    }
+
+    function updateQuickSummary(){
+      const rate = (state.answers.hourRate || "").toString().trim();
+      const services = Array.isArray(state.answers.services) ? state.answers.services : [];
+      const host = (state.answers.ableToHost || "").toString().trim();
+      const travel = (state.answers.travelToClients || "").toString().trim();
+
+      const parts = [];
+      if(services.length) parts.push(`<b>Services:</b> ${escapeHTML(services.join(", "))}`);
+      if(rate) parts.push(`<b>Hour:</b> ${escapeHTML(rate)}`);
+      if(host) parts.push(`<b>Host:</b> ${escapeHTML(host)}`);
+      if(travel) parts.push(`<b>Travel:</b> ${escapeHTML(travel)}`);
+
+      quickSummary.innerHTML = parts.length ? parts.join("<br/>") : "Fill a couple fields and this will update.";
+    }
+
+    function go(dir){
+      const next = clamp(state.active + dir, 0, STEPS.length-1);
+      if(next === state.active) return;
+      state.active = next;
+      queueSave();
+      renderActiveStep(true);
+      renderTabs();
+    }
+
+    /* =========================================================
+       EVENTS
+       ========================================================= */
+
+    btnPrev.addEventListener("click", ()=>go(-1));
+    btnNext.addEventListener("click", ()=>go(1));
+
+    btnMarkDone.addEventListener("click", ()=>{
+      const step = STEPS[state.active];
+      state.done[step.id] = true;
+      queueSave();
+      renderTabs();
+      updateProgress();
+      showToast("Marked done");
+    });
+
+    btnReset.addEventListener("click", ()=>{
+      if(!confirm("Reset all answers? This clears local autosave.")) return;
+      state.active = 0;
+      state.answers = {};
+      state.done = {};
+      localStorage.removeItem(STORAGE_KEY);
+      renderTabs();
+      renderActiveStep(true);
+      showToast("Reset complete");
+    });
+
+    btnExport.addEventListener("click", ()=>{
+      const payload = {
+        exportedAt: new Date().toISOString(),
+        app: "Escort Worksheet (Light Tabs)",
+        steps: STEPS.map(s=>({id:s.id, title:s.title})),
+        active: state.active,
+        answers: state.answers,
+        done: state.done
+      };
+      const blob = new Blob([JSON.stringify(payload,null,2)], {type:"application/json"});
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `escort-worksheet-${new Date().toISOString().slice(0,10)}.json`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      showToast("Exported");
+    });
+
+    btnImport.addEventListener("click", ()=>fileImport.click());
+    fileImport.addEventListener("change", async ()=>{
+      const file = fileImport.files?.[0];
+      if(!file) return;
+      try{
+        const text = await file.text();
+        const data = JSON.parse(text);
+        if(!data || typeof data !== "object") throw new Error("Invalid JSON");
+        state.answers = data.answers ?? {};
+        state.done = data.done ?? {};
+        state.active = clamp(data.active ?? 0, 0, STEPS.length-1);
+        save();
+        renderTabs();
+        renderActiveStep(true);
+        showToast("Imported");
+      }catch(e){
+        alert("Import failed: " + e.message);
+      }finally{
+        fileImport.value = "";
+      }
+    });
+
+    btnCopySummary.addEventListener("click", async ()=>{
+      const summary = buildSummary();
+      try{
+        await navigator.clipboard.writeText(summary);
+        showToast("Copied summary");
+      }catch{
+        showToast("Couldn’t copy (browser blocked)");
+      }
+    });
+
+    btnPrint.addEventListener("click", ()=>{
+      const summary = buildSummary();
+      const w = window.open("", "_blank");
+      w.document.write(`
+        <html><head><title>Worksheet Print</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <style>
+          body{ font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; padding: 28px; color:#111; }
+          pre{ white-space: pre-wrap; font-size: 14px; line-height:1.45; }
+          h1{ margin:0 0 10px; }
+          .meta{ color:#444; margin-bottom:18px; font-size:13px; }
+        </style></head>
+        <body>
+          <h1>Escort Worksheet — Export</h1>
+          <div class="meta">Generated ${new Date().toLocaleString()}</div>
+          <pre>${escapeHTML(summary)}</pre>
+          <script>window.print();<\/script>
+        </body></html>
+      `);
+      w.document.close();
+    });
+
+    window.addEventListener("keydown", (e)=>{
+      const mod = e.ctrlKey || e.metaKey;
+      if(mod && e.key==="Enter"){
+        e.preventDefault();
+        if(e.shiftKey) go(-1);
+        else go(1);
+      }
+    });
+
+    window.addEventListener("offline", ()=>setSaveStatus("offline"));
+    window.addEventListener("online", ()=>setSaveStatus("saved"));
+
+    /* =========================================================
+       INIT
+       ========================================================= */
+    load();
+    renderTabs();
+    renderActiveStep(true);
+    save();
+    showToast("Ready");
+  </script>
+</body>
+</html>

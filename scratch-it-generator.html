@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Scratch-Off Card Generator (Image Upload + Hidden Text)</title>
+  <style>
+    :root { --panel: #111; --ink:#eee; --muted:#a7a7a7; --bd:#2a2a2a; }
+    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:#0b0b0b; color:var(--ink); }
+    .wrap { max-width: 980px; margin: 24px auto; padding: 0 16px; display:grid; gap:16px; grid-template-columns: 340px 1fr; }
+    @media (max-width: 900px){ .wrap{ grid-template-columns:1fr; } }
+    .card { border:1px solid var(--bd); border-radius:14px; background:#0f0f0f; overflow:hidden; }
+    .panel { padding:14px; }
+    label { display:block; font-size: 13px; color:var(--muted); margin: 10px 0 6px; }
+    input[type="file"], input[type="text"], textarea, input[type="range"], input[type="number"]{
+      width:100%; box-sizing:border-box; padding:10px; border-radius:10px;
+      border:1px solid var(--bd); background:#0b0b0b; color:var(--ink);
+      outline:none;
+    }
+    textarea { min-height: 80px; resize: vertical; }
+    .row { display:flex; gap:10px; align-items:center; }
+    .row > * { flex:1; }
+    button {
+      width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--bd);
+      background:#151515; color:var(--ink); cursor:pointer;
+    }
+    button:hover { background:#1b1b1b; }
+    .hint { font-size:12px; color:var(--muted); line-height:1.4; margin-top:10px; }
+    .stage { padding:14px; }
+    .scratch-wrap{
+      position:relative; width:100%; aspect-ratio: 16 / 9; /* adjusts with resize */
+      background:#070707; border:1px solid var(--bd); border-radius:14px; overflow:hidden;
+      touch-action: none; /* important: prevents scrolling while scratching */
+    }
+    .scratch-wrap canvas, .scratch-wrap .under {
+      position:absolute; inset:0; width:100%; height:100%;
+    }
+    .under {
+      display:grid; place-items:center; padding:20px; text-align:center;
+      background: radial-gradient(circle at 30% 30%, #222, #080808);
+    }
+    .under .msg{
+      font-weight:700; font-size: clamp(18px, 3.2vw, 42px);
+      letter-spacing: 0.5px;
+      text-shadow: 0 2px 18px rgba(0,0,0,0.55);
+      white-space: pre-wrap;
+    }
+    .bar { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:10px; }
+    .pill { font-size:12px; color:var(--muted); border:1px solid var(--bd); padding:6px 10px; border-radius:999px; }
+    .codebox { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; background:#0b0b0b; border:1px solid var(--bd); border-radius:10px; padding:10px; overflow:auto; max-height: 220px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="panel">
+        <h2 style="margin:0 0 6px;">Scratch-Off Generator</h2>
+        <div class="hint">Upload an image to act as the scratch surface. The hidden message is underneath.</div>
+
+        <label>Scratch Surface Image (jpg/png/webp)</label>
+        <input id="imgInput" type="file" accept="image/*" />
+
+        <label>Hidden Message (text under the scratch)</label>
+        <textarea id="msgInput">🎉 You win! 🎉
+Use code: LOKI-LOVE</textarea>
+
+        <div class="row">
+          <div>
+            <label>Brush Size</label>
+            <input id="brush" type="range" min="10" max="90" value="38" />
+          </div>
+          <div>
+            <label>Reveal Threshold (%)</label>
+            <input id="threshold" type="number" min="1" max="100" value="45" />
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:10px;">
+          <button id="resetBtn">Reset Scratch Layer</button>
+          <button id="revealBtn">Reveal All</button>
+        </div>
+
+        <div class="bar">
+          <div class="pill">Revealed: <span id="pct">0</span>%</div>
+          <div class="pill">Pointer: <span id="ptr">—</span></div>
+        </div>
+
+        <label style="margin-top:14px;">Embed Code (demo snippet)</label>
+        <div class="codebox" id="codebox"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="stage">
+        <div class="scratch-wrap" id="wrap">
+          <div class="under">
+            <div class="msg" id="msg"></div>
+          </div>
+          <canvas id="scratch"></canvas>
+        </div>
+        <div class="hint" style="margin-top:10px;">
+          Mouse: click + drag to scratch. Mobile: touch + drag.  
+          Tip: The image is drawn onto the canvas and “erased” where you scratch.
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+(() => {
+  const imgInput = document.getElementById('imgInput');
+  const msgInput = document.getElementById('msgInput');
+  const msgEl = document.getElementById('msg');
+  const brush = document.getElementById('brush');
+  const threshold = document.getElementById('threshold');
+  const resetBtn = document.getElementById('resetBtn');
+  const revealBtn = document.getElementById('revealBtn');
+  const pctEl = document.getElementById('pct');
+  const ptrEl = document.getElementById('ptr');
+  const codebox = document.getElementById('codebox');
+
+  const wrap = document.getElementById('wrap');
+  const canvas = document.getElementById('scratch');
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+
+  let surfaceImg = new Image();
+  let hasUserImage = false;
+
+  // For drawing
+  let isDown = false;
+  let last = null;
+  let revealedDone = false;
+
+  // Throttle reveal sampling
+  let sampleTimer = null;
+
+  // Ensure canvas matches displayed size (high-DPI)
+  function fitCanvas() {
+    const r = wrap.getBoundingClientRect();
+    const dpr = Math.max(1, window.devicePixelRatio || 1);
+    canvas.width = Math.round(r.width * dpr);
+    canvas.height = Math.round(r.height * dpr);
+    canvas.style.width = r.width + 'px';
+    canvas.style.height = r.height + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); // draw in CSS pixels
+    drawSurface(); // redraw image after resize
+  }
+
+  function drawSurface() {
+    revealedDone = false;
+    pctEl.textContent = "0";
+
+    // Fill with uploaded image; if none, use a default pattern-ish fill
+    const w = wrap.clientWidth;
+    const h = wrap.clientHeight;
+
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.clearRect(0, 0, w, h);
+
+    if (hasUserImage && surfaceImg.complete && surfaceImg.naturalWidth) {
+      // cover-fit (like CSS background-size: cover)
+      const iw = surfaceImg.naturalWidth, ih = surfaceImg.naturalHeight;
+      const scale = Math.max(w / iw, h / ih);
+      const sw = iw * scale, sh = ih * scale;
+      const dx = (w - sw) / 2;
+      const dy = (h - sh) / 2;
+      ctx.drawImage(surfaceImg, dx, dy, sw, sh);
+    } else {
+      // fallback “scratch paint” layer
+      ctx.fillStyle = '#bdbdbd';
+      ctx.fillRect(0, 0, w, h);
+      ctx.fillStyle = 'rgba(0,0,0,0.12)';
+      for (let y=0; y<h; y+=14){
+        ctx.fillRect(0, y, w, 7);
+      }
+      ctx.fillStyle = 'rgba(255,255,255,0.10)';
+      for (let x=0; x<w; x+=18){
+        ctx.fillRect(x, 0, 6, h);
+      }
+    }
+
+    // Now set erase mode for scratching
+    ctx.globalCompositeOperation = 'destination-out';
+  }
+
+  function setMessage() {
+    msgEl.textContent = msgInput.value || "";
+    updateCodeBox();
+  }
+
+  function pointerPos(evt) {
+    const rect = wrap.getBoundingClientRect();
+    let clientX, clientY, type = 'mouse';
+    if (evt.touches && evt.touches[0]) {
+      clientX = evt.touches[0].clientX;
+      clientY = evt.touches[0].clientY;
+      type = 'touch';
+    } else {
+      clientX = evt.clientX;
+      clientY = evt.clientY;
+    }
+    return {
+      x: clientX - rect.left,
+      y: clientY - rect.top,
+      type
+    };
+  }
+
+  function scratchLine(a, b) {
+    const size = Number(brush.value);
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.lineWidth = size;
+
+    ctx.beginPath();
+    ctx.moveTo(a.x, a.y);
+    ctx.lineTo(b.x, b.y);
+    ctx.stroke();
+  }
+
+  function scratchDot(p) {
+    const size = Number(brush.value);
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, size / 2, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Estimate % revealed by sampling pixels (cheap + good enough)
+  function measureRevealedPct() {
+    const w = wrap.clientWidth;
+    const h = wrap.clientHeight;
+
+    // Downsample grid rather than reading every pixel
+    const step = 6; // smaller = more accurate but slower
+    const img = ctx.getImageData(0, 0, w, h).data;
+
+    let total = 0, cleared = 0;
+    for (let y = 0; y < h; y += step) {
+      for (let x = 0; x < w; x += step) {
+        const i = (y * w + x) * 4;
+        const alpha = img[i + 3];
+        total++;
+        if (alpha === 0) cleared++;
+      }
+    }
+
+    const pct = Math.min(100, Math.max(0, Math.round((cleared / total) * 100)));
+    pctEl.textContent = String(pct);
+
+    const t = Number(threshold.value) || 0;
+    if (!revealedDone && t > 0 && pct >= t) {
+      revealedDone = true;
+      // Auto-reveal remaining for a satisfying finish:
+      revealAll();
+    }
+  }
+
+  function scheduleMeasure() {
+    if (sampleTimer) return;
+    sampleTimer = setTimeout(() => {
+      sampleTimer = null;
+      measureRevealedPct();
+    }, 180);
+  }
+
+  function revealAll() {
+    const w = wrap.clientWidth;
+    const h = wrap.clientHeight;
+    ctx.save();
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.fillStyle = 'rgba(0,0,0,1)';
+    ctx.fillRect(0, 0, w, h);
+    ctx.restore();
+    pctEl.textContent = "100";
+  }
+
+  // Events (mouse + touch)
+  function onDown(e) {
+    e.preventDefault();
+    isDown = true;
+    const p = pointerPos(e);
+    ptrEl.textContent = p.type;
+    last = p;
+    scratchDot(p);
+    scheduleMeasure();
+  }
+
+  function onMove(e) {
+    if (!isDown) return;
+    e.preventDefault();
+    const p = pointerPos(e);
+    ptrEl.textContent = p.type;
+    scratchLine(last, p);
+    last = p;
+    scheduleMeasure();
+  }
+
+  function onUp() {
+    isDown = false;
+    last = null;
+  }
+
+  // Upload image
+  imgInput.addEventListener('change', () => {
+    const file = imgInput.files && imgInput.files[0];
+    if (!file) return;
+
+    const url = URL.createObjectURL(file);
+    surfaceImg = new Image();
+    surfaceImg.onload = () => {
+      hasUserImage = true;
+      URL.revokeObjectURL(url);
+      drawSurface();
+      updateCodeBox();
+    };
+    surfaceImg.src = url;
+  });
+
+  msgInput.addEventListener('input', setMessage);
+  brush.addEventListener('input', updateCodeBox);
+  threshold.addEventListener('input', updateCodeBox);
+
+  resetBtn.addEventListener('click', () => drawSurface());
+  revealBtn.addEventListener('click', () => revealAll());
+
+  // Bind pointer events (use both for broad compatibility)
+  wrap.addEventListener('mousedown', onDown);
+  window.addEventListener('mousemove', onMove);
+  window.addEventListener('mouseup', onUp);
+
+  wrap.addEventListener('touchstart', onDown, { passive:false });
+  wrap.addEventListener('touchmove', onMove, { passive:false });
+  wrap.addEventListener('touchend', onUp);
+
+  // Resize handling
+  window.addEventListener('resize', fitCanvas);
+
+  function updateCodeBox() {
+    const msg = (msgInput.value || "").replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+    codebox.innerHTML =
+`&lt;div class="scratch-wrap"&gt;
+  &lt;div class="under"&gt;
+    &lt;div class="msg"&gt;${msg.replaceAll('\n','<br>')}&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;canvas id="scratch"&gt;&lt;/canvas&gt;
+&lt;/div&gt;
+
+Brush size: ${brush.value}px
+Auto-reveal at: ${threshold.value}%`;
+  }
+
+  // Init
+  setMessage();
+  fitCanvas();
+})();
+</script>
+</body>
+</html>
