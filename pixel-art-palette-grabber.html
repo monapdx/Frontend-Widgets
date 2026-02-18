@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pixel Palette Extractor</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.35;
+    }
+    .wrap {
+      max-width: 1000px;
+      margin: 24px auto;
+      padding: 0 16px;
+    }
+    h1 { font-size: 22px; margin: 0 0 6px; }
+    .sub { opacity: .8; margin: 0 0 18px; }
+    .panel {
+      border: 1px solid rgba(127,127,127,.35);
+      border-radius: 14px;
+      padding: 14px;
+      background: rgba(127,127,127,.06);
+    }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-top: 10px;
+    }
+    label { font-size: 13px; opacity: .9; }
+    input[type="file"] { max-width: 100%; }
+    select, input[type="number"], button {
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(127,127,127,.35);
+      background: transparent;
+      color: inherit;
+    }
+    button { cursor: pointer; }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+    .grid {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 10px;
+    }
+    .swatch {
+      border: 1px solid rgba(127,127,127,.35);
+      border-radius: 12px;
+      overflow: hidden;
+      background: rgba(127,127,127,.05);
+    }
+    .chip {
+      height: 64px;
+      border-bottom: 1px solid rgba(127,127,127,.25);
+    }
+    .meta {
+      padding: 10px;
+      display: grid;
+      gap: 6px;
+      font-size: 12px;
+    }
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      letter-spacing: .2px;
+    }
+    .pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(127,127,127,.35);
+      width: fit-content;
+      opacity: .9;
+    }
+    .hint { font-size: 12px; opacity: .75; margin-top: 8px; }
+    .two {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-top: 14px;
+    }
+    @media (min-width: 880px) {
+      .two { grid-template-columns: 1.15fr .85fr; align-items: start; }
+    }
+    canvas { max-width: 100%; border-radius: 12px; border: 1px solid rgba(127,127,127,.35); }
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(127,127,127,.35);
+      background: rgba(20,20,20,.85);
+      color: white;
+      font-size: 13px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .15s ease;
+    }
+    .toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>🎨 Pixel Palette Extractor</h1>
+    <p class="sub">Upload pixel art → extract every exact color used → copy/export the palette.</p>
+
+    <div class="panel">
+      <div class="row">
+        <label>
+          <div class="pill">Image upload</div><br/>
+          <input id="file" type="file" accept="image/png,image/jpeg,image/webp" />
+        </label>
+
+        <label class="row" style="gap:8px">
+          <input id="ignoreTransparent" type="checkbox" checked />
+          Ignore fully transparent pixels (alpha=0)
+        </label>
+
+        <label class="row" style="gap:8px">
+          <input id="dedupeByRgb" type="checkbox" checked />
+          Treat same RGB as same color (ignore alpha differences)
+        </label>
+
+        <label class="row" style="gap:8px">
+          <input id="showUsage" type="checkbox" checked />
+          Show usage counts + %
+        </label>
+
+        <label>
+          Sort
+          <select id="sortMode">
+            <option value="freq">Most used first</option>
+            <option value="lum">Light → Dark</option>
+            <option value="hue">Hue order</option>
+          </select>
+        </label>
+
+        <label>
+          Snap colors (1 = exact)
+          <input id="snapStep" type="number" min="1" max="64" value="1" style="width:110px" />
+        </label>
+
+        <label>
+          Max colors (0 = no limit)
+          <input id="maxColors" type="number" min="0" max="5000" value="0" style="width:110px" />
+        </label>
+
+        <button id="exportHex" disabled>Download HEX .txt</button>
+        <button id="exportGpl" disabled>Download GIMP .gpl</button>
+      </div>
+
+      <div id="stats" class="hint">No image loaded yet.</div>
+
+      <div class="two">
+        <div>
+          <div class="pill">Palette</div>
+          <div id="grid" class="grid"></div>
+        </div>
+
+        <div>
+          <div class="pill">Preview</div>
+          <canvas id="canvas"></canvas>
+          <div class="hint">Tip: PNG is best for pixel art (JPG may introduce extra colors). Try Snap=8 or 16 if you get tons of near-duplicate shades.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">Copied!</div>
+
+  <script>
+    const fileInput = document.getElementById('file');
+    const ignoreTransparentEl = document.getElementById('ignoreTransparent');
+    const dedupeByRgbEl = document.getElementById('dedupeByRgb');
+    const showUsageEl = document.getElementById('showUsage');
+    const sortModeEl = document.getElementById('sortMode');
+    const snapStepEl = document.getElementById('snapStep');
+    const maxColorsEl = document.getElementById('maxColors');
+    const gridEl = document.getElementById('grid');
+    const statsEl = document.getElementById('stats');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    const exportHexBtn = document.getElementById('exportHex');
+    const exportGplBtn = document.getElementById('exportGpl');
+    const toastEl = document.getElementById('toast');
+
+    let lastPalette = null; // { rows: [{r,g,b,a,hex,count,pct}], totalPixels, uniqueColors }
+    let lastImageName = 'palette';
+
+    function showToast(text) {
+      toastEl.textContent = text;
+      toastEl.classList.add('show');
+      setTimeout(() => toastEl.classList.remove('show'), 900);
+    }
+
+    function rgbaToHex(r,g,b) {
+      const to = (n) => n.toString(16).padStart(2,'0').toUpperCase();
+      return `#${to(r)}${to(g)}${to(b)}`;
+    }
+
+    // Convert RGB to hue-ish for ordering
+    function rgbToHue(r, g, b) {
+      r /= 255; g /= 255; b /= 255;
+      const max = Math.max(r,g,b), min = Math.min(r,g,b);
+      const d = max - min;
+      if (d === 0) return 0;
+      let h;
+      switch (max) {
+        case r: h = ((g - b) / d) % 6; break;
+        case g: h = (b - r) / d + 2; break;
+        default: h = (r - g) / d + 4;
+      }
+      h = Math.round(h * 60);
+      return (h + 360) % 360;
+    }
+
+    function luminance(r,g,b) {
+      return 0.2126*r + 0.7152*g + 0.0722*b;
+    }
+
+    function keyFromPixel(r, g, b, a, dedupeByRgb) {
+      // If dedupeByRgb=true, collapse all alpha variants into the same RGB bucket.
+      return dedupeByRgb ? `${r},${g},${b}` : `${r},${g},${b},${a}`;
+    }
+
+    function parseKey(key) {
+      const parts = key.split(',').map(Number);
+      if (parts.length === 3) {
+        const [r,g,b] = parts;
+        return { r,g,b,a: 255 };
+      }
+      const [r,g,b,a] = parts;
+      return { r,g,b,a };
+    }
+
+    function snapChannel(n, step) {
+      if (step <= 1) return n;
+      const v = Math.round(n / step) * step;
+      return Math.max(0, Math.min(255, v));
+    }
+
+    function downloadText(filename, text) {
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function renderPalette(palette) {
+      gridEl.innerHTML = '';
+      if (!palette) return;
+
+      const showUsage = showUsageEl.checked;
+
+      for (const row of palette.rows) {
+        const card = document.createElement('div');
+        card.className = 'swatch';
+        card.title = 'Click to copy HEX';
+
+        const chip = document.createElement('div');
+        chip.className = 'chip';
+        chip.style.background = row.hex;
+
+        const meta = document.createElement('div');
+        meta.className = 'meta';
+
+        const hexLine = document.createElement('div');
+        hexLine.className = 'mono';
+        hexLine.textContent = row.hex;
+
+        const rgbaLine = document.createElement('div');
+        rgbaLine.className = 'mono';
+        rgbaLine.style.opacity = 0.8;
+        rgbaLine.textContent = `rgba(${row.r},${row.g},${row.b},${(row.a/255).toFixed(2)})`;
+
+        meta.appendChild(hexLine);
+        meta.appendChild(rgbaLine);
+
+        if (showUsage) {
+          const usage = document.createElement('div');
+          usage.style.opacity = 0.8;
+          usage.textContent = `${row.count.toLocaleString()} px (${row.pct.toFixed(1)}%)`;
+          meta.appendChild(usage);
+        }
+
+        card.appendChild(chip);
+        card.appendChild(meta);
+
+        card.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(row.hex);
+            showToast(`Copied ${row.hex}`);
+          } catch {
+            const ta = document.createElement('textarea');
+            ta.value = row.hex;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            ta.remove();
+            showToast(`Copied ${row.hex}`);
+          }
+        });
+
+        gridEl.appendChild(card);
+      }
+    }
+
+    function computePaletteFromCanvas() {
+      const ignoreTransparent = ignoreTransparentEl.checked;
+      const dedupeByRgb = dedupeByRgbEl.checked;
+      const sortMode = sortModeEl.value;
+      const snapStep = Math.max(1, parseInt(snapStepEl.value || '1', 10));
+      const maxColors = Math.max(0, parseInt(maxColorsEl.value || '0', 10));
+
+      const { width, height } = canvas;
+      if (!width || !height) return null;
+
+      const imgData = ctx.getImageData(0, 0, width, height);
+      const data = imgData.data; // [r,g,b,a,...]
+
+      const counts = new Map();
+      const alphaSums = new Map(); // used to compute average alpha for the (possibly) merged bucket
+      let countedPixels = 0;
+
+      for (let i = 0; i < data.length; i += 4) {
+        let r = data[i], g = data[i+1], b = data[i+2], a = data[i+3];
+        if (ignoreTransparent && a === 0) continue;
+
+        // NEW: snap/quantize RGB to reduce near-duplicate shades
+        r = snapChannel(r, snapStep);
+        g = snapChannel(g, snapStep);
+        b = snapChannel(b, snapStep);
+
+        countedPixels++;
+        const key = keyFromPixel(r, g, b, a, dedupeByRgb);
+
+        counts.set(key, (counts.get(key) || 0) + 1);
+        alphaSums.set(key, (alphaSums.get(key) || 0) + a);
+      }
+
+      if (countedPixels === 0) return { rows: [], totalPixels: 0, uniqueColors: 0 };
+
+      let entries = Array.from(counts.entries()); // [key, count]
+
+      // Limit by frequency if maxColors > 0
+      if (maxColors > 0 && entries.length > maxColors) {
+        entries.sort((a,b) => b[1] - a[1]);
+        entries = entries.slice(0, maxColors);
+      }
+
+      let rows = entries.map(([key, count]) => {
+        const { r,g,b,a } = parseKey(key);
+        const hex = rgbaToHex(r,g,b);
+        const pct = (count / countedPixels) * 100;
+
+        const avgA = Math.round((alphaSums.get(key) || (a * count)) / count);
+
+        return { r,g,b,a: avgA, hex, count, pct };
+      });
+
+      // Sort rows
+      if (sortMode === 'freq') {
+        rows.sort((a,b) => b.count - a.count);
+      } else if (sortMode === 'lum') {
+        rows.sort((a,b) => luminance(a.r,a.g,a.b) - luminance(b.r,b.g,b.b));
+      } else if (sortMode === 'hue') {
+        rows.sort((a,b) => {
+          const ha = rgbToHue(a.r,a.g,a.b);
+          const hb = rgbToHue(b.r,b.g,b.b);
+          if (ha !== hb) return ha - hb;
+          return luminance(a.r,a.g,a.b) - luminance(b.r,b.g,b.b);
+        });
+      }
+
+      return { rows, totalPixels: countedPixels, uniqueColors: rows.length };
+    }
+
+    function update() {
+      lastPalette = computePaletteFromCanvas();
+      if (!lastPalette) return;
+
+      const snapStep = Math.max(1, parseInt(snapStepEl.value || '1', 10));
+      const dedupeByRgb = dedupeByRgbEl.checked;
+
+      statsEl.textContent = lastPalette.totalPixels
+        ? `Unique colors: ${lastPalette.uniqueColors.toLocaleString()} • Counted pixels: ${lastPalette.totalPixels.toLocaleString()} • Snap: ${snapStep} • Dedupe RGB: ${dedupeByRgb ? "on" : "off"}`
+        : `No pixels counted (maybe fully transparent).`;
+
+      renderPalette(lastPalette);
+
+      const enabled = lastPalette.rows.length > 0;
+      exportHexBtn.disabled = !enabled;
+      exportGplBtn.disabled = !enabled;
+    }
+
+    function loadImageToCanvas(file) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+          canvas.width = img.naturalWidth;
+          canvas.height = img.naturalHeight;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0);
+          resolve();
+        };
+        img.onerror = reject;
+        img.src = URL.createObjectURL(file);
+      });
+    }
+
+    // Events
+    fileInput.addEventListener('change', async () => {
+      const file = fileInput.files && fileInput.files[0];
+      if (!file) return;
+
+      lastImageName = (file.name || 'palette').replace(/\.[^.]+$/, '');
+      statsEl.textContent = 'Loading image…';
+
+      try {
+        await loadImageToCanvas(file);
+        update();
+      } catch (e) {
+        console.error(e);
+        statsEl.textContent = 'Failed to load image.';
+      }
+    });
+
+    ignoreTransparentEl.addEventListener('change', update);
+    dedupeByRgbEl.addEventListener('change', update);
+    sortModeEl.addEventListener('change', update);
+    snapStepEl.addEventListener('input', () => {
+      if (snapStepEl.value === '') return;
+      update();
+    });
+    maxColorsEl.addEventListener('input', () => {
+      if (maxColorsEl.value === '') return;
+      update();
+    });
+    showUsageEl.addEventListener('change', () => renderPalette(lastPalette));
+
+    exportHexBtn.addEventListener('click', () => {
+      if (!lastPalette) return;
+      const text = lastPalette.rows.map(r => r.hex).join('\n');
+      downloadText(`${lastImageName}_palette_hex.txt`, text);
+    });
+
+    exportGplBtn.addEventListener('click', () => {
+      if (!lastPalette) return;
+      const lines = [];
+      lines.push('GIMP Palette');
+      lines.push(`Name: ${lastImageName} (Extracted)`);
+      lines.push('#');
+      for (const r of lastPalette.rows) {
+        lines.push(`${String(r.r).padStart(3,' ')} ${String(r.g).padStart(3,' ')} ${String(r.b).padStart(3,' ')}\t${r.hex}`);
+      }
+      downloadText(`${lastImageName}.gpl`, lines.join('\n'));
+    });
+  </script>
+</body>
+</html>
