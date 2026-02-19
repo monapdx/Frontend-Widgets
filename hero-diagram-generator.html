@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pipeline Hero Diagram SVG Generator</title>
+  <style>
+    :root{
+      --ui-bg:#f4f6f9;
+      --panel:#ffffff;
+      --border:#e5e7eb;
+      --text:#111827;
+      --muted:#6b7280;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: var(--ui-bg);
+      color: var(--text);
+      min-height: 100vh;
+      display:flex;
+      flex-direction:column;
+    }
+    header{
+      padding:14px 18px;
+      background:#111827;
+      color:#fff;
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+    .wrap{
+      display:flex;
+      flex:1;
+      flex-wrap:wrap;
+      min-height:0;
+    }
+    .panel{
+      flex: 1 1 360px;
+      background: var(--panel);
+      border-right: 1px solid var(--border);
+      padding:16px;
+    }
+    .preview{
+      flex: 2 1 520px;
+      padding:16px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:flex-start;
+      min-height:0;
+    }
+    label{
+      display:block;
+      font-size:13px;
+      font-weight:700;
+      margin-top:10px;
+    }
+    .hint{
+      font-size:12px;
+      color: var(--muted);
+      margin-top:6px;
+      line-height:1.35;
+    }
+    input, textarea, select, button{
+      width:100%;
+      margin-top:6px;
+      padding:8px 10px;
+      border:1px solid #d1d5db;
+      border-radius:10px;
+      font-size:14px;
+      background:#fff;
+    }
+    textarea{ min-height:220px; resize:vertical; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    input[type="number"]{ padding-right:6px; }
+    .row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+    .btnRow{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:12px;
+    }
+    button{
+      border:none;
+      background:#111827;
+      color:#fff;
+      font-weight:800;
+      cursor:pointer;
+      padding:10px 12px;
+      border-radius:12px;
+    }
+    button:hover{ background:#374151; }
+
+    .canvasWrap{
+      width:100%;
+      max-width: 1600px;
+      background:#fff;
+      border:1px solid #eef0f3;
+      border-radius:12px;
+      padding:18px;
+      overflow:auto;
+    }
+    svg{
+      width:100%;
+      height:auto;
+      display:block;
+    }
+
+    @media (max-width: 900px){
+      .wrap{ flex-direction:column; }
+      .panel{ border-right:none; border-bottom:1px solid var(--border); }
+      .btnRow{ grid-template-columns:1fr; }
+      .row{ grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+<header>Pipeline Hero Diagram Generator (Title + Subtitle Boxes)</header>
+
+<div class="wrap">
+  <div class="panel">
+    <div class="hint">
+      Format: each box is separated by a blank line.<br/>
+      First line = <b>Title</b>. Remaining lines = <b>Subtitle</b> lines (auto-wrapped).<br/>
+      Use "•" for bullet vibes.
+    </div>
+
+    <label>Boxes (editable)</label>
+    <textarea id="boxesInput"></textarea>
+
+    <div class="row">
+      <div>
+        <label>Box Width</label>
+        <input id="boxW" type="number" min="180" max="520" value="250" />
+      </div>
+      <div>
+        <label>Box Height</label>
+        <input id="boxH" type="number" min="90" max="220" value="120" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Gap Between Boxes</label>
+        <input id="gap" type="number" min="20" max="160" value="65" />
+      </div>
+      <div>
+        <label>Corner Radius</label>
+        <input id="radius" type="number" min="0" max="40" value="12" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Stroke Color</label>
+        <input id="stroke" type="color" value="#c9c9c9" />
+      </div>
+      <div>
+        <label>Stroke Width</label>
+        <input id="strokeW" type="number" min="1" max="6" value="2" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Arrow Size</label>
+        <input id="arrowSize" type="number" min="6" max="22" value="10" />
+      </div>
+      <div>
+        <label>Top Offset</label>
+        <input id="topOffset" type="number" min="0" max="220" value="40" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Title Size</label>
+        <input id="titleSize" type="number" min="12" max="26" value="14" />
+      </div>
+      <div>
+        <label>Subtitle Size</label>
+        <input id="subSize" type="number" min="10" max="18" value="11" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Title Color</label>
+        <input id="titleColor" type="color" value="#111827" />
+      </div>
+      <div>
+        <label>Subtitle Color</label>
+        <input id="subColor" type="color" value="#6b7280" />
+      </div>
+    </div>
+
+    <div class="btnRow">
+      <button id="btnDownload">Download SVG</button>
+      <button id="btnReset">Reset to Example</button>
+    </div>
+  </div>
+
+  <div class="preview">
+    <div class="canvasWrap">
+      <svg id="svg" viewBox="0 0 1200 260" aria-label="Pipeline diagram preview"></svg>
+    </div>
+  </div>
+</div>
+
+<script>
+  const svg = document.getElementById("svg");
+  const el = (id) => document.getElementById(id);
+
+  function createSvgEl(tag){
+    return document.createElementNS("http://www.w3.org/2000/svg", tag);
+  }
+
+  function buildArrowMarker(strokeColor, arrowSize){
+    const defs = createSvgEl("defs");
+    const marker = createSvgEl("marker");
+    marker.setAttribute("id", "arrow");
+    marker.setAttribute("viewBox", "0 0 10 10");
+    marker.setAttribute("refX", "9");
+    marker.setAttribute("refY", "5");
+    marker.setAttribute("markerWidth", String(arrowSize));
+    marker.setAttribute("markerHeight", String(arrowSize));
+    marker.setAttribute("orient", "auto");
+
+    const path = createSvgEl("path");
+    path.setAttribute("d", "M 0 0 L 10 5 L 0 10 z");
+    path.setAttribute("fill", strokeColor);
+    marker.appendChild(path);
+
+    defs.appendChild(marker);
+    svg.appendChild(defs);
+  }
+
+  // Pure SVG wrap using tspans + getComputedTextLength
+  function wrapSvgText({x,y,text,maxWidth,lineHeight,fontSize,fontWeight,fill,maxLines=3}){
+    const t = createSvgEl("text");
+    t.setAttribute("x", x);
+    t.setAttribute("y", y);
+    t.setAttribute("text-anchor", "middle");
+    t.setAttribute("fill", fill);
+    t.setAttribute("font-size", String(fontSize));
+    t.setAttribute("font-weight", String(fontWeight));
+
+    svg.appendChild(t); // must append before measuring
+
+    const words = String(text || "").trim().split(/\s+/).filter(Boolean);
+    if (!words.length) return { node: t, lines: [] };
+
+    let line = [];
+    const lines = [];
+
+    const meas = createSvgEl("tspan");
+    t.appendChild(meas);
+
+    for (const w of words){
+      line.push(w);
+      meas.textContent = line.join(" ");
+      if (meas.getComputedTextLength() > maxWidth && line.length > 1){
+        line.pop();
+        lines.push(line.join(" "));
+        line = [w];
+        if (lines.length >= maxLines) break;
+        meas.textContent = line.join(" ");
+      }
+    }
+    if (lines.length < maxLines && line.length) lines.push(line.join(" "));
+
+    // Ellipsize if overflow
+    if (lines.length === maxLines){
+      const usedWords = lines.join(" ").split(/\s+/).length;
+      if (usedWords < words.length){
+        let last = lines[lines.length-1];
+        meas.textContent = last + "…";
+        while (meas.getComputedTextLength() > maxWidth && last.length > 0){
+          last = last.slice(0,-1);
+          meas.textContent = last + "…";
+        }
+        lines[lines.length-1] = (last || "").trim() + "…";
+      }
+    }
+
+    t.innerHTML = "";
+    lines.forEach((ln, i) => {
+      const ts = createSvgEl("tspan");
+      ts.setAttribute("x", x);
+      ts.setAttribute("y", y + i*lineHeight);
+      ts.textContent = ln;
+      t.appendChild(ts);
+    });
+
+    return { node: t, lines };
+  }
+
+  function parseBoxes(raw){
+    // split by blank lines
+    const blocks = raw
+      .split(/\n\s*\n/g)
+      .map(b => b.trim())
+      .filter(Boolean);
+
+    return blocks.map(block => {
+      const lines = block.split("\n").map(s => s.trim()).filter(Boolean);
+      const title = lines[0] || "Untitled";
+      const subtitleLines = lines.slice(1);
+      return { title, subtitleLines };
+    });
+  }
+
+  function render(){
+    const boxW = Number(el("boxW").value || 250);
+    const boxH = Number(el("boxH").value || 120);
+    const gap  = Number(el("gap").value || 65);
+    const radius = Number(el("radius").value || 12);
+
+    const stroke = el("stroke").value || "#c9c9c9";
+    const strokeW = Number(el("strokeW").value || 2);
+    const arrowSize = Number(el("arrowSize").value || 10);
+    const topOffset = Number(el("topOffset").value || 40);
+
+    const titleSize = Number(el("titleSize").value || 14);
+    const subSize = Number(el("subSize").value || 11);
+    const titleColor = el("titleColor").value || "#111827";
+    const subColor = el("subColor").value || "#6b7280";
+
+    const boxes = parseBoxes(el("boxesInput").value || "");
+    const count = Math.max(1, boxes.length);
+
+    // canvas sizing like your screenshot: a wide row, small height, big whitespace
+    const leftPad = 20, rightPad = 20, topPad = 20, bottomPad = 20;
+    const totalW = leftPad + (count * boxW) + ((count - 1) * gap) + rightPad;
+    const totalH = Math.max(220, topPad + topOffset + boxH + bottomPad);
+
+    svg.innerHTML = "";
+    svg.setAttribute("viewBox", `0 0 ${totalW} ${totalH}`);
+
+    buildArrowMarker(stroke, arrowSize);
+
+    const y = topPad + topOffset;
+    const centerY = y + boxH/2;
+
+    // Arrows first
+    for (let i=0; i<count-1; i++){
+      const x = leftPad + i*(boxW + gap);
+      const x1 = x + boxW;
+      const x2 = x + boxW + gap;
+
+      const line = createSvgEl("line");
+      line.setAttribute("x1", x1);
+      line.setAttribute("y1", centerY);
+      line.setAttribute("x2", x2);
+      line.setAttribute("y2", centerY);
+      line.setAttribute("stroke", stroke);
+      line.setAttribute("stroke-width", strokeW);
+      line.setAttribute("marker-end", "url(#arrow)");
+      svg.appendChild(line);
+    }
+
+    // Boxes + text
+    for (let i=0; i<count; i++){
+      const x = leftPad + i*(boxW + gap);
+      const box = boxes[i] || { title: "Box", subtitleLines: [] };
+
+      const rect = createSvgEl("rect");
+      rect.setAttribute("x", x);
+      rect.setAttribute("y", y);
+      rect.setAttribute("width", boxW);
+      rect.setAttribute("height", boxH);
+      rect.setAttribute("rx", radius);
+      rect.setAttribute("ry", radius);
+      rect.setAttribute("fill", "#ffffff");
+      rect.setAttribute("stroke", stroke);
+      rect.setAttribute("stroke-width", strokeW);
+      svg.appendChild(rect);
+
+      // Title (centered horizontally, placed near top)
+      const titleY = y + 30;
+      const { lines: titleLines } = wrapSvgText({
+        x: x + boxW/2,
+        y: titleY,
+        text: box.title,
+        maxWidth: boxW - 28,
+        lineHeight: 16,
+        fontSize: titleSize,
+        fontWeight: 700,
+        fill: titleColor,
+        maxLines: 2
+      });
+
+      // Subtitle block (centered, smaller)
+      const subtitleStartY = titleY + (titleLines.length ? (titleLines.length * 16) : 16) + 10;
+
+      // Join subtitle lines with bullets preserved as text; wrap each line separately
+      // We render each provided subtitle line as its own wrapped paragraph.
+      const paraGap = 2;
+      let cursorY = subtitleStartY;
+
+      const maxSubtitleHeight = (y + boxH) - 16; // inner padding bottom
+      for (const rawLine of (box.subtitleLines || [])){
+        if (cursorY > maxSubtitleHeight) break;
+
+        const { lines } = wrapSvgText({
+          x: x + boxW/2,
+          y: cursorY,
+          text: rawLine,
+          maxWidth: boxW - 34,
+          lineHeight: 14,
+          fontSize: subSize,
+          fontWeight: 500,
+          fill: subColor,
+          maxLines: 3
+        });
+
+        cursorY += (lines.length * 14) + paraGap;
+      }
+    }
+  }
+
+  function downloadSVG(){
+    const clone = svg.cloneNode(true);
+    clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    const serializer = new XMLSerializer();
+    const source = serializer.serializeToString(clone);
+
+    const blob = new Blob([source], { type: "image/svg+xml;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "hero-diagram.svg";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  function resetExample(){
+    el("boxesInput").value =
+`Platform Export
+Gmail • Search
+Facebook • ChatGPT
+
+Raw Files
+.mbox • .json • .html
+
+Takeout Toolkit
+Local Python Pipelines
+
+Clean Outputs
+CSV / JSON • Optional Explorer`;
+    el("boxW").value = 250;
+    el("boxH").value = 120;
+    el("gap").value = 65;
+    el("radius").value = 12;
+    el("stroke").value = "#c9c9c9";
+    el("strokeW").value = 2;
+    el("arrowSize").value = 10;
+    el("topOffset").value = 40;
+    el("titleSize").value = 14;
+    el("subSize").value = 11;
+    el("titleColor").value = "#111827";
+    el("subColor").value = "#6b7280";
+    render();
+  }
+
+  // wire up
+  document.querySelectorAll("input, textarea, select").forEach(n => n.addEventListener("input", render));
+  el("btnDownload").addEventListener("click", downloadSVG);
+  el("btnReset").addEventListener("click", resetExample);
+
+  resetExample();
+</script>
+</body>
+</html>
