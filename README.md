@@ -8,6 +8,24 @@ Everything here is designed to be **copy‑paste friendly**, with minimal depend
 
 ---
 
+## Examples
+
+### Pixel Art Drawing Board
+
+<img src="https://raw.githubusercontent.com/monapdx/Frontend-Widgets/refs/heads/main/img/pixel-art-drawing-board.gif">
+
+### Quote Image Generator
+
+<img src="https://raw.githubusercontent.com/monapdx/Frontend-Widgets/refs/heads/main/img/quote-image-generator.gif">
+
+### Personal Palette Generator
+
+<img src="https://raw.githubusercontent.com/monapdx/Frontend-Widgets/refs/heads/main/img/personal-palette.gif">
+
+### Pixel Art Palette Extractor
+
+<img src="https://raw.githubusercontent.com/monapdx/Frontend-Widgets/refs/heads/main/img/pixel-palette-extractor.gif">
+
 ## Quick Start
 
 **Option A — Download everything**
