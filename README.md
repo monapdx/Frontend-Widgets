@@ -32,7 +32,7 @@ Everything here is designed to be **copy‑paste friendly**, with minimal depend
 
 Below is an auto‑generated index from the current files. If a project is missing a description, you can improve it by adding a `<meta name="description">` tag or an `<h1>` with a meaningful summary in its HTML.
 
-<img src="https://raw.githubusercontent.com/monapdx/Frontend-Widgets/refs/heads/main/frontend-widgets-table.png">
+
 
 
 ## How To Customize
