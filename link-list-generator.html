@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>List of Links Generator</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 2rem; max-width: 780px; margin: 0 auto; }
+    h1 { margin-top: 0; }
+    .row { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
+    label { display: inline-flex; gap: .5rem; align-items: center; }
+    input[type="text"], input[type="number"], select { padding: .4rem .5rem; }
+    textarea { width: 100%; height: 260px; margin-top: 1rem; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; padding: .75rem; }
+    .card { border: 1px solid #ddd; border-radius: 10px; padding: 1rem; }
+    button { padding: .55rem .9rem; border: 1px solid #bbb; background: #f7f7f7; cursor: pointer; border-radius: 8px; }
+    button:hover { background: #efefef; }
+    .muted { color: #666; font-size: .92rem; }
+    .spacer { height: .5rem; }
+    .actions { display: flex; gap: .75rem; flex-wrap: wrap; margin-top: .75rem; }
+    .toast { margin-left: .5rem; color: #1a7f37; font-weight: 600; display: none; }
+  </style>
+</head>
+<body>
+
+  <h1>List of Links Generator</h1>
+  <p class="muted">Generate a &lt;ul&gt; or &lt;ol&gt; with N link items. Copy or export instantly.</p>
+
+  <div class="card">
+    <div class="row">
+      <label>
+        List Type:
+        <select id="listType">
+          <option value="ul">&lt;ul&gt;</option>
+          <option value="ol">&lt;ol&gt;</option>
+        </select>
+      </label>
+
+      <label>
+        How many &lt;li&gt;:
+        <input type="number" id="itemCount" min="1" value="10" />
+      </label>
+    </div>
+
+    <div class="spacer"></div>
+
+    <div class="row">
+      <label>
+        <input type="checkbox" id="placeholderText" checked />
+        Placeholder link text (Link 1, Link 2…)
+      </label>
+
+      <label>
+        <input type="checkbox" id="includeClass" />
+        Add CSS class
+      </label>
+
+      <label>
+        Class name:
+        <input type="text" id="className" placeholder="e.g. link-list" disabled />
+      </label>
+    </div>
+
+    <div class="actions">
+      <button id="generateBtn">Generate</button>
+      <button id="copyBtn">Copy to clipboard</button>
+      <button id="exportBtn">Export as .html</button>
+      <span class="toast" id="toast">Copied!</span>
+    </div>
+
+    <textarea id="output" spellcheck="false" aria-label="Generated HTML"></textarea>
+  </div>
+
+<script>
+  const listTypeEl = document.getElementById("listType");
+  const itemCountEl = document.getElementById("itemCount");
+  const placeholderTextEl = document.getElementById("placeholderText");
+  const includeClassEl = document.getElementById("includeClass");
+  const classNameEl = document.getElementById("className");
+  const outputEl = document.getElementById("output");
+  const toastEl = document.getElementById("toast");
+
+  const generateBtn = document.getElementById("generateBtn");
+  const copyBtn = document.getElementById("copyBtn");
+  const exportBtn = document.getElementById("exportBtn");
+
+  includeClassEl.addEventListener("change", () => {
+    classNameEl.disabled = !includeClassEl.checked;
+    if (!includeClassEl.checked) classNameEl.value = "";
+    generate();
+  });
+
+  // Auto-regenerate on changes
+  [listTypeEl, itemCountEl, placeholderTextEl, classNameEl].forEach(el => {
+    el.addEventListener("input", generate);
+    el.addEventListener("change", generate);
+  });
+
+  generateBtn.addEventListener("click", generate);
+
+  function escapeHtmlAttr(value) {
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;");
+  }
+
+  function generate() {
+    const type = listTypeEl.value; // "ul" or "ol"
+    const count = Math.max(1, parseInt(itemCountEl.value || "1", 10));
+    const usePlaceholder = placeholderTextEl.checked;
+
+    let classAttr = "";
+    if (includeClassEl.checked) {
+      const cls = classNameEl.value.trim();
+      if (cls) classAttr = ` class="${escapeHtmlAttr(cls)}"`;
+    }
+
+    let result = `<${type}${classAttr}>\n`;
+
+    for (let i = 0; i < count; i++) {
+      const text = usePlaceholder ? `Link ${i + 1}` : "";
+      result += `  <li><a href="">${text}</a></li>\n`;
+    }
+
+    result += `</${type}>`;
+    outputEl.value = result;
+  }
+
+  async function copyToClipboard() {
+    const text = outputEl.value || "";
+    if (!text.trim()) return;
+
+    try {
+      await navigator.clipboard.writeText(text);
+      showToast("Copied!");
+    } catch (err) {
+      // Fallback for older browsers
+      outputEl.focus();
+      outputEl.select();
+      const ok = document.execCommand("copy");
+      showToast(ok ? "Copied!" : "Copy failed");
+    }
+  }
+
+  function showToast(msg) {
+    toastEl.textContent = msg;
+    toastEl.style.display = "inline";
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => {
+      toastEl.style.display = "none";
+    }, 1200);
+  }
+
+  function exportHtml() {
+    const snippet = outputEl.value || "";
+    if (!snippet.trim()) return;
+
+    const fullDoc = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Generated List</title>
+</head>
+<body>
+${snippet}
+</body>
+</html>`;
+
+    const blob = new Blob([fullDoc], { type: "text/html;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "generated-list.html";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    URL.revokeObjectURL(url);
+  }
+
+  copyBtn.addEventListener("click", copyToClipboard);
+  exportBtn.addEventListener("click", exportHtml);
+
+  // initial output
+  generate();
+</script>
+
+</body>
+</html>

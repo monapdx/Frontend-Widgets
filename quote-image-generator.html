@@ -4,152 +4,424 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Quote Graphic Generator</title>
-	<style>
-@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Fjalla+One&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Sofia&display=swap');
-</style>
 
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Oswald:wght@200..700&family=Fjalla+One&family=Bebas+Neue&family=Sofia&display=swap" rel="stylesheet">
 
-  <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Lora&family=Open+Sans&family=Pacifico&family=Montserrat&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: "Oswald", serif;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      flex-direction: column;
-      background: #f4f4f4;
+    :root{
+      --bg: #f4f4f4;
+      --card: #ffffff;
+      --text: #111;
+      --muted: #666;
+      --border: #e5e5e5;
+      --primary: #007bff;
+      --primaryHover: #0056b3;
+      --radius: 14px;
+      --shadow: 0 10px 30px rgba(0,0,0,.08);
     }
-    canvas {
 
-      border: 1px solid #ccc;
-      margin: 20px 0;
+    * { box-sizing: border-box; }
+    html, body { height: 100%; max-width: 100%; overflow-x: hidden; }
+
+    body {
+      font-family: "Oswald", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
     }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: clamp(14px, 3vw, 28px);
+    }
+
+    /* Responsive 2-col layout -> 1-col on small screens */
+    .shell {
+      width: min(1100px, 100%);
+      max-width: 100%;
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: clamp(12px, 2vw, 18px);
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .shell { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: clamp(14px, 2vw, 18px);
+      max-width: 100%;
+      overflow: hidden; /* prevents accidental children overflow from causing page scroll */
+    }
+
+    .title {
+      font-size: 18px;
+      margin: 0 0 10px 0;
+      letter-spacing: .2px;
+    }
+
+    .hint {
+      margin: 0 0 14px 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
     .controls {
-      display: flex;
-      flex-direction: column;
+      display: grid;
       gap: 10px;
     }
-    
- button {
-font-family: "Oswald", serif;
-  margin-top: 10px;
-  width: 100%;
-  background: #007bff; /* Blue button */
-  color: #fff;
-  font-size: 16px;
-  padding: 10px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background 0.3s ease;
-  float:left;
-}
 
-button:hover {
-  background: #0056b3; /* Darker blue on hover */
-}   
+    label {
+      display: grid;
+      gap: 6px;
+      font-size: 14px;
+    }
+
+    input[type="text"], select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font: inherit;
+      outline: none;
+      background: #fff;
+      max-width: 100%;
+    }
+
+    input[type="text"]:focus, select:focus {
+      border-color: rgba(0,123,255,.45);
+      box-shadow: 0 0 0 3px rgba(0,123,255,.15);
+    }
+
+    input[type="color"] {
+      width: 100%;
+      height: 44px;
+      padding: 6px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #fff;
+      max-width: 100%;
+    }
+
+    .btnRow {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    @media (max-width: 420px) {
+      .btnRow { grid-template-columns: 1fr; }
+    }
+
+    button {
+      font-family: inherit;
+      width: 100%;
+      background: var(--primary);
+      color: #fff;
+      font-size: 16px;
+      padding: 11px 12px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: background .2s ease, transform .05s ease;
+    }
+
+    button:hover { background: var(--primaryHover); }
+    button:active { transform: translateY(1px); }
+
+    /* Preview panel */
+    .previewTop {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+      max-width: 100%;
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 13px;
+      max-width: 100%;
+      overflow-wrap: anywhere;
+    }
+
+    .canvasWrap {
+      width: 100%;
+      max-width: 100%;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: #fff;
+    }
+
+    /* Let canvas scale with container. We'll manage real pixels in JS. */
+    canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-width: 100%;
+    }
   </style>
 </head>
+
 <body>
-  <div class="controls">
-    <label>Gradient Start Color: <input type="color" id="startColor" value="#ff78d0" /></label>
-    <label>Gradient End Color: <input type="color" id="endColor" value="#fa02a3" /></label>
-    <label>Font Color: <input type="color" id="fontColor" value="#ffffff" /></label>
-    <label>Font: 
-      <select id="font">
-        <option value="Lobster">Lobster</option>
-        <option value="Oswald">Oswald</option>
-        <option value="Fjalla One">Fjalla One</option>
-        <option value="Bebas Neue">Bebas Neue</option>
-        <option value="Sofia">Sofia</option>
-      </select>
-    </label>
-    <label>Quote Text: <input type="text" id="quoteText" placeholder="Enter your quote" /></label>
-    <button id="generate">Generate</button>
-    <button id="save">Save Image</button>
+  <div class="app">
+    <div class="shell">
+      <section class="panel">
+        <h1 class="title">Quote Graphic Generator</h1>
+        <p class="hint">Edits redraw instantly. Canvas auto-resizes to fit your screen while keeping a 3:2 ratio.</p>
+
+        <div class="controls">
+          <label>Gradient Start Color
+            <input type="color" id="startColor" value="#ff78d0" />
+          </label>
+
+          <label>Gradient End Color
+            <input type="color" id="endColor" value="#fa02a3" />
+          </label>
+
+          <label>Font Color
+            <input type="color" id="fontColor" value="#ffffff" />
+          </label>
+
+          <label>Font
+            <select id="font">
+              <option value="Lobster">Lobster</option>
+              <option value="Oswald" selected>Oswald</option>
+              <option value="Fjalla One">Fjalla One</option>
+              <option value="Bebas Neue">Bebas Neue</option>
+              <option value="Sofia">Sofia</option>
+            </select>
+          </label>
+
+          <label>Quote Text
+            <input type="text" id="quoteText" placeholder="Enter your quote" />
+          </label>
+
+          <div class="btnRow">
+            <button id="generate" type="button">Generate</button>
+            <button id="save" type="button">Save Image</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="previewTop">
+          <h2 class="title" style="margin:0;">Preview</h2>
+          <div class="meta" id="meta"></div>
+        </div>
+
+        <div class="canvasWrap" id="canvasWrap">
+          <canvas id="canvas"></canvas>
+        </div>
+      </section>
+    </div>
   </div>
 
-  <canvas id="canvas" width="600" height="400"></canvas>
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
 
- <script>
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
+    const canvasWrap = document.getElementById('canvasWrap');
+    const meta = document.getElementById('meta');
 
-const startColor = document.getElementById('startColor');
-const endColor = document.getElementById('endColor');
-const fontColor = document.getElementById('fontColor');
-const font = document.getElementById('font');
-const quoteText = document.getElementById('quoteText');
-const generate = document.getElementById('generate');
-const save = document.getElementById('save');
+    const startColor = document.getElementById('startColor');
+    const endColor = document.getElementById('endColor');
+    const fontColor = document.getElementById('fontColor');
+    const font = document.getElementById('font');
+    const quoteText = document.getElementById('quoteText');
+    const generate = document.getElementById('generate');
+    const save = document.getElementById('save');
 
-function wrapText(context, text, x, y, maxWidth, lineHeight) {
-  const words = text.split(' ');
-  let line = '';
+    // Stable aspect ratio (3:2 like the original 600x400)
+    const ASPECT_W = 3;
+    const ASPECT_H = 2;
 
-  for (let i = 0; i < words.length; i++) {
-    const testLine = line + words[i] + ' ';
-    const metrics = context.measureText(testLine);
-    const testWidth = metrics.width;
-    if (testWidth > maxWidth && i > 0) {
-      context.fillText(line, x, y);
-      line = words[i] + ' ';
-      y += lineHeight;
-    } else {
-      line = testLine;
+    function debounce(fn, ms = 80) {
+      let t;
+      return (...args) => {
+        clearTimeout(t);
+        t = setTimeout(() => fn(...args), ms);
+      };
     }
-  }
-  context.fillText(line, x, y);
-}
 
-function drawCanvas() {
-  const text = quoteText.value || "Your Quote Here";
+    function getCssSizeFromContainer() {
+      // getBoundingClientRect avoids some rounding issues that cause 1px overflow on mobile
+      const rect = canvasWrap.getBoundingClientRect();
+      const cssWidth = rect.width;
+      const cssHeight = cssWidth * (ASPECT_H / ASPECT_W);
+      return { cssWidth, cssHeight };
+    }
 
-  // Wrap font in quotes to handle multi-word names
-  const selectedFont = `"${font.value}"`;
+    function setCanvasSizeToContainer() {
+      const { cssWidth, cssHeight } = getCssSizeFromContainer();
 
-  // Wait for the font to load before drawing
-  document.fonts.load(`40px ${selectedFont}`).then(() => {
-    // Draw gradient background
-    const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-    gradient.addColorStop(0, startColor.value);
-    gradient.addColorStop(1, endColor.value);
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+      // HiDPI scaling for crisp text/images
+      const dpr = Math.max(1, window.devicePixelRatio || 1);
 
-    // Draw text
-    ctx.fillStyle = fontColor.value;
-    ctx.font = `40px ${selectedFont}`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    const maxWidth = canvas.width - 40;
-    const lineHeight = 50;
-    wrapText(ctx, text, canvas.width / 2, canvas.height / 2 - 20, maxWidth, lineHeight);
-  });
-}
+      // Let CSS handle element sizing (prevents sideways scroll from rounding)
+      canvas.style.width = '100%';
+      canvas.style.height = 'auto';
 
-generate.addEventListener('click', drawCanvas);
+      // Set internal buffer size
+      canvas.width = Math.round(cssWidth * dpr);
+      canvas.height = Math.round(cssHeight * dpr);
 
-save.addEventListener('click', () => {
-  const link = document.createElement('a');
-  link.download = 'quote-graphic.png';
-  link.href = canvas.toDataURL('image/png');
-  link.click();
-});
+      // Normalize drawing coords to CSS pixels
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-// Initial draw after all fonts are ready
-document.fonts.ready.then(() => {
-  drawCanvas();
-});
-</script>
+      meta.textContent = `${Math.round(cssWidth)}×${Math.round(cssHeight)} (display) • DPR ${dpr.toFixed(2)}`;
+    }
 
+    function wrapTextLines(context, text, maxWidth) {
+      const words = text.trim().split(/\s+/);
+      const lines = [];
+      let line = '';
+
+      for (let i = 0; i < words.length; i++) {
+        const test = line ? (line + ' ' + words[i]) : words[i];
+        const w = context.measureText(test).width;
+
+        if (w <= maxWidth) {
+          line = test;
+        } else {
+          if (line) lines.push(line);
+          line = words[i];
+        }
+      }
+      if (line) lines.push(line);
+      return lines;
+    }
+
+    async function drawCanvas() {
+      setCanvasSizeToContainer();
+
+      const { cssWidth, cssHeight } = getCssSizeFromContainer();
+
+      const text = (quoteText.value && quoteText.value.trim()) ? quoteText.value.trim() : "Your Quote Here";
+      const selectedFont = `"${font.value}"`;
+
+      // Responsive font sizing based on canvas width
+      const fontSize = Math.max(22, Math.min(52, Math.round(cssWidth * 0.07)));
+      const lineHeight = Math.round(fontSize * 1.25);
+
+      // Wait for font to load so measurements are accurate
+      try {
+        await document.fonts.load(`${fontSize}px ${selectedFont}`);
+      } catch (e) {
+        // ignore
+      }
+
+      // Background gradient
+      const gradient = ctx.createLinearGradient(0, 0, cssWidth, cssHeight);
+      gradient.addColorStop(0, startColor.value);
+      gradient.addColorStop(1, endColor.value);
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, cssWidth, cssHeight);
+
+      // Text styles
+      ctx.fillStyle = fontColor.value;
+      ctx.font = `${fontSize}px ${selectedFont}`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      const padding = Math.max(18, Math.round(cssWidth * 0.06));
+      const maxWidth = cssWidth - padding * 2;
+
+      const lines = wrapTextLines(ctx, text, maxWidth);
+
+      // Vertically center block of lines
+      const blockHeight = lines.length * lineHeight;
+      let y = (cssHeight / 2) - (blockHeight / 2) + (lineHeight / 2);
+
+      for (const line of lines) {
+        ctx.fillText(line, cssWidth / 2, y);
+        y += lineHeight;
+      }
+    }
+
+    const drawDebounced = debounce(drawCanvas, 100);
+
+    // Events: redraw on changes
+    [startColor, endColor, fontColor, font].forEach(el => el.addEventListener('input', drawDebounced));
+    quoteText.addEventListener('input', drawDebounced);
+
+    generate.addEventListener('click', drawCanvas);
+
+    save.addEventListener('click', () => {
+      // Export at a higher resolution while keeping same aspect ratio
+      const exportW = 1200;
+      const exportH = Math.round(exportW * (ASPECT_H / ASPECT_W));
+
+      const tmp = document.createElement('canvas');
+      tmp.width = exportW;
+      tmp.height = exportH;
+      const tctx = tmp.getContext('2d');
+
+      const selectedFont = `"${font.value}"`;
+      const text = (quoteText.value && quoteText.value.trim()) ? quoteText.value.trim() : "Your Quote Here";
+
+      const gradient = tctx.createLinearGradient(0, 0, exportW, exportH);
+      gradient.addColorStop(0, startColor.value);
+      gradient.addColorStop(1, endColor.value);
+      tctx.fillStyle = gradient;
+      tctx.fillRect(0, 0, exportW, exportH);
+
+      const fontSize = Math.round(exportW * 0.07);
+      const lineHeight = Math.round(fontSize * 1.25);
+      const padding = Math.round(exportW * 0.06);
+      const maxWidth = exportW - padding * 2;
+
+      tctx.fillStyle = fontColor.value;
+      tctx.font = `${fontSize}px ${selectedFont}`;
+      tctx.textAlign = 'center';
+      tctx.textBaseline = 'middle';
+
+      const words = text.trim().split(/\s+/);
+      const lines = [];
+      let line = '';
+      for (let i = 0; i < words.length; i++) {
+        const test = line ? (line + ' ' + words[i]) : words[i];
+        const w = tctx.measureText(test).width;
+        if (w <= maxWidth) line = test;
+        else { if (line) lines.push(line); line = words[i]; }
+      }
+      if (line) lines.push(line);
+
+      const blockHeight = lines.length * lineHeight;
+      let y = (exportH / 2) - (blockHeight / 2) + (lineHeight / 2);
+      for (const l of lines) {
+        tctx.fillText(l, exportW / 2, y);
+        y += lineHeight;
+      }
+
+      const link = document.createElement('a');
+      link.download = 'quote-graphic.png';
+      link.href = tmp.toDataURL('image/png');
+      link.click();
+    });
+
+    // Resize observer keeps canvas responsive when layout changes
+    const ro = new ResizeObserver(() => drawDebounced());
+    ro.observe(canvasWrap);
+
+    // Initial draw
+    document.fonts.ready.then(() => drawCanvas());
+  </script>
 </body>
 </html>
