@@ -10,16 +10,19 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0b0f14;
-      --panel: #121823;
-      --ink: #e7ecf3;
-      --ink-dim: #b8c2cf;
-      --accent: #6ee7ff;
-      --accent-2: #9ae6b4;
-      --ring: rgba(110,231,255,.35);
-      --muted: #1a2230;
-      --card: #121826;
-    }
+  --bg: #07080c;              /* darker, less blue */
+  --panel: #0f1220;
+  --card: #11142a;
+
+  --ink: #f3f6ff;
+  --ink-dim: #a9b3c7;
+
+  --accent: #ed0d92;          /* your pink */
+  --accent-bright: #ff149f;   /* slightly brighter */
+  --ring: rgba(237,13,146,.35);
+
+  --muted: #171b30;
+}
     * { box-sizing: border-box; }
     html, body { height: 100%; }
     body {
@@ -70,7 +73,7 @@
     .input input:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 6px var(--ring);
-    }
+}
     .input svg {
       position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
       opacity: .8;
@@ -89,11 +92,11 @@
       gap: 10px;
       transition: transform .15s ease, box-shadow .15s ease, border-color .15s;
     }
-    .card:hover {
+	.card:hover {
       transform: translateY(-2px);
-      border-color: #2a3650;
-      box-shadow: 0 8px 28px rgba(0,0,0,.25);
-    }
+      border-color: var(--accent);
+      box-shadow: 0 8px 28px rgba(0,0,0,.4);
+}
     .card-header {
       display: grid;
       gap: 6px;
@@ -130,12 +133,21 @@
 	  
       transition: background .15s, border-color .15s, transform .05s;
     }
-    .btn:hover { border-color: #334767; }
+    .btn:hover {
+      box-shadow: 0 0 0 2px rgba(237,13,146,.25),
+                  0 0 18px rgba(237,13,146,.25);
+}
     .btn:active { transform: translateY(1px); }
     .btn.primary {
-      background: linear-gradient(180deg, #1a2438, #0e172a);
-      border-color: #345;
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
     }
+	
+	.btn.primary:hover {
+      background: var(--accent-bright);
+      border-color: var(--accent-bright);
+}
     footer {
       margin-top: 40px;
       padding-top: 24px;
