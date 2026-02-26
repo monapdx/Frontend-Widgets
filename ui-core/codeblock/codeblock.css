@@ -1,0 +1,77 @@
+/* ui-kit/codeblock/codeblock.css */
+.ui-codeblock {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: color-mix(in oklab, var(--card), var(--bg) 10%);
+  box-shadow: var(--shadow);
+}
+
+.ui-codeblock .topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.ui-codeblock .label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.ui-codeblock .pill {
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--card), var(--bg) 25%);
+  color: var(--fg);
+}
+
+.ui-codeblock pre {
+  margin: 0;
+  padding: 12px;
+  overflow: auto;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--fg);
+  background: transparent;
+  white-space: pre;
+}
+
+/* Collapsible behavior */
+.ui-codeblock[data-collapsible="true"] pre {
+  max-height: var(--cb-max, 240px);
+}
+.ui-codeblock[data-collapsed="true"] pre {
+  max-height: var(--cb-collapsed, 140px);
+  overflow: hidden;
+  position: relative;
+}
+.ui-codeblock[data-collapsed="true"] pre::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 52px;
+  background: linear-gradient(to bottom,
+    rgba(0,0,0,0),
+    color-mix(in oklab, var(--bg), transparent 0%)
+  );
+  pointer-events: none;
+}
+
+.ui-codeblock .toggle {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--fg);
+  padding: 8px 10px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+.ui-codeblock .toggle:focus-visible { outline: none; box-shadow: var(--focus); }

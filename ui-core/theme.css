@@ -1,0 +1,110 @@
+/* ui-core/theme.css */
+:root {
+  --bg: #ffffff;
+  --fg: #111111;
+  --muted: #666666;
+  --card: #f6f6f6;
+  --border: #dddddd;
+
+  --accent: #0066ff;
+  --accent-2: #00e0f2;
+
+  --shadow: 0 10px 30px rgba(0,0,0,.10);
+  --radius: 14px;
+
+  --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  --focus: 0 0 0 3px rgba(0,102,255,.25);
+}
+
+/* Dark */
+[data-theme="dark"] {
+  --bg: #0f1115;
+  --fg: #f1f3f6;
+  --muted: #aab2bd;
+  --card: #161a22;
+  --border: #2a3140;
+  --accent: #6aa8ff;
+  --accent-2: #00e0f2;
+  --shadow: 0 10px 30px rgba(0,0,0,.35);
+  --focus: 0 0 0 3px rgba(106,168,255,.25);
+}
+
+/* Neon Dark (your vibe) */
+[data-theme="neon-dark"] {
+  --bg: #07070a;
+  --fg: #f5f5ff;
+  --muted: #b1b1c7;
+  --card: #0d0d14;
+  --border: #27273b;
+
+  --accent: #FF009C; /* hot pink */
+  --accent-2: #00e0f2;
+
+  --shadow: 0 10px 30px rgba(255,0,156,.10);
+  --focus: 0 0 0 3px rgba(255,0,156,.25);
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--fg);
+}
+
+a { color: var(--accent); }
+hr { border: 0; border-top: 1px solid var(--border); margin: 18px 0; }
+
+.ui-wrap { max-width: 980px; margin: 0 auto; padding: 22px; }
+.ui-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px;
+}
+
+.ui-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+.ui-btn {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--fg);
+  padding: 10px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform .04s ease;
+}
+.ui-btn:hover { border-color: color-mix(in oklab, var(--border), var(--accent) 22%); }
+.ui-btn:active { transform: translateY(1px); }
+.ui-btn.primary {
+  background: var(--accent);
+  border-color: color-mix(in oklab, var(--accent), black 10%);
+  color: white;
+}
+.ui-btn:focus-visible { outline: none; box-shadow: var(--focus); }
+
+.ui-input, .ui-textarea, .ui-select {
+  width: 100%;
+  background: transparent;
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+.ui-textarea { min-height: 120px; font-family: var(--mono); }
+.ui-input:focus-visible, .ui-textarea:focus-visible, .ui-select:focus-visible {
+  outline: none; box-shadow: var(--focus);
+}
+
+.ui-kbd {
+  font-family: var(--mono);
+  border: 1px solid var(--border);
+  padding: 2px 6px;
+  border-radius: 8px;
+  background: color-mix(in oklab, var(--card), var(--bg) 40%);
+}

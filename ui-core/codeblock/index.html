@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en" data-theme="neon-dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CodeBlock Component</title>
+
+  <link rel="stylesheet" href="../../ui-core/theme.css" />
+  <link rel="stylesheet" href="../../ui-core/copy.css" />
+  <link rel="stylesheet" href="../../ui-enhancers/toast/toast.css" />
+  <link rel="stylesheet" href="./codeblock.css" />
+</head>
+<body>
+  <div class="ui-wrap">
+    <div class="ui-card">
+      <h2 style="margin-top:0">CodeBlock (with Copy)</h2>
+
+      <div class="ui-codeblock" data-ui-codeblock>
+        <div class="topbar">
+          <div class="label">
+            <span class="pill">HTML</span>
+            <span>Basic usage</span>
+          </div>
+
+          <button class="ui-copy-btn" data-copy="#cb-a" data-copy-trim="true">
+            <span class="ui-copy-icon" aria-hidden="true"></span>
+            Copy
+          </button>
+        </div>
+
+        <pre id="cb-a"><code>&lt;button class="ui-btn primary"&gt;Run&lt;/button&gt;</code></pre>
+      </div>
+
+      <div style="height:14px"></div>
+
+      <div class="ui-codeblock" data-ui-codeblock data-collapsible="true">
+        <div class="topbar">
+          <div class="label">
+            <span class="pill">JS</span>
+            <span>Long block (auto-collapses)</span>
+          </div>
+
+          <div class="ui-row">
+            <button class="toggle" type="button" data-codeblock-toggle>Show more</button>
+            <button class="ui-copy-btn" data-copy="#cb-b" data-copy-trim="true">
+              <span class="ui-copy-icon" aria-hidden="true"></span>
+              Copy
+            </button>
+          </div>
+        </div>
+
+        <pre id="cb-b"><code>// Example long block
+const lines = Array.from({length: 60}, (_, i) => `Line ${i+1}`).join("\n");
+console.log(lines);
+
+// ... pretend there is more helpful code here ...
+</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../ui-enhancers/toast/toast.js"></script>
+  <script src="../../ui-core/copy.js"></script>
+  <script src="./codeblock.js"></script>
+</body>
+</html>

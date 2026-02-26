@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en" data-theme="neon-dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Form Styler</title>
+
+  <link rel="stylesheet" href="../../ui-core/theme.css" />
+  <link rel="stylesheet" href="../../ui-enhancers/toast/toast.css" />
+  <link rel="stylesheet" href="./form-styler.css" />
+</head>
+<body>
+
+<div class="ui-wrap">
+  <div class="ui-card">
+    <h2 style="margin-top:0">Form Styler</h2>
+
+    <form data-ui-validate>
+      
+      <div class="ui-field">
+        <label class="ui-label">Name</label>
+        <input required class="ui-input" placeholder="Your name">
+        <div class="ui-help">This field is required.</div>
+      </div>
+
+      <div class="ui-field">
+        <label class="ui-label">Message</label>
+        <textarea class="ui-textarea"></textarea>
+      </div>
+
+      <div class="ui-field">
+        <label class="ui-label">Category</label>
+        <select class="ui-select">
+          <option>General</option>
+          <option>Bug</option>
+          <option>Feature</option>
+        </select>
+      </div>
+
+      <div class="ui-field">
+        <label class="ui-check">
+          <input type="checkbox">
+          Accept terms
+        </label>
+      </div>
+
+      <div class="ui-field">
+        <label class="ui-switch">
+          <input type="checkbox">
+          Enable advanced mode
+        </label>
+      </div>
+
+      <div class="ui-field">
+        <label class="ui-label">Intensity</label>
+        <input type="range" id="range1" class="ui-range" min="0" max="100">
+        <div class="ui-help">Value: <span data-range-output="range1"></span></div>
+      </div>
+
+      <div class="ui-field ui-file">
+        <label class="ui-file-label">
+          <span>Choose file</span>
+          <input type="file">
+        </label>
+      </div>
+
+      <button class="ui-btn primary" type="submit">Submit</button>
+    </form>
+
+  </div>
+</div>
+
+<script src="../../ui-enhancers/toast/toast.js"></script>
+<script src="./form-styler.js"></script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en" data-theme="neon-dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Copy Snippet Demo</title>
+  <link rel="stylesheet" href="./theme.css" />
+  <link rel="stylesheet" href="./copy.css" />
+  <link rel="stylesheet" href="../ui-enhancers/toast/toast.css" />
+</head>
+<body>
+  <div class="ui-wrap">
+    <div class="ui-card">
+      <h2 style="margin-top:0">Copy Snippet Helper</h2>
+      <p style="color:var(--muted); margin-top:6px">
+        Add <span class="ui-kbd">data-copy="#selector"</span> to a button.
+      </p>
+
+      <div class="ui-row" style="justify-content: space-between">
+        <button class="ui-copy-btn" data-copy="#snippet1" data-copy-trim="true" data-copy-success="Snippet copied!">
+          <span class="ui-copy-icon" aria-hidden="true"></span>
+          Copy snippet
+        </button>
+
+        <button class="ui-copy-btn" data-copy-text="console.log('Hello from monapdx');" data-copy-success="Copied literal text!">
+          <span class="ui-copy-icon" aria-hidden="true"></span>
+          Copy literal
+        </button>
+      </div>
+
+      <hr />
+
+      <pre id="snippet1" class="ui-textarea" style="white-space:pre; overflow:auto;">// Drop-in copy button:
+<button class="ui-copy-btn" data-copy="#myCode" data-copy-trim="true">
+  <span class="ui-copy-icon"></span>
+  Copy
+</button></pre>
+    </div>
+  </div>
+
+  <!-- Optional: toast integration -->
+  <script src="../ui-enhancers/toast/toast.js"></script>
+
+  <script src="./copy.js"></script>
+</body>
+</html>

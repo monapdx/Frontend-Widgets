@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en" data-theme="neon-dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modal + Drawer Demo</title>
+  <link rel="stylesheet" href="../../ui-core/theme.css" />
+  <link rel="stylesheet" href="../toast/toast.css" />
+  <link rel="stylesheet" href="./modal.css" />
+</head>
+<body>
+  <div class="ui-wrap">
+    <div class="ui-card">
+      <h2 style="margin-top:0">Modal / Confirm / Drawer</h2>
+      <div class="ui-row">
+        <button class="ui-btn primary" id="openModalBtn">Open modal</button>
+        <button class="ui-btn" id="confirmBtn">Confirm</button>
+        <button class="ui-btn" id="drawerBtn">Open drawer</button>
+      </div>
+
+      <hr />
+      <p style="margin:0; color:var(--muted)">
+        Tip: <span class="ui-kbd">Esc</span> closes; focus is trapped inside.
+      </p>
+    </div>
+  </div>
+
+  <script src="../toast/toast.js"></script>
+  <script src="./modal.js"></script>
+  <script>
+    document.getElementById("openModalBtn").onclick = () => {
+      uiModal.openModal({
+        title: "Export",
+        content: `
+          <p style="margin-top:0;color:var(--muted)">Put export settings here.</p>
+          <label style="display:block;margin:10px 0 6px">Filename</label>
+          <input class="ui-input" value="widget-export.json" />
+        `
+      });
+    };
+
+    document.getElementById("confirmBtn").onclick = async () => {
+      const ok = await uiModal.confirmModal("Delete everything? This can’t be undone.", {
+        title: "Confirm delete",
+        okText: "Delete",
+        cancelText: "Cancel"
+      });
+      ok ? toast.success("Deleted.") : toast.info("Cancelled.");
+    };
+
+    document.getElementById("drawerBtn").onclick = () => {
+      uiModal.openDrawer({
+        title: "Help / Settings",
+        content: `
+          <p style="margin-top:0;color:var(--muted)">This is perfect for docs, settings, or a preview panel.</p>
+          <button class="ui-btn primary" onclick="toast.success('Saved settings')">Save</button>
+        `
+      });
+    };
+  </script>
+</body>
+</html>

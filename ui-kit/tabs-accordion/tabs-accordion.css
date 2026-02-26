@@ -1,0 +1,79 @@
+/* ui-kit/tabs-accordion/tabs-accordion.css */
+
+/* Tabs */
+.ui-tabs {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--card);
+}
+
+.ui-tablist {
+  display: flex;
+  gap: 6px;
+  padding: 10px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.ui-tab {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--fg);
+  border-radius: 12px;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+.ui-tab[aria-selected="true"] {
+  border-color: color-mix(in oklab, var(--border), var(--accent) 32%);
+  background: color-mix(in oklab, var(--accent), var(--card) 84%);
+}
+.ui-tab:focus-visible { outline: none; box-shadow: var(--focus); }
+
+.ui-tabpanels { padding: 12px; }
+.ui-tabpanel { display: none; }
+.ui-tabpanel[data-open="true"] { display: block; }
+
+/* Accordion */
+.ui-accordion {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--card);
+}
+
+.ui-acc-item + .ui-acc-item { border-top: 1px solid var(--border); }
+
+.ui-acc-btn {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 12px;
+  border: 0;
+  background: transparent;
+  color: var(--fg);
+  cursor: pointer;
+  font-weight: 700;
+}
+.ui-acc-btn:focus-visible { outline: none; box-shadow: var(--focus); }
+
+.ui-acc-panel {
+  padding: 0 12px 12px;
+  color: var(--muted);
+  line-height: 1.4;
+  display: none;
+}
+.ui-acc-panel[data-open="true"] { display: block; }
+
+.ui-chevron {
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid var(--muted);
+  border-bottom: 2px solid var(--muted);
+  transform: rotate(45deg);
+  transition: transform .12s ease;
+}
+[aria-expanded="true"] .ui-chevron { transform: rotate(-135deg); }

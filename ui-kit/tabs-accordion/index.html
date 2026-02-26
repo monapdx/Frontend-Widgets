@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en" data-theme="neon-dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tabs + Accordion Demo</title>
+  <link rel="stylesheet" href="../../ui-core/theme.css" />
+  <link rel="stylesheet" href="./tabs-accordion.css" />
+</head>
+<body>
+  <div class="ui-wrap">
+    <div class="ui-card">
+      <h2 style="margin-top:0">Tabs</h2>
+
+      <div class="ui-tabs" data-ui-tabs>
+        <div class="ui-tablist" role="tablist" aria-label="Widget sections">
+          <button class="ui-tab" role="tab" aria-selected="true" aria-controls="panel-input" id="tab-input">Input</button>
+          <button class="ui-tab" role="tab" aria-selected="false" aria-controls="panel-output" id="tab-output">Output</button>
+          <button class="ui-tab" role="tab" aria-selected="false" aria-controls="panel-export" id="tab-export">Export</button>
+        </div>
+
+        <div class="ui-tabpanels">
+          <section class="ui-tabpanel" role="tabpanel" id="panel-input" aria-labelledby="tab-input">
+            <label>Paste text</label>
+            <textarea class="ui-textarea" placeholder="Type here..."></textarea>
+          </section>
+
+          <section class="ui-tabpanel" role="tabpanel" id="panel-output" aria-labelledby="tab-output">
+            <p style="margin-top:0;color:var(--muted)">Output goes here.</p>
+            <button class="ui-btn primary">Run</button>
+          </section>
+
+          <section class="ui-tabpanel" role="tabpanel" id="panel-export" aria-labelledby="tab-export">
+            <p style="margin-top:0;color:var(--muted)">Export options.</p>
+            <button class="ui-btn">Download JSON</button>
+          </section>
+        </div>
+      </div>
+
+      <hr />
+
+      <h2>Accordion</h2>
+      <div class="ui-accordion" data-ui-accordion data-single>
+        <div class="ui-acc-item">
+          <button class="ui-acc-btn" aria-expanded="true" type="button">
+            What is this?
+            <span class="ui-chevron" aria-hidden="true"></span>
+          </button>
+          <div class="ui-acc-panel">
+            A lightweight accordion. Add <span class="ui-kbd">data-single</span> to keep only one open.
+          </div>
+        </div>
+
+        <div class="ui-acc-item">
+          <button class="ui-acc-btn" aria-expanded="false" type="button">
+            Accessibility?
+            <span class="ui-chevron" aria-hidden="true"></span>
+          </button>
+          <div class="ui-acc-panel">
+            Uses <span class="ui-kbd">aria-expanded</span> and keeps focus behavior sane.
+          </div>
+        </div>
+
+        <div class="ui-acc-item">
+          <button class="ui-acc-btn" aria-expanded="false" type="button">
+            Where does it shine?
+            <span class="ui-chevron" aria-hidden="true"></span>
+          </button>
+          <div class="ui-acc-panel">
+            FAQ blocks, settings panels, “advanced options”, etc.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./tabs-accordion.js"></script>
+</body>
+</html>

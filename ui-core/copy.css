@@ -1,0 +1,55 @@
+/* ui-core/copy.css */
+.ui-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--fg);
+  padding: 8px 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  user-select: none;
+}
+.ui-copy-btn:hover { border-color: color-mix(in oklab, var(--border), var(--accent) 22%); }
+.ui-copy-btn:active { transform: translateY(1px); }
+.ui-copy-btn:focus-visible { outline: none; box-shadow: var(--focus); }
+
+.ui-copy-icon {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--muted);
+  border-radius: 4px;
+  position: relative;
+}
+.ui-copy-icon::before {
+  content: "";
+  position: absolute;
+  inset: -6px auto auto -6px;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--muted);
+  border-radius: 4px;
+  background: transparent;
+}
+
+/* Fallback “mini toast” if toast.js isn't loaded */
+.ui-copy-fallback {
+  position: fixed;
+  inset: auto 16px 16px auto;
+  background: color-mix(in oklab, var(--card), var(--bg) 10%);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  padding: 10px 12px;
+  color: var(--fg);
+  z-index: 9997;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity .14s ease, transform .14s ease;
+}
+.ui-copy-fallback[data-open="true"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+.ui-copy-fallback small { color: var(--muted); display: block; margin-top: 2px; }
