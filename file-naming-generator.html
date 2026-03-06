@@ -1,0 +1,172 @@
+<link rel="stylesheet" href="rare.css" />
+
+<div class="card">
+            <h2>File Naming Convention Generator</h2>
+            <p class="subtle">Build clean, repeatable file names for projects, exports, media, notes, or archives. Preview several outputs before using the pattern.</p>
+            <div class="row">
+              <div class="field">
+                <label for="name-prefix">Prefix</label>
+                <input id="name-prefix" type="text" placeholder="project" />
+              </div>
+              <div class="field">
+                <label for="name-title">Base title</label>
+                <input id="name-title" type="text" placeholder="frontend widgets launch assets" />
+              </div>
+            </div>
+            <div class="row-3">
+              <div class="field">
+                <label for="name-date">Date style</label>
+                <select id="name-date">
+                  <option value="none">No date</option>
+                  <option value="yyyy-mm-dd" selected>YYYY-MM-DD</option>
+                  <option value="yyyymmdd">YYYYMMDD</option>
+                  <option value="yyyy-mm">YYYY-MM</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="name-separator">Separator</label>
+                <select id="name-separator">
+                  <option value="-" selected>Hyphen (-)</option>
+                  <option value="_">Underscore (_)</option>
+                  <option value=".">Dot (.)</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="name-case">Letter case</label>
+                <select id="name-case">
+                  <option value="kebab" selected>kebab-case</option>
+                  <option value="snake">snake_case</option>
+                  <option value="upper">UPPERCASE</option>
+                  <option value="lower">lowercase words</option>
+                </select>
+              </div>
+            </div>
+            <div class="row-3">
+              <div class="field">
+                <label for="name-version">Version</label>
+                <input id="name-version" type="text" placeholder="v01" />
+              </div>
+              <div class="field">
+                <label for="name-ext">Extension</label>
+                <input id="name-ext" type="text" placeholder="png" value="png" />
+              </div>
+              <div class="field">
+                <label for="name-count">How many examples</label>
+                <input id="name-count" type="number" min="1" max="50" value="8" />
+              </div>
+            </div>
+            <div class="field">
+              <label>Optional parts</label>
+              <div class="checklist">
+                <label class="check-item"><input type="checkbox" id="include-date" checked /> Include date</label>
+                <label class="check-item"><input type="checkbox" id="include-prefix" checked /> Include prefix</label>
+                <label class="check-item"><input type="checkbox" id="include-version" checked /> Include version</label>
+                <label class="check-item"><input type="checkbox" id="include-counter" /> Add sequence number</label>
+              </div>
+            </div>
+            <div class="actions">
+              <button class="primary" id="generate-names-btn">Generate names</button>
+              <button class="secondary" id="copy-names-btn">Copy output</button>
+              <button class="secondary" id="sample-names-btn">Load sample</button>
+            </div>
+          </div>
+        </div>
+        <div class="stack">
+          <div class="card">
+            <h3>Generated filenames</h3>
+            <div id="names-output" class="output">Generated filenames will appear here.</div>
+          </div>
+          <div class="card">
+            <h3>Pattern summary</h3>
+            <div id="pattern-output" class="output">Your file naming pattern summary will appear here.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+  <script>
+
+
+
+
+
+    // File naming generator
+    function applyCase(value, mode, separator) {
+      if (!value) return '';
+      if (mode === 'upper') return value.replace(/[^a-zA-Z0-9]+/g, separator).toUpperCase();
+      if (mode === 'lower') return value.replace(/[^a-zA-Z0-9]+/g, ' ').toLowerCase().trim().replace(/\s+/g, separator);
+      if (mode === 'snake') return slugify(value, '_');
+      return slugify(value, separator);
+    }
+
+    function generateNames() {
+      const prefix = $('#name-prefix').value.trim();
+      const title = $('#name-title').value.trim();
+      const dateStyle = $('#name-date').value;
+      const separator = $('#name-separator').value;
+      const letterCase = $('#name-case').value;
+      const version = $('#name-version').value.trim();
+      const ext = $('#name-ext').value.trim().replace(/^\./, '');
+      const count = Math.max(1, Math.min(50, parseInt($('#name-count').value || '8', 10)));
+      const includeDate = $('#include-date').checked;
+      const includePrefix = $('#include-prefix').checked;
+      const includeVersion = $('#include-version').checked;
+      const includeCounter = $('#include-counter').checked;
+
+      if (!title) {
+        $('#names-output').textContent = 'Please enter a base title first.';
+        $('#pattern-output').textContent = '';
+        return;
+      }
+
+      const piecesBase = [];
+      if (includeDate) {
+        const datePart = formatDate(dateStyle);
+        if (datePart) piecesBase.push(datePart);
+      }
+      if (includePrefix && prefix) piecesBase.push(applyCase(prefix, letterCase, separator));
+      piecesBase.push(applyCase(title, letterCase, separator));
+      if (includeVersion && version) piecesBase.push(applyCase(version, letterCase === 'snake' ? 'snake' : 'lower', separator));
+
+      const outputs = Array.from({ length: count }, (_, index) => {
+        const pieces = [...piecesBase];
+        if (includeCounter) pieces.push(String(index + 1).padStart(2, '0'));
+        return pieces.filter(Boolean).join(separator) + (ext ? `.${ext}` : '');
+      });
+
+      $('#names-output').textContent = outputs.join('\n');
+      $('#pattern-output').textContent = [
+        'Pattern summary:',
+        `- Date style: ${includeDate ? dateStyle : 'none'}`,
+        `- Prefix: ${includePrefix ? (prefix || 'not provided') : 'not included'}`,
+        `- Base title: ${title}`,
+        `- Separator: ${separator}`,
+        `- Case: ${letterCase}`,
+        `- Version: ${includeVersion ? (version || 'not provided') : 'not included'}`,
+        `- Sequence number: ${includeCounter ? 'yes' : 'no'}`,
+        `- Extension: ${ext || 'none'}`
+      ].join('\n');
+    }
+
+    $('#generate-names-btn').addEventListener('click', generateNames);
+    $('#copy-names-btn').addEventListener('click', () => copyText($('#names-output').textContent));
+    $('#sample-names-btn').addEventListener('click', () => {
+      $('#name-prefix').value = 'frontend-widgets';
+      $('#name-title').value = 'launch social preview';
+      $('#name-date').value = 'yyyy-mm-dd';
+      $('#name-separator').value = '-';
+      $('#name-case').value = 'kebab';
+      $('#name-version').value = 'v02';
+      $('#name-ext').value = 'png';
+      $('#name-count').value = '8';
+      $('#include-date').checked = true;
+      $('#include-prefix').checked = true;
+      $('#include-version').checked = true;
+      $('#include-counter').checked = true;
+      generateNames();
+    });
+
+    // Initialize previews with sample schema
+    parseSchema();
+  </script>
