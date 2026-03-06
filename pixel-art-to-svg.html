@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pixel Art → SVG</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
+      <h1>Pixel Art → SVG</h1>
+      <p class="page-description">Upload a pixel-art image and convert it into a crisp SVG made from colored rectangles.</p>
+    </header>
+
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
+      </div>
+
+      <div class="widget-grid">
+        <section class="panel">
+          <label for="pixelFile">Upload PNG or other image</label>
+          <input id="pixelFile" type="file" accept="image/*" />
+
+          <div style="height: 12px;"></div>
+
+          <label for="scaleInput">SVG export scale</label>
+          <input id="scaleInput" type="number" min="1" max="16" value="1" />
+
+          <div class="checkbox-list">
+            <div class="checkbox-line"><input id="transparentBg" type="checkbox" checked /><label for="transparentBg">Keep transparent pixels transparent</label></div>
+          </div>
+
+          <p id="pixelStatus" class="small">Upload a small pixel-art image to begin.</p>
+
+          <div style="height: 12px;"></div>
+
+          <canvas id="previewCanvas" width="160" height="160"></canvas>
+
+          <div id="pixelStats" class="kv"></div>
+        </section>
+
+        <section class="panel">
+          <h2>SVG preview</h2>
+          <div id="svgPreview" class="preview-box svg-preview"><p class="small">SVG preview appears here.</p></div>
+
+          <div style="height: 16px;"></div>
+
+          <h2>SVG markup</h2>
+          <div class="output-box"><pre id="svgOutput"></pre></div>
+
+          <div class="actions">
+            <button id="copySvg">Copy SVG</button>
+            <button id="downloadSvg" class="secondary">Download SVG</button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script src="pixel-art-to-svg.js"></script>
+</body>
+</html>
