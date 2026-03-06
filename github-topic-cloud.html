@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GitHub Topic Cloud</title>
+    <style>
+      :root {
+        --bg: #0b0b0f;
+        --panel: #12121a;
+        --text: #f3f3f7;
+        --muted: #b7b7c3;
+        --border: #2a2a35;
+        --accent: #ff009c;
+        --chip: #171722;
+        --chipHover: #1f1f2e;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+        background: radial-gradient(1200px 700px at 20% 0%, rgba(255,0,156,.10), transparent 55%),
+                    radial-gradient(900px 600px at 80% 20%, rgba(0,224,242,.08), transparent 55%),
+                    var(--bg);
+        color: var(--text);
+      }
+      .wrap {
+        max-width: 980px;
+        margin: 40px auto;
+        padding: 0 16px 40px;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: 22px;
+        letter-spacing: .2px;
+      }
+      p {
+        margin: 0 0 18px;
+        color: var(--muted);
+        line-height: 1.4;
+      }
+      .panel {
+        background: rgba(18,18,26,.9);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 16px;
+        backdrop-filter: blur(8px);
+      }
+      form {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+        align-items: end;
+      }
+      label { display: block; font-size: 12px; color: var(--muted); margin: 0 0 6px; }
+      input[type="text"], input[type="password"] {
+        width: 100%;
+        padding: 12px 12px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: #0f0f16;
+        color: var(--text);
+        outline: none;
+      }
+      input[type="text"]:focus, input[type="password"]:focus {
+        border-color: rgba(255,0,156,.55);
+        box-shadow: 0 0 0 3px rgba(255,0,156,.12);
+      }
+      button {
+        padding: 12px 14px;
+        border-radius: 12px;
+        border: 1px solid rgba(255,0,156,.55);
+        background: rgba(255,0,156,.14);
+        color: var(--text);
+        cursor: pointer;
+        font-weight: 600;
+      }
+      button:hover { background: rgba(255,0,156,.22); }
+      button:disabled { opacity: .55; cursor: not-allowed; }
+
+      .row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-top: 10px;
+      }
+
+      .toggle {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--muted);
+        font-weight: 600;
+      }
+      .toggle:hover { background: rgba(255,255,255,.05); }
+
+      .controls {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 10px;
+        margin-top: 12px;
+      }
+      .control {
+        background: #0f0f16;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 10px;
+      }
+      .control .value {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 6px;
+      }
+      input[type="range"] { width: 100%; }
+
+      .status {
+        margin-top: 12px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .status.error { color: #ff6b6b; }
+      .status.ok { color: #9ef2c8; }
+
+      .cloud {
+        margin-top: 16px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: baseline;
+      }
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        background: var(--chip);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        text-decoration: none;
+        color: var(--text);
+        line-height: 1;
+        transition: transform .06s ease, background .15s ease, border-color .15s ease;
+        user-select: none;
+        white-space: nowrap;
+      }
+      .chip:hover {
+        background: var(--chipHover);
+        border-color: rgba(255,0,156,.5);
+        transform: translateY(-1px);
+      }
+      .chip .count {
+        font-size: 12px;
+        color: var(--muted);
+        padding: 3px 8px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: rgba(0,0,0,.20);
+      }
+
+      .footer {
+        margin-top: 14px;
+        color: var(--muted);
+        font-size: 12px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .footer a { color: var(--muted); }
+      .footer a:hover { color: var(--text); }
+
+      .hidden { display: none; }
+
+      @media (max-width: 760px) {
+        form { grid-template-columns: 1fr; }
+        .controls { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>GitHub Topic Cloud</h1>
+      <p>Enter a username to see their most frequently used repository topics. Click a topic to open the global GitHub topic page.</p>
+
+      <div class="panel">
+        <form id="form">
+          <div>
+            <label for="username">GitHub username</label>
+            <input id="username" type="text" placeholder="e.g. monapdx" autocomplete="off" />
+          </div>
+          <button id="go" type="submit">Generate</button>
+        </form>
+
+        <div class="row">
+          <button id="advancedBtn" class="toggle" type="button">Advanced (token)</button>
+          <button id="clearTokenBtn" class="toggle hidden" type="button">Clear saved token</button>
+        </div>
+
+        <div id="advanced" class="controls hidden">
+          <div class="control" style="grid-column: 1 / -1;">
+            <label for="token">GitHub token (optional, stored locally)</label>
+            <input id="token" type="password" placeholder="ghp_… (optional)" autocomplete="off" />
+            <div class="value">Using a token helps avoid API rate limits. Token is saved in <code>localStorage</code> on this device.</div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <div class="control">
+            <label for="topN">Show top N topics</label>
+            <input id="topN" type="range" min="10" max="100" value="40" />
+            <div class="value"><span id="topNVal">40</span></div>
+          </div>
+
+          <div class="control">
+            <label for="minFreq">Minimum frequency</label>
+            <input id="minFreq" type="range" min="1" max="10" value="1" />
+            <div class="value"><span id="minFreqVal">1</span></div>
+          </div>
+
+          <div class="control">
+            <label for="includeForks">Include forks</label>
+            <input id="includeForks" type="checkbox" />
+            <div class="value">Off by default</div>
+          </div>
+        </div>
+
+        <div id="status" class="status"></div>
+        <div id="cloud" class="cloud"></div>
+
+        <div class="footer">
+          <span id="summary"></span>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const $ = (id) => document.getElementById(id);
+
+      const form = $("form");
+      const usernameInput = $("username");
+      const statusEl = $("status");
+      const cloudEl = $("cloud");
+      const summaryEl = $("summary");
+
+      const advancedBtn = $("advancedBtn");
+      const advancedPanel = $("advanced");
+      const tokenInput = $("token");
+      const clearTokenBtn = $("clearTokenBtn");
+
+      const topN = $("topN");
+      const topNVal = $("topNVal");
+      const minFreq = $("minFreq");
+      const minFreqVal = $("minFreqVal");
+      const includeForks = $("includeForks");
+
+      const goBtn = $("go");
+
+      topN.addEventListener("input", () => topNVal.textContent = topN.value);
+      minFreq.addEventListener("input", () => minFreqVal.textContent = minFreq.value);
+
+      // localStorage token handling
+      const TOKEN_KEY = "gh_topic_cloud_token";
+      const savedToken = localStorage.getItem(TOKEN_KEY);
+      if (savedToken) {
+        tokenInput.value = savedToken;
+        clearTokenBtn.classList.remove("hidden");
+      }
+
+      advancedBtn.addEventListener("click", () => {
+        advancedPanel.classList.toggle("hidden");
+        clearTokenBtn.classList.toggle("hidden", !localStorage.getItem(TOKEN_KEY));
+      });
+
+      tokenInput.addEventListener("change", () => {
+        const t = tokenInput.value.trim();
+        if (t) {
+          localStorage.setItem(TOKEN_KEY, t);
+          clearTokenBtn.classList.remove("hidden");
+        } else {
+          localStorage.removeItem(TOKEN_KEY);
+          clearTokenBtn.classList.add("hidden");
+        }
+      });
+
+      clearTokenBtn.addEventListener("click", () => {
+        localStorage.removeItem(TOKEN_KEY);
+        tokenInput.value = "";
+        clearTokenBtn.classList.add("hidden");
+        setStatus("Saved token cleared.", "ok");
+      });
+
+      function setStatus(msg, kind = "") {
+        statusEl.textContent = msg || "";
+        statusEl.className = "status" + (kind ? " " + kind : "");
+      }
+
+      function topicUrl(topic) {
+        // GitHub topic URLs are kebab-case; topics from API are already like "data-sovereignty"
+        const slug = String(topic).trim().toLowerCase();
+        return `https://github.com/topics/${encodeURIComponent(slug)}`;
+      }
+
+      function clamp(n, a, b) { return Math.max(a, Math.min(b, n)); }
+
+      function fontSizeFor(count, minC, maxC) {
+        // log scale for nicer spread
+        const min = Math.log(minC + 1);
+        const max = Math.log(maxC + 1);
+        const v = Math.log(count + 1);
+        const t = (v - min) / (max - min || 1);
+        const px = 12 + t * 18; // 12px..30px
+        return `${clamp(px, 12, 30).toFixed(1)}px`;
+      }
+
+      async function fetchAllRepos(username, token, includeForksFlag) {
+        const perPage = 100;
+        let page = 1;
+        let all = [];
+        while (true) {
+          const url = `https://api.github.com/users/${encodeURIComponent(username)}/repos?per_page=${perPage}&page=${page}&sort=updated`;
+          const headers = {
+            "Accept": "application/vnd.github+json",
+            "X-GitHub-Api-Version": "2022-11-28"
+          };
+          if (token) headers["Authorization"] = `Bearer ${token}`;
+
+          const res = await fetch(url, { headers });
+          if (!res.ok) {
+            let extra = "";
+            try { extra = await res.text(); } catch {}
+            throw new Error(`GitHub API error ${res.status} ${res.statusText}${extra ? " — " + extra : ""}`);
+          }
+
+          const batch = await res.json();
+          if (!Array.isArray(batch)) break;
+
+          const filtered = includeForksFlag ? batch : batch.filter(r => !r.fork);
+          all = all.concat(filtered);
+
+          if (batch.length < perPage) break;
+          page += 1;
+
+          // safety stop
+          if (page > 20) break; // 2000 repos cap for sanity
+        }
+        return all;
+      }
+
+      function countTopics(repos) {
+        const map = new Map();
+        for (const r of repos) {
+          const topics = Array.isArray(r.topics) ? r.topics : [];
+          for (const t of topics) {
+            const key = String(t).trim().toLowerCase();
+            if (!key) continue;
+            map.set(key, (map.get(key) || 0) + 1);
+          }
+        }
+        return map;
+      }
+
+      function renderCloud(topicCounts, options) {
+        cloudEl.innerHTML = "";
+        summaryEl.textContent = "";
+
+        const entries = [...topicCounts.entries()]
+          .map(([topic, count]) => ({ topic, count }))
+          .filter(x => x.count >= options.minFreq)
+          .sort((a, b) => b.count - a.count)
+          .slice(0, options.topN);
+
+        if (!entries.length) {
+          setStatus("No topics found (or filtered out).", "error");
+          return;
+        }
+
+        const counts = entries.map(e => e.count);
+        const minC = Math.min(...counts);
+        const maxC = Math.max(...counts);
+
+        for (const { topic, count } of entries) {
+          const a = document.createElement("a");
+          a.className = "chip";
+          a.href = topicUrl(topic);
+          a.target = "_blank";
+          a.rel = "noopener noreferrer";
+
+          a.style.fontSize = fontSizeFor(count, minC, maxC);
+
+          const label = document.createElement("span");
+          label.textContent = topic;
+
+          const badge = document.createElement("span");
+          badge.className = "count";
+          badge.textContent = count;
+
+          a.appendChild(label);
+          a.appendChild(badge);
+          cloudEl.appendChild(a);
+        }
+
+        const totalTopics = topicCounts.size;
+        const totalTaggedRepos = [...topicCounts.values()].reduce((a,b)=>a+b,0);
+        summaryEl.textContent = `Showing ${entries.length} topics • ${totalTopics} unique topics found • ${totalTaggedRepos} topic-usages counted (repos may contribute multiple topics).`;
+        setStatus("Done.", "ok");
+      }
+
+      async function run() {
+        const username = usernameInput.value.trim();
+        if (!username) {
+          setStatus("Please enter a GitHub username.", "error");
+          return;
+        }
+
+        const token = (tokenInput.value || localStorage.getItem(TOKEN_KEY) || "").trim();
+        const opts = {
+          topN: Number(topN.value),
+          minFreq: Number(minFreq.value),
+          includeForks: includeForks.checked
+        };
+
+        setStatus(`Fetching repos for ${username}…`, "");
+        cloudEl.innerHTML = "";
+        summaryEl.textContent = "";
+        goBtn.disabled = true;
+
+        try {
+          const repos = await fetchAllRepos(username, token, opts.includeForks);
+          setStatus(`Counting topics across ${repos.length} repos…`, "");
+
+          const topicCounts = countTopics(repos);
+          if (topicCounts.size === 0) {
+            setStatus("No topics found on this user's repos.", "error");
+            return;
+          }
+
+          renderCloud(topicCounts, opts);
+        } catch (err) {
+          const msg = (err && err.message) ? err.message : String(err);
+          // Common rate-limit hint
+          const hint = msg.includes("403") ? " If you hit rate limits, add a token in Advanced." : "";
+          setStatus(msg + hint, "error");
+        } finally {
+          goBtn.disabled = false;
+        }
+      }
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        run();
+      });
+
+      // nice default if you want:
+      // usernameInput.value = "monapdx";
+      // run();
+    </script>
+  </body>
+</html>
