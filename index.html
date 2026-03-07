@@ -1,703 +1,739 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Frontend Tools & Widgets</title>
-  <meta name="description" content="A curated set of standalone HTML + CSS + JavaScript mini‑projects to download, customize, and remix." />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-  --bg: #07080c;              /* darker, less blue */
-  --panel: #0f1220;
-  --card: #11142a;
-
-  --ink: #f3f6ff;
-  --ink-dim: #a9b3c7;
-
-  --accent: #ed0d92;          /* your pink */
-  --accent-bright: #ff149f;   /* slightly brighter */
-  --ring: rgba(237,13,146,.35);
-
-  --muted: #171b30;
-}
-    * { box-sizing: border-box; }
-    html, body { height: 100%; }
-    body {
-      margin: 0;
-      font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-      background: radial-gradient(1200px 800px at 80% -10%, rgba(110,231,255,.15), transparent 60%), linear-gradient(180deg, var(--bg), #0a0d12);
-      color: var(--ink);
-      line-height: 1.5;
-    }
-    .wrap {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 32px 20px 64px;
-    }
-    header.hero {
-      display: grid;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-    header.hero h1 {
-      font-size: clamp(1.8rem, 1.3rem + 2vw, 3rem);
-      line-height: 1.1;
-      margin: 0;
-      letter-spacing: -0.02em;
-    }
-    header.hero p { margin: 0; color: var(--ink-dim); }
-    .toolbar {
-      display: flex;
-      gap: 12px;
-      margin: 22px 0 28px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-    .input {
-      position: relative;
-      flex: 1 1 320px;
-    }
-    .input input {
-      width: 100%;
-      background: var(--panel);
-      border: 1px solid #222b3a;
-      color: var(--ink);
-      border-radius: 12px;
-      padding: 12px 14px 12px 44px;
-      outline: none;
-      transition: border .2s, box-shadow .2s;
-    }
-    .input input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 6px var(--ring);
-}
-    .input svg {
-      position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
-      opacity: .8;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 16px;
-    }
-    .card {
-      background: linear-gradient(180deg, var(--card), #0f1623);
-      border: 1px solid #1a2233;
-      border-radius: 16px;
-      padding: 16px;
-      display: grid;
-      gap: 10px;
-      transition: transform .15s ease, box-shadow .15s ease, border-color .15s;
-    }
-	.card:hover {
-      transform: translateY(-2px);
-      border-color: var(--accent);
-      box-shadow: 0 8px 28px rgba(0,0,0,.4);
-}
-    .card-header {
-      display: grid;
-      gap: 6px;
-    }
-    .card-header h3 {
-      margin: 0; font-size: 1.05rem; letter-spacing: -.01em;
-    }
-    .path {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      color: var(--ink-dim);
-      background: var(--muted);
-      border: 1px solid #222b3b;
-      border-radius: 8px;
-      padding: 2px 6px;
-      width: fit-content;
-    }
-    .blurb { color: var(--ink-dim); min-height: 42px; }
-    .actions { display: flex; gap: 10px; flex-wrap: wrap;align-items:center; }
-    .btn {
-	  min-height: 36px;
-      appearance: none;
-      border: 1px solid #253145;
-      background: #101726;
-      color: var(--ink);
-      border-radius: 10px;
-      padding: 8px 12px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: .95rem;
-	  
-	  line-height: 1;              /* ← ADD THIS */
-      display: inline-flex;        /* ← AND THIS */
-      align-items: center;
-	  
-      transition: background .15s, border-color .15s, transform .05s;
-    }
-    .btn:hover {
-      box-shadow: 0 0 0 2px rgba(237,13,146,.25),
-                  0 0 18px rgba(237,13,146,.25);
-}
-    .btn:active { transform: translateY(1px); }
-    .btn.primary {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: white;
-    }
-	
-	.btn.primary:hover {
-      background: var(--accent-bright);
-      border-color: var(--accent-bright);
-}
-    footer {
-      margin-top: 40px;
-      padding-top: 24px;
-      border-top: 1px solid #1a2233;
-      color: var(--ink-dim);
-      font-size: .95rem;
-    }
-    .kbd { background: #222b3a; border: 1px solid #2d3950; border-radius: 6px; padding: 2px 6px; }
-  </style>
-</head>
-<body>
-  <div class="wrap">
-    <header class="hero">
-      <h1>Frontend Tools & Widgets</h1>
-      <p>Collection of frontend HTML/CSS/Javascript projects, widgets & standalone tools.</p>
-    </header>
-
-    <div class="toolbar">
-      <div class="input">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
-        </svg>
-        <input id="search" type="search" placeholder="Search projects..." autocomplete="off" />
-      </div>
-      <div class="hint">Tip: press <span class="kbd">/</span> to focus search</div>
-    </div>
-
-    <section id="grid" class="grid">
-      
-    <article class="card" data-name="html-projects cozy pixel city —">
-      <header class="card-header">
-        <h3>Personal Palette Generator</h3>
-        <code class="path">color tools</code>
-      </header>
-      <p class="blurb">Choose your favorites with color picker + generate your custom palette</p>
-      <div class="actions">
-        <a class="btn primary" href="personal-palette.html">Open Demo</a>
-        <a class="btn" href="personal-palette.html">View Folder</a>
-      </div>
-    </article>
-	
-	    <article class="card" data-name="html-projects cozy pixel city —">
-      <header class="card-header">
-        <h3>Pixel Art Palette Extractor</h3>
-        <code class="path">color tools</code>
-		
-      </header>
-      <p class="blurb">Upload pixel art ---> color palette extracted</p>
-      <div class="actions">
-        <a class="btn primary" href="pixel-art-palette-grabber.html">Open Demo</a>
-        <a class="btn" href="pixel-art-palette-grabber.html">View Folder</a>
-      </div>
-    </article>
-	
-	    <article class="card" data-name="html-projects cozy pixel city —">
-      <header class="card-header">
-        <h3>Link List Generator</h3>
-        <code class="path">code generators</code>
-      </header>
-      <p class="blurb">HTML list of links generator with optional CSS class + placeholder text.</p>
-      <div class="actions">
-        <a class="btn primary" href="link-list-generator.html">Open Demo</a>
-        <a class="btn" href="link-list-generator.html">View Folder</a>
-      </div>
-    </article>
-	
-	
-	    <article class="card" data-name="html-projects cozy pixel city —">
-      <header class="card-header">
-        <h3>Offline ChatGPT</h3>
-        <code class="path">browser tools</code>
-      </header>
-      <p class="blurb">Load + browse your ChatGPT conversations.json offline.</p>
-      <div class="actions">
-        <a class="btn primary" href="offline-GPT.html">Open Demo</a>
-        <a class="btn" href="offline-GPT.html">View Folder</a>
-      </div>
-    </article>
-    
-    
-
-    <article class="card" data-name="html-projects/demos kindle cookbook formatter kindle cookbook formatter">
-      <header class="card-header">
-        <h3>Email Inbox Viewer</h3>
-        <code class="path">email tools</code>
-      </header>
-      <p class="blurb">Load + browse any .mbox file.</p>
-      <div class="actions">
-        <a class="btn primary" href="email-viewer.html">Open Demo</a>
-        <a class="btn" href="email-viewer.html">View Folder</a>
-      </div>
-    </article>
-	
-	    <article class="card" data-name="html-projects/demos kindle cookbook formatter kindle cookbook formatter">
-      <header class="card-header">
-        <h3>Scratch-It Generator</h3>
-        <code class="path">code generators</code>
-      </header>
-      <p class="blurb">Upload your own image and generate a scratch-it card.</p>
-      <div class="actions">
-        <a class="btn primary" href="scratch-it-generator.html">Open Demo</a>
-        <a class="btn" href="scratch-it-generator.html">View Folder</a>
-      </div>
-    </article>
-    
-
-    <article class="card" data-name="html-projects/demos kindle cookbook formatter kindle cookbook formatter">
-      <header class="card-header">
-        <h3>Button Generator</h3>
-        <code class="path">code generators</code>
-      </header>
-      <p class="blurb">Yet another frontend button generator. Export as code or PNG.</p>
-      <div class="actions">
-        <a class="btn primary" href="button-generator.html">Open Demo</a>
-        <a class="btn" href="button-generator.html">View Folder</a>
-      </div>
-    </article>
-    
-
-    <article class="card" data-name="html-projects/empty-tag-generator.html merged tag generator —">
-      <header class="card-header">
-        <h3>HumorDNA</h3>
-        <code class="path">quizzes</code>
-      </header>
-      <p class="blurb">A fun + silly quiz to explore your humor style.</p>
-      <div class="actions">
-        <a class="btn primary" href="https://monapdx.github.io/Humor-DNA/">Open Demo</a>
-        <a class="btn" href="https://monapdx.github.io/Humor-DNA/">View Folder</a>
-      </div>
-    </article>
-    
-
-    <article class="card" data-name="html-projects/goal-tracker.html goal progress tracker goal progress tracker">
-      <header class="card-header">
-        <h3>Quiz Builder</h3>
-        <code class="path">code generators</code>
-      </header>
-      <p class="blurb">Dead simple + fast quiz generator.</p>
-      <div class="actions">
-        <a class="btn primary" href="quiz-builder.html">Open Demo</a>
-        <a class="btn" href="quiz-builder.html/">View Folder</a>
-      </div>
-    </article>
-    
-
-    <article class="card" data-name="html-projects/html5-quiz.html html5 tags quiz html5 element quiz">
-      <header class="card-header">
-        <h3>HTML5 Tags Quiz</h3>
-        <code class="path">quizzes</code>
-      </header>
-      <p class="blurb">How many of the 110 HTML5 tags can you name?</p>
-      <div class="actions">
-        <a class="btn primary" href="html5-quiz.html">Open Demo</a>
-        <a class="btn" href="html5-quiz.html/">View Folder</a>
-      </div>
-    </article>
-    
-
-
-    
-
-
-    
-
-    <article class="card" data-name="html-projects/notes.html notes.html —">
-      <header class="card-header">
-        <h3>Snippet Saver</h3>
-        <code class="path">browser tools</code>
-      </header>
-      <p class="blurb">Save + delete notes & snippets right in the browser.</p>
-      <div class="actions">
-        <a class="btn primary" href="notes.html">Open Demo</a>
-        <a class="btn" href="notes.html/">View Folder</a>
-      </div>
-    </article>
-    
-
-    <article class="card" data-name="html-projects/philosophy-quiz.html which philosophical movements align with you? which philosophical movements align with you?">
-      <header class="card-header">
-        <h3>Which Philosophical Movements Align With You?</h3>
-        <code class="path">quizzes</code>
-      </header>
-      <p class="blurb">A fun + informative philosophy quiz.</p>
-      <div class="actions">
-        <a class="btn primary" href="philosophy-quiz.html">Open Demo</a>
-        <a class="btn" href="philosophy-quiz.html/">View Folder</a>
-      </div>
-    </article>
-    
-
-
-    
-
-    <article class="card" data-name="html-projects/poetry-grid poetry grid helper —">
-      <header class="card-header">
-        <h3>Poetry Squared</h3>
-        <code class="path">writing tools</code>
-      </header>
-      <p class="blurb">Challenge yourself to write a poem that reads the same both horizontally + vertically.</p>
-      <div class="actions">
-        <a class="btn primary" href="https://monapdx.github.io/Poetry-Squared/">Open Demo</a>
-        <a class="btn" href="https://monapdx.github.io/Poetry-Squared/">View Folder</a>
-      </div>
-    </article>
-    
-
-    <article class="card" data-name="html-projects/qr-codes.html qr-codes.html —">
-      <header class="card-header">
-        <h3>URL to QR Code</h3>
-        <code class="path">code generators</code>
-      </header>
-      <p class="blurb">URL ---> QR Code</p>
-      <div class="actions">
-        <a class="btn primary" href="qr-codes.html">Open Demo</a>
-        <a class="btn" href="qr-codes.html/">View Folder</a>
-      </div>
-    </article>
-    
-
-    <article class="card" data-name="html-projects/quote-image-generator.html quote graphic generator —">
-      <header class="card-header">
-        <h3>Quote Graphic Generator</h3>
-        <code class="path">image generators</code>
-      </header>
-      <p class="blurb">Enter favorite quotes + choose font + pick gradient colors = export image.</p>
-      <div class="actions">
-        <a class="btn primary" href="quote-image-generator.html">Open Demo</a>
-        <a class="btn" href="quote-image-generator.html/">View Folder</a>
-      </div>
-    </article>
-    
-
-    <article class="card" data-name="html-projects/random-palette.html random color palette generator random color palette generator">
-      <header class="card-header">
-        <h3>Random Color Palette</h3>
-        <code class="path">color tools</code>
-      </header>
-      <p class="blurb">Dead simple random color palette generator.</p>
-      <div class="actions">
-        <a class="btn primary" href="random-palette.html">Open Demo</a>
-        <a class="btn" href="random-palette.html/">View Folder</a>
-      </div>
-    </article>
-    
-
-    <article class="card" data-name="html-projects/rhymes.html rhyme finder · datamuse api —">
-      <header class="card-header">
-        <h3>Rhyme Finder</h3>
-        <code class="path">writing tools</code>
-      </header>
-      <p class="blurb">Advanced search for rhyming words via the Datamuse API.</p>
-      <div class="actions">
-        <a class="btn primary" href="rhymes.html">Open Demo</a>
-        <a class="btn" href="rhymes.html/">View Folder</a>
-      </div>
-    </article>
-	
-	
-	    <article class="card" data-name="html-projects/rhymes.html rhyme finder · datamuse api —">
-      <header class="card-header">
-        <h3>Pixel Drawing Board</h3>
-        <code class="path">art tools</code>
-      </header>
-      <p class="blurb">Drawing board + editor for creating + exporting pixel art.</p>
-      <div class="actions">
-        <a class="btn primary" href="pixel-art-draw.html">Open Demo</a>
-        <a class="btn" href="pixel-art-draw.html/">View Folder</a>
-      </div>
-    </article>
-    
-
-    <article class="card" data-name="html-projects/sms-templates.html sms templates —">
-      <header class="card-header">
-        <h3>Hero Diagram Generator</h3>
-        <code class="path">image generators</code>
-      </header>
-      <p class="blurb">Generate custom pipeline visualizations + export as SVG.</p>
-      <div class="actions">
-        <a class="btn primary" href="hero-diagram-generator.html">Open Demo</a>
-        <a class="btn" href="hero-diagram-generator.html/">View Folder</a>
-      </div>
-    </article>
-    
-
-    <article class="card" data-name="html-projects/table-generator.html editable table generator —">
-      <header class="card-header">
-        <h3>Editable Table Generator</h3>
-        <code class="path">code generators</code>
-      </header>
-      <p class="blurb">Columns + rows + headings = generate HTML table. Click in any table cell to edit content.</p>
-      <div class="actions">
-        <a class="btn primary" href="table-generator.html">Open Demo</a>
-        <a class="btn" href="table-generator.html/">View Folder</a>
-      </div>
-    </article>
-	
-	
-	    <article class="card" data-name="html-projects/table-generator.html editable table generator —">
-      <header class="card-header">
-        <h3>Placeholder Image Generator</h3>
-        <code class="path">image generators</code>
-      </header>
-      <p class="blurb">Input dimensions + prompt + style = placeholder image</p>
-      <div class="actions">
-        <a class="btn primary" href="placeholder-image-generator.html">Open Demo</a>
-        <a class="btn" href="placeholder-image-generator.html">View Folder</a>
-      </div>
-    </article>
-	
-    
-
-<article class="card" data-name="kindle-cookbooks/formatter.html">
-      <header class="card-header">
-        <h3>Cookbook Formatter</h3>
-        <code class="path">writing tools</code>
-      </header>
-      <p class="blurb">Easily format + generate Kindle-ready cookbooks.</p>
-      <div class="actions">
-        <a class="btn primary" href="kindle-cookbooks/formatter.html">Open Demo</a>
-        <a class="btn" href="kindle-cookbooks/formatter.html">View Folder</a>
-      </div>
-    </article>
-    
-
-    <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
-      <header class="card-header">
-        <h3>Voice Recorder</h3>
-        <code class="path">browser tools</code>
-      </header>
-      <p class="blurb">Record + download audio and voice notes right in the browser.</p>
-      <div class="actions">
-        <a class="btn primary" href="voice-record.html">Open Demo</a>
-        <a class="btn" href="voice-record.html/">View Folder</a>
-      </div>
-    </article>
-    
-
-    <article class="card" data-name="html-projects/wiki write your own wikipedia page —">
-      <header class="card-header">
-        <h3>Folder Structure Visualizer</h3>
-        <code class="path">image generators</code>
-      </header>
-      <p class="blurb">Create directory tree diagrams of your projects + export as .txt, .json, .md, PNG or SVG.</p>
-      <div class="actions">
-        <a class="btn primary" href="https://monapdx.github.io/folder-structure-generator/">Open Demo</a>
-        <a class="btn" href="https://monapdx.github.io/folder-structure-generator/">View Folder</a>
-      </div>
-    </article>
-    
-    
-<article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
-      <header class="card-header">
-        <h3>Presentation Slide Designer</h3>
-        <code class="path">browser tools</code>
-      </header>
-      <p class="blurb">Basic slide editor + designer in the browser.</p>
-      <div class="actions">
-        <a class="btn primary" href="https://monapdx.github.io/presentation-slide-editor/">Open Demo</a>
-        <a class="btn" href="https://monapdx.github.io/presentation-slide-editor/">View Folder</a>
-      </div>
-    </article>
-	
-	<article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
-      <header class="card-header">
-        <h3>Static Calendar Generator</h3>
-        <code class="path">browser tools</code>
-      </header>
-      <p class="blurb">Upload an .ics file and generate a static archive of your Google Calendar.</p>
-      <div class="actions">
-        <a class="btn primary" href="https://monapdx.github.io/google-calendar-static-builder/">Open Demo</a>
-        <a class="btn" href="https://monapdx.github.io/google-calendar-static-builder/">View Folder</a>
-      </div>
-    </article>
-
-    	<article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
-      <header class="card-header">
-        <h3>URL Shortener</h3>
-        <code class="path">browser tools</code>
-      </header>
-      <p class="blurb">Shorten URLs + track clicks.</p>
-      <div class="actions">
-        <a class="btn primary" href="https://gdurls-clone.vercel.app/">Open Demo</a>
-        <a class="btn" href="https://github.com/monapdx/gdurls-clone">View Folder</a>
-      </div>
-    </article>
-
-      	<article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
-      <header class="card-header">
-        <h3>Google Dependency Audit</h3>
-        <code class="path">browser tools</code>
-      </header>
-      <p class="blurb">Auditing tool that helps you make a plan for your data beyond Google.</p>
-      <div class="actions">
-        <a class="btn primary" href="https://monapdx.github.io/google-dependency-audit/">Open Demo</a>
-        <a class="btn" href="https://github.com/monapdx/google-dependency-audit">View Folder</a>
-      </div>
-    </article>  
-	
-	
-	      	<article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
-      <header class="card-header">
-        <h3>90's Collage Maker</h3>
-        <code class="path">art tools</code>
-      </header>
-      <p class="blurb">Canvas + drag and drop + 90s nostalgia</p>
-      <div class="actions">
-        <a class="btn primary" href="https://monapdx.github.io/90s-collage-maker/">Open Demo</a>
-        <a class="btn" href="https://github.com/monapdx/90s-collage-maker">View Folder</a>
-      </div>
-    </article> 
-	
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Frontend Tools & Widgets</title>
+        <meta name="description" content="A curated set of standalone HTML + CSS + JavaScript mini‑projects to download, customize, and remix." />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+        <style>
+            :root {
+            --bg: #07080c;              /* darker, less blue */
+            --panel: #0f1220;
+            --card: #11142a;
+            
+            --ink: #f3f6ff;
+            --ink-dim: #a9b3c7;
+            
+            --accent: #ed0d92;          /* your pink */
+            --accent-bright: #ff149f;   /* slightly brighter */
+            --ring: rgba(237,13,146,.35);
+            
+            --muted: #171b30;
+            }
+            * { box-sizing: border-box; }
+            html, body { height: 100%; }
+            body {
+            margin: 0;
+            font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            background: radial-gradient(1200px 800px at 80% -10%, rgba(110,231,255,.15), transparent 60%), linear-gradient(180deg, var(--bg), #0a0d12);
+            color: var(--ink);
+            line-height: 1.5;
+            }
+            .wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 32px 20px 64px;
+            }
+            header.hero {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 20px;
+            }
+            header.hero h1 {
+            font-size: clamp(1.8rem, 1.3rem + 2vw, 3rem);
+            line-height: 1.1;
+            margin: 0;
+            letter-spacing: -0.02em;
+            }
+            header.hero p { margin: 0; color: var(--ink-dim); }
+            .toolbar {
+            display: flex;
+            gap: 12px;
+            margin: 22px 0 28px;
+            flex-wrap: wrap;
+            align-items: center;
+            }
+            .input {
+            position: relative;
+            flex: 1 1 320px;
+            }
+            .input input {
+            width: 100%;
+            background: var(--panel);
+            border: 1px solid #222b3a;
+            color: var(--ink);
+            border-radius: 12px;
+            padding: 12px 14px 12px 44px;
+            outline: none;
+            transition: border .2s, box-shadow .2s;
+            }
+            .input input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 6px var(--ring);
+            }
+            .input svg {
+            position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+            opacity: .8;
+            }
+            .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 16px;
+            }
+            .card {
+            background: linear-gradient(180deg, var(--card), #0f1623);
+            border: 1px solid #1a2233;
+            border-radius: 16px;
+            padding: 16px;
+            display: grid;
+            gap: 10px;
+            transition: transform .15s ease, box-shadow .15s ease, border-color .15s;
+            }
+            .card:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent);
+            box-shadow: 0 8px 28px rgba(0,0,0,.4);
+            }
+            .card-header {
+            display: grid;
+            gap: 6px;
+            }
+            .card-header h3 {
+            margin: 0; font-size: 1.05rem; letter-spacing: -.01em;
+            }
+            .path {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            color: var(--ink-dim);
+            background: var(--muted);
+            border: 1px solid #222b3b;
+            border-radius: 8px;
+            padding: 2px 6px;
+            width: fit-content;
+            }
+            .blurb { color: var(--ink-dim); min-height: 42px; }
+            .actions { display: flex; gap: 10px; flex-wrap: wrap;align-items:center; }
+            .btn {
+            min-height: 36px;
+            appearance: none;
+            border: 1px solid #253145;
+            background: #101726;
+            color: var(--ink);
+            border-radius: 10px;
+            padding: 8px 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: .95rem;
+            
+            line-height: 1;              /* ← ADD THIS */
+            display: inline-flex;        /* ← AND THIS */
+            align-items: center;
+            
+            transition: background .15s, border-color .15s, transform .05s;
+            }
+            .btn:hover {
+            box-shadow: 0 0 0 2px rgba(237,13,146,.25),
+            0 0 18px rgba(237,13,146,.25);
+            }
+            .btn:active { transform: translateY(1px); }
+            .btn.primary {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+            }
+            
+            .btn.primary:hover {
+            background: var(--accent-bright);
+            border-color: var(--accent-bright);
+            }
+            footer {
+            margin-top: 40px;
+            padding-top: 24px;
+            border-top: 1px solid #1a2233;
+            color: var(--ink-dim);
+            font-size: .95rem;
+            }
+            .kbd { background: #222b3a; border: 1px solid #2d3950; border-radius: 6px; padding: 2px 6px; }
+        </style>
+    </head>
+    <body>
+        <div class="wrap">
+            <header class="hero">
+                <h1>Frontend Tools & Widgets</h1>
+                <p>Collection of frontend HTML/CSS/Javascript projects, widgets & standalone tools.</p>
+            </header>
+            
+            <div class="toolbar">
+                <div class="input">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                    <input id="search" type="search" placeholder="Search projects..." autocomplete="off" />
+                </div>
+                <div class="hint">Tip: press <span class="kbd">/</span> to focus search</div>
+            </div>
+            
+            <section id="grid" class="grid">
+                
+                <article class="card" data-name="html-projects cozy pixel city —">
+                    <header class="card-header">
+                        <h3>Personal Palette Generator</h3>
+                        <code class="path">color tools</code>
+                    </header>
+                    <p class="blurb">Choose your favorites with color picker + generate your custom palette</p>
+                    <div class="actions">
+                        <a class="btn primary" href="personal-palette.html">Open Demo</a>
+                        <a class="btn" href="personal-palette.html">View Folder</a>
+                    </div>
+                </article>
+                
+                <article class="card" data-name="html-projects cozy pixel city —">
+                    <header class="card-header">
+                        <h3>Pixel Art Palette Extractor</h3>
+                        <code class="path">color tools</code>
+                        
+                    </header>
+                    <p class="blurb">Upload pixel art ---> color palette extracted</p>
+                    <div class="actions">
+                        <a class="btn primary" href="pixel-art-palette-grabber.html">Open Demo</a>
+                        <a class="btn" href="pixel-art-palette-grabber.html">View Folder</a>
+                    </div>
+                </article>
+                
+                <article class="card" data-name="html-projects cozy pixel city —">
+                    <header class="card-header">
+                        <h3>Link List Generator</h3>
+                        <code class="path">code generators</code>
+                    </header>
+                    <p class="blurb">HTML list of links generator with optional CSS class + placeholder text.</p>
+                    <div class="actions">
+                        <a class="btn primary" href="link-list-generator.html">Open Demo</a>
+                        <a class="btn" href="link-list-generator.html">View Folder</a>
+                    </div>
+                </article>
+                
+                
+                <article class="card" data-name="html-projects cozy pixel city —">
+                    <header class="card-header">
+                        <h3>Offline ChatGPT</h3>
+                        <code class="path">browser tools</code>
+                    </header>
+                    <p class="blurb">Load + browse your ChatGPT conversations.json offline.</p>
+                    <div class="actions">
+                        <a class="btn primary" href="offline-GPT.html">Open Demo</a>
+                        <a class="btn" href="offline-GPT.html">View Folder</a>
+                    </div>
+                </article>
+                
+                
+                
+                <article class="card" data-name="html-projects/demos kindle cookbook formatter kindle cookbook formatter">
+                    <header class="card-header">
+                        <h3>Email Inbox Viewer</h3>
+                        <code class="path">email tools</code>
+                    </header>
+                    <p class="blurb">Load + browse any .mbox file.</p>
+                    <div class="actions">
+                        <a class="btn primary" href="email-viewer.html">Open Demo</a>
+                        <a class="btn" href="email-viewer.html">View Folder</a>
+                    </div>
+                </article>
+                
+                <article class="card" data-name="html-projects/demos kindle cookbook formatter kindle cookbook formatter">
+                    <header class="card-header">
+                        <h3>Scratch-It Generator</h3>
+                        <code class="path">code generators</code>
+                    </header>
+                    <p class="blurb">Upload your own image and generate a scratch-it card.</p>
+                    <div class="actions">
+                        <a class="btn primary" href="scratch-it-generator.html">Open Demo</a>
+                        <a class="btn" href="scratch-it-generator.html">View Folder</a>
+                    </div>
+                </article>
+                
+                
+                <article class="card" data-name="html-projects/demos kindle cookbook formatter kindle cookbook formatter">
+                    <header class="card-header">
+                        <h3>Button Generator</h3>
+                        <code class="path">code generators</code>
+                    </header>
+                    <p class="blurb">Yet another frontend button generator. Export as code or PNG.</p>
+                    <div class="actions">
+                        <a class="btn primary" href="button-generator.html">Open Demo</a>
+                        <a class="btn" href="button-generator.html">View Folder</a>
+                    </div>
+                </article>
+                
+                
+                <article class="card" data-name="html-projects/empty-tag-generator.html merged tag generator —">
+                    <header class="card-header">
+                        <h3>HumorDNA</h3>
+                        <code class="path">quizzes</code>
+                    </header>
+                    <p class="blurb">A fun + silly quiz to explore your humor style.</p>
+                    <div class="actions">
+                        <a class="btn primary" href="https://monapdx.github.io/Humor-DNA/">Open Demo</a>
+                        <a class="btn" href="https://monapdx.github.io/Humor-DNA/">View Folder</a>
+                    </div>
+                </article>
+                
+                
+                <article class="card" data-name="html-projects/goal-tracker.html goal progress tracker goal progress tracker">
+                    <header class="card-header">
+                        <h3>Quiz Builder</h3>
+                        <code class="path">code generators</code>
+                    </header>
+                    <p class="blurb">Dead simple + fast quiz generator.</p>
+                    <div class="actions">
+                        <a class="btn primary" href="quiz-builder.html">Open Demo</a>
+                        <a class="btn" href="quiz-builder.html/">View Folder</a>
+                    </div>
+                </article>
+                
+                
+                <article class="card" data-name="html-projects/html5-quiz.html html5 tags quiz html5 element quiz">
+                    <header class="card-header">
+                        <h3>HTML5 Tags Quiz</h3>
+                        <code class="path">quizzes</code>
+                    </header>
+                    <p class="blurb">How many of the 110 HTML5 tags can you name?</p>
+                    <div class="actions">
+                        <a class="btn primary" href="html5-quiz.html">Open Demo</a>
+                        <a class="btn" href="html5-quiz.html/">View Folder</a>
+                    </div>
+                </article>
+                
+                
+                
+                
+                
+                
+                
+                
+                <article class="card" data-name="html-projects/notes.html notes.html —">
+                    <header class="card-header">
+                        <h3>Snippet Saver</h3>
+                        <code class="path">browser tools</code>
+                    </header>
+                    <p class="blurb">Save + delete notes & snippets right in the browser.</p>
+                    <div class="actions">
+                        <a class="btn primary" href="notes.html">Open Demo</a>
+                        <a class="btn" href="notes.html/">View Folder</a>
+                    </div>
+                </article>
+                
+                
+                <article class="card" data-name="html-projects/philosophy-quiz.html which philosophical movements align with you? which philosophical movements align with you?">
+                    <header class="card-header">
+                        <h3>Which Philosophical Movements Align With You?</h3>
+                        <code class="path">quizzes</code>
+                    </header>
+                    <p class="blurb">A fun + informative philosophy quiz.</p>
+                    <div class="actions">
+                        <a class="btn primary" href="philosophy-quiz.html">Open Demo</a>
+                        <a class="btn" href="philosophy-quiz.html/">View Folder</a>
+                    </div>
+                </article>
+                
+                
+                
+                
+                
+                <article class="card" data-name="html-projects/poetry-grid poetry grid helper —">
+                    <header class="card-header">
+                        <h3>Poetry Squared</h3>
+                        <code class="path">writing tools</code>
+                    </header>
+                    <p class="blurb">Challenge yourself to write a poem that reads the same both horizontally + vertically.</p>
+                    <div class="actions">
+                        <a class="btn primary" href="https://monapdx.github.io/Poetry-Squared/">Open Demo</a>
+                        <a class="btn" href="https://monapdx.github.io/Poetry-Squared/">View Folder</a>
+                    </div>
+                </article>
+                
+                
+                <article class="card" data-name="html-projects/qr-codes.html qr-codes.html —">
+                    <header class="card-header">
+                        <h3>URL to QR Code</h3>
+                        <code class="path">code generators</code>
+                    </header>
+                    <p class="blurb">URL ---> QR Code</p>
+                    <div class="actions">
+                        <a class="btn primary" href="qr-codes.html">Open Demo</a>
+                        <a class="btn" href="qr-codes.html/">View Folder</a>
+                    </div>
+                </article>
+                
+                
+                <article class="card" data-name="html-projects/quote-image-generator.html quote graphic generator —">
+                    <header class="card-header">
+                        <h3>Quote Graphic Generator</h3>
+                        <code class="path">image generators</code>
+                    </header>
+                    <p class="blurb">Enter favorite quotes + choose font + pick gradient colors = export image.</p>
+                    <div class="actions">
+                        <a class="btn primary" href="quote-image-generator.html">Open Demo</a>
+                        <a class="btn" href="quote-image-generator.html/">View Folder</a>
+                    </div>
+                </article>
+                
+                
+                <article class="card" data-name="html-projects/random-palette.html random color palette generator random color palette generator">
+                    <header class="card-header">
+                        <h3>Random Color Palette</h3>
+                        <code class="path">color tools</code>
+                    </header>
+                    <p class="blurb">Dead simple random color palette generator.</p>
+                    <div class="actions">
+                        <a class="btn primary" href="random-palette.html">Open Demo</a>
+                        <a class="btn" href="random-palette.html/">View Folder</a>
+                    </div>
+                </article>
+                
+                
+                <article class="card" data-name="html-projects/rhymes.html rhyme finder · datamuse api —">
+                    <header class="card-header">
+                        <h3>Rhyme Finder</h3>
+                        <code class="path">writing tools</code>
+                    </header>
+                    <p class="blurb">Advanced search for rhyming words via the Datamuse API.</p>
+                    <div class="actions">
+                        <a class="btn primary" href="rhymes.html">Open Demo</a>
+                        <a class="btn" href="rhymes.html/">View Folder</a>
+                    </div>
+                </article>
+                
+                
+                <article class="card" data-name="html-projects/rhymes.html rhyme finder · datamuse api —">
+                    <header class="card-header">
+                        <h3>Pixel Drawing Board</h3>
+                        <code class="path">art tools</code>
+                    </header>
+                    <p class="blurb">Drawing board + editor for creating + exporting pixel art.</p>
+                    <div class="actions">
+                        <a class="btn primary" href="pixel-art-draw.html">Open Demo</a>
+                        <a class="btn" href="pixel-art-draw.html/">View Folder</a>
+                    </div>
+                </article>
+                
+                
+                <article class="card" data-name="html-projects/sms-templates.html sms templates —">
+                    <header class="card-header">
+                        <h3>Hero Diagram Generator</h3>
+                        <code class="path">image generators</code>
+                    </header>
+                    <p class="blurb">Generate custom pipeline visualizations + export as SVG.</p>
+                    <div class="actions">
+                        <a class="btn primary" href="hero-diagram-generator.html">Open Demo</a>
+                        <a class="btn" href="hero-diagram-generator.html/">View Folder</a>
+                    </div>
+                </article>
+                
+                
+                <article class="card" data-name="html-projects/table-generator.html editable table generator —">
+                    <header class="card-header">
+                        <h3>Editable Table Generator</h3>
+                        <code class="path">code generators</code>
+                    </header>
+                    <p class="blurb">Columns + rows + headings = generate HTML table. Click in any table cell to edit content.</p>
+                    <div class="actions">
+                        <a class="btn primary" href="table-generator.html">Open Demo</a>
+                        <a class="btn" href="table-generator.html/">View Folder</a>
+                    </div>
+                </article>
+                
+                
+                <article class="card" data-name="html-projects/table-generator.html editable table generator —">
+                    <header class="card-header">
+                        <h3>Placeholder Image Generator</h3>
+                        <code class="path">image generators</code>
+                    </header>
+                    <p class="blurb">Input dimensions + prompt + style = placeholder image</p>
+                    <div class="actions">
+                        <a class="btn primary" href="placeholder-image-generator.html">Open Demo</a>
+                        <a class="btn" href="placeholder-image-generator.html">View Folder</a>
+                    </div>
+                </article>
+                
+                
+                
+                <article class="card" data-name="kindle-cookbooks/formatter.html">
+                    <header class="card-header">
+                        <h3>Cookbook Formatter</h3>
+                        <code class="path">writing tools</code>
+                    </header>
+                    <p class="blurb">Easily format + generate Kindle-ready cookbooks.</p>
+                    <div class="actions">
+                        <a class="btn primary" href="kindle-cookbooks/formatter.html">Open Demo</a>
+                        <a class="btn" href="kindle-cookbooks/formatter.html">View Folder</a>
+                    </div>
+                </article>
+                
+                
+                <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
+                    <header class="card-header">
+                        <h3>Voice Recorder</h3>
+                        <code class="path">browser tools</code>
+                    </header>
+                    <p class="blurb">Record + download audio and voice notes right in the browser.</p>
+                    <div class="actions">
+                        <a class="btn primary" href="voice-record.html">Open Demo</a>
+                        <a class="btn" href="voice-record.html/">View Folder</a>
+                    </div>
+                </article>
+                
+                
+                <article class="card" data-name="html-projects/wiki write your own wikipedia page —">
+                    <header class="card-header">
+                        <h3>Folder Structure Visualizer</h3>
+                        <code class="path">image generators</code>
+                    </header>
+                    <p class="blurb">Create directory tree diagrams of your projects + export as .txt, .json, .md, PNG or SVG.</p>
+                    <div class="actions">
+                        <a class="btn primary" href="https://monapdx.github.io/folder-structure-generator/">Open Demo</a>
+                        <a class="btn" href="https://monapdx.github.io/folder-structure-generator/">View Folder</a>
+                    </div>
+                </article>
+                
+                
+                <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
+                    <header class="card-header">
+                        <h3>Presentation Slide Designer</h3>
+                        <code class="path">browser tools</code>
+                    </header>
+                    <p class="blurb">Basic slide editor + designer in the browser.</p>
+                    <div class="actions">
+                        <a class="btn primary" href="https://monapdx.github.io/presentation-slide-editor/">Open Demo</a>
+                        <a class="btn" href="https://monapdx.github.io/presentation-slide-editor/">View Folder</a>
+                    </div>
+                </article>
+                
+                <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
+                    <header class="card-header">
+                        <h3>Static Calendar Generator</h3>
+                        <code class="path">browser tools</code>
+                    </header>
+                    <p class="blurb">Upload an .ics file and generate a static archive of your Google Calendar.</p>
+                    <div class="actions">
+                        <a class="btn primary" href="https://monapdx.github.io/google-calendar-static-builder/">Open Demo</a>
+                        <a class="btn" href="https://monapdx.github.io/google-calendar-static-builder/">View Folder</a>
+                    </div>
+                </article>
+                
+                <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
+                    <header class="card-header">
+                        <h3>URL Shortener</h3>
+                        <code class="path">browser tools</code>
+                    </header>
+                    <p class="blurb">Shorten URLs + track clicks.</p>
+                    <div class="actions">
+                        <a class="btn primary" href="https://gdurls-clone.vercel.app/">Open Demo</a>
+                        <a class="btn" href="https://github.com/monapdx/gdurls-clone">View Folder</a>
+                    </div>
+                </article>
+                
+                <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
+                    <header class="card-header">
+                        <h3>Google Dependency Audit</h3>
+                        <code class="path">browser tools</code>
+                    </header>
+                    <p class="blurb">Auditing tool that helps you make a plan for your data beyond Google.</p>
+                    <div class="actions">
+                        <a class="btn primary" href="https://monapdx.github.io/google-dependency-audit/">Open Demo</a>
+                        <a class="btn" href="https://github.com/monapdx/google-dependency-audit">View Folder</a>
+                    </div>
+                </article>  
+                
+                
+                <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
+                    <header class="card-header">
+                        <h3>90's Collage Maker</h3>
+                        <code class="path">art tools</code>
+                    </header>
+                    <p class="blurb">Canvas + drag and drop + 90s nostalgia</p>
+                    <div class="actions">
+                        <a class="btn primary" href="https://monapdx.github.io/90s-collage-maker/">Open Demo</a>
+                        <a class="btn" href="https://github.com/monapdx/90s-collage-maker">View Folder</a>
+                    </div>
+                </article> 
+                
 		      	<article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
-      <header class="card-header">
-        <h3>Github Topic Cloud Generator</h3>
-        <code class="path">code generators</code>
-      </header>
-      <p class="blurb">Enter any Github username to generate a tag cloud of their most frequently used Topics.</p>
-      <div class="actions">
-        <a class="btn primary" href="github-topic-cloud.html">Open Demo</a>
-        <a class="btn" href="github-topic-cloud.html">View Folder</a>
-      </div>
-    </article> 
-	
-			      	<article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
-      <header class="card-header">
-        <h3>Pixel Art to SVG</h3>
-        <code class="path">art tools</code>
-      </header>
-      <p class="blurb">Upload a pixel art image ---> convert to SVG</p>
-      <div class="actions">
-        <a class="btn primary" href="pixel-art-to-svg.html">Open Demo</a>
-        <a class="btn" href="pixel-art-to-svg.html">View Folder</a>
-      </div>
-    </article> 
-	
-				      	<article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
-      <header class="card-header">
-        <h3>HEX Color to Tailwind Classes</h3>
-        <code class="path">art tools</code>
-      </header>
-      <p class="blurb">Choose a HEX color ---> get Tailwind classes</p>
-      <div class="actions">
-        <a class="btn primary" href="hex-to-tailwind.html">Open Demo</a>
-        <a class="btn" href="hex-to-tailwind.html">View Folder</a>
-      </div>
-    </article> 
-	
-					      	<article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
-      <header class="card-header">
-        <h3>JSON to Typescript</h3>
-        <code class="path">code generators</code>
-      </header>
-      <p class="blurb">Upload JSON file ---> get Typescript types</p>
-      <div class="actions">
-        <a class="btn primary" href="json-schema-to-typescript.html">Open Demo</a>
-        <a class="btn" href="json-schema-to-typescript.html">View Folder</a>
-      </div>
-    </article> 
-	
-						      	<article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
-      <header class="card-header">
-        <h3>Boggle Board Generator</h3>
-        <code class="path">word games</code>
-      </header>
-      <p class="blurb">Boggle board generator with shake effect, timer & basic scoring.</p>
-      <div class="actions">
-        <a class="btn primary" href="boggleish.html">Open Demo</a>
-        <a class="btn" href="boggleish.html">View Folder</a>
-      </div>
-    </article>
-	
-	
-							      	<article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
-      <header class="card-header">
-        <h3>Alt Text Generator</h3>
-        <code class="path">browser tools</code>
-      </header>
-      <p class="blurb">Upload image ---> describe ---> generate ALT text</p>
-      <div class="actions">
-        <a class="btn primary" href="alt-text-generator.html">Open Demo</a>
-        <a class="btn" href="alt-text-generator.html">View Folder</a>
-      </div>
-    </article>
-	
-								      	<article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
-      <header class="card-header">
-        <h3>Fake Data Generator</h3>
-        <code class="path">code generators</code>
-      </header>
-      <p class="blurb">Write schema ---> generate fake data ---> export</p>
-      <div class="actions">
-        <a class="btn primary" href="fake-data-generator.html">Open Demo</a>
-        <a class="btn" href="fake-data-generator.html">View Folder</a>
-      </div>
-    </article>
-	
-									      	<article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
-      <header class="card-header">
-        <h3>File Naming Generator</h3>
-        <code class="path">code generators</code>
-      </header>
-      <p class="blurb">Choose file naming conventions ---> generate file names</p>
-      <div class="actions">
-        <a class="btn primary" href="file-naming-generator.html">Open Demo</a>
-        <a class="btn" href="file-naming-generator.html">View Folder</a>
-      </div>
-    </article>
-	
-	<article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
-      <header class="card-header">
-        <h3>RegEx Explainer</h3>
-        <code class="path">code generators</code>
-      </header>
-      <p class="blurb">Enter RegEx ---> decode in plain English</p>
-      <div class="actions">
-        <a class="btn primary" href="regex-explainer.html">Open Demo</a>
-        <a class="btn" href="regex-explainer.html">View Folder</a>
-      </div>
-    </article>
-	
-    
-    </section>
-
-    <footer>
-      <p>MIT Licensed. Built by Ashly. To add a new project, see <a href="./CONTRIBUTING.md">Contributing</a>.</p>
-    </footer>
-  </div>
-
-  <script>
-    // Quick search / filter
-    const input = document.getElementById('search');
-    const grid = document.getElementById('grid');
-    const cards = Array.from(grid.querySelectorAll('.card'));
-
-    function filter() {
-      const q = (input.value || '').trim().toLowerCase();
-      for (const card of cards) {
-        const hay = card.getAttribute('data-name') || '';
-        card.style.display = hay.includes(q) ? '' : 'none';
-      }
-    }
-    input.addEventListener('input', filter);
-    window.addEventListener('keydown', (e) => {
-      if (e.key === '/' && document.activeElement !== input) {
-        e.preventDefault();
-        input.focus();
-        input.select();
-      }
-    });
-  </script>
-</body>
+                    <header class="card-header">
+                        <h3>Github Topic Cloud Generator</h3>
+                        <code class="path">code generators</code>
+                    </header>
+                    <p class="blurb">Enter any Github username to generate a tag cloud of their most frequently used Topics.</p>
+                    <div class="actions">
+                        <a class="btn primary" href="github-topic-cloud.html">Open Demo</a>
+                        <a class="btn" href="github-topic-cloud.html">View Folder</a>
+                    </div>
+                </article> 
+                
+                <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
+                    <header class="card-header">
+                        <h3>Pixel Art to SVG</h3>
+                        <code class="path">art tools</code>
+                    </header>
+                    <p class="blurb">Upload a pixel art image ---> convert to SVG</p>
+                    <div class="actions">
+                        <a class="btn primary" href="pixel-art-to-svg.html">Open Demo</a>
+                        <a class="btn" href="pixel-art-to-svg.html">View Folder</a>
+                    </div>
+                </article> 
+                
+                <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
+                    <header class="card-header">
+                        <h3>HEX Color to Tailwind Classes</h3>
+                        <code class="path">art tools</code>
+                    </header>
+                    <p class="blurb">Choose a HEX color ---> get Tailwind classes</p>
+                    <div class="actions">
+                        <a class="btn primary" href="hex-to-tailwind.html">Open Demo</a>
+                        <a class="btn" href="hex-to-tailwind.html">View Folder</a>
+                    </div>
+                </article> 
+                
+                <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
+                    <header class="card-header">
+                        <h3>JSON to Typescript</h3>
+                        <code class="path">code generators</code>
+                    </header>
+                    <p class="blurb">Upload JSON file ---> get Typescript types</p>
+                    <div class="actions">
+                        <a class="btn primary" href="json-schema-to-typescript.html">Open Demo</a>
+                        <a class="btn" href="json-schema-to-typescript.html">View Folder</a>
+                    </div>
+                </article> 
+                
+                <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
+                    <header class="card-header">
+                        <h3>Boggle Board Generator</h3>
+                        <code class="path">word games</code>
+                    </header>
+                    <p class="blurb">Boggle board generator with shake effect, timer & basic scoring.</p>
+                    <div class="actions">
+                        <a class="btn primary" href="boggleish.html">Open Demo</a>
+                        <a class="btn" href="boggleish.html">View Folder</a>
+                    </div>
+                </article>
+                
+                
+                <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
+                    <header class="card-header">
+                        <h3>Alt Text Generator</h3>
+                        <code class="path">browser tools</code>
+                    </header>
+                    <p class="blurb">Upload image ---> describe ---> generate ALT text</p>
+                    <div class="actions">
+                        <a class="btn primary" href="alt-text-generator.html">Open Demo</a>
+                        <a class="btn" href="alt-text-generator.html">View Folder</a>
+                    </div>
+                </article>
+                
+                <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
+                    <header class="card-header">
+                        <h3>Fake Data Generator</h3>
+                        <code class="path">code generators</code>
+                    </header>
+                    <p class="blurb">Write schema ---> generate fake data ---> export</p>
+                    <div class="actions">
+                        <a class="btn primary" href="fake-data-generator.html">Open Demo</a>
+                        <a class="btn" href="fake-data-generator.html">View Folder</a>
+                    </div>
+                </article>
+                
+                <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
+                    <header class="card-header">
+                        <h3>File Naming Generator</h3>
+                        <code class="path">code generators</code>
+                    </header>
+                    <p class="blurb">Choose file naming conventions ---> generate file names</p>
+                    <div class="actions">
+                        <a class="btn primary" href="file-naming-generator.html">Open Demo</a>
+                        <a class="btn" href="file-naming-generator.html">View Folder</a>
+                    </div>
+                </article>
+                
+                <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
+                    <header class="card-header">
+                        <h3>RegEx Explainer</h3>
+                        <code class="path">code generators</code>
+                    </header>
+                    <p class="blurb">Enter RegEx ---> decode in plain English</p>
+                    <div class="actions">
+                        <a class="btn primary" href="regex-explainer.html">Open Demo</a>
+                        <a class="btn" href="regex-explainer.html">View Folder</a>
+                    </div>
+                </article>
+                
+                 <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
+                    <header class="card-header">
+                        <h3>Countdown Timer Generator</h3>
+                        <code class="path">code generators</code>
+                    </header>
+                    <p class="blurb">Choose Color + Enter date/time + URL</p>
+                    <div class="actions">
+                        <a class="btn primary" href="countdown-timer-generator.html">Open Demo</a>
+                        <a class="btn" href="countdown-timer-generator.html">View Folder</a>
+                    </div>
+                </article>
+                
+                <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
+                    <header class="card-header">
+                        <h3>CSV to SQL Generator</h3>
+                        <code class="path">code generators</code>
+                    </header>
+                    <p class="blurb">Upload CSV ---> SQL</p>
+                    <div class="actions">
+                        <a class="btn primary" href="csv-to-sql.html">Open Demo</a>
+                        <a class="btn" href="countdown-timer-generator.html">View Folder</a>
+                    </div>
+                </article>
+                
+                <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
+                    <header class="card-header">
+                        <h3>JSON to Typescript</h3>
+                        <code class="path">converters</code>
+                    </header>
+                    <p class="blurb">JSON ---> Typescript</p>
+                    <div class="actions">
+                        <a class="btn primary" href="json-schema-to-typescript.html">Open Demo</a>
+                        <a class="btn" href="json-schema-to-typescript.html">View Folder</a>
+                    </div>
+                </article>
+                
+                
+            </section>
+            
+            <footer>
+                <p>MIT Licensed. Built by Ashly. To add a new project, see <a href="./CONTRIBUTING.md">Contributing</a>.</p>
+            </footer>
+        </div>
+        
+        <script>
+            // Quick search / filter
+            const input = document.getElementById('search');
+            const grid = document.getElementById('grid');
+            const cards = Array.from(grid.querySelectorAll('.card'));
+            
+            function filter() {
+                const q = (input.value || '').trim().toLowerCase();
+                for (const card of cards) {
+                    const hay = card.getAttribute('data-name') || '';
+                    card.style.display = hay.includes(q) ? '' : 'none';
+                }
+            }
+            input.addEventListener('input', filter);
+            window.addEventListener('keydown', (e) => {
+                if (e.key === '/' && document.activeElement !== input) {
+                    e.preventDefault();
+                    input.focus();
+                    input.select();
+                }
+            });
+        </script>
+    </body>
 </html>
