@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Boggleish</title>
+
 <style>
 body{
     font-family: Arial, sans-serif;
@@ -21,6 +22,14 @@ h1{
 
 .game{
     width:min(100%,420px);
+}
+
+.status{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:10px;
+    font-weight:bold;
 }
 
 .board{
@@ -62,6 +71,9 @@ h1{
 
 .words{
     margin-top:15px;
+    background:white;
+    padding:10px;
+    border-radius:8px;
 }
 
 @media (max-width:600px){
@@ -74,11 +86,8 @@ h1{
         flex-direction:column;
     }
 
+    .controls input,
     .controls button{
-        width:100%;
-    }
-
-    .controls input{
         width:100%;
     }
 
@@ -92,16 +101,21 @@ h1{
 
 <div class="game">
 
+<div class="status">
+<div>Time: <span id="timer">60</span></div>
+<div>Score: <span id="score">0</span></div>
+</div>
+
 <div class="board" id="board"></div>
 
 <div class="controls">
-<input id="guess" placeholder="Enter word">
+<input id="guess" placeholder="Enter word" autocomplete="off">
 <button onclick="submitWord()">Submit</button>
 <button onclick="newBoard()">New Board</button>
 </div>
 
 <div class="words">
-<strong>Found Words:</strong>
+<strong>Found Words</strong>
 <ul id="wordList"></ul>
 </div>
 
@@ -110,9 +124,40 @@ h1{
 <script>
 
 const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+const ROUND_TIME = 60
+
+let time = ROUND_TIME
+let score = 0
+let timerInterval
 
 function randomLetter(){
     return letters[Math.floor(Math.random()*letters.length)]
+}
+
+function updateDisplay(){
+    document.getElementById("timer").textContent = time
+    document.getElementById("score").textContent = score
+}
+
+function startTimer(){
+
+    clearInterval(timerInterval)
+
+    time = ROUND_TIME
+
+    timerInterval = setInterval(() => {
+
+        time--
+
+        updateDisplay()
+
+        if(time <= 0){
+            clearInterval(timerInterval)
+            alert("Time's up! Final score: " + score)
+        }
+
+    },1000)
+
 }
 
 function newBoard(){
@@ -121,15 +166,28 @@ function newBoard(){
     board.innerHTML=""
 
     for(let i=0;i<16;i++){
+
         const tile = document.createElement("div")
         tile.className="tile"
         tile.textContent=randomLetter()
+
         board.appendChild(tile)
+
     }
+
+    document.getElementById("wordList").innerHTML=""
+    document.getElementById("guess").value=""
+
+    score = 0
+    updateDisplay()
+
+    startTimer()
 
 }
 
 function submitWord(){
+
+    if(time <= 0) return
 
     const input = document.getElementById("guess")
     const word = input.value.trim()
@@ -141,9 +199,22 @@ function submitWord(){
 
     document.getElementById("wordList").appendChild(li)
 
+    score += word.length
+
     input.value=""
 
+    updateDisplay()
+
 }
+
+document.getElementById("guess").addEventListener("keydown", function(e){
+
+    if(e.key === "Enter"){
+        e.preventDefault()
+        submitWord()
+    }
+
+})
 
 newBoard()
 
