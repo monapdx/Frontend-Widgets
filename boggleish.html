@@ -1,224 +1,319 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Boggleish</title>
 
 <style>
-body{
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
     font-family: Arial, sans-serif;
-    margin:0;
-    padding:20px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    background:#f5f5f5;
-}
+    margin: 0;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #f5f5f5;
+    color: #222;
+  }
 
-h1{
-    margin-bottom:10px;
-}
+  h1 {
+    margin: 0 0 12px;
+    text-align: center;
+  }
 
-.game{
-    width:min(100%,420px);
-}
+  .game {
+    width: min(100%, 460px);
+  }
 
-.status{
-    display:flex;
-    justify-content:space-between;
-    gap:10px;
-    margin-bottom:10px;
-    font-weight:bold;
-}
+  .status {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
 
-.board{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:8px;
-    margin-bottom:15px;
-}
+  .status-box {
+    flex: 1 1 140px;
+    background: white;
+    border-radius: 10px;
+    padding: 10px 12px;
+    text-align: center;
+    font-weight: bold;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  }
 
-.tile{
-    background:white;
-    border-radius:10px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    aspect-ratio:1;
-    font-size:clamp(24px,6vw,36px);
-    font-weight:bold;
-    box-shadow:0 2px 6px rgba(0,0,0,0.2);
-}
+  .board-wrap {
+    background: white;
+    border-radius: 14px;
+    padding: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.14);
+    margin-bottom: 14px;
+  }
 
-.controls{
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
-}
+  .board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    width: 100%;
+  }
 
-.controls input{
-    flex:1;
-    padding:12px;
-    font-size:16px;
-}
+  .tile {
+    background: #fafafa;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1 / 1;
+    font-size: clamp(24px, 7vw, 36px);
+    font-weight: bold;
+    box-shadow: inset 0 0 0 1px #e8e8e8, 0 2px 6px rgba(0,0,0,0.12);
+    user-select: none;
+  }
 
-.controls button{
-    padding:12px 16px;
-    font-size:16px;
-    cursor:pointer;
-}
+  .controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
 
-.words{
-    margin-top:15px;
-    background:white;
-    padding:10px;
-    border-radius:8px;
-}
+  .controls input {
+    flex: 1 1 180px;
+    min-width: 0;
+    padding: 12px 14px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    outline: none;
+  }
 
-@media (max-width:600px){
+  .controls input:focus {
+    border-color: #666;
+  }
 
-    body{
-        padding:10px;
+  .controls button {
+    padding: 12px 16px;
+    font-size: 16px;
+    border: none;
+    border-radius: 10px;
+    background: #222;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.08s ease, opacity 0.2s ease;
+  }
+
+  .controls button:hover {
+    opacity: 0.92;
+  }
+
+  .controls button:active {
+    transform: scale(0.97);
+  }
+
+  .words {
+    background: white;
+    padding: 12px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  }
+
+  .words h2 {
+    font-size: 16px;
+    margin: 0 0 8px;
+  }
+
+  .words ul {
+    margin: 0;
+    padding-left: 20px;
+    word-break: break-word;
+  }
+
+  .words li {
+    margin-bottom: 4px;
+  }
+
+  .shake {
+    animation: shakeBoard 0.45s ease;
+  }
+
+  @keyframes shakeBoard {
+    0%   { transform: translateX(0); }
+    15%  { transform: translateX(-8px) rotate(-1deg); }
+    30%  { transform: translateX(8px) rotate(1deg); }
+    45%  { transform: translateX(-7px) rotate(-1deg); }
+    60%  { transform: translateX(7px) rotate(1deg); }
+    75%  { transform: translateX(-4px) rotate(-0.5deg); }
+    90%  { transform: translateX(4px) rotate(0.5deg); }
+    100% { transform: translateX(0); }
+  }
+
+  @media (max-width: 600px) {
+    body {
+      padding: 10px;
     }
 
-    .controls{
-        flex-direction:column;
+    .controls {
+      flex-direction: column;
     }
 
     .controls input,
-    .controls button{
-        width:100%;
+    .controls button {
+      width: 100%;
     }
 
-}
+    .board-wrap {
+      padding: 8px;
+    }
+
+    .tile {
+      font-size: clamp(22px, 8vw, 32px);
+    }
+  }
 </style>
 </head>
-
 <body>
+  <h1>Boggleish</h1>
 
-<h1>Boggleish</h1>
+  <div class="game">
+    <div class="status">
+      <div class="status-box">Time: <span id="timer">60</span>s</div>
+      <div class="status-box">Score: <span id="score">0</span></div>
+    </div>
 
-<div class="game">
+    <div class="board-wrap" id="boardWrap">
+      <div class="board" id="board"></div>
+    </div>
 
-<div class="status">
-<div>Time: <span id="timer">60</span></div>
-<div>Score: <span id="score">0</span></div>
-</div>
+    <div class="controls">
+      <input id="guess" type="text" placeholder="Enter word" autocomplete="off" />
+      <button id="submitBtn" type="button">Submit</button>
+      <button id="newBoardBtn" type="button">New Board</button>
+      <button id="shakeBtn" type="button">Shake</button>
+    </div>
 
-<div class="board" id="board"></div>
-
-<div class="controls">
-<input id="guess" placeholder="Enter word" autocomplete="off">
-<button onclick="submitWord()">Submit</button>
-<button onclick="newBoard()">New Board</button>
-</div>
-
-<div class="words">
-<strong>Found Words</strong>
-<ul id="wordList"></ul>
-</div>
-
-</div>
+    <div class="words">
+      <h2>Found Words</h2>
+      <ul id="wordList"></ul>
+    </div>
+  </div>
 
 <script>
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const BOARD_SIZE = 16;
+  const ROUND_TIME = 60;
 
-const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-const ROUND_TIME = 60
+  let score = 0;
+  let timeLeft = ROUND_TIME;
+  let timerInterval = null;
 
-let time = ROUND_TIME
-let score = 0
-let timerInterval
+  const boardEl = document.getElementById("board");
+  const boardWrapEl = document.getElementById("boardWrap");
+  const timerEl = document.getElementById("timer");
+  const scoreEl = document.getElementById("score");
+  const guessEl = document.getElementById("guess");
+  const wordListEl = document.getElementById("wordList");
+  const submitBtn = document.getElementById("submitBtn");
+  const newBoardBtn = document.getElementById("newBoardBtn");
+  const shakeBtn = document.getElementById("shakeBtn");
 
-function randomLetter(){
-    return letters[Math.floor(Math.random()*letters.length)]
-}
+  function randomLetter() {
+    return letters[Math.floor(Math.random() * letters.length)];
+  }
 
-function updateDisplay(){
-    document.getElementById("timer").textContent = time
-    document.getElementById("score").textContent = score
-}
+  function updateDisplay() {
+    timerEl.textContent = timeLeft;
+    scoreEl.textContent = score;
+  }
 
-function startTimer(){
+  function buildBoard() {
+    boardEl.innerHTML = "";
 
-    clearInterval(timerInterval)
+    for (let i = 0; i < BOARD_SIZE; i++) {
+      const tile = document.createElement("div");
+      tile.className = "tile";
+      tile.textContent = randomLetter();
+      boardEl.appendChild(tile);
+    }
+  }
 
-    time = ROUND_TIME
+  function clearWords() {
+    wordListEl.innerHTML = "";
+  }
+
+  function startTimer() {
+    clearInterval(timerInterval);
+    timeLeft = ROUND_TIME;
+    updateDisplay();
 
     timerInterval = setInterval(() => {
+      timeLeft -= 1;
+      updateDisplay();
 
-        time--
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        timeLeft = 0;
+        updateDisplay();
+        alert("Time's up! Final score: " + score);
+      }
+    }, 1000);
+  }
 
-        updateDisplay()
+  function newBoard() {
+    buildBoard();
+    clearWords();
+    guessEl.value = "";
+    score = 0;
+    startTimer();
+    updateDisplay();
+    guessEl.focus();
+  }
 
-        if(time <= 0){
-            clearInterval(timerInterval)
-            alert("Time's up! Final score: " + score)
-        }
+  function shakeBoard() {
+    boardWrapEl.classList.remove("shake");
+    void boardWrapEl.offsetWidth;
+    boardWrapEl.classList.add("shake");
 
-    },1000)
+    buildBoard();
+    clearWords();
+    guessEl.value = "";
+    score = 0;
+    startTimer();
+    updateDisplay();
+    guessEl.focus();
+  }
 
-}
+  function submitWord() {
+    if (timeLeft <= 0) return;
 
-function newBoard(){
+    const word = guessEl.value.trim();
+    if (!word) return;
 
-    const board = document.getElementById("board")
-    board.innerHTML=""
+    const li = document.createElement("li");
+    li.textContent = word;
+    wordListEl.appendChild(li);
 
-    for(let i=0;i<16;i++){
+    score += word.length;
+    guessEl.value = "";
+    updateDisplay();
+  }
 
-        const tile = document.createElement("div")
-        tile.className="tile"
-        tile.textContent=randomLetter()
+  submitBtn.addEventListener("click", submitWord);
+  newBoardBtn.addEventListener("click", newBoard);
+  shakeBtn.addEventListener("click", shakeBoard);
 
-        board.appendChild(tile)
-
+  guessEl.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      submitWord();
     }
+  });
 
-    document.getElementById("wordList").innerHTML=""
-    document.getElementById("guess").value=""
-
-    score = 0
-    updateDisplay()
-
-    startTimer()
-
-}
-
-function submitWord(){
-
-    if(time <= 0) return
-
-    const input = document.getElementById("guess")
-    const word = input.value.trim()
-
-    if(!word) return
-
-    const li = document.createElement("li")
-    li.textContent = word
-
-    document.getElementById("wordList").appendChild(li)
-
-    score += word.length
-
-    input.value=""
-
-    updateDisplay()
-
-}
-
-document.getElementById("guess").addEventListener("keydown", function(e){
-
-    if(e.key === "Enter"){
-        e.preventDefault()
-        submitWord()
-    }
-
-})
-
-newBoard()
-
+  newBoard();
 </script>
-
 </body>
 </html>
