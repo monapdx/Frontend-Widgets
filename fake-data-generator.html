@@ -1,465 +1,216 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Fake Data Generator</title>
-<style>
-:root{
-  --bg:#f6f7fb;
-  --card:#ffffff;
-  --text:#1f2937;
-  --muted:#6b7280;
-  --line:#dbe1ea;
-  --accent:#ff009c;
-  --accent-2:#7c3aed;
-  --shadow:0 10px 30px rgba(17,24,39,.08);
-}
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-  background:linear-gradient(180deg,#fafbff 0%,#f4f6fb 100%);
-  color:var(--text);
-}
-.page{
-  max-width:1100px;
-  margin:0 auto;
-  padding:24px;
-}
-.hero{
-  margin-bottom:20px;
-}
-.eyebrow{
-  margin:0 0 8px;
-  color:var(--accent);
-  font-weight:700;
-  letter-spacing:.04em;
-  text-transform:uppercase;
-  font-size:.78rem;
-}
-h1{margin:0 0 8px;font-size:clamp(1.7rem,3vw,2.4rem);line-height:1.1}
-.lead{margin:0;color:var(--muted);max-width:760px}
-.grid{
-  display:grid;
-  grid-template-columns:1.15fr .85fr;
-  gap:20px;
-}
-.card{
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:20px;
-  box-shadow:var(--shadow);
-  padding:20px;
-}
-.stack{display:grid;gap:20px}
-.row,.row-3{
-  display:grid;
-  gap:14px;
-}
-.row{grid-template-columns:1fr 1fr}
-.row-3{grid-template-columns:repeat(3,1fr)}
-.field{display:grid;gap:8px;margin-bottom:14px}
-label{font-size:.95rem;font-weight:600}
-input,textarea,select,button{
-  font:inherit;
-}
-input,textarea,select{
-  width:100%;
-  border:1px solid var(--line);
-  border-radius:14px;
-  padding:12px 14px;
-  background:#fff;
-  color:var(--text);
-}
-textarea{min-height:180px;resize:vertical}
-.actions{
-  display:flex;flex-wrap:wrap;gap:10px;margin-top:6px
-}
-button{
-  border:0;
-  border-radius:14px;
-  padding:11px 15px;
-  cursor:pointer;
-  font-weight:700;
-}
-button.primary{
-  background:var(--accent);
-  color:#fff;
-}
-button.secondary{
-  background:#eef2ff;
-  color:#312e81;
-}
-button.ghost{
-  background:#f3f4f6;
-  color:#374151;
-}
-.output, pre, code{
-  white-space:pre-wrap;
-  word-break:break-word;
-}
-.output{
-  min-height:120px;
-  max-height:520px;
-  overflow:auto;
-  border:1px solid var(--line);
-  background:#fbfcff;
-  border-radius:16px;
-  padding:14px;
-  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-  font-size:.94rem;
-}
-.small{font-size:.86rem;color:var(--muted)}
-.muted-box{
-  background:#faf5ff;
-  color:#5b556b;
-  border:1px solid #eadcff;
-  border-radius:16px;
-  padding:12px 14px;
-  margin:6px 0 14px;
-}
-.pill{
-  display:inline-block;
-  padding:2px 8px;
-  border-radius:999px;
-  background:#f3e8ff;
-  color:#6d28d9;
-  font-size:.82rem;
-  font-weight:700;
-}
-.table-wrap{
-  overflow:auto;
-  border:1px solid var(--line);
-  border-radius:16px;
-}
-table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:.94rem;
-}
-th,td{
-  text-align:left;
-  padding:10px 12px;
-  border-bottom:1px solid var(--line);
-}
-th{background:#f9fafb}
-.checklist{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:10px;
-}
-.check-item{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  background:#f9fafb;
-  border:1px solid var(--line);
-  border-radius:12px;
-  padding:10px 12px;
-  font-weight:500;
-}
-.check-item input{width:auto}
-.match-list{display:grid;gap:12px}
-.match-item{
-  border:1px solid var(--line);
-  border-radius:16px;
-  overflow:hidden;
-  background:#fff;
-}
-.match-swatch{height:54px}
-.match-body{padding:12px}
-.swatch{
-  height:120px;border-radius:18px;border:1px solid var(--line);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.35);
-}
-.kv{display:grid;gap:12px}
-.panelish{
-  border:1px solid var(--line);border-radius:16px;padding:12px;background:#fbfcff
-}
-.footer-note{margin-top:14px;color:var(--muted);font-size:.88rem}
-@media (max-width: 860px){
-  .grid,.row,.row-3{grid-template-columns:1fr}
-  .page{padding:16px}
-  .card{padding:16px}
-  .checklist{grid-template-columns:1fr}
-}
-</style>
-</head>
-<body>
-<div class="page">
-  <header class="hero">
-    <p class="eyebrow">Standalone Widget</p>
-    <h1>Fake Data Generator</h1>
-    <p class="lead">Define a schema one field per line using <span class="pill">name:type</span>, then generate mock rows as JSON, CSV, or SQL inserts.</p>
-  </header>
+<link rel="stylesheet" href="rare.css" />
 
-  <div class="grid">
-    <section class="card">
-      <div class="field">
-        <label for="schema-input">Schema</label>
-        <textarea id="schema-input" placeholder="Example:
+<div class="card">
+            <h2>Fake Data Generator</h2>
+            <p class="subtle">Define a schema one field per line using the format <span class="pill">name:type</span>. Then generate mock rows as JSON, CSV, or SQL inserts.</p>
+            <div class="field">
+              <label for="schema-input">Schema</label>
+              <textarea id="schema-input" placeholder="Example:
 id:number
 name:fullName
 email:email
 created_at:date
 is_active:boolean"></textarea>
-      </div>
-
-      <div class="row-3">
-        <div class="field">
-          <label for="row-count">Rows</label>
-          <input id="row-count" type="number" min="1" max="500" value="10" />
+            </div>
+            <div class="row-3">
+              <div class="field">
+                <label for="row-count">Rows</label>
+                <input id="row-count" type="number" min="1" max="500" value="10" />
+              </div>
+              <div class="field">
+                <label for="data-format">Output format</label>
+                <select id="data-format">
+                  <option value="json" selected>JSON</option>
+                  <option value="csv">CSV</option>
+                  <option value="sql">SQL inserts</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="table-name">Table name</label>
+                <input id="table-name" type="text" placeholder="users" value="users" />
+              </div>
+            </div>
+            <div class="muted-box">
+              Supported types: number, integer, fullName, firstName, lastName, email, phone, company, city, country, username, boolean, uuid, slug, sentence, paragraph, date, timestamp, price.
+            </div>
+            <div class="actions">
+              <button class="primary" id="generate-data-btn">Generate fake data</button>
+              <button class="secondary" id="copy-data-btn">Copy output</button>
+              <button class="secondary" id="download-data-btn">Download file</button>
+              <button class="secondary" id="sample-data-btn">Load sample</button>
+            </div>
+          </div>
         </div>
-        <div class="field">
-          <label for="data-format">Output format</label>
-          <select id="data-format">
-            <option value="json" selected>JSON</option>
-            <option value="csv">CSV</option>
-            <option value="sql">SQL inserts</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="table-name">Table name</label>
-          <input id="table-name" type="text" value="users" />
-        </div>
-      </div>
+        <div class="stack">
+          <div class="card">
+            <h3>Output</h3>
+            <div id="data-output" class="output">Generated data will appear here.</div>
+          </div>
+		  
+		  <script>
+    // Fake data generator
+    const fakeData = {
+      firstNames: ['Mona', 'Ashly', 'Riley', 'Jordan', 'Avery', 'Taylor', 'Morgan', 'Dakota', 'Robin', 'Sydney'],
+      lastNames: ['Lorenzana', 'Reed', 'Williams', 'Nguyen', 'Garcia', 'Bennett', 'Miller', 'Santos', 'Chen', 'Brooks'],
+      cities: ['Portland', 'Seattle', 'Austin', 'Chicago', 'Miami', 'Denver', 'Phoenix', 'Boston', 'Atlanta', 'Oakland'],
+      countries: ['United States', 'Canada', 'Mexico', 'France', 'Japan', 'Germany', 'Brazil', 'Spain', 'Australia', 'Netherlands'],
+      companies: ['Northline Studio', 'Pixel Harbor', 'Signal Forge', 'Quiet Orbit', 'Velvet Grid', 'Paper Lantern', 'Open Meadow', 'Bright Relay'],
+      words: ['aurora', 'signal', 'paper', 'frontend', 'widget', 'archive', 'garden', 'ember', 'delta', 'violet', 'harbor', 'lumen']
+    };
 
-      <div class="muted-box">Supported types: number, integer, fullName, firstName, lastName, email, phone, company, city, country, username, boolean, uuid, slug, sentence, paragraph, date, timestamp, price.</div>
-
-      <div class="actions">
-        <button class="primary" id="generate-data-btn">Generate fake data</button>
-        <button class="secondary" id="copy-data-btn">Copy output</button>
-        <button class="secondary" id="download-data-btn">Download file</button>
-        <button class="ghost" id="sample-data-btn">Load sample</button>
-      </div>
-    </section>
-
-    <div class="stack">
-      <section class="card">
-        <h3>Parsed schema</h3>
-        <div class="table-wrap">
-          <table id="schema-table">
-            <thead><tr><th>Field</th><th>Type</th></tr></thead>
-            <tbody><tr><td colspan="2" class="small">No valid schema parsed yet.</td></tr></tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="card">
-        <h3>Output</h3>
-        <div id="data-output" class="output">Generated data will appear here.</div>
-      </section>
-    </div>
-  </div>
-</div>
-
-<script>
-
-const $ = (sel) => document.querySelector(sel);
-
-async function copyText(text) {
-  const safeText = String(text || '').trim();
-  if (!safeText) {
-    alert('Nothing to copy yet.');
-    return;
-  }
-  try {
-    await navigator.clipboard.writeText(safeText);
-  } catch (err) {
-    const ta = document.createElement('textarea');
-    ta.value = safeText;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    ta.remove();
-  }
-}
-
-function slugify(value, separator = '-') {
-  return String(value || '')
-    .normalize('NFKD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-zA-Z0-9]+/g, ' ')
-    .trim()
-    .replace(/\s+/g, separator)
-    .replace(new RegExp(separator + '{2,}', 'g'), separator)
-    .replace(new RegExp('^' + separator + '|' + separator + '$', 'g'), '')
-    .toLowerCase();
-}
-
-function titleCase(value) {
-  return String(value || '')
-    .toLowerCase()
-    .replace(/\b\w/g, (m) => m.toUpperCase());
-}
-
-function formatDate(style = 'yyyy-mm-dd', date = new Date()) {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, '0');
-  const d = String(date.getDate()).padStart(2, '0');
-  if (style === 'none') return '';
-  if (style === 'yyyymmdd') return `${y}${m}${d}`;
-  if (style === 'yyyy-mm') return `${y}-${m}`;
-  return `${y}-${m}-${d}`;
-}
-
-const fakeData = {
-  firstNames: ['Mona', 'Ashly', 'Riley', 'Jordan', 'Avery', 'Taylor', 'Morgan', 'Dakota', 'Robin', 'Sydney'],
-  lastNames: ['Lorenzana', 'Reed', 'Williams', 'Nguyen', 'Garcia', 'Bennett', 'Miller', 'Santos', 'Chen', 'Brooks'],
-  cities: ['Portland', 'Seattle', 'Austin', 'Chicago', 'Miami', 'Denver', 'Phoenix', 'Boston', 'Atlanta', 'Oakland'],
-  countries: ['United States', 'Canada', 'Mexico', 'France', 'Japan', 'Germany', 'Brazil', 'Spain', 'Australia', 'Netherlands'],
-  companies: ['Northline Studio', 'Pixel Harbor', 'Signal Forge', 'Quiet Orbit', 'Velvet Grid', 'Paper Lantern', 'Open Meadow', 'Bright Relay'],
-  words: ['aurora', 'signal', 'paper', 'frontend', 'widget', 'archive', 'garden', 'ember', 'delta', 'violet', 'harbor', 'lumen']
-};
-
-function rand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
-function randBool() { return Math.random() > 0.5; }
-function randWord(count = 1) { return Array.from({ length: count }, () => rand(fakeData.words)).join(' '); }
-function randSentence() {
-  const len = randInt(5, 11);
-  return titleCase(Array.from({ length: len }, () => rand(fakeData.words)).join(' ')) + '.';
-}
-function randParagraph() {
-  return Array.from({ length: randInt(2, 4) }, () => randSentence()).join(' ');
-}
-function makeUUID() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    const r = Math.random() * 16 | 0;
-    const v = c === 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
-  });
-}
-
-function generateFieldValue(type, index) {
-  const first = rand(fakeData.firstNames);
-  const last = rand(fakeData.lastNames);
-  switch ((type || '').trim()) {
-    case 'number':
-    case 'integer': return randInt(1, 9999);
-    case 'fullname':
-    case 'fullName': return `${first} ${last}`;
-    case 'firstname':
-    case 'firstName': return first;
-    case 'lastname':
-    case 'lastName': return last;
-    case 'email': return `${first.toLowerCase()}.${last.toLowerCase()}${randInt(1, 99)}@example.com`;
-    case 'phone': return `(${randInt(200, 989)}) ${randInt(100, 999)}-${randInt(1000, 9999)}`;
-    case 'company': return rand(fakeData.companies);
-    case 'city': return rand(fakeData.cities);
-    case 'country': return rand(fakeData.countries);
-    case 'username': return `${first.toLowerCase()}_${last.toLowerCase()}${randInt(10, 999)}`;
-    case 'boolean': return randBool();
-    case 'uuid': return makeUUID();
-    case 'slug': return slugify(randWord(randInt(2, 4)) + ' ' + index);
-    case 'sentence': return randSentence();
-    case 'paragraph': return randParagraph();
-    case 'date': {
-      const date = new Date(Date.now() - randInt(0, 365) * 86400000);
-      return date.toISOString().slice(0, 10);
+    function rand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+    function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+    function randBool() { return Math.random() > 0.5; }
+    function randDigits(n) { return Array.from({ length: n }, () => randInt(0, 9)).join(''); }
+    function randWord(count = 1) { return Array.from({ length: count }, () => rand(fakeData.words)).join(' '); }
+    function randSentence() {
+      const len = randInt(5, 11);
+      const sentence = Array.from({ length: len }, () => rand(fakeData.words)).join(' ');
+      return titleCase(sentence) + '.';
     }
-    case 'timestamp': {
-      const date = new Date(Date.now() - randInt(0, 365) * 86400000 - randInt(0, 86400000));
-      return date.toISOString();
+    function randParagraph() {
+      return Array.from({ length: randInt(2, 4) }, () => randSentence()).join(' ');
     }
-    case 'price': return Number((Math.random() * 300 + 5).toFixed(2));
-    default: return randSentence();
-  }
-}
+    function makeUUID() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+        const r = Math.random() * 16 | 0;
+        const v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    }
 
-function parseSchema() {
-  const raw = $('#schema-input').value.trim();
-  const lines = raw.split(/\n+/).map((line) => line.trim()).filter(Boolean);
-  const schema = lines.map((line) => {
-    const [name, type] = line.split(':').map((part) => part.trim());
-    return { name, type };
-  }).filter((item) => item.name && item.type);
+    function generateFieldValue(type, index) {
+      const first = rand(fakeData.firstNames);
+      const last = rand(fakeData.lastNames);
+      switch ((type || '').trim()) {
+        case 'number':
+        case 'integer': return randInt(1, 9999);
+        case 'fullname':
+        case 'fullName': return `${first} ${last}`;
+        case 'firstname':
+        case 'firstName': return first;
+        case 'lastname':
+        case 'lastName': return last;
+        case 'email': return `${first.toLowerCase()}.${last.toLowerCase()}${randInt(1, 99)}@example.com`;
+        case 'phone': return `(${randInt(200, 989)}) ${randInt(100, 999)}-${randInt(1000, 9999)}`;
+        case 'company': return rand(fakeData.companies);
+        case 'city': return rand(fakeData.cities);
+        case 'country': return rand(fakeData.countries);
+        case 'username': return `${first.toLowerCase()}_${last.toLowerCase()}${randInt(10, 999)}`;
+        case 'boolean': return randBool();
+        case 'uuid': return makeUUID();
+        case 'slug': return slugify(randWord(randInt(2, 4)) + ' ' + index);
+        case 'sentence': return randSentence();
+        case 'paragraph': return randParagraph();
+        case 'date': {
+          const date = new Date(Date.now() - randInt(0, 365) * 86400000);
+          return date.toISOString().slice(0, 10);
+        }
+        case 'timestamp': {
+          const date = new Date(Date.now() - randInt(0, 365) * 86400000 - randInt(0, 86400000));
+          return date.toISOString();
+        }
+        case 'price': return (Math.random() * 300 + 5).toFixed(2);
+        default: return randSentence();
+      }
+    }
 
-  const tbody = $('#schema-table tbody');
-  if (!schema.length) {
-    tbody.innerHTML = '<tr><td colspan="2" class="small">No valid schema parsed yet.</td></tr>';
-  } else {
-    tbody.innerHTML = schema.map((field) => `<tr><td>${field.name}</td><td>${field.type}</td></tr>`).join('');
-  }
-  return schema;
-}
+    function parseSchema() {
+      const raw = $('#schema-input').value.trim();
+      const lines = raw.split(/\n+/).map((line) => line.trim()).filter(Boolean);
+      const schema = lines.map((line) => {
+        const [name, type] = line.split(':').map((part) => part.trim());
+        return { name, type };
+      }).filter((item) => item.name && item.type);
 
-function generateFakeData() {
-  const schema = parseSchema();
-  const count = Math.max(1, Math.min(500, parseInt($('#row-count').value || '10', 10)));
-  const format = $('#data-format').value;
-  const tableName = ($('#table-name').value || 'users').trim();
+      const tbody = $('#schema-table tbody');
+      if (!schema.length) {
+        tbody.innerHTML = '<tr><td colspan="2" class="small">No valid schema parsed yet.</td></tr>';
+      } else {
+        tbody.innerHTML = schema.map((field) => `<tr><td>${field.name}</td><td>${field.type}</td></tr>`).join('');
+      }
+      return schema;
+    }
 
-  if (!schema.length) {
-    $('#data-output').textContent = 'Please define a valid schema first.';
-    return;
-  }
+    $('#schema-input').addEventListener('input', parseSchema);
 
-  const rows = Array.from({ length: count }, (_, index) => {
-    const obj = {};
-    schema.forEach((field) => obj[field.name] = generateFieldValue(field.type, index + 1));
-    return obj;
-  });
+    function generateFakeData() {
+      const schema = parseSchema();
+      const count = Math.max(1, Math.min(500, parseInt($('#row-count').value || '10', 10)));
+      const format = $('#data-format').value;
+      const tableName = ($('#table-name').value || 'users').trim();
 
-  let output = '';
-  if (format === 'json') {
-    output = JSON.stringify(rows, null, 2);
-  } else if (format === 'csv') {
-    const headers = schema.map((f) => f.name);
-    const csvLines = [headers.join(',')];
-    rows.forEach((row) => {
-      csvLines.push(headers.map((key) => {
-        const str = String(row[key]).replace(/"/g, '""');
-        return /[",\n]/.test(str) ? `"${str}"` : str;
-      }).join(','));
+      if (!schema.length) {
+        $('#data-output').textContent = 'Please define a valid schema first.';
+        return;
+      }
+
+      const rows = Array.from({ length: count }, (_, index) => {
+        const obj = {};
+        schema.forEach((field) => {
+          obj[field.name] = generateFieldValue(field.type, index + 1);
+        });
+        return obj;
+      });
+
+      let output = '';
+      if (format === 'json') {
+        output = JSON.stringify(rows, null, 2);
+      } else if (format === 'csv') {
+        const headers = schema.map((f) => f.name);
+        const csvLines = [headers.join(',')];
+        rows.forEach((row) => {
+          csvLines.push(headers.map((key) => {
+            const value = row[key];
+            const str = String(value).replace(/"/g, '""');
+            return /[",\n]/.test(str) ? `"${str}"` : str;
+          }).join(','));
+        });
+        output = csvLines.join('\n');
+      } else if (format === 'sql') {
+        const cols = schema.map((f) => f.name).join(', ');
+        const statements = rows.map((row) => {
+          const values = schema.map((field) => {
+            const value = row[field.name];
+            if (typeof value === 'boolean') return value ? 'TRUE' : 'FALSE';
+            if (typeof value === 'number') return String(value);
+            return `'${String(value).replace(/'/g, "''")}'`;
+          }).join(', ');
+          return `INSERT INTO ${tableName} (${cols}) VALUES (${values});`;
+        });
+        output = statements.join('\n');
+      }
+
+      $('#data-output').textContent = output;
+    }
+
+    function downloadFakeData() {
+      const output = $('#data-output').textContent;
+      if (!output || output.includes('Generated data will appear here') || output.includes('Please define')) {
+        alert('Generate some data first.');
+        return;
+      }
+      const format = $('#data-format').value;
+      const ext = format === 'sql' ? 'sql' : format;
+      const blob = new Blob([output], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `fake-data.${ext}`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    $('#generate-data-btn').addEventListener('click', generateFakeData);
+    $('#copy-data-btn').addEventListener('click', () => copyText($('#data-output').textContent));
+    $('#download-data-btn').addEventListener('click', downloadFakeData);
+    $('#sample-data-btn').addEventListener('click', () => {
+      $('#schema-input').value = 'id:number\nname:fullName\nemail:email\ncity:city\ncompany:company\ncreated_at:timestamp\nis_active:boolean\nprice:price';
+      $('#row-count').value = '10';
+      $('#data-format').value = 'json';
+      $('#table-name').value = 'users';
+      parseSchema();
+      generateFakeData();
     });
-    output = csvLines.join('\n');
-  } else {
-    const cols = schema.map((f) => f.name).join(', ');
-    output = rows.map((row) => {
-      const values = schema.map((field) => {
-        const value = row[field.name];
-        if (typeof value === 'boolean') return value ? 'TRUE' : 'FALSE';
-        if (typeof value === 'number') return String(value);
-        return `'${String(value).replace(/'/g, "''")}'`;
-      }).join(', ');
-      return `INSERT INTO ${tableName} (${cols}) VALUES (${values});`;
-    }).join('\n');
-  }
-  $('#data-output').textContent = output;
-}
-
-function downloadFakeData() {
-  const output = $('#data-output').textContent;
-  if (!output || output.includes('Generated data will appear here') || output.includes('Please define')) {
-    alert('Generate some data first.');
-    return;
-  }
-  const format = $('#data-format').value;
-  const ext = format === 'sql' ? 'sql' : format;
-  const blob = new Blob([output], { type: 'text/plain;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `fake-data.${ext}`;
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-$('#schema-input').addEventListener('input', parseSchema);
-$('#generate-data-btn').addEventListener('click', generateFakeData);
-$('#copy-data-btn').addEventListener('click', () => copyText($('#data-output').textContent));
-$('#download-data-btn').addEventListener('click', downloadFakeData);
-$('#sample-data-btn').addEventListener('click', () => {
-  $('#schema-input').value = 'id:number\nname:fullName\nemail:email\ncity:city\ncompany:company\ncreated_at:timestamp\nis_active:boolean\nprice:price';
-  $('#row-count').value = '10';
-  $('#data-format').value = 'json';
-  $('#table-name').value = 'users';
-  parseSchema();
-  generateFakeData();
-});
-parseSchema();
-</script>
-</body>
-</html>
+	
+	</script>
