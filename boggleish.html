@@ -10,24 +10,27 @@
   box-sizing: border-box;
 }
 
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
 body {
   font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   background: #f5f5f5;
   color: #222;
+  display: flex;
+  justify-content: center;
+}
+
+.game {
+  width: min(100%, 460px);
+  padding: 12px;
 }
 
 h1 {
   margin: 0 0 12px;
   text-align: center;
-}
-
-.game {
-  width: min(100%, 460px);
 }
 
 .status {
@@ -53,7 +56,6 @@ h1 {
   padding: 10px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.14);
   margin-bottom: 14px;
-  transition: transform 0.2s ease, margin 0.2s ease;
 }
 
 .board {
@@ -84,7 +86,6 @@ h1 {
 }
 
 .controls input {
-  flex: none;
   width: 100%;
   height: 48px;
   padding: 0 14px;
@@ -93,10 +94,6 @@ h1 {
   border-radius: 10px;
   outline: none;
   background: white;
-}
-
-.controls input:focus {
-  border-color: #666;
 }
 
 .controls button {
@@ -108,15 +105,6 @@ h1 {
   background: #222;
   color: white;
   cursor: pointer;
-  transition: transform 0.08s ease, opacity 0.2s ease;
-}
-
-.controls button:hover {
-  opacity: 0.92;
-}
-
-.controls button:active {
-  transform: scale(0.97);
 }
 
 .words {
@@ -137,10 +125,6 @@ h1 {
   word-break: break-word;
 }
 
-.words li {
-  margin-bottom: 4px;
-}
-
 .shake {
   animation: shakeBoard 0.45s ease;
 }
@@ -156,25 +140,15 @@ h1 {
   100% { transform: translateX(0); }
 }
 
-/* mobile-only keyboard friendliness */
 @media (max-width: 600px) {
-  body {
-    padding: 10px;
-  }
-
-  .controls {
-    flex-direction: column;
-  }
-
-  .controls input,
-  .controls button {
+  .game {
     width: 100%;
+    padding: 10px;
+    min-height: var(--vvh, 100vh);
   }
 
-  .board-wrap.keyboard-open {
-    transform: scale(0.88);
-    transform-origin: top center;
-    margin-bottom: 6px;
+  .board-wrap {
+    padding: 8px;
   }
 
   .tile {
@@ -211,116 +185,198 @@ h1 {
 
 <script>
   const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  const BOARD_SIZE = 16;
-  const ROUND_TIME = 180;
+const BOARD_SIZE = 16;
+const ROUND_TIME = 180;
 
-  let score = 0;
-  let timeLeft = ROUND_TIME;
-  let timerInterval = null;
+let score = 0;
+let timeLeft = ROUND_TIME;
+let timerInterval = null;
 
-  const boardEl = document.getElementById("board");
-  const boardWrapEl = document.getElementById("boardWrap");
-  const timerEl = document.getElementById("timer");
-  const scoreEl = document.getElementById("score");
-  const guessEl = document.getElementById("guess");
-  const wordListEl = document.getElementById("wordList");
-  const submitBtn = document.getElementById("submitBtn");
-  const newBoardBtn = document.getElementById("newBoardBtn");
-  const shakeBtn = document.getElementById("shakeBtn");
+const boardEl = document.getElementById("board");
+const boardWrapEl = document.getElementById("boardWrap");
+const timerEl = document.getElementById("timer");
+const scoreEl = document.getElementById("score");
+const guessEl = document.getElementById("guess");
+const wordListEl = document.getElementById("wordList");
+const submitBtn = document.getElementById("submitBtn");
+const newBoardBtn = document.getElementById("newBoardBtn");
+const shakeBtn = document.getElementById("shakeBtn");
 
-  function randomLetter() {
-    return letters[Math.floor(Math.random() * letters.length)];
+function randomLetter() {
+  return letters[Math.floor(Math.random() * letters.length)];
+}
+
+function updateDisplay() {
+  timerEl.textContent = timeLeft;
+  scoreEl.textContent = score;
+}
+
+function buildBoard() {
+  boardEl.innerHTML = "";
+
+  for (let i = 0; i < BOARD_SIZE; i++) {
+    const tile = document.createElement("div");
+    tile.className = "tile";
+    tile.textContent = randomLetter();
+    boardEl.appendChild(tile);
   }
+}
 
-  function updateDisplay() {
-    timerEl.textContent = timeLeft;
-    scoreEl.textContent = score;
-  }
+function clearWords() {
+  wordListEl.innerHTML = "";
+}
 
-  function buildBoard() {
-    boardEl.innerHTML = "";
+function startTimer() {
+  clearInterval(timerInterval);
+  timeLeft = ROUND_TIME;
+  updateDisplay();
 
-    for (let i = 0; i < BOARD_SIZE; i++) {
-      const tile = document.createElement("div");
-      tile.className = "tile";
-      tile.textContent = randomLetter();
-      boardEl.appendChild(tile);
-    }
-  }
+  timerInterval = setInterval(() => {
+    timeLeft -= 1;
 
-  function clearWords() {
-    wordListEl.innerHTML = "";
-  }
-
-  function startTimer() {
-    clearInterval(timerInterval);
-    timeLeft = ROUND_TIME;
-    updateDisplay();
-
-    timerInterval = setInterval(() => {
-      timeLeft -= 1;
+    if (timeLeft <= 0) {
+      timeLeft = 0;
+      clearInterval(timerInterval);
       updateDisplay();
-
-      if (timeLeft <= 0) {
-        clearInterval(timerInterval);
-        timeLeft = 0;
-        updateDisplay();
-        alert("Time's up! Final score: " + score);
-      }
-    }, 1000);
-  }
-
-  function newBoard() {
-    buildBoard();
-    clearWords();
-    guessEl.value = "";
-    score = 0;
-    startTimer();
-    updateDisplay();
-    guessEl.focus();
-  }
-
-  function shakeBoard() {
-    boardWrapEl.classList.remove("shake");
-    void boardWrapEl.offsetWidth;
-    boardWrapEl.classList.add("shake");
-
-    buildBoard();
-    clearWords();
-    guessEl.value = "";
-    score = 0;
-    startTimer();
-    updateDisplay();
-    guessEl.focus();
-  }
-
-  function submitWord() {
-    if (timeLeft <= 0) return;
-
-    const word = guessEl.value.trim();
-    if (!word) return;
-
-    const li = document.createElement("li");
-    li.textContent = word;
-    wordListEl.appendChild(li);
-
-    score += word.length;
-    guessEl.value = "";
-    updateDisplay();
-  }
-
-  submitBtn.addEventListener("click", submitWord);
-  newBoardBtn.addEventListener("click", newBoard);
-  shakeBtn.addEventListener("click", shakeBoard);
-
-  guessEl.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      submitWord();
+      alert("Time's up! Final score: " + score);
+      return;
     }
-  });
 
+    updateDisplay();
+  }, 1000);
+}
+
+function newBoard() {
+  buildBoard();
+  clearWords();
+  guessEl.value = "";
+  score = 0;
+  startTimer();
+  updateDisplay();
+  setTimeout(() => {
+    updateViewportLayout();
+  }, 50);
+}
+
+function shakeBoard() {
+  boardWrapEl.classList.remove("shake");
+  void boardWrapEl.offsetWidth;
+  boardWrapEl.classList.add("shake");
+
+  buildBoard();
+  clearWords();
+  guessEl.value = "";
+  score = 0;
+  startTimer();
+  updateDisplay();
+
+  setTimeout(() => {
+    updateViewportLayout();
+  }, 50);
+}
+
+function submitWord() {
+  if (timeLeft <= 0) return;
+
+  const word = guessEl.value.trim();
+  if (!word) return;
+
+  const li = document.createElement("li");
+  li.textContent = word;
+  wordListEl.appendChild(li);
+
+  score += word.length;
+  guessEl.value = "";
+  updateDisplay();
+
+  setTimeout(() => {
+    updateViewportLayout();
+    guessEl.focus();
+  }, 0);
+}
+
+function updateViewportHeightVar() {
+  const vv = window.visualViewport;
+  const height = vv ? vv.height : window.innerHeight;
+  document.documentElement.style.setProperty("--vvh", `${height}px`);
+}
+
+function resetBoardWrapStyles() {
+  boardWrapEl.style.maxHeight = "";
+  boardWrapEl.style.overflow = "";
+}
+
+function updateViewportLayout() {
+  updateViewportHeightVar();
+
+  if (!window.visualViewport) {
+    resetBoardWrapStyles();
+    return;
+  }
+
+  const vv = window.visualViewport;
+  const isMobile = window.innerWidth <= 600;
+  const keyboardLikelyOpen = isMobile && vv.height < window.innerHeight * 0.78;
+
+  if (!keyboardLikelyOpen) {
+    resetBoardWrapStyles();
+    return;
+  }
+
+  const rect = boardWrapEl.getBoundingClientRect();
+  const inputRect = guessEl.getBoundingClientRect();
+
+  const spaceAboveInput = inputRect.top - rect.top - 12;
+
+  if (spaceAboveInput > 180) {
+    boardWrapEl.style.maxHeight = `${spaceAboveInput}px`;
+    boardWrapEl.style.overflow = "hidden";
+  } else {
+    resetBoardWrapStyles();
+  }
+
+  setTimeout(() => {
+    guessEl.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest"
+    });
+  }, 50);
+}
+
+submitBtn.addEventListener("click", submitWord);
+newBoardBtn.addEventListener("click", newBoard);
+shakeBtn.addEventListener("click", shakeBoard);
+
+guessEl.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    submitWord();
+  }
+});
+
+guessEl.addEventListener("focus", () => {
+  setTimeout(() => {
+    updateViewportLayout();
+  }, 250);
+});
+
+guessEl.addEventListener("blur", () => {
+  setTimeout(() => {
+    resetBoardWrapStyles();
+    updateViewportHeightVar();
+  }, 100);
+});
+
+if (window.visualViewport) {
+  window.visualViewport.addEventListener("resize", updateViewportLayout);
+  window.visualViewport.addEventListener("scroll", updateViewportLayout);
+}
+
+window.addEventListener("resize", updateViewportLayout);
+window.addEventListener("load", () => {
   newBoard();
+  updateViewportLayout();
+});
 </script>
 </body>
 </html>
