@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creative Writing Generators</title>
+
+<style>
+
+body{
+font-family:system-ui,-apple-system,Segoe UI,Roboto;
+background:#f6f7fb;
+margin:0;
+padding:30px;
+color:#222;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+}
+
+h1{
+text-align:center;
+margin-bottom:30px;
+}
+
+.generator{
+background:white;
+padding:25px;
+border-radius:12px;
+box-shadow:0 4px 12px rgba(0,0,0,0.08);
+margin-bottom:25px;
+}
+
+.generator h2{
+margin-top:0;
+}
+
+button{
+padding:10px 16px;
+border:none;
+background:#2b7cff;
+color:white;
+border-radius:6px;
+cursor:pointer;
+font-size:14px;
+}
+
+button:hover{
+background:#1f63d1;
+}
+
+.output{
+margin-top:15px;
+background:#f1f3f7;
+padding:15px;
+border-radius:8px;
+min-height:50px;
+white-space:pre-line;
+}
+
+select{
+padding:8px;
+margin-right:10px;
+margin-top:8px;
+}
+
+@media (max-width:600px){
+
+body{
+padding:15px;
+}
+
+.generator{
+padding:18px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Creative Writing Generators</h1>
+
+<!-- MORAL DILEMMA -->
+
+<div class="generator">
+<h2>Moral Dilemma Generator</h2>
+
+<select id="role">
+<option>doctor</option>
+<option>journalist</option>
+<option>scientist</option>
+<option>teacher</option>
+<option>detective</option>
+<option>parent</option>
+<option>engineer</option>
+</select>
+
+<select id="stakes">
+<option>low stakes</option>
+<option>high stakes</option>
+<option>life or death</option>
+</select>
+
+<button onclick="generateDilemma()">Generate</button>
+
+<div class="output" id="dilemmaOutput"></div>
+
+</div>
+
+
+<!-- METAPHOR FORGE -->
+
+<div class="generator">
+<h2>Metaphor Forge</h2>
+
+<select id="emotion">
+<option>grief</option>
+<option>joy</option>
+<option>fear</option>
+<option>loneliness</option>
+<option>anger</option>
+<option>hope</option>
+<option>nostalgia</option>
+</select>
+
+<select id="tone">
+<option>poetic</option>
+<option>dark</option>
+<option>whimsical</option>
+<option>melancholic</option>
+</select>
+
+<button onclick="generateMetaphor()">Generate</button>
+
+<div class="output" id="metaphorOutput"></div>
+
+</div>
+
+
+<!-- SENSORY DETAIL -->
+
+<div class="generator">
+<h2>Sensory Detail Generator</h2>
+
+<select id="location">
+<option>hospital waiting room</option>
+<option>laundromat</option>
+<option>forest trail</option>
+<option>old bookstore</option>
+<option>subway station</option>
+<option>seaside pier</option>
+<option>abandoned house</option>
+</select>
+
+<select id="mood">
+<option>uneasy</option>
+<option>peaceful</option>
+<option>tense</option>
+<option>nostalgic</option>
+<option>lonely</option>
+</select>
+
+<button onclick="generateSensory()">Generate</button>
+
+<div class="output" id="sensoryOutput"></div>
+
+</div>
+
+</div>
+
+<script>
+
+function random(arr){
+return arr[Math.floor(Math.random()*arr.length)]
+}
+
+function generateDilemma(){
+
+const role=document.getElementById("role").value
+const stakes=document.getElementById("stakes").value
+
+const scenarios=[
+
+`As a ${role}, you discover evidence that exposing the truth would save many people but destroy the life of someone who once saved yours.`,
+
+`As a ${role}, you must decide whether to break the law to help someone innocent who will otherwise suffer.`,
+
+`You learn that a secret you promised to keep is causing harm to others. Revealing it could prevent future damage.`,
+
+`You can stop a disaster, but doing so would require sacrificing the career of someone who trusts you.`,
+
+`Two people depend on you, but helping one will inevitably harm the other.`
+
+]
+
+document.getElementById("dilemmaOutput").textContent =
+`Stakes: ${stakes}\n\n` + random(scenarios)
+
+}
+
+
+function generateMetaphor(){
+
+const emotion=document.getElementById("emotion").value
+const tone=document.getElementById("tone").value
+
+const objects=[
+"an unplugged refrigerator",
+"a locked attic",
+"a cracked mirror",
+"a slow leaking faucet",
+"a forgotten photograph",
+"a flickering streetlight",
+"a heavy winter coat",
+"a dried-out creek bed"
+]
+
+const actions=[
+"sits in the room like",
+"hangs in the air like",
+"lingers like",
+"presses down like",
+"spreads through the day like",
+"cracks like"
+]
+
+const metaphor=`${emotion.charAt(0).toUpperCase()+emotion.slice(1)} ${random(actions)} ${random(objects)}.`
+
+document.getElementById("metaphorOutput").textContent=metaphor
+
+}
+
+
+function generateSensory(){
+
+const location=document.getElementById("location").value
+const mood=document.getElementById("mood").value
+
+const smells=[
+"detergent and warm metal",
+"dust and old paper",
+"salt and seaweed",
+"damp wood",
+"burnt coffee"
+]
+
+const sounds=[
+"distant footsteps echoing",
+"machines humming quietly",
+"pages rustling softly",
+"a train screeching far away",
+"wind brushing against broken windows"
+]
+
+const textures=[
+"cold plastic chairs",
+"gritty concrete",
+"smooth worn wood",
+"sticky metal railings"
+]
+
+const details=`Location: ${location}
+Mood: ${mood}
+
+Smell: ${random(smells)}
+Sound: ${random(sounds)}
+Texture: ${random(textures)}`
+
+document.getElementById("sensoryOutput").textContent=details
+
+}
+
+</script>
+
+</body>
+</html>

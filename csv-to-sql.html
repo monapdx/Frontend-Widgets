@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CSV → SQL Insert Statements</title>
+  <link rel="stylesheet" href="styles-vanilla.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
+      <h1>CSV → SQL Insert Statements</h1>
+      <p class="page-description">Upload a CSV file, set a table name, and generate SQL inserts instantly.</p>
+    </header>
+
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
+        <button id="sampleCsv" class="secondary" type="button">Load Sample</button>
+      </div>
+
+      <div class="widget-grid">
+        <section class="panel">
+          <label for="csvFile">Upload CSV file</label>
+          <input id="csvFile" type="file" accept=".csv,text/csv" />
+
+          <div style="height: 12px;"></div>
+
+          <label for="tableName">Table name</label>
+          <input id="tableName" type="text" value="my_table" placeholder="my_table" />
+
+          <div class="checkbox-list">
+            <div class="checkbox-line">
+              <input id="hasHeader" type="checkbox" checked />
+              <label for="hasHeader">First row is header</label>
+            </div>
+            <div class="checkbox-line">
+              <input id="emptyAsNull" type="checkbox" checked />
+              <label for="emptyAsNull">Empty cells become NULL</label>
+            </div>
+            <div class="checkbox-line">
+              <input id="quoteStrings" type="checkbox" checked />
+              <label for="quoteStrings">Quote string values</label>
+            </div>
+            <div class="checkbox-line">
+              <input id="includeCreate" type="checkbox" />
+              <label for="includeCreate">Also generate CREATE TABLE</label>
+            </div>
+          </div>
+
+          <p id="csvStatus" class="small">Upload a CSV file or click Load Sample.</p>
+
+          <div style="height: 16px;"></div>
+
+          <h3>Loaded CSV preview</h3>
+          <div class="output-box">
+            <pre id="csvPreview"></pre>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>Detected columns</h2>
+          <div id="columnPreview" class="kv">
+            <p class="small">Upload CSV to preview columns.</p>
+          </div>
+
+          <div style="height: 16px;"></div>
+
+          <h2>SQL output</h2>
+          <div class="output-box">
+            <pre id="sqlOutput"></pre>
+          </div>
+
+          <div class="actions">
+            <button id="copySql" type="button">Copy SQL</button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const csvFile = document.getElementById("csvFile");
+      const tableName = document.getElementById("tableName");
+      const hasHeader = document.getElementById("hasHeader");
+      const emptyAsNull = document.getElementById("emptyAsNull");
+      const quoteStrings = document.getElementById("quoteStrings");
+      const includeCreate = document.getElementById("includeCreate");
+      const output = document.getElementById("sqlOutput");
+      const copyBtn = document.getElementById("copySql");
+      const sampleBtn = document.getElementById("sampleCsv");
+      const preview = document.getElementById("columnPreview");
+      const csvPreview = document.getElementById("csvPreview");
+      const csvStatus = document.getElementById("csvStatus");
+
+      let currentCsvText = "";
+
+      function setStatus(message) {
+        csvStatus.textContent = message;
+      }
+
+      function parseCSV(text) {
+        const rows = [];
+        let row = [];
+        let current = "";
+        let inQuotes = false;
+
+        for (let i = 0; i < text.length; i++) {
+          const char = text[i];
+          const next = text[i + 1];
+
+          if (char === '"') {
+            if (inQuotes && next === '"') {
+              current += '"';
+              i++;
+            } else {
+              inQuotes = !inQuotes;
+            }
+          } else if (char === "," && !inQuotes) {
+            row.push(current);
+            current = "";
+          } else if ((char === "\n" || char === "\r") && !inQuotes) {
+            if (char === "\r" && next === "\n") i++;
+            row.push(current);
+            if (row.some(cell => cell.trim() !== "")) rows.push(row);
+            row = [];
+            current = "";
+          } else {
+            current += char;
+          }
+        }
+
+        if (current.length > 0 || row.length > 0) {
+          row.push(current);
+          if (row.some(cell => cell.trim() !== "")) rows.push(row);
+        }
+
+        return rows;
+      }
+
+      function sqlEscape(value) {
+        return String(value).replace(/'/g, "''");
+      }
+
+      function inferValue(value, emptyAsNullEnabled, quoteStringsEnabled) {
+        const trimmed = String(value ?? "").trim();
+
+        if (trimmed === "" && emptyAsNullEnabled) return "NULL";
+        if (/^(true|false)$/i.test(trimmed)) return trimmed.toUpperCase();
+        if (/^-?\d+(\.\d+)?$/.test(trimmed)) return trimmed;
+        if (quoteStringsEnabled) return `'${sqlEscape(trimmed)}'`;
+        return trimmed;
+      }
+
+      function slugifyColumn(name, index) {
+        const cleaned = String(name || `column_${index + 1}`)
+          .trim()
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "_")
+          .replace(/^_+|_+$/g, "");
+        return cleaned || `column_${index + 1}`;
+      }
+
+      function buildSQL() {
+        const raw = currentCsvText.trim();
+
+        if (!raw) {
+          output.textContent = "";
+          csvPreview.textContent = "";
+          preview.innerHTML = '<p class="small">Upload CSV to preview columns.</p>';
+          return;
+        }
+
+        const rows = parseCSV(raw);
+
+        if (!rows.length) {
+          output.textContent = "-- Could not parse CSV.";
+          preview.innerHTML = '<p class="small">Could not parse CSV.</p>';
+          return;
+        }
+
+        const headerEnabled = hasHeader.checked;
+        const columns = headerEnabled
+          ? rows[0].map((name, i) => slugifyColumn(name, i))
+          : rows[0].map((_, i) => `column_${i + 1}`);
+
+        const dataRows = headerEnabled ? rows.slice(1) : rows;
+
+        preview.innerHTML = columns
+          .map(name => `<div class="panelish"><strong>${name}</strong></div>`)
+          .join("");
+
+        let sql = "";
+
+        if (includeCreate.checked) {
+          const defs = columns.map(col => `  ${col} TEXT`).join(",\n");
+          sql += `CREATE TABLE ${tableName.value.trim() || "my_table"} (\n${defs}\n);\n\n`;
+        }
+
+        if (dataRows.length) {
+          const insertRows = dataRows.map(row => {
+            const values = columns.map((_, i) =>
+              inferValue(row[i] ?? "", emptyAsNull.checked, quoteStrings.checked)
+            );
+            return `(${values.join(", ")})`;
+          });
+
+          sql += `INSERT INTO ${tableName.value.trim() || "my_table"} (${columns.join(", ")})\nVALUES\n`;
+          sql += insertRows.map(row => `  ${row}`).join(",\n");
+          sql += ";";
+        } else {
+          sql += "-- No data rows found.";
+        }
+
+        output.textContent = sql;
+        csvPreview.textContent = raw;
+      }
+
+      async function handleFile(file) {
+        if (!file) return;
+
+        try {
+          setStatus(`Reading ${file.name}...`);
+          const text = await file.text();
+          currentCsvText = text;
+          csvPreview.textContent = text;
+          setStatus(`${file.name} loaded successfully.`);
+          buildSQL();
+        } catch (error) {
+          currentCsvText = "";
+          csvPreview.textContent = "";
+          output.textContent = `-- Could not read file\n-- ${error.message}`;
+          preview.innerHTML = '<p class="small">Could not parse CSV.</p>';
+          setStatus(`Could not read file: ${error.message}`);
+        }
+      }
+
+      csvFile.addEventListener("change", function () {
+        const file = csvFile.files && csvFile.files[0];
+        if (file) handleFile(file);
+      });
+
+      [tableName, hasHeader, emptyAsNull, quoteStrings, includeCreate].forEach(el => {
+        el.addEventListener("input", buildSQL);
+        el.addEventListener("change", buildSQL);
+      });
+
+      copyBtn.addEventListener("click", function () {
+        navigator.clipboard.writeText(output.textContent || "").catch(() => {});
+      });
+
+      sampleBtn.addEventListener("click", function () {
+        currentCsvText =
+`id,name,email,is_active
+1,Ash,ash@example.com,true
+2,Mona,mona@example.com,false
+3,Loki,loki@example.com,true`;
+        tableName.value = "users";
+        hasHeader.checked = true;
+        emptyAsNull.checked = true;
+        quoteStrings.checked = true;
+        includeCreate.checked = false;
+        csvPreview.textContent = currentCsvText;
+        setStatus("Sample CSV loaded.");
+        buildSQL();
+      });
+
+      buildSQL();
+    });
+  </script>
+</body>
+</html>

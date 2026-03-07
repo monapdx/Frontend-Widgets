@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rare Generators Suite</title>
+  <style>
+    :root {
+      --bg: #f7f8fc;
+      --panel: #ffffff;
+      --panel-2: #f1f4fb;
+      --text: #1d2433;
+      --muted: #667089;
+      --border: #d9e1ef;
+      --accent: #4f6df5;
+      --accent-2: #eef2ff;
+      --danger: #c43d3d;
+      --shadow: 0 14px 36px rgba(25, 40, 72, 0.08);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #f9fbff 0%, #f3f6fb 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .app {
+      width: min(1200px, calc(100% - 24px));
+      margin: 18px auto 40px;
+    }
+
+    .hero {
+      background: rgba(255,255,255,0.82);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(217, 225, 239, 0.9);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 24px;
+      margin-bottom: 18px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: var(--accent-2);
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 14px 0 10px;
+      font-size: clamp(1.9rem, 4vw, 3rem);
+      line-height: 1.05;
+    }
+
+    .lead {
+      margin: 0;
+      color: var(--muted);
+      max-width: 72ch;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .tab-btn {
+      appearance: none;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.78);
+      color: var(--text);
+      border-radius: 16px;
+      padding: 14px 12px;
+      text-align: left;
+      cursor: pointer;
+      transition: 160ms ease;
+      min-height: 72px;
+    }
+
+    .tab-btn strong {
+      display: block;
+      font-size: 0.98rem;
+      margin-bottom: 3px;
+    }
+
+    .tab-btn span {
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.35;
+    }
+
+    .tab-btn.active {
+      border-color: var(--accent);
+      background: var(--accent-2);
+      box-shadow: inset 0 0 0 1px rgba(79,109,245,0.18);
+    }
+
+    .panel {
+      display: none;
+      background: rgba(255,255,255,0.86);
+      border: 1px solid rgba(217,225,239,0.95);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .panel.active { display: block; }
+
+    .panel-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+
+    .card h2, .card h3 {
+      margin: 0 0 12px;
+      font-size: 1.05rem;
+    }
+
+    .subtle {
+      color: var(--muted);
+      font-size: 0.93rem;
+      line-height: 1.5;
+    }
+
+    label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 7px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="file"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      font: inherit;
+      color: var(--text);
+      background: #fff;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 160px;
+      resize: vertical;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(79,109,245,0.12);
+    }
+
+    .field { margin-bottom: 14px; }
+
+    .row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .row-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .chips, .checklist {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .chip, .check-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      border-radius: 999px;
+      padding: 10px 12px;
+      font-size: 0.9rem;
+    }
+
+    .check-item input,
+    .chip input {
+      width: auto;
+      margin: 0;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 120ms ease, opacity 120ms ease, background 120ms ease;
+    }
+
+    button:hover { transform: translateY(-1px); }
+    button:active { transform: translateY(0); }
+
+    .primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .secondary {
+      background: var(--panel-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .danger {
+      background: #fff0f0;
+      color: var(--danger);
+      border: 1px solid #f2c8c8;
+    }
+
+    .output {
+      min-height: 220px;
+      background: #fbfcff;
+      border: 1px dashed var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      white-space: pre-wrap;
+      line-height: 1.55;
+      overflow-wrap: anywhere;
+    }
+
+    .preview-box {
+      border: 1px dashed var(--border);
+      background: #fbfcff;
+      border-radius: 16px;
+      padding: 14px;
+      min-height: 220px;
+    }
+
+    .image-preview {
+      width: 100%;
+      max-height: 320px;
+      object-fit: contain;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: white;
+    }
+
+    .muted-box {
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      border-radius: 14px;
+      padding: 12px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .list-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 0.94rem;
+    }
+
+    .list-table th, .list-table td {
+      border-bottom: 1px solid var(--border);
+      padding: 10px 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .list-table th { color: var(--muted); font-weight: 700; }
+
+    .pill {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--accent-2);
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .small { font-size: 0.86rem; color: var(--muted); }
+
+    .stack { display: flex; flex-direction: column; gap: 12px; }
+
+    @media (max-width: 960px) {
+      .tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .panel-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .app { width: min(100% - 14px, 1000px); }
+      .hero, .panel { padding: 14px; border-radius: 18px; }
+      .tabs { grid-template-columns: 1fr; }
+      .row, .row-3 { grid-template-columns: 1fr; }
+      input[type="text"], input[type="number"], input[type="file"], select, textarea { padding: 13px 14px; }
+      button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <section class="hero">
+      <div class="eyebrow">Rare Generator Suite</div>
+      <h1>Four unusual tools in one clean HTML, CSS, and JavaScript app.</h1>
+      <p class="lead">This mobile-first generator suite includes an Accessibility Alt-Text Generator, Regex Explainer, Fake Data Generator, and File Naming Convention Generator. Everything runs client-side, so you can host it anywhere or bundle it into your Frontend Widgets collection.</p>
+    </section>
+
+    <div class="tabs" role="tablist" aria-label="Generators">
+      <button class="tab-btn active" data-tab="alttext" role="tab" aria-selected="true">
+        <strong>Alt-Text Generator</strong>
+        <span>Structured alt-text variations from image and prompts</span>
+      </button>
+      <button class="tab-btn" data-tab="regex" role="tab" aria-selected="false">
+        <strong>Regex Explainer</strong>
+        <span>Break down a regex into readable pieces</span>
+      </button>
+      <button class="tab-btn" data-tab="data" role="tab" aria-selected="false">
+        <strong>Fake Data Generator</strong>
+        <span>Schema-driven JSON, CSV, and SQL output</span>
+      </button>
+      <button class="tab-btn" data-tab="naming" role="tab" aria-selected="false">
+        <strong>File Naming Generator</strong>
+        <span>Create clean naming conventions with previews</span>
+      </button>
+    </div>
+
+    <section class="panel active" id="panel-alttext" role="tabpanel">
+      <div class="panel-grid">
+        <div class="stack">
+          <div class="card">
+            <h2>Accessibility Alt-Text Generator</h2>
+            <p class="subtle">Upload an image, select what matters, and generate several alt-text styles. This is structured rather than AI-powered, so it works offline and gives predictable output.</p>
+            <div class="field">
+              <label for="alt-image">Image upload</label>
+              <input id="alt-image" type="file" accept="image/*" />
+            </div>
+            <div class="row">
+              <div class="field">
+                <label for="alt-subject">Main subject</label>
+                <input id="alt-subject" type="text" placeholder="Example: small brown dog" />
+              </div>
+              <div class="field">
+                <label for="alt-setting">Setting / location</label>
+                <input id="alt-setting" type="text" placeholder="Example: standing in a grassy park" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label for="alt-action">Action</label>
+                <input id="alt-action" type="text" placeholder="Example: looking up at the camera" />
+              </div>
+              <div class="field">
+                <label for="alt-mood">Mood / emotion</label>
+                <input id="alt-mood" type="text" placeholder="Example: playful and alert" />
+              </div>
+            </div>
+            <div class="field">
+              <label for="alt-extra">Important extra details</label>
+              <textarea id="alt-extra" placeholder="Colors, visible text, composition, accessibility-critical details, or anything that should be included."></textarea>
+            </div>
+            <div class="field">
+              <label>What should the alt text prioritize?</label>
+              <div class="checklist">
+                <label class="check-item"><input type="checkbox" value="subject" checked /> Subject</label>
+                <label class="check-item"><input type="checkbox" value="setting" checked /> Setting</label>
+                <label class="check-item"><input type="checkbox" value="action" checked /> Action</label>
+                <label class="check-item"><input type="checkbox" value="mood" /> Emotion</label>
+                <label class="check-item"><input type="checkbox" value="extra" checked /> Important details</label>
+                <label class="check-item"><input type="checkbox" value="text" /> Visible text</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label for="alt-verbosity">Verbosity</label>
+                <select id="alt-verbosity">
+                  <option value="brief">Brief</option>
+                  <option value="balanced" selected>Balanced</option>
+                  <option value="detailed">Detailed</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="alt-tone">Tone</label>
+                <select id="alt-tone">
+                  <option value="neutral" selected>Neutral</option>
+                  <option value="descriptive">Descriptive</option>
+                  <option value="ecommerce">Product-style</option>
+                </select>
+              </div>
+            </div>
+            <div class="actions">
+              <button class="primary" id="generate-alt-btn">Generate alt text</button>
+              <button class="secondary" id="copy-alt-btn">Copy output</button>
+              <button class="secondary" id="sample-alt-btn">Load sample</button>
+            </div>
+          </div>
+        </div>
+        <div class="stack">
+          <div class="card">
+            <h3>Image preview</h3>
+            <div class="preview-box">
+              <img id="alt-image-preview" class="image-preview" alt="Uploaded preview" style="display:none;" />
+              <div id="alt-image-empty" class="muted-box">No image uploaded yet. You can still use the generator with text-only description fields.</div>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Generated output</h3>
+            <div id="alt-output" class="output">Your generated alt-text variations will appear here.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-regex" role="tabpanel">
+      <div class="panel-grid">
+        <div class="stack">
+          <div class="card">
+            <h2>Regex Explainer</h2>
+            <p class="subtle">Paste a regular expression and optional test text. The tool breaks the pattern into readable parts and shows likely matches.</p>
+            <div class="field">
+              <label for="regex-input">Regular expression</label>
+              <input id="regex-input" type="text" placeholder="Example: ^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$" />
+            </div>
+            <div class="row">
+              <div class="field">
+                <label for="regex-flags">Flags</label>
+                <input id="regex-flags" type="text" placeholder="Example: gi" />
+              </div>
+              <div class="field">
+                <label for="regex-mode">Explain style</label>
+                <select id="regex-mode">
+                  <option value="plain" selected>Plain language</option>
+                  <option value="technical">Technical</option>
+                  <option value="beginner">Beginner-friendly</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label for="regex-test">Test text</label>
+              <textarea id="regex-test" placeholder="Paste some text to see what this regex matches."></textarea>
+            </div>
+            <div class="actions">
+              <button class="primary" id="explain-regex-btn">Explain regex</button>
+              <button class="secondary" id="copy-regex-btn">Copy explanation</button>
+              <button class="secondary" id="sample-regex-btn">Load sample</button>
+            </div>
+          </div>
+        </div>
+        <div class="stack">
+          <div class="card">
+            <h3>Explanation</h3>
+            <div id="regex-output" class="output">The explanation will appear here.</div>
+          </div>
+          <div class="card">
+            <h3>Token breakdown</h3>
+            <div class="output" id="regex-tokens">Token-by-token breakdown will appear here.</div>
+          </div>
+          <div class="card">
+            <h3>Match preview</h3>
+            <div class="output" id="regex-matches">Matches will appear here when you provide test text.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-data" role="tabpanel">
+      <div class="panel-grid">
+        <div class="stack">
+          <div class="card">
+            <h2>Fake Data Generator</h2>
+            <p class="subtle">Define a schema one field per line using the format <span class="pill">name:type</span>. Then generate mock rows as JSON, CSV, or SQL inserts.</p>
+            <div class="field">
+              <label for="schema-input">Schema</label>
+              <textarea id="schema-input" placeholder="Example:
+id:number
+name:fullName
+email:email
+created_at:date
+is_active:boolean"></textarea>
+            </div>
+            <div class="row-3">
+              <div class="field">
+                <label for="row-count">Rows</label>
+                <input id="row-count" type="number" min="1" max="500" value="10" />
+              </div>
+              <div class="field">
+                <label for="data-format">Output format</label>
+                <select id="data-format">
+                  <option value="json" selected>JSON</option>
+                  <option value="csv">CSV</option>
+                  <option value="sql">SQL inserts</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="table-name">Table name</label>
+                <input id="table-name" type="text" placeholder="users" value="users" />
+              </div>
+            </div>
+            <div class="muted-box">
+              Supported types: number, integer, fullName, firstName, lastName, email, phone, company, city, country, username, boolean, uuid, slug, sentence, paragraph, date, timestamp, price.
+            </div>
+            <div class="actions">
+              <button class="primary" id="generate-data-btn">Generate fake data</button>
+              <button class="secondary" id="copy-data-btn">Copy output</button>
+              <button class="secondary" id="download-data-btn">Download file</button>
+              <button class="secondary" id="sample-data-btn">Load sample</button>
+            </div>
+          </div>
+        </div>
+        <div class="stack">
+          <div class="card">
+            <h3>Output</h3>
+            <div id="data-output" class="output">Generated data will appear here.</div>
+          </div>
+          <div class="card">
+            <h3>Schema preview</h3>
+            <div class="preview-box">
+              <table class="list-table" id="schema-table">
+                <thead><tr><th>Field</th><th>Type</th></tr></thead>
+                <tbody><tr><td colspan="2" class="small">Your parsed schema will appear here.</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-naming" role="tabpanel">
+      <div class="panel-grid">
+        <div class="stack">
+          <div class="card">
+            <h2>File Naming Convention Generator</h2>
+            <p class="subtle">Build clean, repeatable file names for projects, exports, media, notes, or archives. Preview several outputs before using the pattern.</p>
+            <div class="row">
+              <div class="field">
+                <label for="name-prefix">Prefix</label>
+                <input id="name-prefix" type="text" placeholder="project" />
+              </div>
+              <div class="field">
+                <label for="name-title">Base title</label>
+                <input id="name-title" type="text" placeholder="frontend widgets launch assets" />
+              </div>
+            </div>
+            <div class="row-3">
+              <div class="field">
+                <label for="name-date">Date style</label>
+                <select id="name-date">
+                  <option value="none">No date</option>
+                  <option value="yyyy-mm-dd" selected>YYYY-MM-DD</option>
+                  <option value="yyyymmdd">YYYYMMDD</option>
+                  <option value="yyyy-mm">YYYY-MM</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="name-separator">Separator</label>
+                <select id="name-separator">
+                  <option value="-" selected>Hyphen (-)</option>
+                  <option value="_">Underscore (_)</option>
+                  <option value=".">Dot (.)</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="name-case">Letter case</label>
+                <select id="name-case">
+                  <option value="kebab" selected>kebab-case</option>
+                  <option value="snake">snake_case</option>
+                  <option value="upper">UPPERCASE</option>
+                  <option value="lower">lowercase words</option>
+                </select>
+              </div>
+            </div>
+            <div class="row-3">
+              <div class="field">
+                <label for="name-version">Version</label>
+                <input id="name-version" type="text" placeholder="v01" />
+              </div>
+              <div class="field">
+                <label for="name-ext">Extension</label>
+                <input id="name-ext" type="text" placeholder="png" value="png" />
+              </div>
+              <div class="field">
+                <label for="name-count">How many examples</label>
+                <input id="name-count" type="number" min="1" max="50" value="8" />
+              </div>
+            </div>
+            <div class="field">
+              <label>Optional parts</label>
+              <div class="checklist">
+                <label class="check-item"><input type="checkbox" id="include-date" checked /> Include date</label>
+                <label class="check-item"><input type="checkbox" id="include-prefix" checked /> Include prefix</label>
+                <label class="check-item"><input type="checkbox" id="include-version" checked /> Include version</label>
+                <label class="check-item"><input type="checkbox" id="include-counter" /> Add sequence number</label>
+              </div>
+            </div>
+            <div class="actions">
+              <button class="primary" id="generate-names-btn">Generate names</button>
+              <button class="secondary" id="copy-names-btn">Copy output</button>
+              <button class="secondary" id="sample-names-btn">Load sample</button>
+            </div>
+          </div>
+        </div>
+        <div class="stack">
+          <div class="card">
+            <h3>Generated filenames</h3>
+            <div id="names-output" class="output">Generated filenames will appear here.</div>
+          </div>
+          <div class="card">
+            <h3>Pattern summary</h3>
+            <div id="pattern-output" class="output">Your file naming pattern summary will appear here.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const $ = (sel) => document.querySelector(sel);
+    const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+
+    // Tabs
+    $$('.tab-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        $$('.tab-btn').forEach((b) => {
+          b.classList.toggle('active', b === btn);
+          b.setAttribute('aria-selected', String(b === btn));
+        });
+        $$('.panel').forEach((panel) => panel.classList.remove('active'));
+        $('#panel-' + btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    function copyText(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Copied to clipboard.');
+      }).catch(() => {
+        alert('Could not copy automatically.');
+      });
+    }
+
+    function slugify(value, separator = '-') {
+      return value
+        .normalize('NFKD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-zA-Z0-9]+/g, separator)
+        .replace(new RegExp('\\' + separator + '+', 'g'), separator)
+        .replace(new RegExp('^\\' + separator + '|\\' + separator + '$', 'g'), '')
+        .toLowerCase();
+    }
+
+    function titleCase(str) {
+      return str.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
+    }
+
+    function formatDate(style) {
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      if (style === 'yyyymmdd') return `${y}${m}${day}`;
+      if (style === 'yyyy-mm') return `${y}-${m}`;
+      if (style === 'yyyy-mm-dd') return `${y}-${m}-${day}`;
+      return '';
+    }
+
+    // Alt text generator
+    const altImageInput = $('#alt-image');
+    altImageInput.addEventListener('change', (event) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        $('#alt-image-preview').src = reader.result;
+        $('#alt-image-preview').style.display = 'block';
+        $('#alt-image-empty').style.display = 'none';
+      };
+      reader.readAsDataURL(file);
+    });
+
+    function buildAltSentence(parts, tone = 'neutral') {
+      const clean = parts.filter(Boolean);
+      if (!clean.length) return 'No descriptive details were provided.';
+      let text = clean.join(', ');
+      if (tone === 'descriptive') text = titleCase(text.charAt(0).toUpperCase() + text.slice(1)) + '.';
+      else if (tone === 'ecommerce') text = text.replace(/^/, 'Product image of ');
+      else text = text.charAt(0).toUpperCase() + text.slice(1) + '.';
+      return text;
+    }
+
+    function generateAltText() {
+      const subject = $('#alt-subject').value.trim();
+      const setting = $('#alt-setting').value.trim();
+      const action = $('#alt-action').value.trim();
+      const mood = $('#alt-mood').value.trim();
+      const extra = $('#alt-extra').value.trim();
+      const verbosity = $('#alt-verbosity').value;
+      const tone = $('#alt-tone').value;
+      const priorities = $$('#panel-alttext .check-item input:checked').map((el) => el.value);
+
+      const chosen = [];
+      if (priorities.includes('subject') && subject) chosen.push(subject);
+      if (priorities.includes('setting') && setting) chosen.push(setting);
+      if (priorities.includes('action') && action) chosen.push(action);
+      if (priorities.includes('mood') && mood) chosen.push(mood);
+      if (priorities.includes('extra') && extra) chosen.push(extra);
+
+      const brief = buildAltSentence([subject, action || setting], tone);
+      const balanced = buildAltSentence(chosen.length ? chosen : [subject, setting, action, extra], tone);
+      const detailedParts = [subject, setting, action, mood, extra].filter(Boolean);
+      const detailed = buildAltSentence(detailedParts, tone);
+
+      let recommendation = balanced;
+      if (verbosity === 'brief') recommendation = brief;
+      if (verbosity === 'detailed') recommendation = detailed;
+
+      const output = [
+        'Recommended alt text:',
+        recommendation,
+        '',
+        'Variation 1 — Brief:',
+        brief,
+        '',
+        'Variation 2 — Balanced:',
+        balanced,
+        '',
+        'Variation 3 — Detailed:',
+        detailed,
+        '',
+        'Accessibility notes:',
+        '- Lead with the most important visible subject.',
+        '- Include text only if it matters to understanding the image.',
+        '- Avoid phrases like "image of" unless the context truly needs it.'
+      ].join('\n');
+
+      $('#alt-output').textContent = output;
+    }
+
+    $('#generate-alt-btn').addEventListener('click', generateAltText);
+    $('#copy-alt-btn').addEventListener('click', () => copyText($('#alt-output').textContent));
+    $('#sample-alt-btn').addEventListener('click', () => {
+      $('#alt-subject').value = 'small brown dog with upright ears';
+      $('#alt-setting').value = 'standing on green grass in a city park';
+      $('#alt-action').value = 'looking directly at the camera';
+      $('#alt-mood').value = 'alert and curious';
+      $('#alt-extra').value = 'A red leash is visible, and the background is softly blurred.';
+      $('#alt-verbosity').value = 'balanced';
+      $('#alt-tone').value = 'neutral';
+      generateAltText();
+    });
+
+    // Regex explainer
+    const tokenPatterns = [
+      { re: /^\\./, label: 'Escaped character' },
+      { re: /^\[\^[^\]]*\]/, label: 'Negated character class' },
+      { re: /^\[[^\]]*\]/, label: 'Character class' },
+      { re: /^\(\?:/, label: 'Non-capturing group start' },
+      { re: /^\(\?=/, label: 'Positive lookahead start' },
+      { re: /^\(\?!/, label: 'Negative lookahead start' },
+      { re: /^\(/, label: 'Capturing group start' },
+      { re: /^\)/, label: 'Group end' },
+      { re: /^\{\d+,\d+\}/, label: 'Range quantifier' },
+      { re: /^\{\d+,\}/, label: 'Minimum quantifier' },
+      { re: /^\{\d+\}/, label: 'Exact quantifier' },
+      { re: /^\*/, label: 'Zero or more' },
+      { re: /^\+/, label: 'One or more' },
+      { re: /^\?/, label: 'Optional / lazy modifier' },
+      { re: /^\|/, label: 'Alternation' },
+      { re: /^\^/, label: 'Start anchor' },
+      { re: /^\$/, label: 'End anchor' },
+      { re: /^\./, label: 'Any character' }
+    ];
+
+    function tokenizeRegex(pattern) {
+      const tokens = [];
+      let remaining = pattern;
+      while (remaining.length) {
+        let matched = false;
+        for (const rule of tokenPatterns) {
+          const match = remaining.match(rule.re);
+          if (match) {
+            tokens.push({ token: match[0], label: rule.label });
+            remaining = remaining.slice(match[0].length);
+            matched = true;
+            break;
+          }
+        }
+        if (!matched) {
+          tokens.push({ token: remaining[0], label: 'Literal character' });
+          remaining = remaining.slice(1);
+        }
+      }
+      return tokens;
+    }
+
+    function explainToken(tokenObj, mode) {
+      const token = tokenObj.token;
+      const label = tokenObj.label;
+      const beginnerMap = {
+        'Start anchor': 'Matches the beginning of the text.',
+        'End anchor': 'Matches the end of the text.',
+        'Character class': `Matches one character from ${token}.`,
+        'Negated character class': `Matches one character that is not in ${token}.`,
+        'One or more': 'Matches the previous part one or more times.',
+        'Zero or more': 'Matches the previous part zero or more times.',
+        'Optional / lazy modifier': 'Makes the previous part optional, or changes repetition behavior depending on context.',
+        'Range quantifier': `Repeats the previous part ${token.replace(/[{}]/g, '')} times within a range.`,
+        'Exact quantifier': `Repeats the previous part exactly ${token.replace(/[{}]/g, '')} times.`,
+        'Minimum quantifier': `Repeats the previous part at least ${token.replace(/[{}]/g, '').replace(',', '')} times.`,
+        'Escaped character': `Special regex token ${token}.`,
+        'Any character': 'Matches almost any single character.',
+        'Alternation': 'Works like OR between choices.',
+        'Capturing group start': 'Starts a group that can capture part of a match.',
+        'Group end': 'Ends the current group.',
+        'Non-capturing group start': 'Starts a group without storing the match.',
+        'Positive lookahead start': 'Checks that something comes next without consuming it.',
+        'Negative lookahead start': 'Checks that something does not come next.',
+        'Literal character': `Matches the character "${token}".`
+      };
+      const technical = `${label}: ${token}`;
+      const plain = beginnerMap[label] || `Matches ${label.toLowerCase()}: ${token}`;
+      if (mode === 'technical') return technical;
+      return plain;
+    }
+
+    function explainRegex() {
+      const pattern = $('#regex-input').value;
+      const flags = $('#regex-flags').value.trim();
+      const mode = $('#regex-mode').value;
+      const testText = $('#regex-test').value;
+
+      if (!pattern) {
+        $('#regex-output').textContent = 'Please enter a regular expression.';
+        $('#regex-tokens').textContent = '';
+        $('#regex-matches').textContent = '';
+        return;
+      }
+
+      const tokens = tokenizeRegex(pattern);
+      const explanation = tokens.map((t, i) => `${i + 1}. ${t.token} — ${explainToken(t, mode)}`).join('\n');
+
+      let summary = `Pattern: /${pattern}/${flags}\n\n`;
+      if (pattern.startsWith('^')) summary += '- It is anchored to the beginning.\n';
+      if (pattern.endsWith('$')) summary += '- It is anchored to the end.\n';
+      if (pattern.includes('.*')) summary += '- It allows flexible text in the middle.\n';
+      if (/\[[^\]]+\]/.test(pattern)) summary += '- It uses one or more character classes.\n';
+      if (/[+*?{]/.test(pattern)) summary += '- It uses repetition or optional sections.\n';
+
+      summary += '\nPlain-language explanation:\n';
+      summary += tokens.map((t) => '- ' + explainToken(t, mode)).join('\n');
+
+      let matchesOutput = 'No test text provided.';
+      if (testText) {
+        try {
+          const regex = new RegExp(pattern, flags || undefined);
+          const matches = Array.from(testText.matchAll(regex));
+          if (!matches.length) {
+            const single = testText.match(regex);
+            if (single) {
+              matchesOutput = `Found 1 match:\n- ${single[0]}`;
+            } else {
+              matchesOutput = 'No matches found in the provided test text.';
+            }
+          } else {
+            matchesOutput = `Found ${matches.length} match(es):\n` + matches.map((m, i) => `${i + 1}. ${m[0]}`).join('\n');
+          }
+        } catch (err) {
+          matchesOutput = 'Regex error: ' + err.message;
+        }
+      }
+
+      $('#regex-output').textContent = summary;
+      $('#regex-tokens').textContent = explanation;
+      $('#regex-matches').textContent = matchesOutput;
+    }
+
+    $('#explain-regex-btn').addEventListener('click', explainRegex);
+    $('#copy-regex-btn').addEventListener('click', () => copyText($('#regex-output').textContent + '\n\n' + $('#regex-tokens').textContent));
+    $('#sample-regex-btn').addEventListener('click', () => {
+      $('#regex-input').value = '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$';
+      $('#regex-flags').value = '';
+      $('#regex-mode').value = 'beginner';
+      $('#regex-test').value = 'hello@example.com\nnot-an-email\nashly.lorenzana@domain.org';
+      explainRegex();
+    });
+
+    // Fake data generator
+    const fakeData = {
+      firstNames: ['Mona', 'Ashly', 'Riley', 'Jordan', 'Avery', 'Taylor', 'Morgan', 'Dakota', 'Robin', 'Sydney'],
+      lastNames: ['Lorenzana', 'Reed', 'Williams', 'Nguyen', 'Garcia', 'Bennett', 'Miller', 'Santos', 'Chen', 'Brooks'],
+      cities: ['Portland', 'Seattle', 'Austin', 'Chicago', 'Miami', 'Denver', 'Phoenix', 'Boston', 'Atlanta', 'Oakland'],
+      countries: ['United States', 'Canada', 'Mexico', 'France', 'Japan', 'Germany', 'Brazil', 'Spain', 'Australia', 'Netherlands'],
+      companies: ['Northline Studio', 'Pixel Harbor', 'Signal Forge', 'Quiet Orbit', 'Velvet Grid', 'Paper Lantern', 'Open Meadow', 'Bright Relay'],
+      words: ['aurora', 'signal', 'paper', 'frontend', 'widget', 'archive', 'garden', 'ember', 'delta', 'violet', 'harbor', 'lumen']
+    };
+
+    function rand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+    function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+    function randBool() { return Math.random() > 0.5; }
+    function randDigits(n) { return Array.from({ length: n }, () => randInt(0, 9)).join(''); }
+    function randWord(count = 1) { return Array.from({ length: count }, () => rand(fakeData.words)).join(' '); }
+    function randSentence() {
+      const len = randInt(5, 11);
+      const sentence = Array.from({ length: len }, () => rand(fakeData.words)).join(' ');
+      return titleCase(sentence) + '.';
+    }
+    function randParagraph() {
+      return Array.from({ length: randInt(2, 4) }, () => randSentence()).join(' ');
+    }
+    function makeUUID() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+        const r = Math.random() * 16 | 0;
+        const v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    }
+
+    function generateFieldValue(type, index) {
+      const first = rand(fakeData.firstNames);
+      const last = rand(fakeData.lastNames);
+      switch ((type || '').trim()) {
+        case 'number':
+        case 'integer': return randInt(1, 9999);
+        case 'fullname':
+        case 'fullName': return `${first} ${last}`;
+        case 'firstname':
+        case 'firstName': return first;
+        case 'lastname':
+        case 'lastName': return last;
+        case 'email': return `${first.toLowerCase()}.${last.toLowerCase()}${randInt(1, 99)}@example.com`;
+        case 'phone': return `(${randInt(200, 989)}) ${randInt(100, 999)}-${randInt(1000, 9999)}`;
+        case 'company': return rand(fakeData.companies);
+        case 'city': return rand(fakeData.cities);
+        case 'country': return rand(fakeData.countries);
+        case 'username': return `${first.toLowerCase()}_${last.toLowerCase()}${randInt(10, 999)}`;
+        case 'boolean': return randBool();
+        case 'uuid': return makeUUID();
+        case 'slug': return slugify(randWord(randInt(2, 4)) + ' ' + index);
+        case 'sentence': return randSentence();
+        case 'paragraph': return randParagraph();
+        case 'date': {
+          const date = new Date(Date.now() - randInt(0, 365) * 86400000);
+          return date.toISOString().slice(0, 10);
+        }
+        case 'timestamp': {
+          const date = new Date(Date.now() - randInt(0, 365) * 86400000 - randInt(0, 86400000));
+          return date.toISOString();
+        }
+        case 'price': return (Math.random() * 300 + 5).toFixed(2);
+        default: return randSentence();
+      }
+    }
+
+    function parseSchema() {
+      const raw = $('#schema-input').value.trim();
+      const lines = raw.split(/\n+/).map((line) => line.trim()).filter(Boolean);
+      const schema = lines.map((line) => {
+        const [name, type] = line.split(':').map((part) => part.trim());
+        return { name, type };
+      }).filter((item) => item.name && item.type);
+
+      const tbody = $('#schema-table tbody');
+      if (!schema.length) {
+        tbody.innerHTML = '<tr><td colspan="2" class="small">No valid schema parsed yet.</td></tr>';
+      } else {
+        tbody.innerHTML = schema.map((field) => `<tr><td>${field.name}</td><td>${field.type}</td></tr>`).join('');
+      }
+      return schema;
+    }
+
+    $('#schema-input').addEventListener('input', parseSchema);
+
+    function generateFakeData() {
+      const schema = parseSchema();
+      const count = Math.max(1, Math.min(500, parseInt($('#row-count').value || '10', 10)));
+      const format = $('#data-format').value;
+      const tableName = ($('#table-name').value || 'users').trim();
+
+      if (!schema.length) {
+        $('#data-output').textContent = 'Please define a valid schema first.';
+        return;
+      }
+
+      const rows = Array.from({ length: count }, (_, index) => {
+        const obj = {};
+        schema.forEach((field) => {
+          obj[field.name] = generateFieldValue(field.type, index + 1);
+        });
+        return obj;
+      });
+
+      let output = '';
+      if (format === 'json') {
+        output = JSON.stringify(rows, null, 2);
+      } else if (format === 'csv') {
+        const headers = schema.map((f) => f.name);
+        const csvLines = [headers.join(',')];
+        rows.forEach((row) => {
+          csvLines.push(headers.map((key) => {
+            const value = row[key];
+            const str = String(value).replace(/"/g, '""');
+            return /[",\n]/.test(str) ? `"${str}"` : str;
+          }).join(','));
+        });
+        output = csvLines.join('\n');
+      } else if (format === 'sql') {
+        const cols = schema.map((f) => f.name).join(', ');
+        const statements = rows.map((row) => {
+          const values = schema.map((field) => {
+            const value = row[field.name];
+            if (typeof value === 'boolean') return value ? 'TRUE' : 'FALSE';
+            if (typeof value === 'number') return String(value);
+            return `'${String(value).replace(/'/g, "''")}'`;
+          }).join(', ');
+          return `INSERT INTO ${tableName} (${cols}) VALUES (${values});`;
+        });
+        output = statements.join('\n');
+      }
+
+      $('#data-output').textContent = output;
+    }
+
+    function downloadFakeData() {
+      const output = $('#data-output').textContent;
+      if (!output || output.includes('Generated data will appear here') || output.includes('Please define')) {
+        alert('Generate some data first.');
+        return;
+      }
+      const format = $('#data-format').value;
+      const ext = format === 'sql' ? 'sql' : format;
+      const blob = new Blob([output], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `fake-data.${ext}`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    $('#generate-data-btn').addEventListener('click', generateFakeData);
+    $('#copy-data-btn').addEventListener('click', () => copyText($('#data-output').textContent));
+    $('#download-data-btn').addEventListener('click', downloadFakeData);
+    $('#sample-data-btn').addEventListener('click', () => {
+      $('#schema-input').value = 'id:number\nname:fullName\nemail:email\ncity:city\ncompany:company\ncreated_at:timestamp\nis_active:boolean\nprice:price';
+      $('#row-count').value = '10';
+      $('#data-format').value = 'json';
+      $('#table-name').value = 'users';
+      parseSchema();
+      generateFakeData();
+    });
+
+    // File naming generator
+    function applyCase(value, mode, separator) {
+      if (!value) return '';
+      if (mode === 'upper') return value.replace(/[^a-zA-Z0-9]+/g, separator).toUpperCase();
+      if (mode === 'lower') return value.replace(/[^a-zA-Z0-9]+/g, ' ').toLowerCase().trim().replace(/\s+/g, separator);
+      if (mode === 'snake') return slugify(value, '_');
+      return slugify(value, separator);
+    }
+
+    function generateNames() {
+      const prefix = $('#name-prefix').value.trim();
+      const title = $('#name-title').value.trim();
+      const dateStyle = $('#name-date').value;
+      const separator = $('#name-separator').value;
+      const letterCase = $('#name-case').value;
+      const version = $('#name-version').value.trim();
+      const ext = $('#name-ext').value.trim().replace(/^\./, '');
+      const count = Math.max(1, Math.min(50, parseInt($('#name-count').value || '8', 10)));
+      const includeDate = $('#include-date').checked;
+      const includePrefix = $('#include-prefix').checked;
+      const includeVersion = $('#include-version').checked;
+      const includeCounter = $('#include-counter').checked;
+
+      if (!title) {
+        $('#names-output').textContent = 'Please enter a base title first.';
+        $('#pattern-output').textContent = '';
+        return;
+      }
+
+      const piecesBase = [];
+      if (includeDate) {
+        const datePart = formatDate(dateStyle);
+        if (datePart) piecesBase.push(datePart);
+      }
+      if (includePrefix && prefix) piecesBase.push(applyCase(prefix, letterCase, separator));
+      piecesBase.push(applyCase(title, letterCase, separator));
+      if (includeVersion && version) piecesBase.push(applyCase(version, letterCase === 'snake' ? 'snake' : 'lower', separator));
+
+      const outputs = Array.from({ length: count }, (_, index) => {
+        const pieces = [...piecesBase];
+        if (includeCounter) pieces.push(String(index + 1).padStart(2, '0'));
+        return pieces.filter(Boolean).join(separator) + (ext ? `.${ext}` : '');
+      });
+
+      $('#names-output').textContent = outputs.join('\n');
+      $('#pattern-output').textContent = [
+        'Pattern summary:',
+        `- Date style: ${includeDate ? dateStyle : 'none'}`,
+        `- Prefix: ${includePrefix ? (prefix || 'not provided') : 'not included'}`,
+        `- Base title: ${title}`,
+        `- Separator: ${separator}`,
+        `- Case: ${letterCase}`,
+        `- Version: ${includeVersion ? (version || 'not provided') : 'not included'}`,
+        `- Sequence number: ${includeCounter ? 'yes' : 'no'}`,
+        `- Extension: ${ext || 'none'}`
+      ].join('\n');
+    }
+
+    $('#generate-names-btn').addEventListener('click', generateNames);
+    $('#copy-names-btn').addEventListener('click', () => copyText($('#names-output').textContent));
+    $('#sample-names-btn').addEventListener('click', () => {
+      $('#name-prefix').value = 'frontend-widgets';
+      $('#name-title').value = 'launch social preview';
+      $('#name-date').value = 'yyyy-mm-dd';
+      $('#name-separator').value = '-';
+      $('#name-case').value = 'kebab';
+      $('#name-version').value = 'v02';
+      $('#name-ext').value = 'png';
+      $('#name-count').value = '8';
+      $('#include-date').checked = true;
+      $('#include-prefix').checked = true;
+      $('#include-version').checked = true;
+      $('#include-counter').checked = true;
+      generateNames();
+    });
+
+    // Initialize previews with sample schema
+    parseSchema();
+  </script>
+</body>
+</html>

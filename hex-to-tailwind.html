@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HEX → Tailwind Classes</title>
+  <link rel="stylesheet" href="styles-vanilla.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
+      <h1>HEX Color → Tailwind Classes</h1>
+      <p class="page-description">Paste a HEX value and get the closest Tailwind color matches plus utility class ideas.</p>
+    </header>
+
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
+        <div class="inline-actions">
+          <button id="sampleHex" class="secondary">Load Sample</button>
+        </div>
+      </div>
+
+      <div class="widget-grid">
+        <section class="panel">
+          <label for="hexInput">HEX value</label>
+          <input id="hexInput" type="text" value="#ff009c" placeholder="#ff009c" />
+
+          <div style="height: 12px;"></div>
+
+          <label for="colorInput">Color picker</label>
+          <input id="colorInput" type="color" value="#ff009c" />
+
+          <div style="height: 16px;"></div>
+
+          <div id="swatch" class="swatch"></div>
+
+          <div class="kv">
+            <div class="panelish">
+              <div class="small">Suggested utilities</div>
+              <pre id="utilities"></pre>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button id="copyUtilities">Copy utilities</button>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>Closest Tailwind matches</h2>
+          <div id="matches" class="match-list"></div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/hex-to-tailwind.js"></script>
+</body>
+</html>

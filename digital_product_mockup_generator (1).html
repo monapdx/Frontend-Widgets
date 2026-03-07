@@ -1,0 +1,1197 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digital Product Mockup Generator</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --panel: #ffffff;
+      --panel-soft: #fdfdfd;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --border-soft: #eef2f7;
+      --accent: #0f172a;
+      --shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --radius-md: 18px;
+      --radius-sm: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .page {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .layout {
+      display: grid;
+      gap: 16px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 22px 22px 10px;
+      border-bottom: 1px solid transparent;
+    }
+
+    .panel-title {
+      margin: 0;
+      font-size: 1.35rem;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+    }
+
+    .panel-subtitle {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.96rem;
+    }
+
+    .form-wrap {
+      padding: 6px 22px 22px;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field label {
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .input,
+    .textarea,
+    .select,
+    .file-input {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 16px;
+      padding: 14px 15px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .textarea {
+      resize: vertical;
+      min-height: 104px;
+    }
+
+    .input:focus,
+    .textarea:focus,
+    .select:focus,
+    .file-input:focus {
+      border-color: #cbd5e1;
+      box-shadow: 0 0 0 4px rgba(148, 163, 184, 0.12);
+    }
+
+    .row-2 {
+      display: grid;
+      gap: 16px;
+    }
+
+    .actions {
+      display: grid;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      border: 0;
+      border-radius: 18px;
+      padding: 15px 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease, background 0.2s ease;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+    }
+
+    .button:active {
+      transform: translateY(0);
+    }
+
+    .button-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .button-secondary {
+      background: white;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .preview-header {
+      padding: 22px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+    }
+
+    .preview-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .badge {
+      border: 1px solid var(--border);
+      background: #f8fafc;
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 0.78rem;
+    }
+
+    .preview-shell {
+      background: #f1f5f9;
+      padding: 12px;
+    }
+
+    .mockup-page {
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      background: #f8fafc;
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .mockup-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .mockup-brand {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .mockup-nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill {
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 10px 13px;
+      font-size: 0.88rem;
+    }
+
+    .hero {
+      display: grid;
+      gap: 18px;
+      padding-top: 18px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      width: fit-content;
+    }
+
+    .headline {
+      margin: 14px 0 0;
+      font-size: clamp(2rem, 7vw, 4.4rem);
+      line-height: 1.02;
+      letter-spacing: -0.05em;
+    }
+
+    .subheadline,
+    .body-copy {
+      margin: 14px 0 0;
+      color: var(--muted);
+    }
+
+    .subheadline {
+      font-size: 1.02rem;
+    }
+
+    .body-copy {
+      font-size: 0.97rem;
+      line-height: 1.75;
+    }
+
+    .hero-actions {
+      display: grid;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .hero-price {
+      margin-top: 18px;
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+    }
+
+    .product-card-wrap {
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, #ffffff, #f8fafc);
+      border-radius: 28px;
+      padding: 14px;
+      box-shadow: 0 12px 40px rgba(15, 23, 42, 0.06);
+    }
+
+    .product-card {
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      background: white;
+    }
+
+    .window-bar {
+      height: 42px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 14px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .window-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: #cbd5e1;
+    }
+
+    .product-card-body {
+      padding: 14px;
+    }
+
+    .product-image,
+    .product-placeholder {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      border-radius: 18px;
+      margin-bottom: 14px;
+    }
+
+    .product-image {
+      object-fit: cover;
+      border: 1px solid var(--border);
+      background: #f8fafc;
+    }
+
+    .product-placeholder {
+      border: 1px dashed #cbd5e1;
+      background: repeating-linear-gradient(45deg, #f8fafc, #f8fafc 12px, #ffffff 12px, #ffffff 24px);
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      text-align: center;
+      padding: 20px;
+      font-size: 0.92rem;
+    }
+
+    .mini-card {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+      background: white;
+    }
+
+    .mini-label {
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #94a3b8;
+    }
+
+    .mini-title {
+      margin-top: 8px;
+      font-size: 1.08rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .mini-copy {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.94rem;
+      line-height: 1.65;
+    }
+
+    .cards-grid {
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .content-card {
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      background: white;
+      padding: 18px;
+    }
+
+    .content-card h3 {
+      margin: 0 0 12px;
+      font-size: 1.08rem;
+      letter-spacing: -0.03em;
+    }
+
+    .feature-list {
+      margin: 0;
+      padding-left: 0;
+      list-style: none;
+      display: grid;
+      gap: 11px;
+    }
+
+    .feature-item {
+      display: flex;
+      gap: 10px;
+      color: #475569;
+      font-size: 0.95rem;
+    }
+
+    .check {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #f8fafc;
+      color: #64748b;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.74rem;
+      flex: 0 0 18px;
+      margin-top: 1px;
+    }
+
+    .link-card {
+      border: 1px solid var(--border-soft);
+      background: #f8fafc;
+      border-radius: 18px;
+      padding: 12px;
+      word-break: break-word;
+    }
+
+    .link-card + .link-card {
+      margin-top: 10px;
+    }
+
+    .link-label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #334155;
+    }
+
+    .empty-note {
+      color: #94a3b8;
+    }
+
+    .small-note {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-top: 4px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (min-width: 760px) {
+      .page {
+        padding: 20px;
+      }
+
+      .row-2,
+      .hero-actions,
+      .mockup-nav {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .mockup-nav {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+      }
+
+      .cards-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 1100px) {
+      .layout {
+        grid-template-columns: 420px minmax(0, 1fr);
+        align-items: start;
+      }
+
+      .page {
+        padding: 24px;
+      }
+
+      .preview-shell {
+        padding: 18px;
+      }
+
+      .mockup-page {
+        padding: 24px;
+      }
+
+      .hero {
+        grid-template-columns: 1.12fr minmax(320px, 420px);
+        align-items: center;
+        gap: 28px;
+      }
+
+      .cards-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="layout">
+      <section class="panel">
+        <div class="panel-header">
+          <h1 class="panel-title">Digital Product Mockup Generator</h1>
+          <p class="panel-subtitle">Fill in your product details, upload a graphic, and preview a clean mobile-first sales mockup.</p>
+        </div>
+
+        <div class="form-wrap">
+          <div class="form-grid">
+            <div class="field">
+              <label for="productName">Product Name</label>
+              <input class="input" id="productName" type="text" value="Frontend Widgets" />
+            </div>
+
+            <div class="row-2">
+              <div class="field">
+                <label for="productType">Product Type</label>
+                <select class="select" id="productType">
+                  <option>Software</option>
+                  <option>Ebook</option>
+                  <option>Class</option>
+                  <option>Extension</option>
+                  <option>Graphics</option>
+                  <option>Templates</option>
+                  <option>Mobile Apps</option>
+                  <option>Music/Audio</option>
+                  <option>Video</option>
+                  <option>Membership</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="price">Price</label>
+                <input class="input" id="price" type="text" value="$19" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="headline">Headline</label>
+              <textarea class="textarea" id="headline"></textarea>
+            </div>
+
+            <div class="field">
+              <label for="subheadline">Subheadline</label>
+              <textarea class="textarea" id="subheadline"></textarea>
+            </div>
+
+            <div class="field">
+              <label for="bodyCopy">Body Copy</label>
+              <textarea class="textarea" id="bodyCopy" style="min-height: 130px;"></textarea>
+            </div>
+
+            <div class="field">
+              <label for="features">Features (one bullet per line)</label>
+              <textarea class="textarea" id="features" style="min-height: 130px;"></textarea>
+            </div>
+
+            <div class="field">
+              <label for="audience">Audience (who is it for?)</label>
+              <textarea class="textarea" id="audience"></textarea>
+            </div>
+
+            <div class="field">
+              <label for="productGraphic">Product Graphic Upload</label>
+              <input class="file-input" id="productGraphic" type="file" accept="image/*" />
+              <div class="small-note">Upload a product image, cover, screenshot, or mockup graphic.</div>
+            </div>
+
+            <div class="field">
+              <label for="navLinks">Navigation Links (one per line)</label>
+              <textarea class="textarea" id="navLinks"></textarea>
+            </div>
+
+            <div class="row-2">
+              <div class="field">
+                <label for="ctaText">CTA Button Custom Text</label>
+                <input class="input" id="ctaText" type="text" value="Buy Now" />
+              </div>
+
+              <div class="field">
+                <label for="paymentLink">Payment Link / Checkout</label>
+                <input class="input" id="paymentLink" type="url" value="https://" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="redirectLink">Redirect to Upsell / Download Page</label>
+              <input class="input" id="redirectLink" type="url" value="https://" />
+            </div>
+
+            <div class="actions">
+              <button class="button button-primary" id="downloadHtmlBtn" type="button">Export Mockup HTML</button>
+              <button class="button button-secondary" id="resetBtn" type="button">Reset Demo Content</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="preview-header">
+          <h2 class="panel-title">Live Preview</h2>
+          <p class="panel-subtitle">Responsive, minimal, light-themed product page mockup.</p>
+          <div class="preview-badges">
+            <span class="badge">Mobile-first</span>
+            <span class="badge">Light theme</span>
+            <span class="badge">Clean layout</span>
+          </div>
+        </div>
+
+        <div class="preview-shell">
+          <div class="mockup-page" id="previewRoot">
+            <div class="mockup-nav">
+              <div class="mockup-brand" id="previewBrand">Frontend Widgets</div>
+              <div class="mockup-nav-links" id="previewNavLinks"></div>
+            </div>
+
+            <section class="hero">
+              <div>
+                <div class="eyebrow" id="previewEyebrow">Software • $19</div>
+                <h1 class="headline" id="previewHeadline">Launch your digital product with a page that actually looks ready to sell</h1>
+                <p class="subheadline" id="previewSubheadline">Build a clean, modern promo mockup with pricing, benefits, audience fit, and checkout links in minutes.</p>
+                <p class="body-copy" id="previewBodyCopy">This generator helps creators put together a polished digital product presentation without having to design a landing page from scratch. Add your branding, upload a product image, customize your CTA, and instantly preview a simple sales-ready layout.</p>
+
+                <div class="hero-actions">
+                  <a class="button button-primary" id="previewPrimaryCta" href="#">Buy Now</a>
+                  <a class="button button-secondary" id="previewSecondaryCta" href="#">Download / Upsell Page</a>
+                </div>
+
+                <div class="hero-price" id="previewPrice">$19</div>
+              </div>
+
+              <div class="product-card-wrap">
+                <div class="product-card">
+                  <div class="window-bar">
+                    <span class="window-dot"></span>
+                    <span class="window-dot"></span>
+                    <span class="window-dot"></span>
+                  </div>
+
+                  <div class="product-card-body">
+                    <img class="product-image hidden" id="previewImage" alt="Product graphic preview" />
+                    <div class="product-placeholder" id="previewPlaceholder">Upload a product graphic to preview it here</div>
+
+                    <div class="mini-card">
+                      <div class="mini-label" id="previewMiniLabel">Software</div>
+                      <div class="mini-title" id="previewMiniTitle">Frontend Widgets</div>
+                      <div class="mini-copy" id="previewMiniCopy">Build a clean, modern promo mockup with pricing, benefits, audience fit, and checkout links in minutes.</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <div class="cards-grid">
+              <section class="content-card">
+                <h3>Features</h3>
+                <ul class="feature-list" id="previewFeatureList"></ul>
+              </section>
+
+              <section class="content-card">
+                <h3>Who It's For</h3>
+                <div id="previewAudience" class="mini-copy" style="margin-top:0;">Indie creators, solo developers, designers, educators, and digital product sellers.</div>
+              </section>
+
+              <section class="content-card">
+                <h3>Links</h3>
+                <div class="link-card">
+                  <div class="link-label">Checkout</div>
+                  <div id="previewPaymentLink">https://checkout.example.com/product</div>
+                </div>
+                <div class="link-card">
+                  <div class="link-label">Redirect</div>
+                  <div id="previewRedirectLink">https://example.com/download</div>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const defaults = {
+      productName: "",
+      productType: "",
+      price: "$",
+      headline: "",
+      subheadline: "",
+      bodyCopy: "",
+      features: "Fast to start using\nBeginner-friendly workflow\nClean, polished output\nInstant digital delivery",
+      audience: "",
+      navLinks: "Overview\nFeatures\nWho It's For\nPricing",
+      ctaText: "Buy Now",
+      paymentLink: "https://",
+      redirectLink: "https://"
+    };
+
+    const state = {
+      imageUrl: ""
+    };
+
+    const els = {
+      productName: document.getElementById("productName"),
+      productType: document.getElementById("productType"),
+      price: document.getElementById("price"),
+      headline: document.getElementById("headline"),
+      subheadline: document.getElementById("subheadline"),
+      bodyCopy: document.getElementById("bodyCopy"),
+      features: document.getElementById("features"),
+      audience: document.getElementById("audience"),
+      productGraphic: document.getElementById("productGraphic"),
+      navLinks: document.getElementById("navLinks"),
+      ctaText: document.getElementById("ctaText"),
+      paymentLink: document.getElementById("paymentLink"),
+      redirectLink: document.getElementById("redirectLink"),
+      downloadHtmlBtn: document.getElementById("downloadHtmlBtn"),
+      resetBtn: document.getElementById("resetBtn"),
+      previewBrand: document.getElementById("previewBrand"),
+      previewNavLinks: document.getElementById("previewNavLinks"),
+      previewEyebrow: document.getElementById("previewEyebrow"),
+      previewHeadline: document.getElementById("previewHeadline"),
+      previewSubheadline: document.getElementById("previewSubheadline"),
+      previewBodyCopy: document.getElementById("previewBodyCopy"),
+      previewPrimaryCta: document.getElementById("previewPrimaryCta"),
+      previewSecondaryCta: document.getElementById("previewSecondaryCta"),
+      previewPrice: document.getElementById("previewPrice"),
+      previewImage: document.getElementById("previewImage"),
+      previewPlaceholder: document.getElementById("previewPlaceholder"),
+      previewMiniLabel: document.getElementById("previewMiniLabel"),
+      previewMiniTitle: document.getElementById("previewMiniTitle"),
+      previewMiniCopy: document.getElementById("previewMiniCopy"),
+      previewFeatureList: document.getElementById("previewFeatureList"),
+      previewAudience: document.getElementById("previewAudience"),
+      previewPaymentLink: document.getElementById("previewPaymentLink"),
+      previewRedirectLink: document.getElementById("previewRedirectLink")
+    };
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function slugify(text) {
+      return String(text)
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "") || "section";
+    }
+
+    function getLines(value) {
+      return String(value)
+        .split("\n")
+        .map(item => item.trim())
+        .filter(Boolean);
+    }
+
+    function getFormData() {
+      return {
+        productName: els.productName.value.trim() || "Your Product",
+        productType: els.productType.value.trim() || "Digital Product",
+        price: els.price.value.trim() || "$0",
+        headline: els.headline.value.trim() || "Your headline goes here",
+        subheadline: els.subheadline.value.trim() || "Your subheadline goes here",
+        bodyCopy: els.bodyCopy.value.trim() || "Your body copy goes here.",
+        features: getLines(els.features.value),
+        audience: els.audience.value.trim() || "Describe who this is for.",
+        navLinks: getLines(els.navLinks.value),
+        ctaText: els.ctaText.value.trim() || "Buy Now",
+        paymentLink: els.paymentLink.value.trim() || "#",
+        redirectLink: els.redirectLink.value.trim() || "#",
+        imageUrl: state.imageUrl || ""
+      };
+    }
+
+    function renderPreview() {
+      const data = getFormData();
+
+      els.previewBrand.textContent = data.productName;
+      els.previewEyebrow.textContent = `${data.productType} • ${data.price}`;
+      els.previewHeadline.textContent = data.headline;
+      els.previewSubheadline.textContent = data.subheadline;
+      els.previewBodyCopy.textContent = data.bodyCopy;
+      els.previewPrimaryCta.textContent = data.ctaText;
+      els.previewPrimaryCta.href = data.paymentLink;
+      els.previewSecondaryCta.href = data.redirectLink;
+      els.previewPrice.textContent = data.price;
+      els.previewMiniLabel.textContent = data.productType;
+      els.previewMiniTitle.textContent = data.productName;
+      els.previewMiniCopy.textContent = data.subheadline;
+      els.previewAudience.textContent = data.audience;
+      els.previewPaymentLink.textContent = data.paymentLink;
+      els.previewRedirectLink.textContent = data.redirectLink;
+
+      els.previewNavLinks.innerHTML = "";
+      if (data.navLinks.length) {
+        data.navLinks.forEach(item => {
+          const span = document.createElement("span");
+          span.className = "pill";
+          span.textContent = item;
+          els.previewNavLinks.appendChild(span);
+        });
+      } else {
+        const span = document.createElement("span");
+        span.className = "pill empty-note";
+        span.textContent = "Add nav links";
+        els.previewNavLinks.appendChild(span);
+      }
+
+      els.previewFeatureList.innerHTML = "";
+      if (data.features.length) {
+        data.features.forEach(item => {
+          const li = document.createElement("li");
+          li.className = "feature-item";
+          li.innerHTML = `<span class="check">✓</span><span>${escapeHtml(item)}</span>`;
+          els.previewFeatureList.appendChild(li);
+        });
+      } else {
+        const li = document.createElement("li");
+        li.className = "feature-item empty-note";
+        li.textContent = "Add feature bullets";
+        els.previewFeatureList.appendChild(li);
+      }
+
+      if (data.imageUrl) {
+        els.previewImage.src = data.imageUrl;
+        els.previewImage.alt = data.productName + " graphic";
+        els.previewImage.classList.remove("hidden");
+        els.previewPlaceholder.classList.add("hidden");
+      } else {
+        els.previewImage.classList.add("hidden");
+        els.previewPlaceholder.classList.remove("hidden");
+      }
+    }
+
+    function buildExportHtml() {
+      const data = getFormData();
+      const navHtml = data.navLinks.length
+        ? data.navLinks.map(item => `<a class="pill" href="#${slugify(item)}">${escapeHtml(item)}</a>`).join("")
+        : `<span class="pill">Overview</span>`;
+
+      const featuresHtml = data.features.length
+        ? data.features.map(item => `<li class="feature-item"><span class="check">✓</span><span>${escapeHtml(item)}</span></li>`).join("")
+        : `<li class="feature-item"><span>Add feature bullets</span></li>`;
+
+      const imageBlock = data.imageUrl
+        ? `<img class="product-image" src="${data.imageUrl}" alt="${escapeHtml(data.productName)} graphic" />`
+        : `<div class="product-placeholder">Upload a product graphic to preview it here</div>`;
+
+      return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${escapeHtml(data.productName)}</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --panel: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --border-soft: #eef2f7;
+      --accent: #0f172a;
+      --shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      line-height: 1.5;
+    }
+    a { color: inherit; text-decoration: none; }
+    .page { max-width: 1200px; margin: 0 auto; padding: 16px; }
+    .mockup-page {
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      background: #f8fafc;
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+    .mockup-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+    }
+    .mockup-brand { font-size: 1.05rem; font-weight: 700; letter-spacing: -0.02em; }
+    .mockup-nav-links { display: flex; flex-wrap: wrap; gap: 8px; }
+    .pill {
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 10px 13px;
+      font-size: 0.88rem;
+    }
+    .hero { display: grid; gap: 18px; padding-top: 18px; }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      width: fit-content;
+    }
+    .headline {
+      margin: 14px 0 0;
+      font-size: clamp(2rem, 7vw, 4.4rem);
+      line-height: 1.02;
+      letter-spacing: -0.05em;
+    }
+    .subheadline, .body-copy { margin: 14px 0 0; color: var(--muted); }
+    .subheadline { font-size: 1.02rem; }
+    .body-copy { font-size: 0.97rem; line-height: 1.75; }
+    .hero-actions { display: grid; gap: 10px; margin-top: 20px; }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      border-radius: 18px;
+      padding: 15px 18px;
+      font-weight: 600;
+    }
+    .button-primary { background: var(--accent); color: white; }
+    .button-secondary { background: white; color: var(--text); border: 1px solid var(--border); }
+    .hero-price { margin-top: 18px; font-size: 2rem; font-weight: 700; letter-spacing: -0.04em; }
+    .product-card-wrap {
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, #ffffff, #f8fafc);
+      border-radius: 28px;
+      padding: 14px;
+      box-shadow: 0 12px 40px rgba(15, 23, 42, 0.06);
+    }
+    .product-card {
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      background: white;
+    }
+    .window-bar {
+      height: 42px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 14px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border);
+    }
+    .window-dot { width: 10px; height: 10px; border-radius: 999px; background: #cbd5e1; }
+    .product-card-body { padding: 14px; }
+    .product-image, .product-placeholder {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      border-radius: 18px;
+      margin-bottom: 14px;
+    }
+    .product-image { object-fit: cover; border: 1px solid var(--border); background: #f8fafc; }
+    .product-placeholder {
+      border: 1px dashed #cbd5e1;
+      background: repeating-linear-gradient(45deg, #f8fafc, #f8fafc 12px, #ffffff 12px, #ffffff 24px);
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      text-align: center;
+      padding: 20px;
+      font-size: 0.92rem;
+    }
+    .mini-card { border: 1px solid var(--border); border-radius: 18px; padding: 14px; background: white; }
+    .mini-label { font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.18em; color: #94a3b8; }
+    .mini-title { margin-top: 8px; font-size: 1.08rem; font-weight: 700; letter-spacing: -0.03em; }
+    .mini-copy { margin-top: 8px; color: var(--muted); font-size: 0.94rem; line-height: 1.65; }
+    .cards-grid { display: grid; gap: 14px; margin-top: 18px; }
+    .content-card { border: 1px solid var(--border); border-radius: 24px; background: white; padding: 18px; }
+    .content-card h3 { margin: 0 0 12px; font-size: 1.08rem; letter-spacing: -0.03em; }
+    .feature-list { margin: 0; padding-left: 0; list-style: none; display: grid; gap: 11px; }
+    .feature-item { display: flex; gap: 10px; color: #475569; font-size: 0.95rem; }
+    .check {
+      width: 18px; height: 18px; border-radius: 999px; border: 1px solid var(--border);
+      background: #f8fafc; color: #64748b; display: inline-flex; align-items: center; justify-content: center;
+      font-size: 0.74rem; flex: 0 0 18px; margin-top: 1px;
+    }
+    .link-card { border: 1px solid var(--border-soft); background: #f8fafc; border-radius: 18px; padding: 12px; word-break: break-word; }
+    .link-card + .link-card { margin-top: 10px; }
+    .link-label { font-size: 0.9rem; font-weight: 600; margin-bottom: 4px; color: #334155; }
+    @media (min-width: 760px) {
+      .mockup-nav { flex-direction: row; align-items: center; justify-content: space-between; }
+      .hero-actions { display: flex; flex-wrap: wrap; }
+      .cards-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (min-width: 1100px) {
+      .page { padding: 24px; }
+      .mockup-page { padding: 24px; }
+      .hero { grid-template-columns: 1.12fr minmax(320px, 420px); align-items: center; gap: 28px; }
+      .cards-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="mockup-page">
+      <div class="mockup-nav">
+        <div class="mockup-brand">${escapeHtml(data.productName)}</div>
+        <div class="mockup-nav-links">${navHtml}</div>
+      </div>
+
+      <section class="hero" id="overview">
+        <div>
+          <div class="eyebrow">${escapeHtml(data.productType)} • ${escapeHtml(data.price)}</div>
+          <h1 class="headline">${escapeHtml(data.headline)}</h1>
+          <p class="subheadline">${escapeHtml(data.subheadline)}</p>
+          <p class="body-copy">${escapeHtml(data.bodyCopy)}</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="${escapeHtml(data.paymentLink)}">${escapeHtml(data.ctaText)}</a>
+            <a class="button button-secondary" href="${escapeHtml(data.redirectLink)}">Download / Upsell Page</a>
+          </div>
+          <div class="hero-price">${escapeHtml(data.price)}</div>
+        </div>
+
+        <div class="product-card-wrap">
+          <div class="product-card">
+            <div class="window-bar">
+              <span class="window-dot"></span>
+              <span class="window-dot"></span>
+              <span class="window-dot"></span>
+            </div>
+            <div class="product-card-body">
+              ${imageBlock}
+              <div class="mini-card">
+                <div class="mini-label">${escapeHtml(data.productType)}</div>
+                <div class="mini-title">${escapeHtml(data.productName)}</div>
+                <div class="mini-copy">${escapeHtml(data.subheadline)}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="cards-grid">
+        <section class="content-card" id="features">
+          <h3>Features</h3>
+          <ul class="feature-list">${featuresHtml}</ul>
+        </section>
+
+        <section class="content-card" id="who-it-s-for">
+          <h3>Who It's For</h3>
+          <div class="mini-copy" style="margin-top:0;">${escapeHtml(data.audience)}</div>
+        </section>
+
+        <section class="content-card" id="pricing">
+          <h3>Links</h3>
+          <div class="link-card">
+            <div class="link-label">Checkout</div>
+            <div>${escapeHtml(data.paymentLink)}</div>
+          </div>
+          <div class="link-card">
+            <div class="link-label">Redirect</div>
+            <div>${escapeHtml(data.redirectLink)}</div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</body>
+</html>`;
+    }
+
+    function downloadHtml() {
+      const html = buildExportHtml();
+      const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      const data = getFormData();
+      const filename = (slugify(data.productName) || "product-mockup") + ".html";
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function resetForm() {
+      els.productName.value = defaults.productName;
+      els.productType.value = defaults.productType;
+      els.price.value = defaults.price;
+      els.headline.value = defaults.headline;
+      els.subheadline.value = defaults.subheadline;
+      els.bodyCopy.value = defaults.bodyCopy;
+      els.features.value = defaults.features;
+      els.audience.value = defaults.audience;
+      els.navLinks.value = defaults.navLinks;
+      els.ctaText.value = defaults.ctaText;
+      els.paymentLink.value = defaults.paymentLink;
+      els.redirectLink.value = defaults.redirectLink;
+      els.productGraphic.value = "";
+
+      if (state.imageUrl) {
+        URL.revokeObjectURL(state.imageUrl);
+      }
+      state.imageUrl = "";
+      renderPreview();
+    }
+
+    [
+      els.productName,
+      els.productType,
+      els.price,
+      els.headline,
+      els.subheadline,
+      els.bodyCopy,
+      els.features,
+      els.audience,
+      els.navLinks,
+      els.ctaText,
+      els.paymentLink,
+      els.redirectLink
+    ].forEach(el => {
+      el.addEventListener("input", renderPreview);
+      el.addEventListener("change", renderPreview);
+    });
+
+    els.productGraphic.addEventListener("change", (event) => {
+      const file = event.target.files && event.target.files[0];
+      if (!file) {
+        if (state.imageUrl) {
+          URL.revokeObjectURL(state.imageUrl);
+        }
+        state.imageUrl = "";
+        renderPreview();
+        return;
+      }
+
+      if (state.imageUrl) {
+        URL.revokeObjectURL(state.imageUrl);
+      }
+      state.imageUrl = URL.createObjectURL(file);
+      renderPreview();
+    });
+
+    els.downloadHtmlBtn.addEventListener("click", downloadHtml);
+    els.resetBtn.addEventListener("click", resetForm);
+
+    renderPreview();
+  </script>
+</body>
+</html>
