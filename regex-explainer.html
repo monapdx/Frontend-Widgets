@@ -1,189 +1,430 @@
-<link rel="stylesheet" href="rare.css" />
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Regex Explainer</title>
+<style>
+:root{
+  --bg:#f6f7fb;
+  --card:#ffffff;
+  --text:#1f2937;
+  --muted:#6b7280;
+  --line:#dbe1ea;
+  --accent:#ff009c;
+  --accent-2:#7c3aed;
+  --shadow:0 10px 30px rgba(17,24,39,.08);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background:linear-gradient(180deg,#fafbff 0%,#f4f6fb 100%);
+  color:var(--text);
+}
+.page{
+  max-width:1100px;
+  margin:0 auto;
+  padding:24px;
+}
+.hero{
+  margin-bottom:20px;
+}
+.eyebrow{
+  margin:0 0 8px;
+  color:var(--accent);
+  font-weight:700;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  font-size:.78rem;
+}
+h1{margin:0 0 8px;font-size:clamp(1.7rem,3vw,2.4rem);line-height:1.1}
+.lead{margin:0;color:var(--muted);max-width:760px}
+.grid{
+  display:grid;
+  grid-template-columns:1.15fr .85fr;
+  gap:20px;
+}
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:20px;
+  box-shadow:var(--shadow);
+  padding:20px;
+}
+.stack{display:grid;gap:20px}
+.row,.row-3{
+  display:grid;
+  gap:14px;
+}
+.row{grid-template-columns:1fr 1fr}
+.row-3{grid-template-columns:repeat(3,1fr)}
+.field{display:grid;gap:8px;margin-bottom:14px}
+label{font-size:.95rem;font-weight:600}
+input,textarea,select,button{
+  font:inherit;
+}
+input,textarea,select{
+  width:100%;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:12px 14px;
+  background:#fff;
+  color:var(--text);
+}
+textarea{min-height:180px;resize:vertical}
+.actions{
+  display:flex;flex-wrap:wrap;gap:10px;margin-top:6px
+}
+button{
+  border:0;
+  border-radius:14px;
+  padding:11px 15px;
+  cursor:pointer;
+  font-weight:700;
+}
+button.primary{
+  background:var(--accent);
+  color:#fff;
+}
+button.secondary{
+  background:#eef2ff;
+  color:#312e81;
+}
+button.ghost{
+  background:#f3f4f6;
+  color:#374151;
+}
+.output, pre, code{
+  white-space:pre-wrap;
+  word-break:break-word;
+}
+.output{
+  min-height:120px;
+  max-height:520px;
+  overflow:auto;
+  border:1px solid var(--line);
+  background:#fbfcff;
+  border-radius:16px;
+  padding:14px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:.94rem;
+}
+.small{font-size:.86rem;color:var(--muted)}
+.muted-box{
+  background:#faf5ff;
+  color:#5b556b;
+  border:1px solid #eadcff;
+  border-radius:16px;
+  padding:12px 14px;
+  margin:6px 0 14px;
+}
+.pill{
+  display:inline-block;
+  padding:2px 8px;
+  border-radius:999px;
+  background:#f3e8ff;
+  color:#6d28d9;
+  font-size:.82rem;
+  font-weight:700;
+}
+.table-wrap{
+  overflow:auto;
+  border:1px solid var(--line);
+  border-radius:16px;
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:.94rem;
+}
+th,td{
+  text-align:left;
+  padding:10px 12px;
+  border-bottom:1px solid var(--line);
+}
+th{background:#f9fafb}
+.checklist{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+.check-item{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:#f9fafb;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:10px 12px;
+  font-weight:500;
+}
+.check-item input{width:auto}
+.match-list{display:grid;gap:12px}
+.match-item{
+  border:1px solid var(--line);
+  border-radius:16px;
+  overflow:hidden;
+  background:#fff;
+}
+.match-swatch{height:54px}
+.match-body{padding:12px}
+.swatch{
+  height:120px;border-radius:18px;border:1px solid var(--line);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.35);
+}
+.kv{display:grid;gap:12px}
+.panelish{
+  border:1px solid var(--line);border-radius:16px;padding:12px;background:#fbfcff
+}
+.footer-note{margin-top:14px;color:var(--muted);font-size:.88rem}
+@media (max-width: 860px){
+  .grid,.row,.row-3{grid-template-columns:1fr}
+  .page{padding:16px}
+  .card{padding:16px}
+  .checklist{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="hero">
+    <p class="eyebrow">Standalone Widget</p>
+    <h1>Regex Explainer</h1>
+    <p class="lead">Paste a regular expression and optional test text. The tool breaks the pattern into readable parts and shows likely matches.</p>
+  </header>
 
-<div class="card">
-            <h2>Regex Explainer</h2>
-            <p class="subtle">Paste a regular expression and optional test text. The tool breaks the pattern into readable parts and shows likely matches.</p>
-            <div class="field">
-              <label for="regex-input">Regular expression</label>
-              <input id="regex-input" type="text" placeholder="Example: ^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$" />
-            </div>
-            <div class="row">
-              <div class="field">
-                <label for="regex-flags">Flags</label>
-                <input id="regex-flags" type="text" placeholder="Example: gi" />
-              </div>
-              <div class="field">
-                <label for="regex-mode">Explain style</label>
-                <select id="regex-mode">
-                  <option value="plain" selected>Plain language</option>
-                  <option value="technical">Technical</option>
-                  <option value="beginner">Beginner-friendly</option>
-                </select>
-              </div>
-            </div>
-            <div class="field">
-              <label for="regex-test">Test text</label>
-              <textarea id="regex-test" placeholder="Paste some text to see what this regex matches."></textarea>
-            </div>
-            <div class="actions">
-              <button class="primary" id="explain-regex-btn">Explain regex</button>
-              <button class="secondary" id="copy-regex-btn">Copy explanation</button>
-              <button class="secondary" id="sample-regex-btn">Load sample</button>
-            </div>
-          </div>
+  <div class="grid">
+    <section class="card">
+      <div class="field">
+        <label for="regex-input">Regular expression</label>
+        <input id="regex-input" type="text" placeholder="^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$" />
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="regex-flags">Flags</label>
+          <input id="regex-flags" type="text" placeholder="gi" />
         </div>
-        <div class="stack">
-          <div class="card">
-            <h3>Explanation</h3>
-            <div id="regex-output" class="output">The explanation will appear here.</div>
-          </div>
-          <div class="card">
-            <h3>Token breakdown</h3>
-            <div class="output" id="regex-tokens">Token-by-token breakdown will appear here.</div>
-          </div>
-          <div class="card">
-            <h3>Match preview</h3>
-            <div class="output" id="regex-matches">Matches will appear here when you provide test text.</div>
-          </div>
+        <div class="field">
+          <label for="regex-mode">Explain style</label>
+          <select id="regex-mode">
+            <option value="plain" selected>Plain language</option>
+            <option value="technical">Technical</option>
+            <option value="beginner">Beginner-friendly</option>
+          </select>
         </div>
       </div>
+
+      <div class="field">
+        <label for="regex-test">Test text</label>
+        <textarea id="regex-test" placeholder="Paste some text to see what this regex matches."></textarea>
+      </div>
+
+      <div class="actions">
+        <button class="primary" id="explain-regex-btn">Explain regex</button>
+        <button class="secondary" id="copy-regex-btn">Copy explanation</button>
+        <button class="ghost" id="sample-regex-btn">Load sample</button>
+      </div>
     </section>
+
+    <div class="stack">
+      <section class="card">
+        <h3>Explanation</h3>
+        <div id="regex-output" class="output">The explanation will appear here.</div>
+      </section>
+      <section class="card">
+        <h3>Token breakdown</h3>
+        <div class="output" id="regex-tokens">Token-by-token breakdown will appear here.</div>
+      </section>
+      <section class="card">
+        <h3>Match preview</h3>
+        <div class="output" id="regex-matches">Matches will appear here when you provide test text.</div>
+      </section>
+    </div>
+  </div>
+</div>
+
 <script>
 
+const $ = (sel) => document.querySelector(sel);
 
-    // Regex explainer
-    const tokenPatterns = [
-      { re: /^\\./, label: 'Escaped character' },
-      { re: /^\[\^[^\]]*\]/, label: 'Negated character class' },
-      { re: /^\[[^\]]*\]/, label: 'Character class' },
-      { re: /^\(\?:/, label: 'Non-capturing group start' },
-      { re: /^\(\?=/, label: 'Positive lookahead start' },
-      { re: /^\(\?!/, label: 'Negative lookahead start' },
-      { re: /^\(/, label: 'Capturing group start' },
-      { re: /^\)/, label: 'Group end' },
-      { re: /^\{\d+,\d+\}/, label: 'Range quantifier' },
-      { re: /^\{\d+,\}/, label: 'Minimum quantifier' },
-      { re: /^\{\d+\}/, label: 'Exact quantifier' },
-      { re: /^\*/, label: 'Zero or more' },
-      { re: /^\+/, label: 'One or more' },
-      { re: /^\?/, label: 'Optional / lazy modifier' },
-      { re: /^\|/, label: 'Alternation' },
-      { re: /^\^/, label: 'Start anchor' },
-      { re: /^\$/, label: 'End anchor' },
-      { re: /^\./, label: 'Any character' }
-    ];
+async function copyText(text) {
+  const safeText = String(text || '').trim();
+  if (!safeText) {
+    alert('Nothing to copy yet.');
+    return;
+  }
+  try {
+    await navigator.clipboard.writeText(safeText);
+  } catch (err) {
+    const ta = document.createElement('textarea');
+    ta.value = safeText;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    ta.remove();
+  }
+}
 
-    function tokenizeRegex(pattern) {
-      const tokens = [];
-      let remaining = pattern;
-      while (remaining.length) {
-        let matched = false;
-        for (const rule of tokenPatterns) {
-          const match = remaining.match(rule.re);
-          if (match) {
-            tokens.push({ token: match[0], label: rule.label });
-            remaining = remaining.slice(match[0].length);
-            matched = true;
-            break;
-          }
-        }
-        if (!matched) {
-          tokens.push({ token: remaining[0], label: 'Literal character' });
-          remaining = remaining.slice(1);
-        }
+function slugify(value, separator = '-') {
+  return String(value || '')
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-zA-Z0-9]+/g, ' ')
+    .trim()
+    .replace(/\s+/g, separator)
+    .replace(new RegExp(separator + '{2,}', 'g'), separator)
+    .replace(new RegExp('^' + separator + '|' + separator + '$', 'g'), '')
+    .toLowerCase();
+}
+
+function titleCase(value) {
+  return String(value || '')
+    .toLowerCase()
+    .replace(/\b\w/g, (m) => m.toUpperCase());
+}
+
+function formatDate(style = 'yyyy-mm-dd', date = new Date()) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  if (style === 'none') return '';
+  if (style === 'yyyymmdd') return `${y}${m}${d}`;
+  if (style === 'yyyy-mm') return `${y}-${m}`;
+  return `${y}-${m}-${d}`;
+}
+
+const tokenPatterns = [
+  { re: /^\\./, label: 'Escaped character' },
+  { re: /^\[\^[^\]]*\]/, label: 'Negated character class' },
+  { re: /^\[[^\]]*\]/, label: 'Character class' },
+  { re: /^\(\?:/, label: 'Non-capturing group start' },
+  { re: /^\(\?=/, label: 'Positive lookahead start' },
+  { re: /^\(\?!/, label: 'Negative lookahead start' },
+  { re: /^\(/, label: 'Capturing group start' },
+  { re: /^\)/, label: 'Group end' },
+  { re: /^\{\d+,\d+\}/, label: 'Range quantifier' },
+  { re: /^\{\d+,\}/, label: 'Minimum quantifier' },
+  { re: /^\{\d+\}/, label: 'Exact quantifier' },
+  { re: /^\*/, label: 'Zero or more' },
+  { re: /^\+/, label: 'One or more' },
+  { re: /^\?/, label: 'Optional / lazy modifier' },
+  { re: /^\|/, label: 'Alternation' },
+  { re: /^\^/, label: 'Start anchor' },
+  { re: /^\$/, label: 'End anchor' },
+  { re: /^\./, label: 'Any character' }
+];
+
+function tokenizeRegex(pattern) {
+  const tokens = [];
+  let remaining = pattern;
+  while (remaining.length) {
+    let matched = false;
+    for (const rule of tokenPatterns) {
+      const match = remaining.match(rule.re);
+      if (match) {
+        tokens.push({ token: match[0], label: rule.label });
+        remaining = remaining.slice(match[0].length);
+        matched = true;
+        break;
       }
-      return tokens;
+    }
+    if (!matched) {
+      tokens.push({ token: remaining[0], label: 'Literal character' });
+      remaining = remaining.slice(1);
+    }
+  }
+  return tokens;
+}
+
+function explainToken(tokenObj, mode) {
+  const token = tokenObj.token;
+  const label = tokenObj.label;
+  const beginnerMap = {
+    'Start anchor': 'Matches the beginning of the text.',
+    'End anchor': 'Matches the end of the text.',
+    'Character class': `Matches one character from ${token}.`,
+    'Negated character class': `Matches one character that is not in ${token}.`,
+    'One or more': 'Matches the previous part one or more times.',
+    'Zero or more': 'Matches the previous part zero or more times.',
+    'Optional / lazy modifier': 'Makes the previous part optional, or changes repetition behavior depending on context.',
+    'Range quantifier': `Repeats the previous part ${token.replace(/[{}]/g, '')} times within a range.`,
+    'Exact quantifier': `Repeats the previous part exactly ${token.replace(/[{}]/g, '')} times.`,
+    'Minimum quantifier': `Repeats the previous part at least ${token.replace(/[{}]/g, '').replace(',', '')} times.`,
+    'Escaped character': `Special regex token ${token}.`,
+    'Any character': 'Matches almost any single character.',
+    'Alternation': 'Works like OR between choices.',
+    'Capturing group start': 'Starts a group that can capture part of a match.',
+    'Group end': 'Ends the current group.',
+    'Non-capturing group start': 'Starts a group without storing the match.',
+    'Positive lookahead start': 'Checks that something comes next without consuming it.',
+    'Negative lookahead start': 'Checks that something does not come next.',
+    'Literal character': `Matches the character "${token}".`
+  };
+  const technical = `${label}: ${token}`;
+  const plain = beginnerMap[label] || `Matches ${label.toLowerCase()}: ${token}`;
+  return mode === 'technical' ? technical : plain;
+}
+
+function getMatches(text, pattern, flags) {
+  try {
+    const normalizedFlags = Array.from(new Set((flags || '').split('').filter(Boolean))).join('');
+    const regex = new RegExp(pattern, normalizedFlags || undefined);
+
+    if (!normalizedFlags.includes('g')) {
+      const single = text.match(regex);
+      return single ? `Found 1 match:\n- ${single[0]}` : 'No matches found in the provided test text.';
     }
 
-    function explainToken(tokenObj, mode) {
-      const token = tokenObj.token;
-      const label = tokenObj.label;
-      const beginnerMap = {
-        'Start anchor': 'Matches the beginning of the text.',
-        'End anchor': 'Matches the end of the text.',
-        'Character class': `Matches one character from ${token}.`,
-        'Negated character class': `Matches one character that is not in ${token}.`,
-        'One or more': 'Matches the previous part one or more times.',
-        'Zero or more': 'Matches the previous part zero or more times.',
-        'Optional / lazy modifier': 'Makes the previous part optional, or changes repetition behavior depending on context.',
-        'Range quantifier': `Repeats the previous part ${token.replace(/[{}]/g, '')} times within a range.`,
-        'Exact quantifier': `Repeats the previous part exactly ${token.replace(/[{}]/g, '')} times.`,
-        'Minimum quantifier': `Repeats the previous part at least ${token.replace(/[{}]/g, '').replace(',', '')} times.`,
-        'Escaped character': `Special regex token ${token}.`,
-        'Any character': 'Matches almost any single character.',
-        'Alternation': 'Works like OR between choices.',
-        'Capturing group start': 'Starts a group that can capture part of a match.',
-        'Group end': 'Ends the current group.',
-        'Non-capturing group start': 'Starts a group without storing the match.',
-        'Positive lookahead start': 'Checks that something comes next without consuming it.',
-        'Negative lookahead start': 'Checks that something does not come next.',
-        'Literal character': `Matches the character "${token}".`
-      };
-      const technical = `${label}: ${token}`;
-      const plain = beginnerMap[label] || `Matches ${label.toLowerCase()}: ${token}`;
-      if (mode === 'technical') return technical;
-      return plain;
-    }
+    const matches = Array.from(text.matchAll(regex));
+    return matches.length
+      ? `Found ${matches.length} match(es):\n` + matches.map((m, i) => `${i + 1}. ${m[0]}`).join('\n')
+      : 'No matches found in the provided test text.';
+  } catch (err) {
+    return 'Regex error: ' + err.message;
+  }
+}
 
-    function explainRegex() {
-      const pattern = $('#regex-input').value;
-      const flags = $('#regex-flags').value.trim();
-      const mode = $('#regex-mode').value;
-      const testText = $('#regex-test').value;
+function explainRegex() {
+  const pattern = $('#regex-input').value;
+  const flags = $('#regex-flags').value.trim();
+  const mode = $('#regex-mode').value;
+  const testText = $('#regex-test').value;
 
-      if (!pattern) {
-        $('#regex-output').textContent = 'Please enter a regular expression.';
-        $('#regex-tokens').textContent = '';
-        $('#regex-matches').textContent = '';
-        return;
-      }
+  if (!pattern) {
+    $('#regex-output').textContent = 'Please enter a regular expression.';
+    $('#regex-tokens').textContent = '';
+    $('#regex-matches').textContent = '';
+    return;
+  }
 
-      const tokens = tokenizeRegex(pattern);
-      const explanation = tokens.map((t, i) => `${i + 1}. ${t.token} — ${explainToken(t, mode)}`).join('\n');
+  const tokens = tokenizeRegex(pattern);
+  const explanation = tokens.map((t, i) => `${i + 1}. ${t.token} — ${explainToken(t, mode)}`).join('\n');
 
-      let summary = `Pattern: /${pattern}/${flags}\n\n`;
-      if (pattern.startsWith('^')) summary += '- It is anchored to the beginning.\n';
-      if (pattern.endsWith('$')) summary += '- It is anchored to the end.\n';
-      if (pattern.includes('.*')) summary += '- It allows flexible text in the middle.\n';
-      if (/\[[^\]]+\]/.test(pattern)) summary += '- It uses one or more character classes.\n';
-      if (/[+*?{]/.test(pattern)) summary += '- It uses repetition or optional sections.\n';
+  let summary = `Pattern: /${pattern}/${flags}\n\n`;
+  if (pattern.startsWith('^')) summary += '- It is anchored to the beginning.\n';
+  if (pattern.endsWith('$')) summary += '- It is anchored to the end.\n';
+  if (pattern.includes('.*')) summary += '- It allows flexible text in the middle.\n';
+  if (/\[[^\]]+\]/.test(pattern)) summary += '- It uses one or more character classes.\n';
+  if (/[+*?{]/.test(pattern)) summary += '- It uses repetition or optional sections.\n';
+  summary += '\nPlain-language explanation:\n';
+  summary += tokens.map((t) => '- ' + explainToken(t, mode)).join('\n');
 
-      summary += '\nPlain-language explanation:\n';
-      summary += tokens.map((t) => '- ' + explainToken(t, mode)).join('\n');
+  $('#regex-output').textContent = summary;
+  $('#regex-tokens').textContent = explanation;
+  $('#regex-matches').textContent = testText ? getMatches(testText, pattern, flags) : 'No test text provided.';
+}
 
-      let matchesOutput = 'No test text provided.';
-      if (testText) {
-        try {
-          const regex = new RegExp(pattern, flags || undefined);
-          const matches = Array.from(testText.matchAll(regex));
-          if (!matches.length) {
-            const single = testText.match(regex);
-            if (single) {
-              matchesOutput = `Found 1 match:\n- ${single[0]}`;
-            } else {
-              matchesOutput = 'No matches found in the provided test text.';
-            }
-          } else {
-            matchesOutput = `Found ${matches.length} match(es):\n` + matches.map((m, i) => `${i + 1}. ${m[0]}`).join('\n');
-          }
-        } catch (err) {
-          matchesOutput = 'Regex error: ' + err.message;
-        }
-      }
-
-      $('#regex-output').textContent = summary;
-      $('#regex-tokens').textContent = explanation;
-      $('#regex-matches').textContent = matchesOutput;
-    }
-
-    $('#explain-regex-btn').addEventListener('click', explainRegex);
-    $('#copy-regex-btn').addEventListener('click', () => copyText($('#regex-output').textContent + '\n\n' + $('#regex-tokens').textContent));
-    $('#sample-regex-btn').addEventListener('click', () => {
-      $('#regex-input').value = '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$';
-      $('#regex-flags').value = '';
-      $('#regex-mode').value = 'beginner';
-      $('#regex-test').value = 'hello@example.com\nnot-an-email\nashly.lorenzana@domain.org';
-      explainRegex();
-    });
-	
-	</script>
+$('#explain-regex-btn').addEventListener('click', explainRegex);
+$('#copy-regex-btn').addEventListener('click', () => copyText($('#regex-output').textContent + '\n\n' + $('#regex-tokens').textContent));
+$('#sample-regex-btn').addEventListener('click', () => {
+  $('#regex-input').value = '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$';
+  $('#regex-flags').value = 'g';
+  $('#regex-mode').value = 'beginner';
+  $('#regex-test').value = 'hello@example.com\nnot-an-email\nashly.lorenzana@domain.org';
+  explainRegex();
+});
+</script>
+</body>
+</html>

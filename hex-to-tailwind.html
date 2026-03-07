@@ -1,61 +1,371 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HEX → Tailwind Classes</title>
-  <link rel="stylesheet" href="styles-vanilla.css" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>HEX → Tailwind Classes</title>
+<style>
+:root{
+  --bg:#f6f7fb;
+  --card:#ffffff;
+  --text:#1f2937;
+  --muted:#6b7280;
+  --line:#dbe1ea;
+  --accent:#ff009c;
+  --accent-2:#7c3aed;
+  --shadow:0 10px 30px rgba(17,24,39,.08);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background:linear-gradient(180deg,#fafbff 0%,#f4f6fb 100%);
+  color:var(--text);
+}
+.page{
+  max-width:1100px;
+  margin:0 auto;
+  padding:24px;
+}
+.hero{
+  margin-bottom:20px;
+}
+.eyebrow{
+  margin:0 0 8px;
+  color:var(--accent);
+  font-weight:700;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  font-size:.78rem;
+}
+h1{margin:0 0 8px;font-size:clamp(1.7rem,3vw,2.4rem);line-height:1.1}
+.lead{margin:0;color:var(--muted);max-width:760px}
+.grid{
+  display:grid;
+  grid-template-columns:1.15fr .85fr;
+  gap:20px;
+}
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:20px;
+  box-shadow:var(--shadow);
+  padding:20px;
+}
+.stack{display:grid;gap:20px}
+.row,.row-3{
+  display:grid;
+  gap:14px;
+}
+.row{grid-template-columns:1fr 1fr}
+.row-3{grid-template-columns:repeat(3,1fr)}
+.field{display:grid;gap:8px;margin-bottom:14px}
+label{font-size:.95rem;font-weight:600}
+input,textarea,select,button{
+  font:inherit;
+}
+input,textarea,select{
+  width:100%;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:12px 14px;
+  background:#fff;
+  color:var(--text);
+}
+textarea{min-height:180px;resize:vertical}
+.actions{
+  display:flex;flex-wrap:wrap;gap:10px;margin-top:6px
+}
+button{
+  border:0;
+  border-radius:14px;
+  padding:11px 15px;
+  cursor:pointer;
+  font-weight:700;
+}
+button.primary{
+  background:var(--accent);
+  color:#fff;
+}
+button.secondary{
+  background:#eef2ff;
+  color:#312e81;
+}
+button.ghost{
+  background:#f3f4f6;
+  color:#374151;
+}
+.output, pre, code{
+  white-space:pre-wrap;
+  word-break:break-word;
+}
+.output{
+  min-height:120px;
+  max-height:520px;
+  overflow:auto;
+  border:1px solid var(--line);
+  background:#fbfcff;
+  border-radius:16px;
+  padding:14px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:.94rem;
+}
+.small{font-size:.86rem;color:var(--muted)}
+.muted-box{
+  background:#faf5ff;
+  color:#5b556b;
+  border:1px solid #eadcff;
+  border-radius:16px;
+  padding:12px 14px;
+  margin:6px 0 14px;
+}
+.pill{
+  display:inline-block;
+  padding:2px 8px;
+  border-radius:999px;
+  background:#f3e8ff;
+  color:#6d28d9;
+  font-size:.82rem;
+  font-weight:700;
+}
+.table-wrap{
+  overflow:auto;
+  border:1px solid var(--line);
+  border-radius:16px;
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:.94rem;
+}
+th,td{
+  text-align:left;
+  padding:10px 12px;
+  border-bottom:1px solid var(--line);
+}
+th{background:#f9fafb}
+.checklist{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+.check-item{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:#f9fafb;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:10px 12px;
+  font-weight:500;
+}
+.check-item input{width:auto}
+.match-list{display:grid;gap:12px}
+.match-item{
+  border:1px solid var(--line);
+  border-radius:16px;
+  overflow:hidden;
+  background:#fff;
+}
+.match-swatch{height:54px}
+.match-body{padding:12px}
+.swatch{
+  height:120px;border-radius:18px;border:1px solid var(--line);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.35);
+}
+.kv{display:grid;gap:12px}
+.panelish{
+  border:1px solid var(--line);border-radius:16px;padding:12px;background:#fbfcff
+}
+.footer-note{margin-top:14px;color:var(--muted);font-size:.88rem}
+@media (max-width: 860px){
+  .grid,.row,.row-3{grid-template-columns:1fr}
+  .page{padding:16px}
+  .card{padding:16px}
+  .checklist{grid-template-columns:1fr}
+}
+</style>
 </head>
 <body>
-  <div class="page-shell">
-    <header class="page-header">
-      <p class="eyebrow">Frontend Widget</p>
-      <h1>HEX Color → Tailwind Classes</h1>
-      <p class="page-description">Paste a HEX value and get the closest Tailwind color matches plus utility class ideas.</p>
-    </header>
+<div class="page">
+  <header class="hero">
+    <p class="eyebrow">Standalone Widget</p>
+    <h1>HEX Color → Tailwind Classes</h1>
+    <p class="lead">Paste a HEX value and get approximate Tailwind color matches plus utility class ideas.</p>
+  </header>
 
-    <div class="widget-shell">
-      <div class="widget-topbar">
-        <a class="back-link" href="index.html">← Back to all widgets</a>
-        <div class="inline-actions">
-          <button id="sampleHex" class="secondary">Load Sample</button>
-        </div>
+  <div class="grid">
+    <section class="card">
+      <div class="field">
+        <label for="hexInput">HEX value</label>
+        <input id="hexInput" type="text" value="#ff009c" placeholder="#ff009c" />
       </div>
 
-      <div class="widget-grid">
-        <section class="panel">
-          <label for="hexInput">HEX value</label>
-          <input id="hexInput" type="text" value="#ff009c" placeholder="#ff009c" />
+      <div class="field">
+        <label for="colorInput">Color picker</label>
+        <input id="colorInput" type="color" value="#ff009c" />
+      </div>
 
-          <div style="height: 12px;"></div>
+      <div id="swatch" class="swatch"></div>
 
-          <label for="colorInput">Color picker</label>
-          <input id="colorInput" type="color" value="#ff009c" />
+      <div style="height:16px"></div>
 
-          <div style="height: 16px;"></div>
+      <div class="panelish">
+        <div class="small">Suggested utilities</div>
+        <div id="utilities" class="output" style="min-height:100px;max-height:none"></div>
+      </div>
 
-          <div id="swatch" class="swatch"></div>
+      <div class="actions">
+        <button class="primary" id="copyUtilities">Copy utilities</button>
+        <button class="ghost" id="sampleHex">Load sample</button>
+      </div>
+    </section>
 
-          <div class="kv">
-            <div class="panelish">
-              <div class="small">Suggested utilities</div>
-              <pre id="utilities"></pre>
-            </div>
-          </div>
+    <section class="card">
+      <h3>Closest Tailwind matches</h3>
+      <div id="matches" class="match-list"></div>
+      <p class="footer-note">These are approximate matches against a small built-in Tailwind palette so the file works offline as a standalone widget.</p>
+    </section>
+  </div>
+</div>
 
-          <div class="actions">
-            <button id="copyUtilities">Copy utilities</button>
-          </div>
-        </section>
+<script>
 
-        <section class="panel">
-          <h2>Closest Tailwind matches</h2>
-          <div id="matches" class="match-list"></div>
-        </section>
+const $ = (sel) => document.querySelector(sel);
+
+async function copyText(text) {
+  const safeText = String(text || '').trim();
+  if (!safeText) {
+    alert('Nothing to copy yet.');
+    return;
+  }
+  try {
+    await navigator.clipboard.writeText(safeText);
+  } catch (err) {
+    const ta = document.createElement('textarea');
+    ta.value = safeText;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    ta.remove();
+  }
+}
+
+function slugify(value, separator = '-') {
+  return String(value || '')
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-zA-Z0-9]+/g, ' ')
+    .trim()
+    .replace(/\s+/g, separator)
+    .replace(new RegExp(separator + '{2,}', 'g'), separator)
+    .replace(new RegExp('^' + separator + '|' + separator + '$', 'g'), '')
+    .toLowerCase();
+}
+
+function titleCase(value) {
+  return String(value || '')
+    .toLowerCase()
+    .replace(/\b\w/g, (m) => m.toUpperCase());
+}
+
+function formatDate(style = 'yyyy-mm-dd', date = new Date()) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  if (style === 'none') return '';
+  if (style === 'yyyymmdd') return `${y}${m}${d}`;
+  if (style === 'yyyy-mm') return `${y}-${m}`;
+  return `${y}-${m}-${d}`;
+}
+
+const palette = [
+  ['slate-500', '#64748b'], ['gray-500', '#6b7280'], ['zinc-500', '#71717a'], ['neutral-500', '#737373'],
+  ['stone-500', '#78716c'], ['red-500', '#ef4444'], ['orange-500', '#f97316'], ['amber-500', '#f59e0b'],
+  ['yellow-500', '#eab308'], ['lime-500', '#84cc16'], ['green-500', '#22c55e'], ['emerald-500', '#10b981'],
+  ['teal-500', '#14b8a6'], ['cyan-500', '#06b6d4'], ['sky-500', '#0ea5e9'], ['blue-500', '#3b82f6'],
+  ['indigo-500', '#6366f1'], ['violet-500', '#8b5cf6'], ['purple-500', '#a855f7'], ['fuchsia-500', '#d946ef'],
+  ['pink-500', '#ec4899'], ['rose-500', '#f43f5e'],
+  ['pink-400', '#f472b6'], ['fuchsia-400', '#e879f9'], ['purple-400', '#c084fc'], ['blue-400', '#60a5fa'],
+  ['emerald-400', '#34d399'], ['amber-400', '#fbbf24']
+];
+
+function normalizeHex(hex) {
+  let value = String(hex || '').trim().replace(/^#/, '');
+  if (/^[0-9a-fA-F]{3}$/.test(value)) value = value.split('').map((c) => c + c).join('');
+  if (!/^[0-9a-fA-F]{6}$/.test(value)) return null;
+  return '#' + value.toLowerCase();
+}
+
+function hexToRgb(hex) {
+  const clean = hex.replace('#', '');
+  return {
+    r: parseInt(clean.slice(0, 2), 16),
+    g: parseInt(clean.slice(2, 4), 16),
+    b: parseInt(clean.slice(4, 6), 16)
+  };
+}
+
+function distance(a, b) {
+  return Math.sqrt((a.r-b.r)**2 + (a.g-b.g)**2 + (a.b-b.b)**2);
+}
+
+function renderMatches() {
+  const normalized = normalizeHex($('#hexInput').value);
+  if (!normalized) {
+    $('#matches').innerHTML = '<div class="small">Please enter a valid 3- or 6-digit HEX value.</div>';
+    $('#utilities').textContent = 'Enter a valid HEX value first.';
+    return;
+  }
+
+  $('#hexInput').value = normalized;
+  $('#colorInput').value = normalized;
+  $('#swatch').style.background = normalized;
+
+  const rgb = hexToRgb(normalized);
+  const matches = palette
+    .map(([name, hex]) => {
+      const rgb2 = hexToRgb(hex);
+      return { name, hex, distance: distance(rgb, rgb2) };
+    })
+    .sort((a, b) => a.distance - b.distance)
+    .slice(0, 6);
+
+  $('#matches').innerHTML = matches.map((m) => `
+    <div class="match-item">
+      <div class="match-swatch" style="background:${m.hex}"></div>
+      <div class="match-body">
+        <strong>${m.name}</strong><br>
+        <span class="small">${m.hex}</span><br>
+        <span class="small">Distance: ${m.distance.toFixed(1)}</span>
       </div>
     </div>
-  </div>
+  `).join('');
 
-  <script src="js/hex-to-tailwind.js"></script>
+  const best = matches[0].name;
+  $('#utilities').textContent = [
+    `bg-${best}`,
+    `text-${best}`,
+    `border-${best}`,
+    `ring-${best}`,
+    `from-${best}`,
+    `to-${matches[1].name}`,
+    '',
+    `Original HEX: ${normalized}`
+  ].join('\n');
+}
+
+$('#hexInput').addEventListener('input', renderMatches);
+$('#colorInput').addEventListener('input', () => {
+  $('#hexInput').value = $('#colorInput').value;
+  renderMatches();
+});
+$('#copyUtilities').addEventListener('click', () => copyText($('#utilities').textContent));
+$('#sampleHex').addEventListener('click', () => {
+  $('#hexInput').value = '#ff009c';
+  renderMatches();
+});
+renderMatches();
+</script>
 </body>
 </html>
