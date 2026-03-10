@@ -2,380 +2,456 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>Boggleish</title>
 
 <style>
-* {
-  box-sizing: border-box;
-}
+  * {
+    box-sizing: border-box;
+  }
 
-html, body {
-  margin: 0;
-  padding: 0;
-}
+  :root {
+    --page-bg: #f5f5f5;
+    --card-bg: #ffffff;
+    --text: #222;
+    --border: #e8e8e8;
+    --shadow: 0 2px 8px rgba(0,0,0,0.12);
+    --radius: 12px;
+    --gap: 12px;
+    --board-size: min(100vw - 28px, 420px);
+    --vvh: 100dvh;
+  }
 
-body {
-  font-family: Arial, sans-serif;
-  background: #f5f5f5;
-  color: #222;
-  display: flex;
-  justify-content: center;
-}
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: var(--page-bg);
+  }
 
-.game {
-  width: min(100%, 460px);
-  padding: 12px;
-}
+  body {
+    font-family: Arial, sans-serif;
+    color: var(--text);
+    display: flex;
+    justify-content: center;
+    overflow-x: hidden;
+  }
 
-h1 {
-  margin: 0 0 12px;
-  text-align: center;
-}
-
-.status {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 12px;
-  flex-wrap: wrap;
-}
-
-.status-box {
-  flex: 1 1 140px;
-  background: white;
-  border-radius: 10px;
-  padding: 10px 12px;
-  text-align: center;
-  font-weight: bold;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
-}
-
-.board-wrap {
-  background: white;
-  border-radius: 14px;
-  padding: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.14);
-  margin-bottom: 14px;
-}
-
-.board {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  width: 100%;
-}
-
-.tile {
-  background: #fafafa;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  aspect-ratio: 1 / 1;
-  font-size: clamp(24px, 7vw, 36px);
-  font-weight: bold;
-  box-shadow: inset 0 0 0 1px #e8e8e8, 0 2px 6px rgba(0,0,0,0.12);
-  user-select: none;
-}
-
-.controls {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 14px;
-}
-
-.controls input {
-  width: 100%;
-  height: 48px;
-  padding: 0 14px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  outline: none;
-  background: white;
-}
-
-.controls button {
-  width: 100%;
-  height: 48px;
-  font-size: 16px;
-  border: none;
-  border-radius: 10px;
-  background: #222;
-  color: white;
-  cursor: pointer;
-}
-
-.words {
-  background: white;
-  padding: 12px;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
-}
-
-.words h2 {
-  font-size: 16px;
-  margin: 0 0 8px;
-}
-
-.words ul {
-  margin: 0;
-  padding-left: 20px;
-  word-break: break-word;
-}
-
-.shake {
-  animation: shakeBoard 0.45s ease;
-}
-
-@keyframes shakeBoard {
-  0%   { transform: translateX(0); }
-  15%  { transform: translateX(-8px) rotate(-1deg); }
-  30%  { transform: translateX(8px) rotate(1deg); }
-  45%  { transform: translateX(-7px) rotate(-1deg); }
-  60%  { transform: translateX(7px) rotate(1deg); }
-  75%  { transform: translateX(-4px) rotate(-0.5deg); }
-  90%  { transform: translateX(4px) rotate(0.5deg); }
-  100% { transform: translateX(0); }
-}
-
-@media (max-width: 600px) {
   .game {
-    width: 100%;
-    padding: 10px;
-    min-height: var(--vvh, 100vh);
+    width: min(100%, 460px);
+    min-height: var(--vvh);
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+  }
+
+  .status {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .status-box {
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 10px 12px;
+    text-align: center;
+    font-weight: bold;
+    box-shadow: var(--shadow);
   }
 
   .board-wrap {
-    padding: 8px;
+    background: var(--card-bg);
+    border-radius: 14px;
+    padding: 10px;
+    box-shadow: var(--shadow);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    width: var(--board-size);
+    height: var(--board-size);
+    max-width: 100%;
+    max-height: 100%;
   }
 
   .tile {
-    font-size: clamp(20px, 7vw, 30px);
+    background: #fafafa;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1 / 1;
+    font-size: clamp(22px, 6vw, 34px);
+    font-weight: bold;
+    box-shadow: inset 0 0 0 1px var(--border), 0 2px 6px rgba(0,0,0,0.10);
+    user-select: none;
+    -webkit-user-select: none;
   }
-}
+
+  .controls {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .controls input {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-width: 0;
+    height: 48px;
+    padding: 0 14px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    outline: none;
+    background: white;
+  }
+
+  .controls button {
+    width: 100%;
+    min-width: 0;
+    height: 48px;
+    font-size: 15px;
+    border: none;
+    border-radius: 10px;
+    background: #222;
+    color: white;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  .words {
+    background: var(--card-bg);
+    padding: 12px;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .words h2 {
+    font-size: 16px;
+    margin: 0 0 8px;
+    flex: 0 0 auto;
+  }
+
+  .words ul {
+    margin: 0;
+    padding-left: 20px;
+    word-break: break-word;
+    overflow: auto;
+    min-height: 0;
+    max-height: 180px;
+  }
+
+  .shake {
+    animation: shakeBoard 0.45s ease;
+  }
+
+  @keyframes shakeBoard {
+    0%   { transform: translateX(0); }
+    15%  { transform: translateX(-8px) rotate(-1deg); }
+    30%  { transform: translateX(8px) rotate(1deg); }
+    45%  { transform: translateX(-7px) rotate(-1deg); }
+    60%  { transform: translateX(7px) rotate(1deg); }
+    75%  { transform: translateX(-4px) rotate(-0.5deg); }
+    90%  { transform: translateX(4px) rotate(0.5deg); }
+    100% { transform: translateX(0); }
+  }
+
+  @media (max-width: 600px) {
+    :root {
+      --gap: 10px;
+    }
+
+    .game {
+      width: 100%;
+      padding: 10px;
+    }
+
+    .board-wrap {
+      padding: 8px;
+    }
+
+    .tile {
+      font-size: clamp(20px, 7vw, 30px);
+    }
+
+    .words ul {
+      max-height: 120px;
+    }
+  }
+
+  body.keyboard-open .game {
+    gap: 8px;
+  }
+
+  body.keyboard-open .words {
+    display: none;
+  }
+
+  body.keyboard-open .status-box {
+    padding: 8px 10px;
+  }
+
+  body.keyboard-open .controls {
+    position: sticky;
+    bottom: 0;
+    background: var(--page-bg);
+    padding-bottom: calc(env(safe-area-inset-bottom) + 2px);
+  }
+
+  body.keyboard-open .board-wrap {
+    padding: 6px;
+  }
 </style>
 </head>
 <body>
 
-  <div class="game">
-    <div class="status">
-      <div class="status-box">Time: <span id="timer">60</span>s</div>
-      <div class="status-box">Score: <span id="score">0</span></div>
-    </div>
-
-    <div class="board-wrap" id="boardWrap">
-      <div class="board" id="board"></div>
-    </div>
-
-    <div class="controls">
-      <input id="guess" type="text" placeholder="Enter word" autocomplete="off" />
-      <button id="submitBtn" type="button">Submit</button>
-      <button id="newBoardBtn" type="button">New Board</button>
-      <button id="shakeBtn" type="button">Shake</button>
-    </div>
-
-    <div class="words">
-      <h2>Found Words</h2>
-      <ul id="wordList"></ul>
-    </div>
+<div class="game" id="game">
+  <div class="status" id="status">
+    <div class="status-box">Time: <span id="timer">180</span>s</div>
+    <div class="status-box">Score: <span id="score">0</span></div>
   </div>
+
+  <div class="board-wrap" id="boardWrap">
+    <div class="board" id="board"></div>
+  </div>
+
+  <div class="controls" id="controls">
+    <input id="guess" type="text" placeholder="Enter word" autocomplete="off" autocapitalize="characters" />
+    <button id="submitBtn" type="button">Submit</button>
+    <button id="newBoardBtn" type="button">New Board</button>
+    <button id="shakeBtn" type="button">Shake</button>
+  </div>
+
+  <div class="words" id="wordsPanel">
+    <h2>Found Words</h2>
+    <ul id="wordList"></ul>
+  </div>
+</div>
 
 <script>
   const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-const BOARD_SIZE = 16;
-const ROUND_TIME = 180;
+  const BOARD_SIZE = 16;
+  const ROUND_TIME = 180;
 
-let score = 0;
-let timeLeft = ROUND_TIME;
-let timerInterval = null;
+  let score = 0;
+  let timeLeft = ROUND_TIME;
+  let timerInterval = null;
 
-const boardEl = document.getElementById("board");
-const boardWrapEl = document.getElementById("boardWrap");
-const timerEl = document.getElementById("timer");
-const scoreEl = document.getElementById("score");
-const guessEl = document.getElementById("guess");
-const wordListEl = document.getElementById("wordList");
-const submitBtn = document.getElementById("submitBtn");
-const newBoardBtn = document.getElementById("newBoardBtn");
-const shakeBtn = document.getElementById("shakeBtn");
+  const gameEl = document.getElementById("game");
+  const statusEl = document.getElementById("status");
+  const boardEl = document.getElementById("board");
+  const boardWrapEl = document.getElementById("boardWrap");
+  const controlsEl = document.getElementById("controls");
+  const wordsPanelEl = document.getElementById("wordsPanel");
+  const timerEl = document.getElementById("timer");
+  const scoreEl = document.getElementById("score");
+  const guessEl = document.getElementById("guess");
+  const wordListEl = document.getElementById("wordList");
+  const submitBtn = document.getElementById("submitBtn");
+  const newBoardBtn = document.getElementById("newBoardBtn");
+  const shakeBtn = document.getElementById("shakeBtn");
 
-function randomLetter() {
-  return letters[Math.floor(Math.random() * letters.length)];
-}
-
-function updateDisplay() {
-  timerEl.textContent = timeLeft;
-  scoreEl.textContent = score;
-}
-
-function buildBoard() {
-  boardEl.innerHTML = "";
-
-  for (let i = 0; i < BOARD_SIZE; i++) {
-    const tile = document.createElement("div");
-    tile.className = "tile";
-    tile.textContent = randomLetter();
-    boardEl.appendChild(tile);
+  function randomLetter() {
+    return letters[Math.floor(Math.random() * letters.length)];
   }
-}
 
-function clearWords() {
-  wordListEl.innerHTML = "";
-}
+  function updateDisplay() {
+    timerEl.textContent = timeLeft;
+    scoreEl.textContent = score;
+  }
 
-function startTimer() {
-  clearInterval(timerInterval);
-  timeLeft = ROUND_TIME;
-  updateDisplay();
+  function buildBoard() {
+    boardEl.innerHTML = "";
 
-  timerInterval = setInterval(() => {
-    timeLeft -= 1;
+    for (let i = 0; i < BOARD_SIZE; i++) {
+      const tile = document.createElement("div");
+      tile.className = "tile";
+      tile.textContent = randomLetter();
+      boardEl.appendChild(tile);
+    }
+  }
 
-    if (timeLeft <= 0) {
-      timeLeft = 0;
-      clearInterval(timerInterval);
+  function clearWords() {
+    wordListEl.innerHTML = "";
+  }
+
+  function startTimer() {
+    clearInterval(timerInterval);
+    timeLeft = ROUND_TIME;
+    updateDisplay();
+
+    timerInterval = setInterval(() => {
+      timeLeft -= 1;
+
+      if (timeLeft <= 0) {
+        timeLeft = 0;
+        clearInterval(timerInterval);
+        updateDisplay();
+        alert("Time's up! Final score: " + score);
+        return;
+      }
+
       updateDisplay();
-      alert("Time's up! Final score: " + score);
-      return;
+    }, 1000);
+  }
+
+  function newBoard() {
+    buildBoard();
+    clearWords();
+    guessEl.value = "";
+    score = 0;
+    startTimer();
+    updateDisplay();
+    requestAnimationFrame(updateViewportLayout);
+  }
+
+  function shakeBoard() {
+    boardWrapEl.classList.remove("shake");
+    void boardWrapEl.offsetWidth;
+    boardWrapEl.classList.add("shake");
+
+    buildBoard();
+    clearWords();
+    guessEl.value = "";
+    score = 0;
+    startTimer();
+    updateDisplay();
+    requestAnimationFrame(updateViewportLayout);
+  }
+
+  function submitWord() {
+    if (timeLeft <= 0) return;
+
+    const word = guessEl.value.trim();
+    if (!word) return;
+
+    const li = document.createElement("li");
+    li.textContent = word;
+    wordListEl.appendChild(li);
+
+    score += word.length;
+    guessEl.value = "";
+    updateDisplay();
+
+    requestAnimationFrame(() => {
+      updateViewportLayout();
+      guessEl.focus();
+    });
+  }
+
+  function getViewportHeight() {
+    return window.visualViewport ? window.visualViewport.height : window.innerHeight;
+  }
+
+  function isKeyboardOpen() {
+    if (!window.visualViewport) return false;
+    if (window.innerWidth > 700) return false;
+    return window.visualViewport.height < window.innerHeight * 0.8;
+  }
+
+  function updateViewportHeightVar() {
+    document.documentElement.style.setProperty("--vvh", `${getViewportHeight()}px`);
+  }
+
+  function updateBoardSize() {
+    const viewportHeight = getViewportHeight();
+    const keyboardOpen = isKeyboardOpen();
+
+    document.body.classList.toggle("keyboard-open", keyboardOpen);
+    updateViewportHeightVar();
+
+    const gameStyles = getComputedStyle(gameEl);
+    const padTop = parseFloat(gameStyles.paddingTop) || 0;
+    const padBottom = parseFloat(gameStyles.paddingBottom) || 0;
+    const gap = parseFloat(gameStyles.gap) || 0;
+
+    const statusHeight = statusEl.offsetHeight;
+    const controlsHeight = controlsEl.offsetHeight;
+    const wordsHeight = keyboardOpen ? 0 : wordsPanelEl.offsetHeight;
+
+    const availableWidth = boardWrapEl.clientWidth - 16;
+
+    const reservedHeight =
+      padTop +
+      padBottom +
+      statusHeight +
+      controlsHeight +
+      wordsHeight +
+      (gap * (keyboardOpen ? 2 : 3)) +
+      20;
+
+    const availableHeight = viewportHeight - reservedHeight;
+
+    let boardSize = Math.min(availableWidth, availableHeight);
+    boardSize = Math.max(180, boardSize);
+
+    if (window.innerWidth <= 600) {
+      boardSize = Math.min(boardSize, window.innerWidth - 36);
+    } else {
+      boardSize = Math.min(boardSize, 420);
     }
 
-    updateDisplay();
-  }, 1000);
-}
-
-function newBoard() {
-  buildBoard();
-  clearWords();
-  guessEl.value = "";
-  score = 0;
-  startTimer();
-  updateDisplay();
-  setTimeout(() => {
-    updateViewportLayout();
-  }, 50);
-}
-
-function shakeBoard() {
-  boardWrapEl.classList.remove("shake");
-  void boardWrapEl.offsetWidth;
-  boardWrapEl.classList.add("shake");
-
-  buildBoard();
-  clearWords();
-  guessEl.value = "";
-  score = 0;
-  startTimer();
-  updateDisplay();
-
-  setTimeout(() => {
-    updateViewportLayout();
-  }, 50);
-}
-
-function submitWord() {
-  if (timeLeft <= 0) return;
-
-  const word = guessEl.value.trim();
-  if (!word) return;
-
-  const li = document.createElement("li");
-  li.textContent = word;
-  wordListEl.appendChild(li);
-
-  score += word.length;
-  guessEl.value = "";
-  updateDisplay();
-
-  setTimeout(() => {
-    updateViewportLayout();
-    guessEl.focus();
-  }, 0);
-}
-
-function updateViewportHeightVar() {
-  const vv = window.visualViewport;
-  const height = vv ? vv.height : window.innerHeight;
-  document.documentElement.style.setProperty("--vvh", `${height}px`);
-}
-
-function resetBoardWrapStyles() {
-  boardWrapEl.style.maxHeight = "";
-  boardWrapEl.style.overflow = "";
-}
-
-function updateViewportLayout() {
-  updateViewportHeightVar();
-
-  if (!window.visualViewport) {
-    resetBoardWrapStyles();
-    return;
+    document.documentElement.style.setProperty("--board-size", `${boardSize}px`);
   }
 
-  const vv = window.visualViewport;
-  const isMobile = window.innerWidth <= 600;
-  const keyboardLikelyOpen = isMobile && vv.height < window.innerHeight * 0.78;
+  function updateViewportLayout() {
+    updateBoardSize();
 
-  if (!keyboardLikelyOpen) {
-    resetBoardWrapStyles();
-    return;
+    if (isKeyboardOpen()) {
+      setTimeout(() => {
+        guessEl.scrollIntoView({
+          behavior: "smooth",
+          block: "center"
+        });
+      }, 40);
+    }
   }
 
-  const rect = boardWrapEl.getBoundingClientRect();
-  const inputRect = guessEl.getBoundingClientRect();
+  submitBtn.addEventListener("click", submitWord);
+  newBoardBtn.addEventListener("click", newBoard);
+  shakeBtn.addEventListener("click", shakeBoard);
 
-  const spaceAboveInput = inputRect.top - rect.top - 12;
+  guessEl.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      submitWord();
+    }
+  });
 
-  if (spaceAboveInput > 180) {
-    boardWrapEl.style.maxHeight = `${spaceAboveInput}px`;
-    boardWrapEl.style.overflow = "hidden";
-  } else {
-    resetBoardWrapStyles();
+  guessEl.addEventListener("focus", () => {
+    setTimeout(updateViewportLayout, 180);
+  });
+
+  guessEl.addEventListener("blur", () => {
+    setTimeout(updateViewportLayout, 100);
+  });
+
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", updateViewportLayout);
+    window.visualViewport.addEventListener("scroll", updateViewportLayout);
   }
 
-  setTimeout(() => {
-    guessEl.scrollIntoView({
-      behavior: "smooth",
-      block: "nearest"
-    });
-  }, 50);
-}
+  window.addEventListener("resize", updateViewportLayout);
+  window.addEventListener("orientationchange", () => {
+    setTimeout(updateViewportLayout, 200);
+  });
 
-submitBtn.addEventListener("click", submitWord);
-newBoardBtn.addEventListener("click", newBoard);
-shakeBtn.addEventListener("click", shakeBoard);
-
-guessEl.addEventListener("keydown", (event) => {
-  if (event.key === "Enter") {
-    event.preventDefault();
-    submitWord();
-  }
-});
-
-guessEl.addEventListener("focus", () => {
-  setTimeout(() => {
+  window.addEventListener("load", () => {
+    newBoard();
     updateViewportLayout();
-  }, 250);
-});
-
-guessEl.addEventListener("blur", () => {
-  setTimeout(() => {
-    resetBoardWrapStyles();
-    updateViewportHeightVar();
-  }, 100);
-});
-
-if (window.visualViewport) {
-  window.visualViewport.addEventListener("resize", updateViewportLayout);
-  window.visualViewport.addEventListener("scroll", updateViewportLayout);
-}
-
-window.addEventListener("resize", updateViewportLayout);
-window.addEventListener("load", () => {
-  newBoard();
-  updateViewportLayout();
-});
+  });
 </script>
 </body>
 </html>
