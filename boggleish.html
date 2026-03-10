@@ -18,15 +18,17 @@
     --shadow: 0 2px 8px rgba(0,0,0,0.12);
     --radius: 12px;
     --gap: 12px;
-    --board-size: min(100vw - 28px, 420px);
     --vvh: 100dvh;
+    --board-size: 320px;
   }
 
   html, body {
     margin: 0;
     padding: 0;
+    width: 100%;
     height: 100%;
     background: var(--page-bg);
+    overflow-x: hidden;
   }
 
   body {
@@ -34,22 +36,23 @@
     color: var(--text);
     display: flex;
     justify-content: center;
-    overflow-x: hidden;
   }
 
   .game {
     width: min(100%, 460px);
-    min-height: var(--vvh);
+    height: var(--vvh);
     padding: 12px;
     display: flex;
     flex-direction: column;
     gap: var(--gap);
+    overflow: hidden;
   }
 
   .status {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
+    flex: 0 0 auto;
   }
 
   .status-box {
@@ -66,9 +69,12 @@
     border-radius: 14px;
     padding: 10px;
     box-shadow: var(--shadow);
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
   }
 
   .board {
@@ -79,6 +85,7 @@
     height: var(--board-size);
     max-width: 100%;
     max-height: 100%;
+    margin: 0 auto;
   }
 
   .tile {
@@ -99,6 +106,7 @@
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 10px;
+    flex: 0 0 auto;
   }
 
   .controls input {
@@ -132,16 +140,15 @@
     padding: 12px;
     border-radius: 10px;
     box-shadow: var(--shadow);
-    min-height: 0;
-    overflow: hidden;
     display: flex;
     flex-direction: column;
+    min-height: 0;
+    flex: 0 0 auto;
   }
 
   .words h2 {
     font-size: 16px;
     margin: 0 0 8px;
-    flex: 0 0 auto;
   }
 
   .words ul {
@@ -149,8 +156,7 @@
     padding-left: 20px;
     word-break: break-word;
     overflow: auto;
-    min-height: 0;
-    max-height: 180px;
+    max-height: 140px;
   }
 
   .shake {
@@ -169,13 +175,10 @@
   }
 
   @media (max-width: 600px) {
-    :root {
-      --gap: 10px;
-    }
-
     .game {
       width: 100%;
       padding: 10px;
+      gap: 10px;
     }
 
     .board-wrap {
@@ -187,11 +190,12 @@
     }
 
     .words ul {
-      max-height: 120px;
+      max-height: 100px;
     }
   }
 
   body.keyboard-open .game {
+    padding-bottom: 6px;
     gap: 8px;
   }
 
@@ -203,15 +207,14 @@
     padding: 8px 10px;
   }
 
-  body.keyboard-open .controls {
-    position: sticky;
-    bottom: 0;
-    background: var(--page-bg);
-    padding-bottom: calc(env(safe-area-inset-bottom) + 2px);
+  body.keyboard-open .board-wrap {
+    flex: 1 1 auto;
+    min-height: 0;
+    align-items: flex-start;
   }
 
-  body.keyboard-open .board-wrap {
-    padding: 6px;
+  body.keyboard-open .controls {
+    flex: 0 0 auto;
   }
 </style>
 </head>
@@ -274,7 +277,6 @@
 
   function buildBoard() {
     boardEl.innerHTML = "";
-
     for (let i = 0; i < BOARD_SIZE; i++) {
       const tile = document.createElement("div");
       tile.className = "tile";
@@ -294,7 +296,6 @@
 
     timerInterval = setInterval(() => {
       timeLeft -= 1;
-
       if (timeLeft <= 0) {
         timeLeft = 0;
         clearInterval(timerInterval);
@@ -302,7 +303,6 @@
         alert("Time's up! Final score: " + score);
         return;
       }
-
       updateDisplay();
     }, 1000);
   }
@@ -358,7 +358,7 @@
   function isKeyboardOpen() {
     if (!window.visualViewport) return false;
     if (window.innerWidth > 700) return false;
-    return window.visualViewport.height < window.innerHeight * 0.8;
+    return window.visualViewport.height < window.innerHeight * 0.82;
   }
 
   function updateViewportHeightVar() {
@@ -366,42 +366,42 @@
   }
 
   function updateBoardSize() {
-    const viewportHeight = getViewportHeight();
-    const keyboardOpen = isKeyboardOpen();
-
-    document.body.classList.toggle("keyboard-open", keyboardOpen);
     updateViewportHeightVar();
 
+    const keyboardOpen = isKeyboardOpen();
+    document.body.classList.toggle("keyboard-open", keyboardOpen);
+
+    const viewportHeight = getViewportHeight();
+    const viewportWidth = Math.min(window.innerWidth, 460);
+
     const gameStyles = getComputedStyle(gameEl);
-    const padTop = parseFloat(gameStyles.paddingTop) || 0;
-    const padBottom = parseFloat(gameStyles.paddingBottom) || 0;
+    const gamePadTop = parseFloat(gameStyles.paddingTop) || 0;
+    const gamePadBottom = parseFloat(gameStyles.paddingBottom) || 0;
     const gap = parseFloat(gameStyles.gap) || 0;
 
     const statusHeight = statusEl.offsetHeight;
     const controlsHeight = controlsEl.offsetHeight;
     const wordsHeight = keyboardOpen ? 0 : wordsPanelEl.offsetHeight;
 
-    const availableWidth = boardWrapEl.clientWidth - 16;
-
     const reservedHeight =
-      padTop +
-      padBottom +
+      gamePadTop +
+      gamePadBottom +
       statusHeight +
       controlsHeight +
       wordsHeight +
-      (gap * (keyboardOpen ? 2 : 3)) +
-      20;
+      (keyboardOpen ? gap * 2 : gap * 3);
 
-    const availableHeight = viewportHeight - reservedHeight;
+    const wrapStyles = getComputedStyle(boardWrapEl);
+    const wrapPadTop = parseFloat(wrapStyles.paddingTop) || 0;
+    const wrapPadBottom = parseFloat(wrapStyles.paddingBottom) || 0;
+    const wrapPadLeft = parseFloat(wrapStyles.paddingLeft) || 0;
+    const wrapPadRight = parseFloat(wrapStyles.paddingRight) || 0;
 
-    let boardSize = Math.min(availableWidth, availableHeight);
-    boardSize = Math.max(180, boardSize);
+    const availableHeight = viewportHeight - reservedHeight - wrapPadTop - wrapPadBottom - 4;
+    const availableWidth = viewportWidth - gamePadTop - gamePadBottom - wrapPadLeft - wrapPadRight - 4;
 
-    if (window.innerWidth <= 600) {
-      boardSize = Math.min(boardSize, window.innerWidth - 36);
-    } else {
-      boardSize = Math.min(boardSize, 420);
-    }
+    let boardSize = Math.min(availableWidth, availableHeight, 420);
+    boardSize = Math.max(160, boardSize);
 
     document.documentElement.style.setProperty("--board-size", `${boardSize}px`);
   }
@@ -413,9 +413,9 @@
       setTimeout(() => {
         guessEl.scrollIntoView({
           behavior: "smooth",
-          block: "center"
+          block: "nearest"
         });
-      }, 40);
+      }, 50);
     }
   }
 
@@ -435,7 +435,7 @@
   });
 
   guessEl.addEventListener("blur", () => {
-    setTimeout(updateViewportLayout, 100);
+    setTimeout(updateViewportLayout, 120);
   });
 
   if (window.visualViewport) {
@@ -445,7 +445,7 @@
 
   window.addEventListener("resize", updateViewportLayout);
   window.addEventListener("orientationchange", () => {
-    setTimeout(updateViewportLayout, 200);
+    setTimeout(updateViewportLayout, 220);
   });
 
   window.addEventListener("load", () => {
