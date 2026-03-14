@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chat Message Animation Generator</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --panel: #ffffff;
+      --panel-2: #eef2f8;
+      --line: #d9e0ea;
+      --text: #1d2433;
+      --muted: #667085;
+      --accent: #1f7aec;
+      --accent-2: #dff0ff;
+      --recipient: #ffffff;
+      --shadow: 0 10px 30px rgba(24, 39, 75, 0.12);
+      --phone-w: 330px;
+      --phone-h: 675px;
+      --radius: 30px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #f8fbff 0%, #edf2f8 100%);
+      color: var(--text);
+    }
+
+    body {
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .app {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 420px minmax(300px, 1fr);
+      gap: 24px;
+      align-items: start;
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(217, 224, 234, 0.85);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    .panel h1 {
+      margin: 0 0 8px;
+      font-size: 1.55rem;
+      line-height: 1.15;
+    }
+
+    .panel p {
+      margin: 0 0 18px;
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: 0.95rem;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .toolbar button,
+    .message-actions button,
+    .icon-btn,
+    .export-btn {
+      appearance: none;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease, background 0.15s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    .primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .secondary {
+      background: var(--panel-2);
+      color: var(--text);
+    }
+
+    .danger {
+      background: #ffe4e8;
+      color: #b3274b;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: #364152;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: white;
+      border-radius: 12px;
+      padding: 11px 12px;
+      font: inherit;
+      color: var(--text);
+    }
+
+    textarea {
+      min-height: 88px;
+      resize: vertical;
+      line-height: 1.4;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      outline: 2px solid rgba(31, 122, 236, 0.18);
+      border-color: var(--accent);
+    }
+
+    .messages-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 18px 0 12px;
+    }
+
+    .messages-header h2 {
+      font-size: 1rem;
+      margin: 0;
+    }
+
+    .message-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      max-height: 560px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .message-card {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
+      background: #fcfdff;
+    }
+
+    .message-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .message-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      background: var(--panel-2);
+      padding: 8px 10px;
+      border-radius: 999px;
+      color: #334155;
+    }
+
+    .message-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .message-actions button {
+      padding: 8px 10px;
+      font-size: 0.82rem;
+    }
+
+    .mini-note {
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-top: 8px;
+    }
+
+    .preview-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 760px;
+      position: sticky;
+      top: 24px;
+    }
+
+    .phone-shell {
+      width: var(--phone-w);
+      height: var(--phone-h);
+      background: #111827;
+      border-radius: 40px;
+      padding: 10px;
+      box-shadow: 0 26px 50px rgba(17, 24, 39, 0.28);
+      position: relative;
+    }
+
+    .phone-shell::before {
+      content: "";
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 126px;
+      height: 24px;
+      border-radius: 0 0 16px 16px;
+      background: #111827;
+      z-index: 5;
+    }
+
+    .phone-screen {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(180deg, #e8f1ff 0%, #f5f8fd 100%);
+      border-radius: 32px;
+      overflow: hidden;
+      position: relative;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    .status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 18px 10px;
+      font-size: 0.77rem;
+      font-weight: 700;
+      color: #1f2937;
+    }
+
+    .chat-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px 14px;
+      background: rgba(255, 255, 255, 0.68);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(201, 210, 224, 0.65);
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #7cc7ff, #3b82f6);
+      color: white;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 0.95rem;
+      flex: 0 0 auto;
+    }
+
+    .chat-header-text {
+      min-width: 0;
+    }
+
+    .chat-header-text strong,
+    .chat-header-text span {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .chat-header-text strong {
+      font-size: 0.94rem;
+    }
+
+    .chat-header-text span {
+      font-size: 0.76rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .chat-stage {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .chat-messages {
+      height: 100%;
+      overflow-y: auto;
+      padding: 14px 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      scroll-behavior: smooth;
+    }
+
+    .bubble-row {
+      display: flex;
+      width: 100%;
+      animation: fadeUp 0.35s ease;
+    }
+
+    .bubble-row.sender {
+      justify-content: flex-end;
+    }
+
+    .bubble-row.recipient {
+      justify-content: flex-start;
+    }
+
+    .bubble {
+      max-width: 78%;
+      padding: 10px 12px;
+      border-radius: 18px;
+      font-size: 0.93rem;
+      line-height: 1.38;
+      word-break: break-word;
+      position: relative;
+      box-shadow: 0 8px 18px rgba(31, 41, 55, 0.06);
+    }
+
+    .bubble.sender {
+      background: linear-gradient(180deg, #2d8cff 0%, #1f7aec 100%);
+      color: white;
+      border-bottom-right-radius: 6px;
+    }
+
+    .bubble.recipient {
+      background: var(--recipient);
+      color: var(--text);
+      border: 1px solid #e3e8f1;
+      border-bottom-left-radius: 6px;
+    }
+
+    .typing-wrap {
+      display: flex;
+      justify-content: flex-start;
+      animation: fadeUp 0.25s ease;
+    }
+
+    .typing-bubble {
+      padding: 12px 14px;
+      border-radius: 18px;
+      border-bottom-left-radius: 6px;
+      background: white;
+      border: 1px solid #e3e8f1;
+      box-shadow: 0 8px 18px rgba(31, 41, 55, 0.06);
+      display: inline-flex;
+      gap: 5px;
+      align-items: center;
+    }
+
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #9aa4b2;
+      animation: bounce 1s infinite ease-in-out;
+    }
+
+    .typing-dot:nth-child(2) { animation-delay: 0.14s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.28s; }
+
+    .input-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(201, 210, 224, 0.65);
+    }
+
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border-radius: 50%;
+      background: white;
+      color: #475467;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line);
+      font-size: 1.1rem;
+      flex: 0 0 auto;
+    }
+
+    .fake-input {
+      flex: 1;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 11px 14px;
+      color: #98a2b3;
+      font-size: 0.9rem;
+      min-width: 0;
+    }
+
+    .export-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .export-btn {
+      background: #111827;
+      color: white;
+    }
+
+    .muted-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      background: #f6f8fb;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 10px;
+      margin-top: 10px;
+    }
+
+    .empty-state {
+      padding: 18px;
+      border: 1px dashed var(--line);
+      border-radius: 18px;
+      color: var(--muted);
+      text-align: center;
+      background: #fafcff;
+    }
+
+    @keyframes bounce {
+      0%, 80%, 100% {
+        transform: translateY(0);
+        opacity: 0.55;
+      }
+      40% {
+        transform: translateY(-4px);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 1060px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .preview-wrap {
+        position: static;
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 520px) {
+      body {
+        padding: 12px;
+      }
+
+      .panel {
+        border-radius: 18px;
+        padding: 16px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .phone-shell {
+        width: min(100%, 350px);
+        height: 660px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <section class="panel">
+      <h1>Chat Message Animation Generator</h1>
+      <p></p>
+
+      <div class="form-grid">
+        <div class="field">
+          <label for="senderName">Sender name</label>
+          <input id="senderName" type="text" value="" placeholder="" />
+        </div>
+        <div class="field">
+          <label for="recipientName">Recipient name</label>
+          <input id="recipientName" type="text" value="" placeholder="" />
+        </div>
+        <div class="field">
+          <label for="chatTitle">Header title</label>
+          <input id="chatTitle" type="text" value="" placeholder="" />
+        </div>
+        <div class="field">
+          <label for="typingSpeed">Typing delay</label>
+          <select id="typingSpeed">
+            <option value="650">Fast</option>
+            <option value="1100" selected>Medium</option>
+            <option value="1700">Slow</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <button id="playBtn" class="primary">Play animation</button>
+        <button id="resetBtn" class="secondary">Reset preview</button>
+        <button id="fillDemoBtn" class="secondary">Load demo</button>
+      </div>
+
+      <div class="messages-header">
+        <h2>Conversation script</h2>
+        <button id="addMessageBtn" class="primary">＋ Add message</button>
+      </div>
+
+      <div id="messageList" class="message-list"></div>
+
+      <div class="export-row">
+        <button id="copyJsonBtn" class="export-btn">Copy JSON</button>
+        <button id="copyTextBtn" class="secondary">Copy plain script</button>
+      </div>
+      <div class="muted-chip">Tip: message order controls the animation order.</div>
+    </section>
+
+    <section class="preview-wrap">
+      <div class="phone-shell">
+        <div class="phone-screen">
+          <div>
+            <div class="status-bar">
+              <span>9:41</span>
+              <span>●●● ▰</span>
+            </div>
+            <div class="chat-header">
+              <div class="avatar" id="avatar">A</div>
+              <div class="chat-header-text">
+                <strong id="previewHeaderTitle">Alex</strong>
+                <span id="previewHeaderSub">Active now</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="chat-stage">
+            <div id="chatMessages" class="chat-messages"></div>
+          </div>
+
+          <div class="input-bar">
+            <button class="icon-btn" type="button">＋</button>
+            <div class="fake-input">iMessage</div>
+            <button class="icon-btn" type="button">➜</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <template id="messageTemplate">
+    <div class="message-card">
+      <div class="message-meta">
+        <div class="message-badge js-badge">Sender</div>
+        <div class="message-actions">
+          <button type="button" class="secondary js-up">↑</button>
+          <button type="button" class="secondary js-down">↓</button>
+          <button type="button" class="danger js-delete">Delete</button>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="field">
+          <label>Speaker</label>
+          <select class="js-role">
+            <option value="sender">Sender</option>
+            <option value="recipient">Recipient</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Bubble side</label>
+          <select class="js-side">
+            <option value="auto">Auto</option>
+            <option value="sender">Right / sender style</option>
+            <option value="recipient">Left / recipient style</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label>Message</label>
+          <textarea class="js-content" placeholder="Type the message here..."></textarea>
+        </div>
+      </div>
+      <div class="mini-note">A typing animation will appear before this message is displayed.</div>
+    </div>
+  </template>
+
+  <script>
+    const senderNameInput = document.getElementById('senderName');
+    const recipientNameInput = document.getElementById('recipientName');
+    const chatTitleInput = document.getElementById('chatTitle');
+    const typingSpeedSelect = document.getElementById('typingSpeed');
+    const messageList = document.getElementById('messageList');
+    const chatMessages = document.getElementById('chatMessages');
+    const avatar = document.getElementById('avatar');
+    const previewHeaderTitle = document.getElementById('previewHeaderTitle');
+    const previewHeaderSub = document.getElementById('previewHeaderSub');
+    const messageTemplate = document.getElementById('messageTemplate');
+
+    const playBtn = document.getElementById('playBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const addMessageBtn = document.getElementById('addMessageBtn');
+    const fillDemoBtn = document.getElementById('fillDemoBtn');
+    const copyJsonBtn = document.getElementById('copyJsonBtn');
+    const copyTextBtn = document.getElementById('copyTextBtn');
+
+    let messages = [
+      { role: 'sender', side: 'auto', content: 'Hey, are you still coming by later?' },
+      { role: 'recipient', side: 'auto', content: 'Yep. I just left and should be there in about 20 minutes.' },
+      { role: 'sender', side: 'auto', content: 'Perfect. Text me when you park.' }
+    ];
+
+    let activeRun = 0;
+
+    function escapeHtml(text) {
+      return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function wait(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function getDisplayName(role) {
+      return role === 'sender'
+        ? (senderNameInput.value.trim() || 'You')
+        : (recipientNameInput.value.trim() || 'Recipient');
+    }
+
+    function getBubbleSide(message) {
+      if (message.side && message.side !== 'auto') return message.side;
+      return message.role === 'sender' ? 'sender' : 'recipient';
+    }
+
+    function updateHeader() {
+      const recipientName = recipientNameInput.value.trim() || 'Recipient';
+      const title = chatTitleInput.value.trim() || recipientName;
+      previewHeaderTitle.textContent = title;
+      previewHeaderSub.textContent = `${senderNameInput.value.trim() || 'You'} and ${recipientName}`;
+      avatar.textContent = title.charAt(0).toUpperCase() || 'C';
+    }
+
+    function renderMessageEditor() {
+      if (!messages.length) {
+        messageList.innerHTML = '<div class="empty-state">No messages yet. Click <strong>＋ Add message</strong> to start building the conversation.</div>';
+        return;
+      }
+
+      messageList.innerHTML = '';
+
+      messages.forEach((message, index) => {
+        const fragment = messageTemplate.content.cloneNode(true);
+        const card = fragment.querySelector('.message-card');
+        const badge = fragment.querySelector('.js-badge');
+        const roleSelect = fragment.querySelector('.js-role');
+        const sideSelect = fragment.querySelector('.js-side');
+        const contentArea = fragment.querySelector('.js-content');
+        const upBtn = fragment.querySelector('.js-up');
+        const downBtn = fragment.querySelector('.js-down');
+        const deleteBtn = fragment.querySelector('.js-delete');
+
+        const displayName = getDisplayName(message.role);
+        badge.textContent = `${index + 1}. ${displayName}`;
+        roleSelect.value = message.role;
+        sideSelect.value = message.side || 'auto';
+        contentArea.value = message.content || '';
+
+        roleSelect.addEventListener('change', () => {
+          messages[index].role = roleSelect.value;
+          renderMessageEditor();
+          renderStaticPreview();
+        });
+
+        sideSelect.addEventListener('change', () => {
+          messages[index].side = sideSelect.value;
+          renderStaticPreview();
+        });
+
+        contentArea.addEventListener('input', () => {
+          messages[index].content = contentArea.value;
+          renderStaticPreview();
+        });
+
+        upBtn.disabled = index === 0;
+        downBtn.disabled = index === messages.length - 1;
+
+        upBtn.addEventListener('click', () => {
+          if (index === 0) return;
+          [messages[index - 1], messages[index]] = [messages[index], messages[index - 1]];
+          renderMessageEditor();
+          renderStaticPreview();
+        });
+
+        downBtn.addEventListener('click', () => {
+          if (index === messages.length - 1) return;
+          [messages[index + 1], messages[index]] = [messages[index], messages[index + 1]];
+          renderMessageEditor();
+          renderStaticPreview();
+        });
+
+        deleteBtn.addEventListener('click', () => {
+          messages.splice(index, 1);
+          renderMessageEditor();
+          renderStaticPreview();
+        });
+
+        messageList.appendChild(fragment);
+      });
+    }
+
+    function createBubble(message) {
+      const row = document.createElement('div');
+      const side = getBubbleSide(message);
+      row.className = `bubble-row ${side}`;
+
+      const bubble = document.createElement('div');
+      bubble.className = `bubble ${side}`;
+      bubble.innerHTML = escapeHtml(message.content || '').replace(/\n/g, '<br>');
+
+      row.appendChild(bubble);
+      return row;
+    }
+
+    function renderStaticPreview() {
+      activeRun += 1;
+      chatMessages.innerHTML = '';
+
+      messages
+        .filter(message => (message.content || '').trim())
+        .forEach(message => {
+          chatMessages.appendChild(createBubble(message));
+        });
+
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function showTypingIndicator(side = 'recipient') {
+      const wrap = document.createElement('div');
+      wrap.className = 'typing-wrap';
+      wrap.dataset.typing = 'true';
+      wrap.style.justifyContent = side === 'sender' ? 'flex-end' : 'flex-start';
+
+      const bubble = document.createElement('div');
+      bubble.className = 'typing-bubble';
+      if (side === 'sender') {
+        bubble.style.borderBottomRightRadius = '6px';
+        bubble.style.borderBottomLeftRadius = '18px';
+      }
+
+      bubble.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
+      wrap.appendChild(bubble);
+      chatMessages.appendChild(wrap);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      return wrap;
+    }
+
+    async function playAnimation() {
+      const currentRun = ++activeRun;
+      chatMessages.innerHTML = '';
+
+      const cleanMessages = messages.filter(message => (message.content || '').trim());
+      const typingDelay = Number(typingSpeedSelect.value) || 1100;
+
+      for (const message of cleanMessages) {
+        if (currentRun !== activeRun) return;
+
+        const side = getBubbleSide(message);
+        const typing = showTypingIndicator(side === 'sender' ? 'sender' : 'recipient');
+        await wait(typingDelay);
+        if (currentRun !== activeRun) return;
+        typing.remove();
+        chatMessages.appendChild(createBubble(message));
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        await wait(260);
+      }
+    }
+
+    function addMessage(data = { role: 'sender', side: 'auto', content: '' }) {
+      messages.push({ ...data });
+      renderMessageEditor();
+      renderStaticPreview();
+    }
+
+    function fillDemo() {
+      senderNameInput.value = 'Mona';
+      recipientNameInput.value = 'Jules';
+      chatTitleInput.value = 'Jules';
+      typingSpeedSelect.value = '1100';
+      messages = [
+        { role: 'sender', side: 'auto', content: 'hey, are you awake?' },
+        { role: 'recipient', side: 'auto', content: 'Barely lol. What\'s up?' },
+        { role: 'sender', side: 'auto', content: 'I just finished that mockup. Want me to send screenshots?' },
+        { role: 'recipient', side: 'auto', content: 'Yes please. I\'ve been waiting to see it.' },
+        { role: 'sender', side: 'auto', content: 'okay sending now ✨' }
+      ];
+      updateHeader();
+      renderMessageEditor();
+      renderStaticPreview();
+    }
+
+    async function copyToClipboard(text, button) {
+      try {
+        await navigator.clipboard.writeText(text);
+        const original = button.textContent;
+        button.textContent = 'Copied!';
+        setTimeout(() => {
+          button.textContent = original;
+        }, 1200);
+      } catch (error) {
+        alert('Clipboard copy failed in this browser.');
+      }
+    }
+
+    function buildExportData() {
+      return {
+        senderName: senderNameInput.value.trim() || 'You',
+        recipientName: recipientNameInput.value.trim() || 'Recipient',
+        headerTitle: chatTitleInput.value.trim() || (recipientNameInput.value.trim() || 'Recipient'),
+        typingDelay: Number(typingSpeedSelect.value) || 1100,
+        messages: messages.map(message => ({
+          role: message.role,
+          side: message.side || 'auto',
+          content: message.content || ''
+        }))
+      };
+    }
+
+    function buildPlainTextScript() {
+      return messages
+        .filter(message => (message.content || '').trim())
+        .map(message => `${getDisplayName(message.role)}: ${message.content.replace(/\n/g, ' ')}`)
+        .join('\n');
+    }
+
+    senderNameInput.addEventListener('input', () => {
+      updateHeader();
+      renderMessageEditor();
+    });
+
+    recipientNameInput.addEventListener('input', () => {
+      updateHeader();
+      renderMessageEditor();
+    });
+
+    chatTitleInput.addEventListener('input', updateHeader);
+
+    addMessageBtn.addEventListener('click', () => addMessage());
+    playBtn.addEventListener('click', playAnimation);
+    resetBtn.addEventListener('click', renderStaticPreview);
+    fillDemoBtn.addEventListener('click', fillDemo);
+
+    copyJsonBtn.addEventListener('click', () => {
+      copyToClipboard(JSON.stringify(buildExportData(), null, 2), copyJsonBtn);
+    });
+
+    copyTextBtn.addEventListener('click', () => {
+      copyToClipboard(buildPlainTextScript(), copyTextBtn);
+    });
+
+    updateHeader();
+    renderMessageEditor();
+    renderStaticPreview();
+  </script>
+</body>
+</html>
