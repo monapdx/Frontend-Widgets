@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prefix Word Bubbles</title>
+  <style>
+    :root {
+      --bg: #f7f9fc;
+      --panel: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --accent: #2563eb;
+      --accent-soft: #dbeafe;
+      --good: #15803d;
+      --bad: #b91c1c;
+      --border: #dbe3ef;
+      --shadow: 0 12px 36px rgba(15, 23, 42, 0.08);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #f8fbff 0%, #edf4ff 100%);
+      color: var(--text);
+    }
+
+    body {
+      padding: 16px;
+    }
+
+    .app {
+      width: min(100%, 1100px);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .main {
+      padding: 18px;
+    }
+
+    .side {
+      padding: 18px;
+      position: sticky;
+      top: 16px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.7rem, 3vw, 2.5rem);
+      line-height: 1.1;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin: 0 0 18px;
+      font-size: 0.98rem;
+      line-height: 1.5;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .stat {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px;
+      background: #fbfdff;
+    }
+
+    .stat-label {
+      font-size: 0.76rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .stat-value {
+      font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+      font-weight: bold;
+    }
+
+    .arena {
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 18px;
+      background: linear-gradient(180deg, #fafdff 0%, #f1f7ff 100%);
+      min-height: 290px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .prefix-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 92px;
+      border-radius: 18px;
+      background: radial-gradient(circle at top, #eff6ff, #dbeafe);
+      border: 1px solid #bfdbfe;
+      text-align: center;
+      padding: 12px;
+    }
+
+    .prefix {
+      font-size: clamp(2.4rem, 8vw, 4.5rem);
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      color: #1d4ed8;
+      text-transform: uppercase;
+      margin-left: 0.12em;
+    }
+
+    .bubble-field {
+      min-height: 150px;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+      gap: 10px;
+      padding: 4px;
+    }
+
+    .bubble {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: #1847b8;
+      font-weight: 700;
+      border: 1px solid #bfd6ff;
+      animation: popIn 180ms ease-out;
+      word-break: break-word;
+    }
+
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.94);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    input[type="text"], select {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 15px;
+      font-size: 1rem;
+      outline: none;
+      background: #fff;
+      color: var(--text);
+    }
+
+    input[type="text"]:focus, select:focus {
+      border-color: #93c5fd;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+    }
+
+    button {
+      border: 0;
+      border-radius: 14px;
+      padding: 14px 16px;
+      font-size: 0.98rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 120ms ease, opacity 120ms ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .secondary {
+      background: #eef2ff;
+      color: #334155;
+      border: 1px solid #dbe3ef;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin: 16px 0 0;
+    }
+
+    .feedback {
+      min-height: 24px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-top: 10px;
+    }
+
+    .feedback.good {
+      color: var(--good);
+    }
+
+    .feedback.bad {
+      color: var(--bad);
+    }
+
+    .section-title {
+      font-size: 1rem;
+      font-weight: 800;
+      margin: 0 0 10px;
+    }
+
+    .settings {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .setting label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #475569;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    .list-box {
+      margin-top: 14px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px;
+      background: #fbfdff;
+    }
+
+    .word-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      max-height: 180px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .word-chip {
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: #eef2ff;
+      border: 1px solid #d7ddff;
+      font-size: 0.92rem;
+    }
+
+    .empty {
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .footer-note {
+      margin-top: 14px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    @media (max-width: 900px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .side {
+        position: static;
+      }
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 10px;
+      }
+
+      .main, .side {
+        padding: 14px;
+      }
+
+      .topbar {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .controls {
+        grid-template-columns: 1fr;
+      }
+
+      .toolbar {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <section class="card main">
+      <h1>Word Bubbles</h1>
+      <p class="subtitle">
+        Type as many valid English words as you can that begin with the shown prefix before time runs out.
+      </p>
+
+      <div class="topbar">
+        <div class="stat">
+          <div class="stat-label">Prefix</div>
+          <div class="stat-value" id="prefixStat">---</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Time Left</div>
+          <div class="stat-value" id="timeStat">90</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Score</div>
+          <div class="stat-value" id="scoreStat">0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Found</div>
+          <div class="stat-value" id="foundStat">0 / 0</div>
+        </div>
+      </div>
+
+      <div class="arena">
+        <div class="prefix-wrap">
+          <div class="prefix" id="prefixDisplay">---</div>
+        </div>
+
+        <div class="bubble-field" id="bubbleField">
+          <div class="empty">Start a round to begin finding words.</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <input
+          id="guessInput"
+          type="text"
+          placeholder="Type a word and press Enter"
+          autocomplete="off"
+          autocapitalize="none"
+          spellcheck="false"
+          disabled
+        />
+        <button class="primary" id="submitBtn" disabled>Submit</button>
+        <button class="secondary" id="skipBtn" disabled>Skip Round</button>
+      </div>
+
+      <div class="feedback" id="feedback"></div>
+
+      <div class="toolbar">
+        <button class="primary" id="startBtn">Start Game</button>
+        <button class="secondary" id="newRoundBtn">New Round</button>
+        <button class="secondary" id="endBtn">End Round</button>
+      </div>
+    </section>
+
+    <aside class="card side">
+      <div class="section-title">Settings</div>
+      <div class="settings">
+        <div class="setting">
+          <label for="difficultySelect">Difficulty</label>
+          <select id="difficultySelect">
+            <option value="easy">Easy · 2-letter prefixes</option>
+            <option value="medium" selected>Medium · 3-letter prefixes</option>
+            <option value="hard">Hard · 4-letter prefixes</option>
+          </select>
+        </div>
+        <div class="setting">
+          <label for="durationSelect">Round Length</label>
+          <select id="durationSelect">
+            <option value="60">60 seconds</option>
+            <option value="90" selected>90 seconds</option>
+            <option value="120">120 seconds</option>
+          </select>
+        </div>
+      </div>
+
+      <p class="small">
+        Scoring: 1 point per valid word, plus a bonus point for words with 8 or more letters.
+        Duplicate guesses do not count.
+      </p>
+
+      <div class="list-box">
+        <div class="section-title">Missed Words</div>
+        <div class="word-list" id="missedWordsList">
+          <div class="empty">End a round to reveal words you missed.</div>
+        </div>
+      </div>
+
+      <div class="list-box">
+        <div class="section-title">Round Summary</div>
+        <div class="small" id="summaryText">
+          No round played yet.
+        </div>
+      </div>
+
+      <p class="footer-note">
+        This version ships with a built-in starter dictionary so the game runs as a single file. You can later swap in a larger word list JSON for many more prefixes and answers.
+      </p>
+    </aside>
+  </div>
+
+  <script>
+    const WORDS = [
+      "able","about","above","absorb","abstract","academy","accent","accept","access","accident","acclaim","accompany","account","accuracy","accurate","achieve","acoustic","acquire","across","acting","action","active","activity","actor","actual","adapt","addition","address","adjust","admire","admit","adopt","adult","advance","advantage","adventure","adverb","advice","advise","affair","affect","afford","afraid","after","again","against","agency","agenda","agent","agile","agree","ahead","airplane","alarm","album","alert","alien","align","alive","allow","almost","alphabet","already","alter","always","amazing","amber","amount","amuse","analysis","anchor","ancient","angel","angle","animal","announce","annual","answer","anxiety","anybody","apart","apology","appeal","appear","apple","apply","appoint","approve","april","arcade","archer","archive","argue","arise","armor","around","arrange","arrest","arrive","arrow","artist","artistic","aspect","aspire","assault","assert","assess","assign","assist","assume","assure","athlete","atom","attack","attain","attempt","attend","attic","attract","auction","audience","author","auto","autumn","available","avenue","average","avoid","awake","award","aware","awesome","awkward",
+      "baby","badge","baffle","balance","balcony","banana","banner","barber","barely","bargain","barrel","basic","basket","battery","battle","beacon","beauty","because","become","before","behave","behind","believe","belong","beneath","benefit","berry","between","beyond","bicycle","billion","biology","birthday","bitter","blanket","blessing","blizzard","blossom","board","border","borrow","bother","bottle","bottom","bounce","bracket","brain","branch","brave","bread","breeze","bridge","bright","brilliant","broaden","brother","bubble","budget","buffer","builder","bundle","burden","butter","button",
+      "cabin","cable","cactus","camera","campaign","campus","canal","cancel","candle","candy","cannot","canvas","captain","carbon","career","careful","cargo","carpet","carrot","carry","cartoon","cascade","castle","casual","catalog","catch","category","caution","ceiling","celebrate","center","central","century","ceramic","certain","chance","change","channel","chaos","chapter","charge","charity","charcoal","chariot","charisma","charismatic","charm","chart","charter","chase","chasm","chatroom","cheat","check","cheer","cheese","chemical","cherry","chess","chest","chicken","chief","child","choice","choose","chorus","circle","citizen","clarify","classic","clause","clean","clear","clerk","client","climate","clinic","clock","closet","clothe","cloud","clover","cluster","coach","coastal","coconut","coffee","collect","college","combine","comfort","comic","command","comment","common","company","compare","compass","compete","complex","compose","concept","concern","concert","conduct","confirm","connect","consent","consider","consist","constant","consult","contact","contain","content","contest","context","control","convert","cookie","corner","correct","costume","cotton","council","counter","country","courage","course","cousin","create","credit","creature","cricket","crimson","crisis","critic","crystal","culture","cupcake","curious","current","curtain","custom","cycle",
+      "damage","danger","daring","dashboard","daughter","daylight","dealer","debate","decade","december","decide","declare","decorate","decrease","default","defeat","defend","define","degree","delay","deliver","demand","density","depart","depend","deposit","depth","deputy","derive","design","desire","desktop","despite","destroy","detail","develop","device","devote","diagram","dialogue","diamond","dignity","digital","dinner","diploma","direct","disagree","disaster","discover","discuss","disease","dishonest","display","distance","district","diverse","divide","doctor","document","dolphin","domain","double","dragon","drama","drawer","dream","drift","drizzle","driver","during","dynamic",
+      "eager","early","earth","easily","echo","economy","edition","editor","effect","effort","either","elastic","elder","elect","elegant","element","elevator","elite","elsewhere","embark","embrace","emerge","emotion","emperor","emphasis","empire","employ","enable","enact","endless","endorse","energy","enforce","engage","engine","enhance","enjoy","enough","enrich","ensure","enter","entire","entry","envelope","episode","equal","equip","era","escape","essay","essence","estate","ethics","evening","event","every","evidence","exact","example","exceed","except","exchange","excite","exclude","excuse","execute","exercise","exhibit","exile","exist","expand","expect","expense","expert","explore","export","expose","extend","extra",
+      "fabric","facility","factor","fading","failure","family","famous","fantasy","farmer","fashion","father","feature","february","federal","feedback","fellow","female","festival","fiction","field","figure","filter","finally","finance","finger","finish","finite","firefly","firmly","fitness","flavor","flower","focus","folder","follow","football","forest","forever","forgive","formal","format","fortune","forward","fragile","fragment","freedom","freeway","french","friend","fringe","frost","frozen","future",
+      "gallery","garden","garment","gather","general","genius","gentle","genuine","gesture","ginger","glance","global","glorious","golden","govern","grace","gradient","grammar","grand","graphic","gravity","greater","green","grocery","ground","growth","guardian","guess","guitar","gutter",
+      "habit","hammer","harbor","harmony","harvest","heading","health","hearing","heart","heaven","helmet","helpful","heritage","heroic","hidden","history","holiday","honest","honor","horizon","hospital","hostel","hourly","however","human","humble","humor","hundred","hunter","hybrid",
+      "ideal","identify","ignore","illegal","illness","image","imagine","imitate","immense","impact","imply","import","impress","improve","include","income","increase","index","indicate","indoor","industry","infant","infect","infinite","inform","inherit","initial","inject","injury","inmate","inner","innocent","input","inquiry","inside","insight","inspire","install","intact","integer","intense","interest","interior","internet","interval","into","invite","involve","island","issue","item","itself",
+      "jacket","jaguar","january","jealous","jewel","journal","journey","joyful","judgment","juggle","junior","justice",
+      "kernel","kettle","keyboard","kingdom","kitchen","kitten","knowledge",
+      "label","labor","ladder","landing","language","lantern","largely","laser","lasting","laundry","leader","league","learn","leather","lecture","legacy","legend","leisure","length","lesson","letter","level","library","license","light","likely","lilac","limited","linear","linen","linger","liquid","listen","literary","little","lively","loading","local","locate","logical","lonely","longer","lookup","lotion","loudly","lovely","loyal","lunar","luxury",
+      "machine","magnet","mailbox","mainly","major","making","mammal","manage","manner","manual","marble","margin","marine","market","marvel","master","match","material","matter","maximum","meaning","measure","medical","meeting","melody","memory","mention","merely","message","method","middle","might","migrate","military","mineral","minimal","minimum","minister","miracle","mirror","mobile","modern","module","moment","monitor","monster","morning","mother","motion","mountain","museum","music","mutual","mystery",
+      "narrow","nation","native","nature","nearby","nearly","nectar","needle","neither","nephew","nervous","network","neutral","newly","night","nobody","normal","notable","notice","novel","nuclear","number","nurture",
+      "object","oblige","observe","obtain","obvious","occasion","occupy","ocean","october","offense","offer","office","often","olive","online","openly","operate","opinion","oppose","option","orange","orbit","orchard","order","ordinary","organ","origin","outcome","outdoor","outline","output","outside","overall","oxygen",
+      "packet","paddle","painting","palace","panel","panic","paper","parade","parcel","parent","parking","partner","passage","passion","pastel","patient","pattern","payment","peaceful","peanut","penalty","pencil","people","percent","perfect","perform","perhaps","period","permit","person","phantom","phrase","physical","picture","pioneer","planet","plastic","platform","pleasant","plenty","pocket","poetry","point","polish","popular","portion","portrait","position","possible","posture","pottery","poverty","powder","powerful","practice","praise","predict","prefix","prepare","present","pretty","prevent","primary","princess","printer","privacy","private","problem","process","produce","product","profile","program","project","promise","promote","proper","protect","protein","protest","provide","public","purpose","puzzle","python",
+      "quality","quarter","question","quickly","quiet","quilt","quotation",
+      "rabbit","radar","radius","rainbow","random","rapidly","rather","reader","realize","reason","rebel","rebuild","receipt","receive","recent","recipe","record","recover","recycle","reduce","reflect","reform","refresh","refuge","regard","region","regular","reject","related","relax","release","relief","rely","remain","remark","remember","remove","render","renew","repair","repeat","replace","report","require","rescue","research","reserve","resist","resolve","respect","respond","restore","result","retain","retire","return","reveal","review","rhythm","ribbon","riddle","right","rigid","ripple","ritual","rocket","romance","rotate","routine","royal","rural",
+      "sacred","safety","salmon","sample","satisfy","saturday","sauce","scale","scarlet","scatter","school","science","score","screen","script","search","season","second","secret","section","secure","select","selfish","seminar","senior","sense","separate","serious","service","session","settle","severe","shadow","shared","shelter","shimmer","signal","silent","silver","simple","sincere","singer","single","sister","sketch","skill","slender","slipper","slowly","small","social","socket","software","soldier","solution","somebody","soprano","source","space","speaker","special","species","spectacle","spirit","splash","spoken","spring","square","stable","stadium","stair","standard","station","steady","storage","story","strategy","stream","stretch","strike","string","strong","student","studio","subject","submit","subtle","success","sudden","suffer","suffix","summer","summit","sunrise","sunset","superior","supply","support","suppose","surface","survive","suspect","sustain","swallow","symbol","system",
+      "tablet","talent","target","tasty","teacher","teapot","technical","temple","tender","tennis","theater","theory","thermal","thirsty","thought","thread","thrive","thunder","ticket","timber","timing","tissue","today","together","tomato","tongue","tonight","topic","toward","traffic","tragedy","trainer","transit","travel","treasure","treaty","triangle","tribe","trouble","trophy","trust","tunnel","turkey","tutor","twilight","typical",
+      "unable","uncle","under","unfair","unfold","unhappy","uniform","unique","unit","united","universe","unknown","unless","unlock","until","unusual","update","upgrade","uphold","uplift","upon","upper","upset","urban","urgent","useful","usual","utility",
+      "vacuum","valley","vanish","variety","various","vehicle","venture","venue","verdict","verify","version","vessel","veteran","victory","video","village","violin","virtual","visible","vision","visitor","visual","vital","vivid","vocal","volume","voyage",
+      "wander","warrior","wealth","weapon","weather","webcam","weekend","welcome","western","whale","whisper","window","winner","winter","wisdom","within","without","wonder","wooden","worker","world","worthy","writer",
+      "yellow","yogurt","yonder","youthful",
+      "zebra","zenith","zero","zigzag","zipper","zodiac","zombie","zone"
+    ];
+
+    const PREFIX_RULES = {
+      easy: { length: 2, minWords: 8, maxWords: 80, minWordLength: 4 },
+      medium: { length: 3, minWords: 6, maxWords: 60, minWordLength: 4 },
+      hard: { length: 4, minWords: 4, maxWords: 40, minWordLength: 5 }
+    };
+
+    const prefixDisplay = document.getElementById("prefixDisplay");
+    const prefixStat = document.getElementById("prefixStat");
+    const timeStat = document.getElementById("timeStat");
+    const scoreStat = document.getElementById("scoreStat");
+    const foundStat = document.getElementById("foundStat");
+    const bubbleField = document.getElementById("bubbleField");
+    const guessInput = document.getElementById("guessInput");
+    const submitBtn = document.getElementById("submitBtn");
+    const skipBtn = document.getElementById("skipBtn");
+    const startBtn = document.getElementById("startBtn");
+    const newRoundBtn = document.getElementById("newRoundBtn");
+    const endBtn = document.getElementById("endBtn");
+    const feedback = document.getElementById("feedback");
+    const difficultySelect = document.getElementById("difficultySelect");
+    const durationSelect = document.getElementById("durationSelect");
+    const missedWordsList = document.getElementById("missedWordsList");
+    const summaryText = document.getElementById("summaryText");
+
+    let timerId = null;
+    let timeLeft = 0;
+    let score = 0;
+    let roundActive = false;
+    let currentPrefix = "";
+    let currentAnswers = [];
+    let guessedWords = new Set();
+    let usedPrefixes = new Set();
+    let currentDifficulty = "medium";
+
+    const normalizedWords = Array.from(new Set(
+      WORDS
+        .map(word => word.trim().toLowerCase())
+        .filter(word => /^[a-z]+$/.test(word))
+    )).sort();
+
+    const prefixPools = buildPrefixPools(normalizedWords);
+
+    function buildPrefixPools(words) {
+      const pools = { easy: [], medium: [], hard: [] };
+
+      Object.entries(PREFIX_RULES).forEach(([difficulty, rule]) => {
+        const groups = new Map();
+
+        words.forEach(word => {
+          if (word.length < Math.max(rule.length, rule.minWordLength)) return;
+          const prefix = word.slice(0, rule.length);
+          if (!groups.has(prefix)) groups.set(prefix, []);
+          groups.get(prefix).push(word);
+        });
+
+        groups.forEach((list, prefix) => {
+          if (list.length >= rule.minWords && list.length <= rule.maxWords) {
+            pools[difficulty].push({ prefix, words: list.sort() });
+          }
+        });
+      });
+
+      return pools;
+    }
+
+    function randomItem(items) {
+      return items[Math.floor(Math.random() * items.length)];
+    }
+
+    function chooseRound() {
+      const pool = prefixPools[currentDifficulty];
+      if (!pool.length) return null;
+
+      const unused = pool.filter(item => !usedPrefixes.has(`${currentDifficulty}:${item.prefix}`));
+      const source = unused.length ? unused : pool;
+      const choice = randomItem(source);
+      usedPrefixes.add(`${currentDifficulty}:${choice.prefix}`);
+      return choice;
+    }
+
+    function startRound() {
+      const round = chooseRound();
+      if (!round) {
+        showFeedback("No valid prefixes were generated from the dictionary.", "bad");
+        return;
+      }
+
+      stopTimer();
+      roundActive = true;
+      currentPrefix = round.prefix;
+      currentAnswers = round.words;
+      guessedWords = new Set();
+      timeLeft = Number(durationSelect.value);
+      score = 0;
+
+      updateStats();
+      renderPrefix();
+      renderBubbles();
+      clearMissedWords();
+      summaryText.textContent = "Round in progress.";
+      showFeedback(`New round started. Find words beginning with ${currentPrefix.toUpperCase()}.`, "good");
+      setControlsEnabled(true);
+      guessInput.value = "";
+      guessInput.focus();
+      startTimer();
+    }
+
+    function newRound() {
+      if (roundActive) {
+        revealMissedWords();
+      }
+      startRound();
+    }
+
+    function endRound(reason = "Time's up!") {
+      if (!roundActive) return;
+      roundActive = false;
+      stopTimer();
+      setControlsEnabled(false);
+      revealMissedWords();
+      const found = guessedWords.size;
+      const total = currentAnswers.length;
+      const percent = total ? Math.round((found / total) * 100) : 0;
+      summaryText.textContent = `You found ${found} of ${total} possible words (${percent}%). Final score: ${score}. ${reason}`;
+      showFeedback(reason, "good");
+    }
+
+    function submitGuess() {
+      if (!roundActive) return;
+
+      const guess = guessInput.value.trim().toLowerCase();
+      guessInput.value = "";
+      guessInput.focus();
+
+      if (!guess) {
+        showFeedback("Type a word first.", "bad");
+        return;
+      }
+
+      if (!/^[a-z]+$/.test(guess)) {
+        showFeedback("Use letters only.", "bad");
+        return;
+      }
+
+      if (!guess.startsWith(currentPrefix)) {
+        showFeedback(`That word does not start with ${currentPrefix.toUpperCase()}.`, "bad");
+        return;
+      }
+
+      if (guessedWords.has(guess)) {
+        showFeedback("You already found that one.", "bad");
+        return;
+      }
+
+      if (!currentAnswers.includes(guess)) {
+        showFeedback("Not in this round's answer list.", "bad");
+        return;
+      }
+
+      guessedWords.add(guess);
+      score += guess.length >= 8 ? 2 : 1;
+      updateStats();
+      renderBubbles();
+      showFeedback(`Nice: ${guess}`, "good");
+
+      if (guessedWords.size === currentAnswers.length) {
+        endRound("You found every possible word!");
+      }
+    }
+
+    function renderPrefix() {
+      const display = currentPrefix ? currentPrefix.toUpperCase() : "---";
+      prefixDisplay.textContent = display;
+      prefixStat.textContent = display;
+    }
+
+    function renderBubbles() {
+      bubbleField.innerHTML = "";
+
+      if (!guessedWords.size) {
+        const empty = document.createElement("div");
+        empty.className = "empty";
+        empty.textContent = roundActive
+          ? "Your correct guesses will appear here as bubbles."
+          : "Start a round to begin finding words.";
+        bubbleField.appendChild(empty);
+        return;
+      }
+
+      Array.from(guessedWords)
+        .sort((a, b) => a.localeCompare(b))
+        .forEach(word => {
+          const bubble = document.createElement("div");
+          bubble.className = "bubble";
+          bubble.textContent = word;
+          bubbleField.appendChild(bubble);
+        });
+    }
+
+    function updateStats() {
+      timeStat.textContent = String(timeLeft);
+      scoreStat.textContent = String(score);
+      foundStat.textContent = `${guessedWords.size} / ${currentAnswers.length}`;
+    }
+
+    function startTimer() {
+      timerId = setInterval(() => {
+        timeLeft -= 1;
+        updateStats();
+        if (timeLeft <= 0) {
+          timeLeft = 0;
+          updateStats();
+          endRound("Time's up!");
+        }
+      }, 1000);
+    }
+
+    function stopTimer() {
+      if (timerId) {
+        clearInterval(timerId);
+        timerId = null;
+      }
+    }
+
+    function setControlsEnabled(enabled) {
+      guessInput.disabled = !enabled;
+      submitBtn.disabled = !enabled;
+      skipBtn.disabled = !enabled;
+    }
+
+    function showFeedback(message, type = "") {
+      feedback.textContent = message;
+      feedback.className = `feedback ${type}`.trim();
+    }
+
+    function revealMissedWords() {
+      const missed = currentAnswers.filter(word => !guessedWords.has(word));
+      missedWordsList.innerHTML = "";
+
+      if (!missed.length) {
+        const item = document.createElement("div");
+        item.className = "empty";
+        item.textContent = "You found them all.";
+        missedWordsList.appendChild(item);
+        return;
+      }
+
+      missed.forEach(word => {
+        const chip = document.createElement("div");
+        chip.className = "word-chip";
+        chip.textContent = word;
+        missedWordsList.appendChild(chip);
+      });
+    }
+
+    function clearMissedWords() {
+      missedWordsList.innerHTML = "";
+      const item = document.createElement("div");
+      item.className = "empty";
+      item.textContent = "End a round to reveal words you missed.";
+      missedWordsList.appendChild(item);
+    }
+
+    difficultySelect.addEventListener("change", () => {
+      currentDifficulty = difficultySelect.value;
+      showFeedback(`Difficulty set to ${currentDifficulty}.`, "good");
+    });
+
+    submitBtn.addEventListener("click", submitGuess);
+    skipBtn.addEventListener("click", () => endRound("Round skipped."));
+    startBtn.addEventListener("click", startRound);
+    newRoundBtn.addEventListener("click", newRound);
+    endBtn.addEventListener("click", () => endRound("Round ended."));
+
+    guessInput.addEventListener("keydown", event => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        submitGuess();
+      }
+    });
+
+    renderPrefix();
+    updateStats();
+    renderBubbles();
+    clearMissedWords();
+  </script>
+</body>
+</html>
