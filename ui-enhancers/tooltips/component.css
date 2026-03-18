@@ -1,0 +1,19 @@
+.fw-tooltip {
+  position: absolute;
+  padding: 6px 10px;
+  background: #111;
+  color: white;
+  font-size: 0.85rem;
+  border-radius: 8px;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity .15s ease, transform .15s ease;
+  z-index: 1200;
+  white-space: nowrap;
+}
+
+.fw-tooltip.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}

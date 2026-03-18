@@ -1,0 +1,38 @@
+.fw-tabs {
+  display: grid;
+  gap: 1rem;
+}
+
+.fw-tablist {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  background: var(--fw-surface-2);
+  padding: 0.4rem;
+  border-radius: 16px;
+}
+
+.fw-tab {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--fw-text-muted);
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  font: inherit;
+  cursor: pointer;
+  transition: all var(--fw-transition);
+}
+
+.fw-tab[aria-selected="true"] {
+  background: var(--fw-bg);
+  color: var(--fw-text);
+  box-shadow: var(--fw-shadow-sm);
+}
+
+.fw-tabpanel {
+  padding: 1rem;
+  border: 1px solid var(--fw-border);
+  border-radius: var(--fw-radius-md);
+  background: var(--fw-surface);
+}

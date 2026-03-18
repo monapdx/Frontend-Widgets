@@ -1,0 +1,66 @@
+.fw-datatable {
+  display: grid;
+  gap: 1rem;
+}
+
+.fw-datatable__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.fw-datatable__search {
+  width: min(100%, 320px);
+}
+
+.fw-datatable__meta {
+  color: var(--fw-text-muted, #666);
+  font-size: 0.95rem;
+}
+
+.fw-datatable__wrap {
+  overflow-x: auto;
+  border: 1px solid var(--fw-border, #ddd);
+  border-radius: 18px;
+  background: var(--fw-surface, #f8f8fb);
+}
+
+.fw-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 680px;
+}
+
+.fw-table th,
+.fw-table td {
+  padding: 0.9rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--fw-border, #ddd);
+}
+
+.fw-table th {
+  background: var(--fw-surface-2, #ececf3);
+  font-size: 0.95rem;
+}
+
+.fw-table tbody tr:nth-child(even) {
+  background: color-mix(in srgb, var(--fw-surface, #f8f8fb) 65%, transparent);
+}
+
+.fw-sort {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  color: inherit;
+  padding: 0;
+}
+
+.fw-empty {
+  padding: 1rem;
+  color: var(--fw-text-muted, #666);
+}

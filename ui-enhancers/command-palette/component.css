@@ -1,0 +1,28 @@
+.fw-command{
+position:fixed;
+inset:0;
+display:none;
+align-items:center;
+justify-content:center;
+background:rgba(0,0,0,.45);
+z-index:2000;
+}
+
+.fw-command.is-open{
+display:flex;
+}
+
+.fw-command-box{
+width:600px;
+background:white;
+border-radius:16px;
+padding:1rem;
+box-shadow:0 20px 60px rgba(0,0,0,.25);
+}
+
+.fw-command input{
+width:100%;
+padding:.8rem;
+border:1px solid #ddd;
+border-radius:10px;
+}

@@ -1,0 +1,12 @@
+.fw-dropzone{
+border:2px dashed var(--fw-border);
+padding:2rem;
+text-align:center;
+border-radius:18px;
+transition:.2s;
+}
+
+.fw-dropzone.is-drag{
+background:var(--fw-surface);
+border-color:var(--fw-primary);
+}
