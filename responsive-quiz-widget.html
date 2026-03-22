@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz Spreadsheet Builder</title>
+  <style>
+    :root {
+      --bg: #f7f7fb;
+      --panel: #ffffff;
+      --text: #1f2430;
+      --muted: #667085;
+      --line: #dfe3ea;
+      --accent: #2563eb;
+      --accent-soft: #e8f0ff;
+      --danger: #b42318;
+      --success: #027a48;
+      --shadow: 0 10px 30px rgba(16, 24, 40, 0.08);
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .app {
+      width: min(1200px, calc(100% - 32px));
+      margin: 24px auto 48px;
+      display: grid;
+      gap: 20px;
+    }
+
+    .hero,
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      padding: 24px;
+      display: grid;
+      gap: 12px;
+    }
+
+    h1, h2, h3 {
+      margin: 0;
+      line-height: 1.15;
+    }
+
+    p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 11px 16px;
+      font: inherit;
+      cursor: pointer;
+      transition: transform 0.12s ease, opacity 0.12s ease, background 0.12s ease;
+    }
+
+    button:hover { transform: translateY(-1px); }
+    button:active { transform: translateY(0); }
+
+    .primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .secondary {
+      background: #eef2f7;
+      color: var(--text);
+    }
+
+    .ghost {
+      background: transparent;
+      border: 1px solid var(--line);
+      color: var(--text);
+    }
+
+    .danger {
+      background: #fef3f2;
+      color: var(--danger);
+      border: 1px solid #fecdca;
+    }
+
+    .layout {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: 1.05fr 0.95fr;
+      align-items: start;
+    }
+
+    .card {
+      padding: 18px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+    }
+
+    label {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 11px 12px;
+      font: inherit;
+      background: #fff;
+      color: var(--text);
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .section-card,
+    .question-card,
+    .answer-card,
+    .preview-box,
+    .summary-box {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      background: #fff;
+    }
+
+    .section-card {
+      display: grid;
+      gap: 14px;
+      background: linear-gradient(180deg, #ffffff 0%, #fafcff 100%);
+    }
+
+    .section-header,
+    .question-header,
+    .answer-header,
+    .inline-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--line);
+      margin: 4px 0;
+    }
+
+    .questions-wrap,
+    .answers-wrap,
+    .sections-wrap {
+      display: grid;
+      gap: 12px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .summary-box strong {
+      display: block;
+      font-size: 1.3rem;
+      margin-top: 6px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+
+    th,
+    td {
+      border: 1px solid var(--line);
+      padding: 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f8fafc;
+      font-weight: 700;
+    }
+
+    .preview-scroll {
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+
+    .note {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.5;
+      background: #f8fafc;
+      border: 1px dashed var(--line);
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .status {
+      min-height: 22px;
+      font-size: 0.92rem;
+      font-weight: 600;
+    }
+
+    .status.success { color: var(--success); }
+    .status.error { color: var(--danger); }
+
+    .small-btn {
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+    }
+
+    .sticky-preview {
+      position: sticky;
+      top: 20px;
+    }
+
+    @media (max-width: 980px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sticky-preview {
+        position: static;
+      }
+
+      .summary-grid,
+      .grid.two,
+      .grid.three {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <section class="hero">
+      <h1>Quiz Spreadsheet Builder</h1>
+      <p>
+        Build a quiz structure with sections, questions, answer choices, point values, scoring formulas,
+        and export-ready spreadsheet rows. This widget helps you plan the quiz and generate a CSV you can open in Google Sheets or Excel.
+      </p>
+      <div class="toolbar">
+        <button class="primary" id="addSectionBtn">Add Section</button>
+        <button class="secondary" id="loadDemoBtn">Load Demo</button>
+        <button class="ghost" id="exportCsvBtn">Export CSV</button>
+        <button class="ghost" id="exportJsonBtn">Export JSON</button>
+        <button class="danger" id="resetBtn">Reset</button>
+      </div>
+      <div id="status" class="status"></div>
+    </section>
+
+    <div class="layout">
+      <section class="card">
+        <div class="inline-row">
+          <div>
+            <h2>Quiz Setup</h2>
+            <p>Define each section, its questions, the answer labels, and the point values used for scoring.</p>
+          </div>
+          <span class="pill" id="sectionCountPill">0 sections</span>
+        </div>
+
+        <div class="grid two">
+          <div class="field">
+            <label for="quizTitle">Quiz title</label>
+            <input id="quizTitle" type="text" placeholder="Example: Personality Trait Assessment" />
+          </div>
+          <div class="field">
+            <label for="sheetName">Suggested sheet name</label>
+            <input id="sheetName" type="text" placeholder="Quiz Builder Export" />
+          </div>
+        </div>
+
+        <div class="note">
+          The export includes one row per question answer option, plus a scoring summary block. You can paste the CSV directly into a spreadsheet and then use formulas or pivot tables as needed.
+        </div>
+
+        <div id="sectionsWrap" class="sections-wrap"></div>
+      </section>
+
+      <section class="card sticky-preview">
+        <div>
+          <h2>Live Spreadsheet Preview</h2>
+          <p>Preview the export structure before downloading it.</p>
+        </div>
+
+        <div class="summary-grid" id="summaryGrid"></div>
+
+        <div class="preview-box">
+          <div class="inline-row">
+            <strong>Export rows</strong>
+            <span class="muted" id="rowCountLabel">0 rows</span>
+          </div>
+        </div>
+
+        <div class="preview-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Section #</th>
+                <th>Section Title</th>
+                <th>Question #</th>
+                <th>Question Title</th>
+                <th>Answer #</th>
+                <th>Answer Label</th>
+                <th>Point Value</th>
+                <th>Max Section Score</th>
+                <th>Question Max Score</th>
+                <th>Recommended Formula</th>
+              </tr>
+            </thead>
+            <tbody id="previewBody"></tbody>
+          </table>
+        </div>
+
+        <div class="preview-box">
+          <strong>Spreadsheet setup suggestions</strong>
+          <div class="divider"></div>
+          <p class="muted" id="formulaTips"></p>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const appState = {
+      quizTitle: "",
+      sheetName: "Quiz Builder Export",
+      sections: [],
+      openSectionId: null,
+      openQuestionId: null
+    };
+
+    const els = {
+      quizTitle: document.getElementById("quizTitle"),
+      sheetName: document.getElementById("sheetName"),
+      sectionsWrap: document.getElementById("sectionsWrap"),
+      previewBody: document.getElementById("previewBody"),
+      status: document.getElementById("status"),
+      rowCountLabel: document.getElementById("rowCountLabel"),
+      sectionCountPill: document.getElementById("sectionCountPill"),
+      summaryGrid: document.getElementById("summaryGrid"),
+      formulaTips: document.getElementById("formulaTips"),
+      addSectionBtn: document.getElementById("addSectionBtn"),
+      loadDemoBtn: document.getElementById("loadDemoBtn"),
+      exportCsvBtn: document.getElementById("exportCsvBtn"),
+      exportJsonBtn: document.getElementById("exportJsonBtn"),
+      resetBtn: document.getElementById("resetBtn")
+    };
+
+    function uid(prefix = "id") {
+      return `${prefix}_${Math.random().toString(36).slice(2, 10)}`;
+    }
+
+    function createAnswer(index = 1) {
+      return {
+        id: uid("answer"),
+        label: `Answer ${index}`,
+        points: 0
+      };
+    }
+
+    function createQuestion(index = 1) {
+      return {
+        id: uid("question"),
+        title: `Question ${index}`,
+        answers: [createAnswer(1), createAnswer(2)]
+      };
+    }
+
+    function createSection(index = 1) {
+      return {
+        id: uid("section"),
+        title: `Section ${index}`,
+        maxScore: 0,
+        questions: [createQuestion(1)]
+      };
+    }
+
+    function sanitizeFilename(name) {
+      return (name || "quiz-export")
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "") || "quiz-export";
+    }
+
+    function setStatus(message = "", type = "") {
+      els.status.textContent = message;
+      els.status.className = `status ${type}`.trim();
+    }
+
+    function downloadFile(filename, content, mimeType) {
+      const blob = new Blob([content], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function csvEscape(value) {
+      const text = String(value ?? "");
+      if (/[",\n]/.test(text)) {
+        return `"${text.replace(/"/g, '""')}"`;
+      }
+      return text;
+    }
+
+    function getQuestionMaxScore(question) {
+      return question.answers.reduce((max, answer) => Math.max(max, Number(answer.points) || 0), 0);
+    }
+
+    function getSectionComputedMax(section) {
+      return section.questions.reduce((sum, question) => sum + getQuestionMaxScore(question), 0);
+    }
+
+    function buildExportRows() {
+      const rows = [];
+
+      appState.sections.forEach((section, sectionIndex) => {
+        const computedSectionMax = getSectionComputedMax(section);
+        section.questions.forEach((question, questionIndex) => {
+          const questionMax = getQuestionMaxScore(question);
+          question.answers.forEach((answer, answerIndex) => {
+            rows.push({
+              sectionNumber: sectionIndex + 1,
+              sectionTitle: section.title,
+              questionNumber: questionIndex + 1,
+              questionTitle: question.title,
+              answerNumber: answerIndex + 1,
+              answerLabel: answer.label,
+              pointValue: Number(answer.points) || 0,
+              maxSectionScore: Number(section.maxScore) || computedSectionMax,
+              questionMaxScore: questionMax,
+              recommendedFormula: `=SUMIF(B:B,"${section.title}",G:G)`
+            });
+          });
+        });
+      });
+
+      return rows;
+    }
+
+    function buildSummaryStats() {
+      const questions = appState.sections.flatMap(section => section.questions);
+      const answers = questions.flatMap(question => question.answers);
+      const totalPossibleScore = appState.sections.reduce((sum, section) => {
+        return sum + (Number(section.maxScore) || getSectionComputedMax(section));
+      }, 0);
+
+      return {
+        sections: appState.sections.length,
+        questions: questions.length,
+        answers: answers.length,
+        totalPossibleScore
+      };
+    }
+
+    function renderSummary() {
+      const stats = buildSummaryStats();
+      els.summaryGrid.innerHTML = `
+        <div class="summary-box"><span class="muted">Sections</span><strong>${stats.sections}</strong></div>
+        <div class="summary-box"><span class="muted">Questions</span><strong>${stats.questions}</strong></div>
+        <div class="summary-box"><span class="muted">Answer options</span><strong>${stats.answers}</strong></div>
+        <div class="summary-box"><span class="muted">Total possible score</span><strong>${stats.totalPossibleScore}</strong></div>
+      `;
+    }
+
+    function renderPreview() {
+      const rows = buildExportRows();
+      els.previewBody.innerHTML = rows.map(row => `
+        <tr>
+          <td>${row.sectionNumber}</td>
+          <td>${escapeHtml(row.sectionTitle)}</td>
+          <td>${row.questionNumber}</td>
+          <td>${escapeHtml(row.questionTitle)}</td>
+          <td>${row.answerNumber}</td>
+          <td>${escapeHtml(row.answerLabel)}</td>
+          <td>${row.pointValue}</td>
+          <td>${row.maxSectionScore}</td>
+          <td>${row.questionMaxScore}</td>
+          <td>${escapeHtml(row.recommendedFormula)}</td>
+        </tr>
+      `).join("");
+
+      els.rowCountLabel.textContent = `${rows.length} rows`;
+      els.formulaTips.textContent = appState.sections.length
+        ? `Suggested setup: use one sheet for answer mappings and a second sheet for responses. Section totals can be calculated with SUMIF or SUMIFS using section titles. Quiz total can be a simple SUM across section totals. If a section max score is left at 0, this tool automatically uses the highest point value from each question to estimate that section maximum.`
+        : `Add at least one section to generate preview rows and formulas.`;
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function updateTopLevelInputs() {
+      appState.quizTitle = els.quizTitle.value;
+      appState.sheetName = els.sheetName.value;
+    }
+
+    function ensureOpenSectionAndQuestion() {
+      const allSections = appState.sections;
+      if (!allSections.length) {
+        appState.openSectionId = null;
+        appState.openQuestionId = null;
+        return;
+      }
+
+      const sectionStillExists = allSections.some(section => section.id === appState.openSectionId);
+      if (!sectionStillExists) {
+        appState.openSectionId = allSections[0].id;
+      }
+
+      const openSection = allSections.find(section => section.id === appState.openSectionId) || allSections[0];
+      const sectionQuestions = openSection?.questions || [];
+      if (!sectionQuestions.length) {
+        appState.openQuestionId = null;
+        return;
+      }
+
+      const questionStillExistsInOpenSection = sectionQuestions.some(question => question.id === appState.openQuestionId);
+      if (!questionStillExistsInOpenSection) {
+        appState.openQuestionId = sectionQuestions[0].id;
+      }
+    }
+
+    function renderSections() {
+      ensureOpenSectionAndQuestion();
+      els.sectionCountPill.textContent = `${appState.sections.length} section${appState.sections.length === 1 ? "" : "s"}`;
+
+      els.sectionsWrap.innerHTML = appState.sections.map((section, sectionIndex) => {
+        const computedMax = getSectionComputedMax(section);
+        const isSectionOpen = appState.openSectionId === section.id;
+        return `
+          <div class="section-card" data-section-id="${section.id}">
+            <div class="section-header">
+              <div>
+                <h3>Section ${sectionIndex + 1}</h3>
+                <p class="muted">Set the section title, question count, and section score details.</p>
+              </div>
+              <div class="inline-row">
+                <button class="ghost small-btn" data-action="open-section" data-section-id="${section.id}">Edit section</button>
+                <span class="pill">Computed max: ${computedMax}</span>
+                <button class="danger small-btn" data-action="remove-section" data-section-id="${section.id}">Remove section</button>
+              </div>
+            </div>
+
+            ${isSectionOpen ? `
+            <div class="grid two">
+              <div class="field">
+                <label>Section title</label>
+                <input type="text" data-action="section-title" data-section-id="${section.id}" value="${escapeHtml(section.title)}" />
+              </div>
+              <div class="field">
+                <label>Maximum score per section</label>
+                <input type="number" min="0" step="1" data-action="section-max" data-section-id="${section.id}" value="${section.maxScore}" placeholder="Leave 0 to auto-calculate" />
+              </div>
+            </div>
+
+            <div class="inline-row">
+              <strong>Questions</strong>
+              <button class="secondary small-btn" data-action="add-question" data-section-id="${section.id}">Add Question</button>
+            </div>
+
+            <div class="questions-wrap">
+              ${section.questions.map((question, questionIndex) => {
+                const isOpen = appState.openQuestionId === question.id && isSectionOpen;
+                return `
+                  <div class="question-card" data-question-id="${question.id}">
+                    <div class="question-header">
+                      <div>
+                        <strong>Question ${questionIndex + 1}</strong>
+                        <div class="muted">Question max score: ${getQuestionMaxScore(question)}</div>
+                      </div>
+                      <div class="inline-row">
+                        <button class="ghost small-btn" data-action="toggle-question" data-question-id="${question.id}" data-section-id="${section.id}">Edit</button>
+                        <button class="danger small-btn" data-action="remove-question" data-section-id="${section.id}" data-question-id="${question.id}">Remove question</button>
+                      </div>
+                    </div>
+
+                    ${isOpen ? `
+                      <div class="grid two">
+                        <div class="field">
+                          <label>Question title</label>
+                          <input type="text" data-action="question-title" data-section-id="${section.id}" data-question-id="${question.id}" value="${escapeHtml(question.title)}" />
+                        </div>
+                        <div class="field">
+                          <label>Number of possible answers</label>
+                          <input type="number" min="1" step="1" data-action="answer-count" data-section-id="${section.id}" data-question-id="${question.id}" value="${question.answers.length}" />
+                        </div>
+                      </div>
+
+                      <div class="answers-wrap">
+                        ${question.answers.map((answer, answerIndex) => `
+                          <div class="answer-card">
+                            <div class="answer-header">
+                              <strong>Answer ${answerIndex + 1}</strong>
+                              <button class="ghost small-btn" data-action="remove-answer" data-section-id="${section.id}" data-question-id="${question.id}" data-answer-id="${answer.id}">Remove</button>
+                            </div>
+                            <div class="grid two">
+                              <div class="field">
+                                <label>Answer label</label>
+                                <input type="text" data-action="answer-label" data-section-id="${section.id}" data-question-id="${question.id}" data-answer-id="${answer.id}" value="${escapeHtml(answer.label)}" />
+                              </div>
+                              <div class="field">
+                                <label>Point value</label>
+                                <input type="number" step="1" data-action="answer-points" data-section-id="${section.id}" data-question-id="${question.id}" data-answer-id="${answer.id}" value="${answer.points}" />
+                              </div>
+                            </div>
+                          </div>
+                        `).join("")}
+                      </div>
+                    ` : `<div class="muted">${escapeHtml(question.title)} • ${question.answers.length} answer option${question.answers.length === 1 ? "" : "s"}</div>`}
+                  </div>
+                `;
+              }).join("")}
+            </div>
+            ` : `<div class="muted">${escapeHtml(section.title)} • ${section.questions.length} question${section.questions.length === 1 ? "" : "s"} • computed max ${computedMax}</div>`}
+          </div>
+        `;
+      }).join("");
+
+      renderSummary();
+      renderPreview();
+    }
+
+    function rerender() {
+      renderSections();
+    }
+
+    function findSection(sectionId) {
+      return appState.sections.find(section => section.id === sectionId);
+    }
+
+    function findQuestion(section, questionId) {
+      return section?.questions.find(question => question.id === questionId);
+    }
+
+    function findAnswer(question, answerId) {
+      return question?.answers.find(answer => answer.id === answerId);
+    }
+
+    function syncAnswerCount(question, count) {
+      const targetCount = Math.max(1, Number(count) || 1);
+      while (question.answers.length < targetCount) {
+        question.answers.push(createAnswer(question.answers.length + 1));
+      }
+      while (question.answers.length > targetCount) {
+        question.answers.pop();
+      }
+    }
+
+    function focusNextFieldAfterAnswerCount(sectionId, questionId) {
+      requestAnimationFrame(() => {
+        const nextField = els.sectionsWrap.querySelector(
+          `[data-action="answer-label"][data-section-id="${sectionId}"][data-question-id="${questionId}"]`
+        );
+        if (nextField) {
+          nextField.focus();
+          nextField.select?.();
+        }
+      });
+    }
+
+    function exportCsv() {
+      const rows = buildExportRows();
+      const header = [
+        "Section Number",
+        "Section Title",
+        "Question Number",
+        "Question Title",
+        "Answer Number",
+        "Answer Label",
+        "Point Value",
+        "Max Section Score",
+        "Question Max Score",
+        "Recommended Formula"
+      ];
+
+      const csvRows = [header.join(",")];
+      rows.forEach(row => {
+        csvRows.push([
+          row.sectionNumber,
+          row.sectionTitle,
+          row.questionNumber,
+          row.questionTitle,
+          row.answerNumber,
+          row.answerLabel,
+          row.pointValue,
+          row.maxSectionScore,
+          row.questionMaxScore,
+          row.recommendedFormula
+        ].map(csvEscape).join(","));
+      });
+
+      csvRows.push("");
+      csvRows.push("Scoring Summary");
+      csvRows.push(["Section Title", "Manual Max Section Score", "Computed Max Section Score"].map(csvEscape).join(","));
+      appState.sections.forEach(section => {
+        csvRows.push([
+          section.title,
+          Number(section.maxScore) || 0,
+          getSectionComputedMax(section)
+        ].map(csvEscape).join(","));
+      });
+
+      const filename = `${sanitizeFilename(appState.quizTitle || appState.sheetName || "quiz-spreadsheet")}.csv`;
+      downloadFile(filename, csvRows.join("\n"), "text/csv;charset=utf-8;");
+      setStatus("CSV exported successfully.", "success");
+    }
+
+    function exportJson() {
+      const payload = {
+        quizTitle: appState.quizTitle,
+        sheetName: appState.sheetName,
+        generatedAt: new Date().toISOString(),
+        summary: buildSummaryStats(),
+        sections: appState.sections,
+        exportRows: buildExportRows()
+      };
+      const filename = `${sanitizeFilename(appState.quizTitle || appState.sheetName || "quiz-spreadsheet")}.json`;
+      downloadFile(filename, JSON.stringify(payload, null, 2), "application/json;charset=utf-8;");
+      setStatus("JSON exported successfully.", "success");
+    }
+
+    function loadDemo() {
+      appState.quizTitle = "Sample Learning Style Quiz";
+      appState.sheetName = "Learning Style Quiz";
+      appState.sections = [
+        {
+          id: uid("section"),
+          title: "Visual Learning",
+          maxScore: 12,
+          questions: [
+            {
+              id: uid("question"),
+              title: "I remember information better when I can see it.",
+              answers: [
+                { id: uid("answer"), label: "Strongly disagree", points: 0 },
+                { id: uid("answer"), label: "Disagree", points: 1 },
+                { id: uid("answer"), label: "Agree", points: 2 },
+                { id: uid("answer"), label: "Strongly agree", points: 3 }
+              ]
+            },
+            {
+              id: uid("question"),
+              title: "Charts, maps, and diagrams help me understand ideas quickly.",
+              answers: [
+                { id: uid("answer"), label: "Never", points: 0 },
+                { id: uid("answer"), label: "Sometimes", points: 1 },
+                { id: uid("answer"), label: "Often", points: 2 },
+                { id: uid("answer"), label: "Always", points: 3 }
+              ]
+            }
+          ]
+        },
+        {
+          id: uid("section"),
+          title: "Auditory Learning",
+          maxScore: 12,
+          questions: [
+            {
+              id: uid("question"),
+              title: "I learn best when someone explains things out loud.",
+              answers: [
+                { id: uid("answer"), label: "Strongly disagree", points: 0 },
+                { id: uid("answer"), label: "Disagree", points: 1 },
+                { id: uid("answer"), label: "Agree", points: 2 },
+                { id: uid("answer"), label: "Strongly agree", points: 3 }
+              ]
+            }
+          ]
+        }
+      ];
+      appState.openSectionId = appState.sections[0]?.id || null;
+      appState.openQuestionId = appState.sections[0]?.questions[0]?.id || null;
+
+      els.quizTitle.value = appState.quizTitle;
+      els.sheetName.value = appState.sheetName;
+      rerender();
+      setStatus("Demo quiz loaded.", "success");
+    }
+
+    function resetAll() {
+      appState.quizTitle = "";
+      appState.sheetName = "Quiz Builder Export";
+      const firstSection = createSection(1);
+      appState.sections = [firstSection];
+      appState.openSectionId = firstSection.id;
+      appState.openQuestionId = firstSection.questions[0].id;
+      els.quizTitle.value = "";
+      els.sheetName.value = appState.sheetName;
+      rerender();
+      setStatus("Builder reset.", "success");
+    }
+
+    els.quizTitle.addEventListener("input", () => {
+      updateTopLevelInputs();
+      renderPreview();
+    });
+
+    els.sheetName.addEventListener("input", () => {
+      updateTopLevelInputs();
+      renderPreview();
+    });
+
+    els.addSectionBtn.addEventListener("click", () => {
+      const newSection = createSection(appState.sections.length + 1);
+      appState.sections.push(newSection);
+      appState.openSectionId = newSection.id;
+      appState.openQuestionId = newSection.questions[0].id;
+      rerender();
+      setStatus("Section added.", "success");
+    });
+
+    els.loadDemoBtn.addEventListener("click", loadDemo);
+    els.exportCsvBtn.addEventListener("click", exportCsv);
+    els.exportJsonBtn.addEventListener("click", exportJson);
+    els.resetBtn.addEventListener("click", resetAll);
+
+    els.sectionsWrap.addEventListener("click", (event) => {
+      const target = event.target.closest("button");
+      if (!target) return;
+
+      const action = target.dataset.action;
+      const sectionId = target.dataset.sectionId;
+      const questionId = target.dataset.questionId;
+      const answerId = target.dataset.answerId;
+      const section = findSection(sectionId);
+      const question = findQuestion(section, questionId);
+
+      if (action === "open-section") {
+        const nextSection = findSection(sectionId);
+        if (nextSection) {
+          appState.openSectionId = nextSection.id;
+          appState.openQuestionId = nextSection.questions[0]?.id || null;
+          rerender();
+        }
+        return;
+      }
+
+      if (action === "remove-section") {
+        appState.sections = appState.sections.filter(sectionItem => sectionItem.id !== sectionId);
+        if (!appState.sections.length) {
+          const replacementSection = createSection(1);
+          appState.sections.push(replacementSection);
+          appState.openSectionId = replacementSection.id;
+          appState.openQuestionId = replacementSection.questions[0].id;
+        } else if (appState.openSectionId === sectionId) {
+          appState.openSectionId = appState.sections[0].id;
+          appState.openQuestionId = appState.sections[0].questions[0]?.id || null;
+        }
+        rerender();
+        setStatus("Section removed.", "success");
+      }
+
+      if (action === "add-question" && section) {
+        const newQuestion = createQuestion(section.questions.length + 1);
+        section.questions.push(newQuestion);
+        appState.openSectionId = section.id;
+        appState.openQuestionId = newQuestion.id;
+        rerender();
+        setStatus("Question added.", "success");
+      }
+
+      if (action === "toggle-question") {
+        appState.openSectionId = sectionId;
+        appState.openQuestionId = questionId;
+        rerender();
+        return;
+      }
+
+      if (action === "remove-question" && section) {
+        const wasOpen = appState.openQuestionId === questionId;
+        section.questions = section.questions.filter(questionItem => questionItem.id !== questionId);
+        if (!section.questions.length) {
+          const replacementQuestion = createQuestion(1);
+          section.questions.push(replacementQuestion);
+          appState.openQuestionId = replacementQuestion.id;
+        } else if (wasOpen) {
+          appState.openQuestionId = section.questions[0].id;
+        }
+        rerender();
+        setStatus("Question removed.", "success");
+      }
+
+      if (action === "remove-answer" && question) {
+        question.answers = question.answers.filter(answer => answer.id !== answerId);
+        if (!question.answers.length) question.answers.push(createAnswer(1));
+        rerender();
+        setStatus("Answer removed.", "success");
+      }
+    });
+
+    els.sectionsWrap.addEventListener("focusin", (event) => {
+      const target = event.target;
+      const sectionId = target.dataset.sectionId;
+      const questionId = target.dataset.questionId;
+      let changed = false;
+
+      if (sectionId && appState.openSectionId !== sectionId) {
+        appState.openSectionId = sectionId;
+        changed = true;
+      }
+
+      if (questionId && appState.openQuestionId !== questionId) {
+        appState.openQuestionId = questionId;
+        changed = true;
+      }
+
+      if (changed) {
+        rerender();
+      }
+    });
+
+    els.sectionsWrap.addEventListener("keydown", (event) => {
+      const target = event.target;
+      const action = target.dataset.action;
+
+      if (action === "answer-count" && event.key === "Tab" && !event.shiftKey) {
+        event.preventDefault();
+        const sectionId = target.dataset.sectionId;
+        const questionId = target.dataset.questionId;
+        const section = findSection(sectionId);
+        const question = findQuestion(section, questionId);
+        if (!question) return;
+
+        syncAnswerCount(question, target.value);
+        rerender();
+        focusNextFieldAfterAnswerCount(sectionId, questionId);
+      }
+    });
+
+    els.sectionsWrap.addEventListener("input", (event) => {
+      const target = event.target;
+      const action = target.dataset.action;
+      const sectionId = target.dataset.sectionId;
+      const questionId = target.dataset.questionId;
+      const answerId = target.dataset.answerId;
+      const section = findSection(sectionId);
+      const question = findQuestion(section, questionId);
+      const answer = findAnswer(question, answerId);
+
+      if (action === "section-title" && section) {
+        section.title = target.value;
+      }
+
+      if (action === "section-max" && section) {
+        section.maxScore = Number(target.value) || 0;
+      }
+
+      if (action === "question-title" && question) {
+        question.title = target.value;
+      }
+
+      if (action === "answer-count" && question) {
+        syncAnswerCount(question, target.value);
+        renderSummary();
+        renderPreview();
+        return;
+      }
+
+      if (action === "answer-label" && answer) {
+        answer.label = target.value;
+      }
+
+      if (action === "answer-points" && answer) {
+        answer.points = Number(target.value) || 0;
+      }
+
+      renderSummary();
+      renderPreview();
+    });
+
+    resetAll();
+  </script>
+</body>
+</html>
