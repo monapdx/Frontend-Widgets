@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YAML Form Builder</title>
+  <style>
+    :root {
+      --bg: #0f1220;
+      --panel: #171b2e;
+      --panel-2: #1f2540;
+      --border: #31395f;
+      --text: #eef2ff;
+      --muted: #aeb7d9;
+      --accent: #7c9cff;
+      --accent-2: #98b0ff;
+      --danger: #ff7d93;
+      --ok: #87e7b0;
+      --shadow: 0 10px 30px rgba(0,0,0,.25);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #0d1020 0%, #12162b 100%);
+      color: var(--text);
+    }
+
+    .app {
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .header {
+      margin-bottom: 18px;
+    }
+
+    .header h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      line-height: 1.1;
+    }
+
+    .header p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 900px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 420px minmax(0, 1fr) minmax(320px, 420px);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      background: rgba(23, 27, 46, 0.92);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+    }
+
+    .panel-header h2 {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .panel-header p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: .93rem;
+    }
+
+    .panel-body {
+      padding: 18px;
+    }
+
+    .stack {
+      display: grid;
+      gap: 12px;
+    }
+
+    label {
+      display: block;
+      font-size: .88rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    input, select, textarea, button {
+      font: inherit;
+    }
+
+    input[type="text"], input[type="number"], select, textarea {
+      width: 100%;
+      background: #0f1326;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 11px 12px;
+      outline: none;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 140px;
+      line-height: 1.4;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(124, 156, 255, .18);
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .toolbar, .inline-actions, .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 10px 14px;
+      cursor: pointer;
+      transition: transform .15s ease, opacity .15s ease, background .15s ease;
+    }
+
+    button:hover { transform: translateY(-1px); }
+    button:active { transform: translateY(0); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      font-weight: 700;
+    }
+
+    .btn-secondary {
+      background: #263055;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-danger {
+      background: rgba(255,125,147,.16);
+      color: #ffd5dc;
+      border: 1px solid rgba(255,125,147,.35);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1px dashed var(--border);
+    }
+
+    .fields-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .field-card {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .field-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .field-name {
+      font-weight: 700;
+    }
+
+    .field-meta {
+      color: var(--muted);
+      font-size: .86rem;
+      margin-top: 4px;
+    }
+
+    .field-controls {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: .92rem;
+    }
+
+    .checkbox-row input {
+      width: 16px;
+      height: 16px;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .preview-form {
+      display: grid;
+      gap: 14px;
+    }
+
+    .preview-group {
+      display: grid;
+      gap: 8px;
+    }
+
+    .options-box {
+      background: #0f1326;
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .code-box {
+      background: #0b0e1b;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      min-height: 300px;
+      padding: 14px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: .92rem;
+      line-height: 1.5;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: rgba(124,156,255,.12);
+      color: var(--accent-2);
+      font-size: .8rem;
+      font-weight: 700;
+    }
+
+    .empty {
+      border: 1px dashed var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      color: var(--muted);
+      background: rgba(255,255,255,.02);
+    }
+
+    .footer-note {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: .86rem;
+    }
+
+    @media (max-width: 1200px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="header">
+      <h1>YAML Form Builder</h1>
+      <p>Build a YAML-driven form schema visually, preview the rendered form instantly, and export clean YAML for GitHub issue forms, internal tools, or your own form configs.</p>
+    </div>
+
+    <div class="layout">
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Builder</h2>
+          <p>Add fields, define options, and generate YAML automatically.</p>
+        </div>
+        <div class="panel-body stack">
+          <div>
+            <label for="formTitle">Form title</label>
+            <input id="formTitle" type="text" placeholder="Contact Form" />
+          </div>
+
+          <div>
+            <label for="formDescription">Form description</label>
+            <textarea id="formDescription" placeholder="Short description of what this form is for."></textarea>
+          </div>
+
+          <div class="toolbar">
+            <button class="btn-primary" id="addFieldBtn">Add Field</button>
+            <button class="btn-secondary" id="loadSampleBtn">Load Sample</button>
+            <button class="btn-danger" id="clearBtn">Clear All</button>
+          </div>
+
+          <div class="fields-list" id="fieldsList"></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Live Preview</h2>
+          <p>This renders from the same schema used to generate the YAML.</p>
+        </div>
+        <div class="panel-body">
+          <div id="previewContainer"></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <h2>YAML Output</h2>
+          <p>Copy or download the generated YAML schema.</p>
+        </div>
+        <div class="panel-body stack">
+          <div class="actions">
+            <button class="btn-primary" id="copyYamlBtn">Copy YAML</button>
+            <button class="btn-secondary" id="downloadYamlBtn">Download .yml</button>
+          </div>
+          <div class="code-box" id="yamlOutput"></div>
+          <div class="footer-note">Supported field types in this demo: text, textarea, number, select, checkbox.</div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const state = {
+      title: "",
+      description: "",
+      fields: []
+    };
+
+    const els = {
+      formTitle: document.getElementById('formTitle'),
+      formDescription: document.getElementById('formDescription'),
+      fieldsList: document.getElementById('fieldsList'),
+      previewContainer: document.getElementById('previewContainer'),
+      yamlOutput: document.getElementById('yamlOutput'),
+      addFieldBtn: document.getElementById('addFieldBtn'),
+      loadSampleBtn: document.getElementById('loadSampleBtn'),
+      clearBtn: document.getElementById('clearBtn'),
+      copyYamlBtn: document.getElementById('copyYamlBtn'),
+      downloadYamlBtn: document.getElementById('downloadYamlBtn')
+    };
+
+    const FIELD_TYPES = ['text', 'textarea', 'number', 'select', 'checkbox'];
+
+    function uid() {
+      return Math.random().toString(36).slice(2, 10);
+    }
+
+    function createField(overrides = {}) {
+      return {
+        id: uid(),
+        name: 'field_name',
+        label: 'New Field',
+        type: 'text',
+        placeholder: '',
+        required: false,
+        helpText: '',
+        options: ['Option 1', 'Option 2'],
+        ...overrides
+      };
+    }
+
+    function escapeYamlString(value) {
+      const str = String(value ?? '');
+      if (str === '') return '""';
+      if (/[:\-#\n\{\}\[\],&\*!\|>'%@`]/.test(str) || /^\s|\s$/.test(str)) {
+        return JSON.stringify(str);
+      }
+      return str;
+    }
+
+    function generateYaml(schema) {
+      const lines = [];
+      lines.push(`title: ${escapeYamlString(schema.title || 'Untitled Form')}`);
+      lines.push(`description: ${escapeYamlString(schema.description || '')}`);
+      lines.push('fields:');
+
+      if (!schema.fields.length) {
+        lines.push('  []');
+        return lines.join('\n');
+      }
+
+      schema.fields.forEach((field) => {
+        lines.push('  -');
+        lines.push(`    name: ${escapeYamlString(field.name)}`);
+        lines.push(`    label: ${escapeYamlString(field.label)}`);
+        lines.push(`    type: ${escapeYamlString(field.type)}`);
+        lines.push(`    required: ${field.required ? 'true' : 'false'}`);
+
+        if (field.placeholder) {
+          lines.push(`    placeholder: ${escapeYamlString(field.placeholder)}`);
+        }
+
+        if (field.helpText) {
+          lines.push(`    helpText: ${escapeYamlString(field.helpText)}`);
+        }
+
+        if (field.type === 'select') {
+          lines.push('    options:');
+          (field.options || []).filter(Boolean).forEach((option) => {
+            lines.push(`      - ${escapeYamlString(option)}`);
+          });
+        }
+      });
+
+      return lines.join('\n');
+    }
+
+    function renderFieldsList() {
+      if (!state.fields.length) {
+        els.fieldsList.innerHTML = `
+          <div class="empty">
+            No fields yet. Add one to start building your form.
+          </div>
+        `;
+        return;
+      }
+
+      els.fieldsList.innerHTML = state.fields.map((field, index) => `
+        <div class="field-card" data-id="${field.id}">
+          <div class="field-top">
+            <div>
+              <div class="field-name">${field.label || 'Untitled Field'}</div>
+              <div class="field-meta">${field.name || 'unnamed'} · ${field.type}</div>
+            </div>
+            <div class="inline-actions">
+              <button class="btn-secondary move-up-btn" ${index === 0 ? 'disabled' : ''}>↑</button>
+              <button class="btn-secondary move-down-btn" ${index === state.fields.length - 1 ? 'disabled' : ''}>↓</button>
+              <button class="btn-danger delete-field-btn">Delete</button>
+            </div>
+          </div>
+
+          <div class="field-controls">
+            <div class="row">
+              <div>
+                <label>Name</label>
+                <input type="text" class="field-input" data-key="name" value="${escapeHtml(field.name)}" placeholder="email" />
+              </div>
+              <div>
+                <label>Type</label>
+                <select class="field-input" data-key="type">
+                  ${FIELD_TYPES.map(type => `<option value="${type}" ${field.type === type ? 'selected' : ''}>${type}</option>`).join('')}
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label>Label</label>
+              <input type="text" class="field-input" data-key="label" value="${escapeHtml(field.label)}" placeholder="Email Address" />
+            </div>
+
+            <div>
+              <label>Placeholder</label>
+              <input type="text" class="field-input" data-key="placeholder" value="${escapeHtml(field.placeholder)}" placeholder="Enter something..." />
+            </div>
+
+            <div>
+              <label>Help text</label>
+              <input type="text" class="field-input" data-key="helpText" value="${escapeHtml(field.helpText)}" placeholder="Optional helper text" />
+            </div>
+
+            <label class="checkbox-row">
+              <input type="checkbox" class="field-checkbox" data-key="required" ${field.required ? 'checked' : ''} />
+              Required field
+            </label>
+
+            ${field.type === 'select' ? `
+              <div>
+                <label>Options (one per line)</label>
+                <textarea class="field-options">${escapeHtml((field.options || []).join('\n'))}</textarea>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderPreview() {
+      const title = state.title || 'Untitled Form';
+      const description = state.description || 'No description yet.';
+
+      const fieldsHtml = state.fields.map(field => {
+        const common = `name="${escapeHtml(field.name)}" ${field.required ? 'required' : ''}`;
+        const help = field.helpText ? `<div class="muted">${escapeHtml(field.helpText)}</div>` : '';
+
+        if (field.type === 'textarea') {
+          return `
+            <div class="preview-group">
+              <label>${escapeHtml(field.label)}</label>
+              <textarea ${common} placeholder="${escapeHtml(field.placeholder)}"></textarea>
+              ${help}
+            </div>
+          `;
+        }
+
+        if (field.type === 'number') {
+          return `
+            <div class="preview-group">
+              <label>${escapeHtml(field.label)}</label>
+              <input type="number" ${common} placeholder="${escapeHtml(field.placeholder)}" />
+              ${help}
+            </div>
+          `;
+        };
+
+        if (field.type === 'select') {
+          const options = (field.options || []).filter(Boolean).map(option => `<option>${escapeHtml(option)}</option>`).join('');
+          return `
+            <div class="preview-group">
+              <label>${escapeHtml(field.label)}</label>
+              <select ${common}>
+                <option value="">Select an option</option>
+                ${options}
+              </select>
+              ${help}
+            </div>
+          `;
+        }
+
+        if (field.type === 'checkbox') {
+          return `
+            <div class="preview-group">
+              <label class="checkbox-row">
+                <input type="checkbox" ${common} />
+                <span>${escapeHtml(field.label)}</span>
+              </label>
+              ${help}
+            </div>
+          `;
+        }
+
+        return `
+          <div class="preview-group">
+            <label>${escapeHtml(field.label)}</label>
+            <input type="text" ${common} placeholder="${escapeHtml(field.placeholder)}" />
+            ${help}
+          </div>
+        `;
+      }).join('');
+
+      els.previewContainer.innerHTML = `
+        <div class="stack">
+          <div>
+            <span class="pill">${state.fields.length} field${state.fields.length === 1 ? '' : 's'}</span>
+          </div>
+          <form class="preview-form" onsubmit="event.preventDefault()">
+            <div>
+              <h3 style="margin:0 0 8px;">${escapeHtml(title)}</h3>
+              <div class="muted">${escapeHtml(description)}</div>
+            </div>
+            ${fieldsHtml || '<div class="empty">Your form preview will appear here once you add fields.</div>'}
+            <div>
+              <button type="submit" class="btn-primary">Submit</button>
+            </div>
+          </form>
+        </div>
+      `;
+    }
+
+    function renderYaml() {
+      els.yamlOutput.textContent = generateYaml(state);
+    }
+
+    function renderAll() {
+      renderFieldsList();
+      renderPreview();
+      renderYaml();
+    }
+
+    function syncTopLevelInputs() {
+      state.title = els.formTitle.value;
+      state.description = els.formDescription.value;
+      renderAll();
+    }
+
+    function loadSample() {
+      state.title = 'Bug Report';
+      state.description = 'Use this form to report a bug clearly and consistently.';
+      state.fields = [
+        createField({ name: 'title', label: 'Bug Title', type: 'text', placeholder: 'Short summary', required: true }),
+        createField({ name: 'severity', label: 'Severity', type: 'select', required: true, options: ['Low', 'Medium', 'High', 'Critical'] }),
+        createField({ name: 'steps', label: 'Steps to Reproduce', type: 'textarea', placeholder: '1. Go to... 2. Click...', required: true }),
+        createField({ name: 'affected_users', label: 'Affected Users', type: 'number', placeholder: '100' }),
+        createField({ name: 'consent', label: 'I confirmed this is reproducible', type: 'checkbox', required: true })
+      ];
+      els.formTitle.value = state.title;
+      els.formDescription.value = state.description;
+      renderAll();
+    }
+
+    function clearAll() {
+      state.title = '';
+      state.description = '';
+      state.fields = [];
+      els.formTitle.value = '';
+      els.formDescription.value = '';
+      renderAll();
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function copyYaml() {
+      navigator.clipboard.writeText(generateYaml(state)).then(() => {
+        const original = els.copyYamlBtn.textContent;
+        els.copyYamlBtn.textContent = 'Copied';
+        setTimeout(() => { els.copyYamlBtn.textContent = original; }, 1200);
+      });
+    }
+
+    function downloadYaml() {
+      const blob = new Blob([generateYaml(state)], { type: 'text/yaml;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = (state.title || 'form').trim().toLowerCase().replace(/\s+/g, '-') + '.yml';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    els.formTitle.addEventListener('input', syncTopLevelInputs);
+    els.formDescription.addEventListener('input', syncTopLevelInputs);
+
+    els.addFieldBtn.addEventListener('click', () => {
+      state.fields.push(createField({ label: `Field ${state.fields.length + 1}`, name: `field_${state.fields.length + 1}` }));
+      renderAll();
+    });
+
+    els.loadSampleBtn.addEventListener('click', loadSample);
+    els.clearBtn.addEventListener('click', clearAll);
+    els.copyYamlBtn.addEventListener('click', copyYaml);
+    els.downloadYamlBtn.addEventListener('click', downloadYaml);
+
+    els.fieldsList.addEventListener('input', (event) => {
+      const card = event.target.closest('.field-card');
+      if (!card) return;
+
+      const field = state.fields.find(f => f.id === card.dataset.id);
+      if (!field) return;
+
+      if (event.target.classList.contains('field-input')) {
+        const key = event.target.dataset.key;
+        field[key] = event.target.value;
+      }
+
+      if (event.target.classList.contains('field-options')) {
+        field.options = event.target.value
+          .split('\n')
+          .map(line => line.trim())
+          .filter(Boolean);
+      }
+
+      renderAll();
+    });
+
+    els.fieldsList.addEventListener('change', (event) => {
+      const card = event.target.closest('.field-card');
+      if (!card) return;
+
+      const field = state.fields.find(f => f.id === card.dataset.id);
+      if (!field) return;
+
+      if (event.target.classList.contains('field-checkbox')) {
+        const key = event.target.dataset.key;
+        field[key] = event.target.checked;
+      }
+
+      if (event.target.classList.contains('field-input') && event.target.dataset.key === 'type') {
+        if (field.type !== 'select') {
+          field.options = [];
+        } else if (!field.options || !field.options.length) {
+          field.options = ['Option 1', 'Option 2'];
+        }
+      }
+
+      renderAll();
+    });
+
+    els.fieldsList.addEventListener('click', (event) => {
+      const card = event.target.closest('.field-card');
+      if (!card) return;
+
+      const index = state.fields.findIndex(f => f.id === card.dataset.id);
+      if (index === -1) return;
+
+      if (event.target.classList.contains('delete-field-btn')) {
+        state.fields.splice(index, 1);
+        renderAll();
+      }
+
+      if (event.target.classList.contains('move-up-btn') && index > 0) {
+        [state.fields[index - 1], state.fields[index]] = [state.fields[index], state.fields[index - 1]];
+        renderAll();
+      }
+
+      if (event.target.classList.contains('move-down-btn') && index < state.fields.length - 1) {
+        [state.fields[index + 1], state.fields[index]] = [state.fields[index], state.fields[index + 1]];
+        renderAll();
+      }
+    });
+
+    loadSample();
+  </script>
+</body>
+</html>

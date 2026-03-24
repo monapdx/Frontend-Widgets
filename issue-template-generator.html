@@ -1,0 +1,741 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GitHub Issue Form Builder</title>
+  <style>
+    :root {
+      --bg: #f7f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --accent: #c2185b;
+      --accent2: #7c3aed;
+      --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      background: linear-gradient(180deg, #fafafe, #f3f4f8);
+      color: var(--text);
+    }
+
+    .wrap {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    h1 { margin: 0 0 10px; font-size: 2rem; }
+    h2 { margin: 0 0 8px; font-size: 1.1rem; }
+    p, .muted { color: var(--muted); }
+
+    .grid { display: grid; gap: 14px; }
+    .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+    label {
+      display: block;
+      font-size: 0.92rem;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font: inherit;
+      background: white;
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .field {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      margin-top: 12px;
+      background: #fcfcff;
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    button {
+      border: 0;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: white;
+      padding: 11px 16px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      background: white;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: #fafafa;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      min-height: 160px;
+      max-height: 280px;
+      overflow: auto;
+      font-size: 12px;
+    }
+
+    .outputs > .card {
+      position: sticky;
+      top: 18px;
+    }
+
+    .outblock { margin-bottom: 16px; }
+
+    .outhead {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .small { font-size: 0.86rem; }
+
+    .previewbox {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      background: #fafafe;
+    }
+
+    img.preview {
+      max-width: 100%;
+      display: block;
+    }
+
+    .checkbox {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .checkbox input {
+      width: auto;
+    }
+
+    .upload-note {
+      grid-column: 1 / -1;
+      border: 1px dashed var(--border);
+      background: #fafafe;
+      border-radius: 14px;
+      padding: 12px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 1100px) {
+      .wrap { grid-template-columns: 1fr; }
+      .outputs > .card { position: static; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="grid">
+      <div class="card">
+        <h1>GitHub Issue Form Builder</h1>
+        <p>Generate GitHub issue-form YAML, deep links, README snippets, SVG buttons, and a starter ZIP you can drop into a repo.</p>
+      </div>
+
+      <div class="card">
+        <h2>Repository details</h2>
+        <div class="grid two">
+          <div><label>Owner</label><input id="owner" value=""></div>
+          <div><label>Repo</label><input id="repo" value=""></div>
+          <div style="grid-column:1/-1"><label>Form name</label><input id="formName" value=""></div>
+          <div style="grid-column:1/-1"><label>Description</label><textarea id="formDescription"></textarea></div>
+          <div><label>Template filename</label><input id="filename" value=""></div>
+          <div><label>Issue title prefix</label><input id="titlePrefix" value=""></div>
+          <div><label>Labels (comma-separated)</label><input id="labels" value=""></div>
+          <div><label>Assignees (comma-separated)</label><input id="assignees" value=""></div>
+        </div>
+        <div class="checkbox" style="margin-top:12px">
+          <input type="checkbox" id="blankIssues">
+          <label for="blankIssues" style="margin:0">Allow blank issues in config.yml</label>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="row" style="justify-content:space-between">
+          <h2>Form fields</h2>
+          <button type="button" onclick="addField()">Add field</button>
+        </div>
+        <div id="fields"></div>
+      </div>
+
+      <div class="card">
+        <h2>Button builder</h2>
+        <div class="grid two">
+          <div><label>Button label</label><input id="buttonLabel" value="Submit Resource"></div>
+          <div><label>Primary color (hex)</label><input id="buttonColor" value="c2185b"></div>
+          <div><label>Accent color (hex)</label><input id="buttonAccent" value="7c3aed"></div>
+          <div><label>Text color (hex)</label><input id="buttonTextColor" value="ffffff"></div>
+        </div>
+
+        <div class="previewbox" style="margin-top:14px">
+          <div class="small muted" style="margin-bottom:8px">SVG preview</div>
+          <div id="svgPreview"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="outputs">
+      <div class="card">
+        <div class="row" style="justify-content:space-between; margin-bottom:14px;">
+          <h2>Generated output</h2>
+          <button type="button" onclick="downloadStarterZip()">Download starter kit ZIP</button>
+        </div>
+
+        <div class="outblock">
+          <div class="outhead">
+            <strong class="small">.github/ISSUE_TEMPLATE/<span id="templateNameLabel"></span></strong>
+            <span class="row">
+              <button class="secondary" onclick="copyOut('issueYaml')">Copy</button>
+              <button class="secondary" onclick="saveOut('template')">Save</button>
+            </span>
+          </div>
+          <pre id="issueYaml"></pre>
+        </div>
+
+        <div class="outblock">
+          <div class="outhead">
+            <strong class="small">.github/ISSUE_TEMPLATE/config.yml</strong>
+            <span class="row">
+              <button class="secondary" onclick="copyOut('configYaml')">Copy</button>
+              <button class="secondary" onclick="saveOut('config')">Save</button>
+            </span>
+          </div>
+          <pre id="configYaml"></pre>
+        </div>
+
+        <div class="outblock">
+          <div class="outhead">
+            <strong class="small">Deep link</strong>
+            <span class="row">
+              <button class="secondary" onclick="copyOut('deepLink')">Copy</button>
+            </span>
+          </div>
+          <pre id="deepLink"></pre>
+        </div>
+
+        <div class="outblock">
+          <div class="outhead">
+            <strong class="small">README snippet</strong>
+            <span class="row">
+              <button class="secondary" onclick="copyOut('readmeSnippet')">Copy</button>
+              <button class="secondary" onclick="saveOut('readme')">Save</button>
+            </span>
+          </div>
+          <pre id="readmeSnippet"></pre>
+        </div>
+
+        <div class="outblock">
+          <div class="outhead">
+            <strong class="small">SVG button</strong>
+            <span class="row">
+              <button class="secondary" onclick="copyOut('svgMarkup')">Copy</button>
+              <button class="secondary" onclick="saveOut('svg')">Save</button>
+            </span>
+          </div>
+          <pre id="svgMarkup"></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    const defaultFields = [
+      {
+        id: "",
+        type: "input",
+        label: "",
+        description: "",
+        placeholder: "",
+        required: true,
+      },
+      {
+        id: "",
+        type: "input",
+        label: "",
+        description: "",
+        placeholder: "",
+        required: true,
+      },
+      {
+        id: "",
+        type: "textarea",
+        label: "",
+        description: "",
+        placeholder: "",
+        required: true,
+      },
+      {
+        id: "",
+        type: "upload",
+        label: "",
+        description: "",
+        required: true,
+        options: [
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+        ],
+      },
+    ];
+
+    const fieldTypeOptions = [
+      { value: "input", label: "Short text" },
+      { value: "textarea", label: "Long text" },
+      { value: "dropdown", label: "Dropdown" },
+      { value: "checkboxes", label: "Checkboxes" },
+      { value: "markdown", label: "Markdown note" },
+      { value: "upload", label: "File upload" },
+    ];
+
+    const fieldsEl = document.getElementById("fields");
+    let fields = structuredClone(defaultFields);
+
+    const els = [
+      "owner",
+      "repo",
+      "formName",
+      "formDescription",
+      "filename",
+      "titlePrefix",
+      "labels",
+      "assignees",
+      "blankIssues",
+      "buttonLabel",
+      "buttonColor",
+      "buttonAccent",
+      "buttonTextColor",
+    ].reduce((acc, id) => ({ ...acc, [id]: document.getElementById(id) }), {});
+
+    function slugify(value) {
+      return String(value || "")
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "") || "issue-form";
+    }
+
+    function yamlEscape(value) {
+      const str = String(value ?? "");
+      return str ? JSON.stringify(str) : '""';
+    }
+
+    function listYaml(items, indent = 0) {
+      const pad = " ".repeat(indent);
+      return items.map((item) => `${pad}- ${yamlEscape(item)}`).join("\n");
+    }
+
+    function buildFieldYaml(field) {
+      if (field.type === "markdown") {
+        return [
+          "- type: markdown",
+          "  attributes:",
+          "    value: |",
+          ...String(field.markdown || "Add guidance here.")
+            .split("\n")
+            .map((line) => `      ${line}`),
+        ].join("\n");
+      }
+
+      const lines = [
+        `- type: ${field.type}`,
+        `  id: ${field.id || slugify(field.label)}`,
+        "  attributes:",
+        `    label: ${yamlEscape(field.label || "Untitled field")}`,
+      ];
+
+      if (field.description) {
+        lines.push(`    description: ${yamlEscape(field.description)}`);
+      }
+
+      if (field.placeholder && (field.type === "input" || field.type === "textarea")) {
+        lines.push(`    placeholder: ${yamlEscape(field.placeholder)}`);
+      }
+
+      if (field.type === "dropdown") {
+        lines.push("    options:");
+        lines.push(listYaml(field.options || [], 6));
+      }
+
+      if (field.type === "checkboxes") {
+        lines.push("    options:");
+        (field.options || []).forEach((opt) => {
+          lines.push(`      - label: ${yamlEscape(opt)}`);
+        });
+      }
+
+      if (field.required && field.type !== "markdown") {
+        lines.push("  validations:");
+        lines.push("    required: true");
+      }
+
+      return lines.join("\n");
+    }
+
+    function saveText(name, content) {
+      const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    async function downloadZipFile(zipName, files) {
+      const JSZip = (await import("https://cdn.skypack.dev/jszip")).default;
+      const zip = new JSZip();
+
+      files.forEach(({ path, content }) => {
+        zip.file(path, content);
+      });
+
+      const blob = await zip.generateAsync({ type: "blob" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = zipName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function svgButtonMarkup() {
+      const fill = `#${els.buttonColor.value.replace("#", "") || "c2185b"}`;
+      const accent = `#${els.buttonAccent.value.replace("#", "") || "7c3aed"}`;
+      const text = `#${els.buttonTextColor.value.replace("#", "") || "ffffff"}`;
+      const label = (els.buttonLabel.value || "Open Form").replace(/[<&>]/g, "");
+
+      return `<svg width="320" height="56" viewBox="0 0 320 56" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${label}">
+  <defs>
+    <linearGradient id="btnGradient" x1="0" y1="0" x2="320" y2="56" gradientUnits="userSpaceOnUse">
+      <stop stop-color="${fill}"/>
+      <stop offset="1" stop-color="${accent}"/>
+    </linearGradient>
+    <filter id="shadow" x="0" y="0" width="320" height="56" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+  <rect x="4" y="4" width="312" height="48" rx="16" fill="url(#btnGradient)" filter="url(#shadow)"/>
+  <rect x="5" y="5" width="310" height="46" rx="15" stroke="rgba(255,255,255,0.22)"/>
+  <circle cx="36" cy="28" r="12" fill="rgba(255,255,255,0.18)"/>
+  <path d="M32 22H40V24H32V22ZM32 27H40V29H32V27ZM32 32H38V34H32V32Z" fill="${text}"/>
+  <text x="60" y="34" fill="${text}" font-size="18" font-family="Inter, Arial, sans-serif" font-weight="700">${label}</text>
+</svg>`;
+    }
+
+    function svgDataUri(svg) {
+      return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+    }
+
+    function currentValues() {
+      const templateFile = `${slugify(els.filename.value).replace(/\.yml$/i, "")}.yml`;
+      const deepLink = `https://github.com/${els.owner.value || "OWNER"}/${els.repo.value || "REPO"}/issues/new?template=${encodeURIComponent(templateFile)}`;
+
+      const issueYamlParts = [
+        `name: ${yamlEscape(els.formName.value)}`,
+        `description: ${yamlEscape(els.formDescription.value)}`,
+      ];
+
+      if (els.titlePrefix.value.trim()) {
+        issueYamlParts.push(`title: ${yamlEscape(els.titlePrefix.value)}`);
+      }
+
+      const labels = els.labels.value.split(",").map((s) => s.trim()).filter(Boolean);
+      if (labels.length) {
+        issueYamlParts.push("labels:");
+        issueYamlParts.push(listYaml(labels, 2));
+      }
+
+      const assignees = els.assignees.value.split(",").map((s) => s.trim()).filter(Boolean);
+      if (assignees.length) {
+        issueYamlParts.push("assignees:");
+        issueYamlParts.push(listYaml(assignees, 2));
+      }
+
+      issueYamlParts.push("body:");
+      const issueYaml = `${issueYamlParts.join("\n")}\n${fields.map(buildFieldYaml).join("\n")}`;
+
+      const configYaml = [
+        `blank_issues_enabled: ${els.blankIssues.checked ? "true" : "false"}`,
+        "contact_links:",
+        `  - name: ${yamlEscape("Questions / discussion")}`,
+        `    url: ${yamlEscape(`https://github.com/${els.owner.value || "OWNER"}/${els.repo.value || "REPO"}/discussions`)}`,
+        `    about: ${yamlEscape("Please use discussions for general questions or conversation.")}`,
+      ].join("\n");
+
+      const svg = svgButtonMarkup();
+      const badgeMarkdown = `[![${els.buttonLabel.value || "Open form"}](${svgDataUri(svg)})](${deepLink})`;
+      const markdownTextLink = `[Open the ${els.formName.value || "issue form"}](${deepLink})`;
+
+      const readmeSnippet = `## Contribute
+
+Help improve this repo by submitting a new resource, bug report, or suggestion.
+
+${badgeMarkdown}
+
+${markdownTextLink}
+
+### Direct issue form
+
+\`${deepLink}\`
+
+### Template path
+
+\`.github/ISSUE_TEMPLATE/${templateFile}\``;
+
+      return { templateFile, deepLink, issueYaml, configYaml, svg, readmeSnippet };
+    }
+
+    function renderFields() {
+      fieldsEl.innerHTML = "";
+
+      fields.forEach((field, index) => {
+        const div = document.createElement("div");
+        div.className = "field";
+
+        const fieldTypeOptionsHtml = fieldTypeOptions
+          .map((opt) => `<option value="${opt.value}" ${field.type === opt.value ? "selected" : ""}>${opt.label}</option>`)
+          .join("");
+
+        div.innerHTML = `
+          <div class="row" style="justify-content:space-between">
+            <strong>Field ${index + 1}</strong>
+            <button class="secondary" type="button" data-remove="${index}">Remove</button>
+          </div>
+
+          <div class="grid two" style="margin-top:10px">
+            <div>
+              <label>Field type</label>
+              <select data-key="type" data-index="${index}">
+                ${fieldTypeOptionsHtml}
+              </select>
+            </div>
+
+            <div>
+              <label>Field ID</label>
+              <input data-key="id" data-index="${index}" value="${field.id || ""}">
+            </div>
+
+            ${field.type !== "markdown" ? `
+              <div>
+                <label>Label</label>
+                <input data-key="label" data-index="${index}" value="${field.label || ""}">
+              </div>
+              <div>
+                <label>Description</label>
+                <input data-key="description" data-index="${index}" value="${field.description || ""}">
+              </div>
+            ` : ""}
+
+            ${(field.type === "input" || field.type === "textarea") ? `
+              <div style="grid-column:1/-1">
+                <label>Placeholder</label>
+                <input data-key="placeholder" data-index="${index}" value="${field.placeholder || ""}">
+              </div>
+            ` : ""}
+
+            ${(field.type === "dropdown" || field.type === "checkboxes") ? `
+              <div style="grid-column:1/-1">
+                <label>Options (one per line)</label>
+                <textarea data-key="options" data-index="${index}">${(field.options || []).join("\n")}</textarea>
+              </div>
+            ` : ""}
+
+            ${field.type === "upload" ? `
+              <div class="upload-note">
+                This will generate a GitHub file upload field for screenshots, previews, or other attachments.
+              </div>
+            ` : ""}
+
+            ${field.type === "markdown" ? `
+              <div style="grid-column:1/-1">
+                <label>Markdown content</label>
+                <textarea data-key="markdown" data-index="${index}">${field.markdown || ""}</textarea>
+              </div>
+            ` : ""}
+          </div>
+
+          ${field.type !== "markdown" ? `
+            <div class="checkbox" style="margin-top:10px">
+              <input type="checkbox" data-key="required" data-index="${index}" ${field.required ? "checked" : ""}>
+              <label style="margin:0">Required field</label>
+            </div>
+          ` : ""}
+        `;
+
+        fieldsEl.appendChild(div);
+      });
+
+    }
+
+    function updateFieldFromEvent(target) {
+      if (!target || !target.dataset || !target.dataset.key) return;
+
+      const idx = Number(target.dataset.index);
+      const key = target.dataset.key;
+      if (Number.isNaN(idx) || !fields[idx]) return;
+
+      if (key === "required") {
+        fields[idx][key] = !!target.checked;
+        renderAll();
+        return;
+      }
+
+      if (key === "options") {
+        fields[idx][key] = target.value.split("\n").map((s) => s.trim()).filter(Boolean);
+        renderAll();
+        return;
+      }
+
+      if (key === "type") {
+        const newType = target.value;
+        fields[idx].type = newType;
+
+        if (newType === "dropdown" || newType === "checkboxes") {
+          fields[idx].options = fields[idx].options && fields[idx].options.length
+            ? fields[idx].options
+            : ["Option 1", "Option 2"];
+        }
+
+        if (newType === "input" || newType === "textarea") {
+          fields[idx].placeholder = fields[idx].placeholder || "";
+        }
+
+        renderFields();
+        renderAll();
+        return;
+      }
+
+      fields[idx][key] = target.value;
+      renderAll();
+    }
+
+    fieldsEl.addEventListener("input", (e) => {
+      updateFieldFromEvent(e.target);
+    });
+
+    fieldsEl.addEventListener("change", (e) => {
+      updateFieldFromEvent(e.target);
+    });
+
+    fieldsEl.addEventListener("click", (e) => {
+      const removeIndex = e.target.dataset.remove;
+      if (removeIndex === undefined) return;
+      fields.splice(Number(removeIndex), 1);
+      renderFields();
+      renderAll();
+    });
+
+    window.addField = function addField() {
+      fields.push({
+        id: `field_${fields.length + 1}`,
+        type: "input",
+        label: `Field ${fields.length + 1}`,
+        description: "",
+        placeholder: "",
+        required: false,
+        options: ["Option 1", "Option 2"],
+        markdown: "Helpful note",
+      });
+
+      renderFields();
+      renderAll();
+    };
+
+    window.copyOut = function copyOut(id) {
+      navigator.clipboard.writeText(document.getElementById(id).textContent);
+    };
+
+    window.saveOut = function saveOut(kind) {
+      const v = currentValues();
+
+      if (kind === "template") saveText(v.templateFile, v.issueYaml);
+      if (kind === "config") saveText("config.yml", v.configYaml);
+      if (kind === "readme") saveText("README-snippet.md", v.readmeSnippet);
+      if (kind === "svg") saveText("issue-form-button.svg", v.svg);
+    };
+
+    window.downloadStarterZip = async function downloadStarterZip() {
+      const v = currentValues();
+
+      await downloadZipFile(`${slugify(els.repo.value || "github-issue-form-builder")}-starter-kit.zip`, [
+        { path: `.github/ISSUE_TEMPLATE/${v.templateFile}`, content: v.issueYaml },
+        { path: `.github/ISSUE_TEMPLATE/config.yml`, content: v.configYaml },
+        { path: `assets/issue-form-button.svg`, content: v.svg },
+        { path: `README-snippet.md`, content: v.readmeSnippet },
+      ]);
+    };
+
+    function renderAll() {
+      const v = currentValues();
+      document.getElementById("templateNameLabel").textContent = v.templateFile;
+      document.getElementById("issueYaml").textContent = v.issueYaml;
+      document.getElementById("configYaml").textContent = v.configYaml;
+      document.getElementById("deepLink").textContent = v.deepLink;
+      document.getElementById("readmeSnippet").textContent = v.readmeSnippet;
+      document.getElementById("svgMarkup").textContent = v.svg;
+      document.getElementById("svgPreview").innerHTML = v.svg;
+    }
+
+    Object.values(els).forEach((el) => {
+      el.addEventListener(el.type === "checkbox" ? "change" : "input", renderAll);
+    });
+
+    renderFields();
+    renderAll();
+  </script>
+</body>
+</html>
