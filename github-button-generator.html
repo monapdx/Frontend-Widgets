@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GitHub Button Generator</title>
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --panel: #11111a;
+      --panel-2: #171723;
+      --border: #2a2a3a;
+      --text: #f5f7fb;
+      --muted: #a4a8b8;
+      --accent: #ed0d92;
+      --accent-2: #8a2be2;
+      --shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+      --radius: 22px;
+      --radius-sm: 14px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px),
+        radial-gradient(circle at top, rgba(237, 13, 146, 0.12), transparent 30%),
+        var(--bg);
+      background-size: 28px 28px, 28px 28px, auto, auto;
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .wrap {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 32px 20px 48px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+    }
+
+    .card-header {
+      padding: 24px 24px 0;
+    }
+
+    .card-content {
+      padding: 24px;
+    }
+
+    .title-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    h1, h2, h3, p { margin: 0; }
+
+    h1 {
+      font-size: clamp(1.8rem, 3vw, 2.5rem);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+    }
+
+    h2 {
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+    }
+
+    .sub {
+      color: var(--muted);
+      max-width: 60ch;
+      line-height: 1.5;
+    }
+
+    .btn,
+    button,
+    select,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    .btn {
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: 0.18s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      border-color: #3b3b52;
+      background: #1c1c2a;
+    }
+
+    .btn.accent {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border: none;
+    }
+
+    .layout-stack {
+      display: grid;
+      gap: 24px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .stack {
+      display: grid;
+      gap: 14px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    label {
+      font-size: 0.92rem;
+      color: #ebedf6;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 0.83rem;
+      line-height: 1.45;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: #0d0d15;
+      color: var(--text);
+      border-radius: var(--radius-sm);
+      padding: 13px 14px;
+      outline: none;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: rgba(237, 13, 146, 0.8);
+      box-shadow: 0 0 0 3px rgba(237, 13, 146, 0.15);
+    }
+
+    textarea {
+      min-height: 130px;
+      resize: vertical;
+      font-family: "Cascadia Code", "Consolas", monospace;
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      border: 1px solid var(--border);
+      background: #0d0d15;
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+
+    .toggle {
+      position: relative;
+      width: 58px;
+      height: 34px;
+      flex: 0 0 auto;
+    }
+
+    .toggle input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      margin: 0;
+    }
+
+    .slider {
+      position: absolute;
+      inset: 0;
+      background: #2a2a3a;
+      border-radius: 999px;
+      transition: 0.18s ease;
+    }
+
+    .slider::before {
+      content: "";
+      position: absolute;
+      width: 26px;
+      height: 26px;
+      left: 4px;
+      top: 4px;
+      border-radius: 50%;
+      background: white;
+      transition: 0.18s ease;
+    }
+
+    .toggle input:checked + .slider {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    }
+
+    .toggle input:checked + .slider::before {
+      transform: translateX(24px);
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .chip {
+      border: 1px solid var(--border);
+      background: #0d0d15;
+      color: var(--text);
+      border-radius: 999px;
+      padding: 10px 14px;
+      cursor: pointer;
+      transition: 0.18s ease;
+    }
+
+    .chip:hover {
+      border-color: #464663;
+      transform: translateY(-1px);
+    }
+
+    .preview-box,
+    .code-box {
+      border: 1px solid var(--border);
+      background: #0d0d15;
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+
+    .preview-box {
+      min-height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow-x: auto;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .tab {
+      border: 1px solid var(--border);
+      background: #0d0d15;
+      color: var(--text);
+      border-radius: 999px;
+      padding: 10px 14px;
+      cursor: pointer;
+    }
+
+    .tab.active {
+      background: linear-gradient(135deg, rgba(237, 13, 146, 0.2), rgba(138, 43, 226, 0.2));
+      border-color: rgba(237, 13, 146, 0.55);
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .copy-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .example-stack,
+    .tip-stack {
+      display: grid;
+      gap: 14px;
+    }
+
+    .example {
+      border: 1px solid var(--border);
+      background: #0d0d15;
+      border-radius: var(--radius);
+      padding: 18px;
+      overflow-x: auto;
+    }
+
+    ul.tips {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      display: grid;
+      gap: 10px;
+      line-height: 1.45;
+    }
+
+    .footer-note {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 980px) {
+      .grid,
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .wrap {
+        padding: 20px 14px 28px;
+      }
+
+      .card-header,
+      .card-content {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      .mini-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="grid">
+      <section class="card">
+        <div class="card-header">
+          <div class="title-row">
+            <div>
+              <h1>GitHub Button Generator</h1>
+              <p class="sub">Create clickable Shields.io badge buttons for README files, issue-template links, resource pages, and repo navigation.</p>
+            </div>
+            <button class="btn" id="resetBtn" type="button">Reset</button>
+          </div>
+        </div>
+
+        <div class="card-content layout-stack">
+          <div class="form-grid">
+            <div class="stack">
+              <div class="toggle-row">
+                <div>
+                  <label for="singleSegment">Single text badge</label>
+                  <p class="hint">Turn this on for one continuous label like “Submit Template”.</p>
+                </div>
+                <label class="toggle">
+                  <input id="singleSegment" type="checkbox" checked />
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="field">
+                <label for="leftText">Badge text</label>
+                <input id="leftText" type="text" value="📁 Suggest Category" />
+              </div>
+
+              <div class="field hidden" id="rightTextWrap">
+                <label for="rightText">Right segment text</label>
+                <input id="rightText" type="text" value="Template" />
+              </div>
+
+              <div class="field">
+                <label for="altText">Alt text</label>
+                <input id="altText" type="text" value="📁 Suggest Category" />
+              </div>
+
+              <div class="field">
+                <label for="targetUrl">Target URL</label>
+                <input id="targetUrl" type="text" value="https://github.com/monapdx/90s-collage-maker/issues/new?template=suggest-category.yml" />
+              </div>
+            </div>
+
+            <div class="stack">
+              <div class="mini-grid">
+                <div class="field">
+                  <label for="style">Style</label>
+                  <select id="style">
+                    <option value="for-the-badge" selected>for-the-badge</option>
+                    <option value="flat">flat</option>
+                    <option value="flat-square">flat-square</option>
+                    <option value="plastic">plastic</option>
+                    <option value="social">social</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label for="color">Color</label>
+                  <input id="color" type="text" value="8a2be2" placeholder="8a2be2 or pink" />
+                </div>
+              </div>
+
+              <div class="field">
+                <label>Quick colors</label>
+                <div class="chip-row" id="colorChips"></div>
+              </div>
+
+              <div class="field">
+                <label for="logo">Logo slug</label>
+                <input id="logo" type="text" value="" placeholder="github, markdown, discord" />
+              </div>
+
+              <div class="mini-grid">
+                <div class="field">
+                  <label for="logoColor">Logo color</label>
+                  <input id="logoColor" type="text" value="" placeholder="ffffff" />
+                </div>
+                <div class="field">
+                  <label for="labelColor">Label color</label>
+                  <input id="labelColor" type="text" value="" placeholder="222222" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Preview</label>
+            <div class="preview-box">
+              <a id="previewLink" href="#" target="_blank" rel="noreferrer">
+                <img id="previewImg" alt="Badge preview" src="" />
+              </a>
+            </div>
+          </div>
+
+          <div>
+            <div class="tabs">
+              <button class="tab active" data-tab="markdown" type="button">Markdown</button>
+              <button class="tab" data-tab="html" type="button">HTML</button>
+              <button class="tab" data-tab="url" type="button">Badge URL</button>
+            </div>
+
+            <div class="tab-panel active" id="panel-markdown">
+              <div class="code-box">
+                <div class="field">
+                  <label for="markdownOutput">Markdown output</label>
+                  <textarea id="markdownOutput" readonly></textarea>
+                </div>
+                <div class="copy-row">
+                  <button class="btn accent" type="button" data-copy="markdownOutput">Copy Markdown</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="tab-panel" id="panel-html">
+              <div class="code-box">
+                <div class="field">
+                  <label for="htmlOutput">HTML output</label>
+                  <textarea id="htmlOutput" readonly></textarea>
+                </div>
+                <div class="copy-row">
+                  <button class="btn accent" type="button" data-copy="htmlOutput">Copy HTML</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="tab-panel" id="panel-url">
+              <div class="code-box">
+                <div class="field">
+                  <label for="urlOutput">Badge image URL</label>
+                  <textarea id="urlOutput" readonly></textarea>
+                </div>
+                <div class="copy-row">
+                  <button class="btn accent" type="button" data-copy="urlOutput">Copy URL</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="layout-stack">
+        <section class="card">
+          <div class="card-header">
+            <h2>Example buttons</h2>
+            <p class="sub">These match the sort of clickable GitHub badges you showed.</p>
+          </div>
+          <div class="card-content example-stack">
+            <div class="example">
+              <img alt="Suggest Category" src="https://img.shields.io/badge/%F0%9F%93%81%20Suggest%20Category-8a2be2?style=for-the-badge" />
+            </div>
+            <div class="example">
+              <img alt="Submit Template" src="https://img.shields.io/badge/Submit%20Template-pink?style=for-the-badge" />
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-header">
+            <h2>Tips</h2>
+          </div>
+          <div class="card-content tip-stack">
+            <ul class="tips">
+              <li>Use a single text badge for one continuous label like “Submit Template”.</li>
+              <li>Turn single text off if you want a two-part badge with separate left and right segments.</li>
+              <li>Logo slugs usually come from Simple Icons, like <code>github</code>, <code>discord</code>, or <code>markdown</code>.</li>
+              <li>The Markdown output is ready to paste straight into a README.</li>
+            </ul>
+            <p class="footer-note">This is a standalone HTML file with no frameworks or build tools required.</p>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    const COLORS = [
+      { name: "Pink", value: "ff69b4" },
+      { name: "Purple", value: "8a2be2" },
+      { name: "Hot Pink", value: "ed0d92" },
+      { name: "Blue", value: "1f6feb" },
+      { name: "Green", value: "2ea44f" },
+      { name: "Red", value: "d73a49" },
+      { name: "Orange", value: "f59e0b" },
+      { name: "Black", value: "111111" },
+      { name: "Gray", value: "6b7280" }
+    ];
+
+    const els = {
+      singleSegment: document.getElementById("singleSegment"),
+      leftText: document.getElementById("leftText"),
+      rightText: document.getElementById("rightText"),
+      rightTextWrap: document.getElementById("rightTextWrap"),
+      altText: document.getElementById("altText"),
+      targetUrl: document.getElementById("targetUrl"),
+      style: document.getElementById("style"),
+      color: document.getElementById("color"),
+      logo: document.getElementById("logo"),
+      logoColor: document.getElementById("logoColor"),
+      labelColor: document.getElementById("labelColor"),
+      previewLink: document.getElementById("previewLink"),
+      previewImg: document.getElementById("previewImg"),
+      markdownOutput: document.getElementById("markdownOutput"),
+      htmlOutput: document.getElementById("htmlOutput"),
+      urlOutput: document.getElementById("urlOutput"),
+      colorChips: document.getElementById("colorChips"),
+      resetBtn: document.getElementById("resetBtn")
+    };
+
+    const defaults = {
+      singleSegment: true,
+      leftText: "📁 Suggest Category",
+      rightText: "Template",
+      altText: "📁 Suggest Category",
+      targetUrl: "https://github.com/monapdx/90s-collage-maker/issues/new?template=suggest-category.yml",
+      style: "for-the-badge",
+      color: "8a2be2",
+      logo: "",
+      logoColor: "",
+      labelColor: ""
+    };
+
+    function encodeSegment(text) {
+      return encodeURIComponent(text || "").replace(/%20/g, "%20");
+    }
+
+    function cleanColor(value) {
+      const trimmed = (value || "").trim();
+      if (!trimmed) return "8a2be2";
+      return trimmed.replace(/^#/, "");
+    }
+
+    function buildBadgeUrl() {
+      const single = els.singleSegment.checked;
+      const left = els.leftText.value.trim() || "Button";
+      const right = els.rightText.value.trim() || "Label";
+      const color = cleanColor(els.color.value);
+
+      const params = new URLSearchParams();
+      if (els.style.value) params.set("style", els.style.value);
+      if (els.logo.value.trim()) params.set("logo", els.logo.value.trim());
+      if (els.logoColor.value.trim()) params.set("logoColor", cleanColor(els.logoColor.value));
+      if (els.labelColor.value.trim()) params.set("labelColor", cleanColor(els.labelColor.value));
+
+      const query = params.toString();
+
+      if (single) {
+        const segment = encodeSegment(left);
+        return `https://img.shields.io/badge/${segment}-${color}${query ? `?${query}` : ""}`;
+      }
+
+      return `https://img.shields.io/badge/${encodeSegment(left)}-${encodeSegment(right)}-${color}${query ? `?${query}` : ""}`;
+    }
+
+    function buildMarkdown(badgeUrl) {
+      const alt = els.altText.value.trim() || els.leftText.value.trim() || "Badge";
+      const target = els.targetUrl.value.trim() || "https://github.com/";
+      return `[![${alt}](${badgeUrl})](${target})`;
+    }
+
+    function buildHtml(badgeUrl) {
+      const alt = escapeHtml(els.altText.value.trim() || els.leftText.value.trim() || "Badge");
+      const target = escapeHtml(els.targetUrl.value.trim() || "https://github.com/");
+      return `<a href="${target}"><img alt="${alt}" src="${badgeUrl}" /></a>`;
+    }
+
+    function escapeHtml(str) {
+      return str
+        .replaceAll("&", "&amp;")
+        .replaceAll("\"", "&quot;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;");
+    }
+
+    function updateRightField() {
+      els.rightTextWrap.classList.toggle("hidden", els.singleSegment.checked);
+    }
+
+    function updateOutputs() {
+      updateRightField();
+      const badgeUrl = buildBadgeUrl();
+      const markdown = buildMarkdown(badgeUrl);
+      const html = buildHtml(badgeUrl);
+      const target = els.targetUrl.value.trim() || "https://github.com/";
+      const alt = els.altText.value.trim() || els.leftText.value.trim() || "Badge preview";
+
+      els.previewLink.href = target;
+      els.previewImg.src = badgeUrl;
+      els.previewImg.alt = alt;
+      els.markdownOutput.value = markdown;
+      els.htmlOutput.value = html;
+      els.urlOutput.value = badgeUrl;
+    }
+
+    function renderColorChips() {
+      els.colorChips.innerHTML = "";
+      COLORS.forEach((color) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "chip";
+        button.textContent = color.name;
+        button.addEventListener("click", () => {
+          els.color.value = color.value;
+          updateOutputs();
+        });
+        els.colorChips.appendChild(button);
+      });
+    }
+
+    function resetForm() {
+      els.singleSegment.checked = defaults.singleSegment;
+      els.leftText.value = defaults.leftText;
+      els.rightText.value = defaults.rightText;
+      els.altText.value = defaults.altText;
+      els.targetUrl.value = defaults.targetUrl;
+      els.style.value = defaults.style;
+      els.color.value = defaults.color;
+      els.logo.value = defaults.logo;
+      els.logoColor.value = defaults.logoColor;
+      els.labelColor.value = defaults.labelColor;
+      updateOutputs();
+    }
+
+    document.querySelectorAll("input, select").forEach((el) => {
+      el.addEventListener("input", updateOutputs);
+      el.addEventListener("change", updateOutputs);
+    });
+
+    document.querySelectorAll(".tab").forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const target = tab.dataset.tab;
+        document.querySelectorAll(".tab").forEach((t) => t.classList.remove("active"));
+        document.querySelectorAll(".tab-panel").forEach((panel) => panel.classList.remove("active"));
+        tab.classList.add("active");
+        document.getElementById(`panel-${target}`).classList.add("active");
+      });
+    });
+
+    document.querySelectorAll("[data-copy]").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const id = btn.getAttribute("data-copy");
+        const value = document.getElementById(id).value;
+        const original = btn.textContent;
+        try {
+          await navigator.clipboard.writeText(value);
+          btn.textContent = "Copied";
+          setTimeout(() => { btn.textContent = original; }, 1400);
+        } catch {
+          btn.textContent = "Copy failed";
+          setTimeout(() => { btn.textContent = original; }, 1400);
+        }
+      });
+    });
+
+    els.resetBtn.addEventListener("click", resetForm);
+
+    renderColorChips();
+    updateOutputs();
+  </script>
+</body>
+</html>
