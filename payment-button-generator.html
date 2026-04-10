@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Buy Button Generator</title>
+  <style>
+    :root {
+      --bg: #0d0d0f;
+      --panel: #16161b;
+      --panel-2: #1d1d24;
+      --border: #2b2b35;
+      --text: #f5f5f7;
+      --muted: #a6a6b3;
+      --accent: #ff009c;
+      --accent-soft: rgba(255, 0, 156, 0.16);
+      --radius: 18px;
+      --shadow: 0 20px 60px rgba(0,0,0,0.35);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px),
+        radial-gradient(circle at top, rgba(255,0,156,0.14), transparent 30%),
+        var(--bg);
+      background-size: 28px 28px, 28px 28px, auto, auto;
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .wrap {
+      width: min(1200px, calc(100% - 32px));
+      margin: 32px auto 64px;
+    }
+
+    .hero {
+      margin-bottom: 24px;
+      padding: 28px;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: var(--accent-soft);
+      color: #ff72c8;
+      border: 1px solid rgba(255,0,156,0.28);
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 16px 0 10px;
+      font-size: clamp(2rem, 4vw, 3.3rem);
+      line-height: 1;
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 760px;
+      color: var(--muted);
+      font-size: 1.02rem;
+      line-height: 1.65;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 420px minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .panel-inner {
+      padding: 22px;
+    }
+
+    .section-title {
+      margin: 0 0 16px;
+      font-size: 1rem;
+      letter-spacing: 0.02em;
+    }
+
+    .field-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    label {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .hint {
+      font-size: 0.83rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 13px 14px;
+      font: inherit;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+    }
+
+    textarea {
+      min-height: 118px;
+      resize: vertical;
+      line-height: 1.45;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(255, 0, 156, 0.14);
+    }
+
+    .row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .toggle-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      cursor: pointer;
+      user-select: none;
+      font-size: 0.92rem;
+    }
+
+    .chip input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--accent);
+      margin: 0;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 13px 16px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease, box-shadow 0.2s ease;
+    }
+
+    button:hover { transform: translateY(-1px); }
+    button:active { transform: translateY(0); }
+
+    .primary {
+      background: linear-gradient(135deg, #ff009c, #b100ff);
+      color: white;
+      box-shadow: 0 10px 24px rgba(255, 0, 156, 0.28);
+    }
+
+    .secondary {
+      background: #24242d;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .preview {
+      display: grid;
+      gap: 18px;
+    }
+
+    .preview-card {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      padding: 18px;
+    }
+
+    .preview-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .button-stage {
+      min-height: 84px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px dashed rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.015);
+      overflow-x: auto;
+    }
+
+    .button-stage img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    pre {
+      margin: 0;
+      padding: 16px;
+      border-radius: 14px;
+      background: #0c0c11;
+      border: 1px solid var(--border);
+      color: #f8f8fb;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      line-height: 1.55;
+      font-size: 0.93rem;
+    }
+
+    .output-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .small {
+      font-size: 0.84rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .footer-note {
+      margin-top: 20px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 0.92rem;
+    }
+
+    a.fake-render {
+      display: inline-block;
+      text-decoration: none;
+    }
+
+    @media (max-width: 980px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .wrap {
+        width: min(100% - 20px, 1200px);
+        margin-top: 20px;
+      }
+
+      .hero, .panel-inner {
+        padding: 18px;
+      }
+
+      .row-2 {
+        grid-template-columns: 1fr;
+      }
+
+      .actions, .output-actions {
+        flex-direction: column;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="eyebrow">GitHub-friendly payment buttons</div>
+      <h1>Buy Button Generator</h1>
+      <p>
+        Generate polished markdown buy buttons for Stripe, PayPal, Gumroad, JVZoo, Shopify, Amazon, and more.
+        This is built for README files, landing pages, docs, and “GitHub-as-app” style repos where embeds usually do not work.
+      </p>
+    </section>
+
+    <div class="grid">
+      <section class="panel">
+        <div class="panel-inner">
+          <h2 class="section-title">Button setup</h2>
+          <div class="field-grid">
+            <div class="field">
+              <label for="platform">Platform</label>
+              <select id="platform">
+                <option value="stripe">Stripe</option>
+                <option value="paypal">PayPal</option>
+                <option value="gumroad">Gumroad</option>
+                <option value="jvzoo">JVZoo</option>
+                <option value="shopify">Shopify</option>
+                <option value="amazon">Amazon</option>
+                <option value="custom">Custom</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="destination">Checkout or product URL</label>
+              <input id="destination" type="url" placeholder="https://buy.stripe.com/..." />
+              <div id="platformHint" class="hint">Paste the hosted payment or product page link.</div>
+            </div>
+
+            <div class="row-2">
+              <div class="field">
+                <label for="labelText">Button text</label>
+                <input id="labelText" type="text" value="Buy Now" />
+              </div>
+              <div class="field">
+                <label for="emoji">Emoji</label>
+                <input id="emoji" type="text" value="💳" />
+              </div>
+            </div>
+
+            <div class="row-2">
+              <div class="field">
+                <label for="color">Badge color</label>
+                <input id="color" type="text" value="FF009C" placeholder="FF009C" />
+              </div>
+              <div class="field">
+                <label for="style">Badge style</label>
+                <select id="style">
+                  <option value="for-the-badge">for-the-badge</option>
+                  <option value="flat">flat</option>
+                  <option value="flat-square">flat-square</option>
+                  <option value="plastic">plastic</option>
+                  <option value="social">social</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row-2">
+              <div class="field">
+                <label for="logo">Logo slug (optional)</label>
+                <input id="logo" type="text" placeholder="stripe, paypal, gumroad..." />
+              </div>
+              <div class="field">
+                <label for="logoColor">Logo color (optional)</label>
+                <input id="logoColor" type="text" placeholder="white" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Output format</label>
+              <div class="toggle-row">
+                <label class="chip"><input type="radio" name="format" value="markdown-image" checked /> Markdown badge</label>
+                <label class="chip"><input type="radio" name="format" value="markdown-text" /> Plain markdown link</label>
+                <label class="chip"><input type="radio" name="format" value="html" /> HTML link + image</label>
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Extras</label>
+              <div class="toggle-row">
+                <label class="chip"><input id="includePlatform" type="checkbox" checked /> Include platform in label</label>
+                <label class="chip"><input id="uppercaseWords" type="checkbox" /> Uppercase words</label>
+                <label class="chip"><input id="encodeEmoji" type="checkbox" checked /> Encode emoji for shields</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="primary" id="generateBtn">Generate</button>
+            <button class="secondary" id="resetBtn">Reset</button>
+          </div>
+
+          <div class="footer-note">
+            Tip: Stripe and PayPal embed code often will not execute inside GitHub READMEs. This generator makes link-based buy buttons that still work there.
+          </div>
+        </div>
+      </section>
+
+      <section class="preview">
+        <div class="panel preview-card">
+          <div class="preview-label">Live preview</div>
+          <div class="button-stage" id="buttonStage"></div>
+          <div class="small" style="margin-top: 12px;">This previews the rendered badge-style version even if you choose another output format.</div>
+        </div>
+
+        <div class="panel preview-card">
+          <div class="preview-label">Generated code</div>
+          <pre id="outputCode"></pre>
+          <div class="output-actions">
+            <button class="primary" id="copyBtn">Copy code</button>
+            <button class="secondary" id="copyUrlBtn">Copy destination URL</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const presets = {
+      stripe: {
+        destination: 'https://buy.stripe.com/',
+        labelText: 'Buy Now',
+        emoji: '💳',
+        color: '635BFF',
+        logo: 'stripe',
+        logoColor: 'white',
+        hint: 'Use a Stripe Payment Link or hosted Buy Button destination URL.'
+      },
+      paypal: {
+        destination: 'https://www.paypal.com/paypalme/',
+        labelText: 'Pay with PayPal',
+        emoji: '💸',
+        color: '00457C',
+        logo: 'paypal',
+        logoColor: 'white',
+        hint: 'Use a PayPal.Me link, subscription link, or hosted checkout URL.'
+      },
+      gumroad: {
+        destination: 'https://yourname.gumroad.com/l/product',
+        labelText: 'Buy on Gumroad',
+        emoji: '🛒',
+        color: 'FF90E8',
+        logo: 'gumroad',
+        logoColor: 'black',
+        hint: 'Use the public Gumroad product page URL.'
+      },
+      jvzoo: {
+        destination: 'https://www.jvzoo.com/b/0/0/0',
+        labelText: 'Buy on JVZoo',
+        emoji: '🚀',
+        color: 'FF6A00',
+        logo: '',
+        logoColor: '',
+        hint: 'Use your JVZoo offer or funnel link.'
+      },
+      shopify: {
+        destination: 'https://yourstore.myshopify.com/products/product-name',
+        labelText: 'View Product',
+        emoji: '🛍️',
+        color: '95BF47',
+        logo: 'shopify',
+        logoColor: 'white',
+        hint: 'Use the product page or direct checkout/cart link from your Shopify store.'
+      },
+      amazon: {
+        destination: 'https://www.amazon.com/dp/ASIN',
+        labelText: 'View on Amazon',
+        emoji: '📦',
+        color: 'FF9900',
+        logo: 'amazon',
+        logoColor: 'black',
+        hint: 'Use the product page or affiliate link.'
+      },
+      custom: {
+        destination: 'https://example.com/product',
+        labelText: 'Buy Now',
+        emoji: '🔗',
+        color: 'FF009C',
+        logo: '',
+        logoColor: '',
+        hint: 'Use any hosted checkout, product, affiliate, or landing page URL.'
+      }
+    };
+
+    const els = {
+      platform: document.getElementById('platform'),
+      destination: document.getElementById('destination'),
+      labelText: document.getElementById('labelText'),
+      emoji: document.getElementById('emoji'),
+      color: document.getElementById('color'),
+      style: document.getElementById('style'),
+      logo: document.getElementById('logo'),
+      logoColor: document.getElementById('logoColor'),
+      includePlatform: document.getElementById('includePlatform'),
+      uppercaseWords: document.getElementById('uppercaseWords'),
+      encodeEmoji: document.getElementById('encodeEmoji'),
+      outputCode: document.getElementById('outputCode'),
+      buttonStage: document.getElementById('buttonStage'),
+      platformHint: document.getElementById('platformHint'),
+      generateBtn: document.getElementById('generateBtn'),
+      resetBtn: document.getElementById('resetBtn'),
+      copyBtn: document.getElementById('copyBtn'),
+      copyUrlBtn: document.getElementById('copyUrlBtn')
+    };
+
+    function getFormat() {
+      return document.querySelector('input[name="format"]:checked').value;
+    }
+
+    function applyPreset(name) {
+      const p = presets[name];
+      if (!p) return;
+      els.destination.value = p.destination;
+      els.labelText.value = p.labelText;
+      els.emoji.value = p.emoji;
+      els.color.value = p.color;
+      els.logo.value = p.logo;
+      els.logoColor.value = p.logoColor;
+      els.platformHint.textContent = p.hint;
+      generate();
+    }
+
+    function titleCaseWords(text) {
+      return text
+        .split(/\s+/)
+        .filter(Boolean)
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+    }
+
+    function safeUrl(url) {
+      try {
+        const parsed = new URL(url);
+        return parsed.toString();
+      } catch {
+        return url.trim();
+      }
+    }
+
+    function normalizeColor(input) {
+      return input.replace(/^#/, '').trim() || 'FF009C';
+    }
+
+    function encodeBadgeLabel(text, encodeEmoji = true) {
+      const raw = encodeEmoji ? text : text.replace(/[\u{1F300}-\u{1FAFF}]/gu, '').trim();
+      return encodeURIComponent(raw).replace(/%20/g, '%20');
+    }
+
+    function buildLabel() {
+      const platformName = els.platform.options[els.platform.selectedIndex].text;
+      let text = els.labelText.value.trim() || 'Buy Now';
+      let emoji = els.emoji.value.trim();
+
+      if (els.uppercaseWords.checked) {
+        text = titleCaseWords(text.toUpperCase());
+      }
+
+      if (els.includePlatform.checked && !text.toLowerCase().includes(platformName.toLowerCase()) && els.platform.value !== 'custom') {
+        text += ' · ' + platformName;
+      }
+
+      return emoji ? `${emoji} ${text}` : text;
+    }
+
+    function buildShieldsUrl() {
+      const label = buildLabel();
+      const encodedLabel = encodeBadgeLabel(label, els.encodeEmoji.checked);
+      const color = encodeURIComponent(normalizeColor(els.color.value));
+      const style = encodeURIComponent(els.style.value);
+
+      const params = new URLSearchParams({ style });
+      if (els.logo.value.trim()) params.set('logo', els.logo.value.trim());
+      if (els.logoColor.value.trim()) params.set('logoColor', els.logoColor.value.trim());
+
+      return `https://img.shields.io/badge/${encodedLabel}-${color}?${params.toString()}`;
+    }
+
+    function buildMarkdownImage() {
+      const badgeUrl = buildShieldsUrl();
+      const destination = safeUrl(els.destination.value);
+      const alt = buildLabel().replace(/\s+/g, ' ').trim();
+      return `[![${alt}](${badgeUrl})](${destination})`;
+    }
+
+    function buildMarkdownText() {
+      const destination = safeUrl(els.destination.value);
+      return `[${buildLabel()}](${destination})`;
+    }
+
+    function buildHtml() {
+      const destination = safeUrl(els.destination.value);
+      const badgeUrl = buildShieldsUrl();
+      const alt = buildLabel().replace(/"/g, '&quot;');
+      return `<a href="${destination}"><img src="${badgeUrl}" alt="${alt}" /></a>`;
+    }
+
+    function renderPreview() {
+      const destination = safeUrl(els.destination.value);
+      const badgeUrl = buildShieldsUrl();
+      const alt = buildLabel();
+      els.buttonStage.innerHTML = `<a class="fake-render" href="${destination}" target="_blank" rel="noopener noreferrer"><img src="${badgeUrl}" alt="${alt}"></a>`;
+    }
+
+    function generate() {
+      const format = getFormat();
+      let output = '';
+
+      if (format === 'markdown-image') output = buildMarkdownImage();
+      if (format === 'markdown-text') output = buildMarkdownText();
+      if (format === 'html') output = buildHtml();
+
+      els.outputCode.textContent = output;
+      renderPreview();
+    }
+
+    async function copyText(value) {
+      try {
+        await navigator.clipboard.writeText(value);
+        return true;
+      } catch {
+        const area = document.createElement('textarea');
+        area.value = value;
+        document.body.appendChild(area);
+        area.select();
+        const ok = document.execCommand('copy');
+        area.remove();
+        return ok;
+      }
+    }
+
+    els.platform.addEventListener('change', (e) => applyPreset(e.target.value));
+    [
+      els.destination,
+      els.labelText,
+      els.emoji,
+      els.color,
+      els.style,
+      els.logo,
+      els.logoColor,
+      els.includePlatform,
+      els.uppercaseWords,
+      els.encodeEmoji
+    ].forEach(el => {
+      el.addEventListener('input', generate);
+      el.addEventListener('change', generate);
+    });
+
+    document.querySelectorAll('input[name="format"]').forEach(radio => {
+      radio.addEventListener('change', generate);
+    });
+
+    els.generateBtn.addEventListener('click', generate);
+
+    els.resetBtn.addEventListener('click', () => {
+      els.platform.value = 'stripe';
+      els.style.value = 'for-the-badge';
+      els.includePlatform.checked = true;
+      els.uppercaseWords.checked = false;
+      els.encodeEmoji.checked = true;
+      applyPreset('stripe');
+    });
+
+    els.copyBtn.addEventListener('click', async () => {
+      const ok = await copyText(els.outputCode.textContent);
+      els.copyBtn.textContent = ok ? 'Copied!' : 'Copy failed';
+      setTimeout(() => { els.copyBtn.textContent = 'Copy code'; }, 1400);
+    });
+
+    els.copyUrlBtn.addEventListener('click', async () => {
+      const ok = await copyText(safeUrl(els.destination.value));
+      els.copyUrlBtn.textContent = ok ? 'Copied!' : 'Copy failed';
+      setTimeout(() => { els.copyUrlBtn.textContent = 'Copy destination URL'; }, 1400);
+    });
+
+    applyPreset('stripe');
+  </script>
+</body>
+</html>
