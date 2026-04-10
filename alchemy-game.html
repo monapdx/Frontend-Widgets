@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mini Food Alchemy</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f3efe7;
+      color: #2f2a24;
+    }
+
+    .game {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-top: 0;
+      text-align: center;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.2fr 0.9fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .panel {
+      background: #fffaf3;
+      border: 2px solid #d8cbb8;
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+    }
+
+    .panel h2 {
+      margin-top: 0;
+      font-size: 1.1rem;
+    }
+
+    #inventory {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 12px;
+    }
+
+    .item {
+      background: #fff;
+      border: 2px solid #ccbba5;
+      border-radius: 12px;
+      padding: 10px;
+      text-align: center;
+      cursor: grab;
+      user-select: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    }
+
+    .item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+      border-color: #b89c79;
+    }
+
+    .item.dragging {
+      opacity: 0.5;
+    }
+
+    .icon {
+      font-size: 2rem;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .name {
+      font-size: 0.95rem;
+      font-weight: bold;
+    }
+
+    .combine-area {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .slots {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .slot {
+      min-height: 130px;
+      background: #fff;
+      border: 3px dashed #ccbba5;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      text-align: center;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .slot.over {
+      background: #fdf2df;
+      border-color: #b88b4a;
+    }
+
+    .slot-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .slot-label {
+      color: #8a7761;
+      font-size: 0.95rem;
+    }
+
+    .combine-button,
+    .clear-button {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 1rem;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .combine-button {
+      background: #8dbb72;
+      color: white;
+    }
+
+    .combine-button:hover {
+      background: #78a75d;
+    }
+
+    .clear-button {
+      background: #d8cbb8;
+      color: #2f2a24;
+    }
+
+    .clear-button:hover {
+      background: #cbbba4;
+    }
+
+    #message {
+      min-height: 40px;
+      padding: 10px 12px;
+      background: #fff;
+      border: 2px solid #e2d5c3;
+      border-radius: 12px;
+      font-weight: bold;
+    }
+
+    #log {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 420px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .log-entry {
+      background: #fff;
+      border: 1px solid #e2d5c3;
+      border-radius: 10px;
+      padding: 10px;
+      line-height: 1.4;
+    }
+
+    .result-badge {
+      display: inline-block;
+      margin-top: 6px;
+      background: #f0eadf;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 850px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="game">
+    <h1>Mini Food Alchemy</h1>
+
+    <div class="layout">
+      <div class="panel">
+        <h2>Inventory</h2>
+        <div id="inventory"></div>
+      </div>
+
+      <div class="combine-area">
+        <div class="panel">
+          <h2>Combine</h2>
+          <div class="slots">
+            <div class="slot" id="slot1" data-slot="0">
+              <div class="slot-label">Drop item here</div>
+            </div>
+            <div class="slot" id="slot2" data-slot="1">
+              <div class="slot-label">Drop item here</div>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:10px; margin-top:14px;">
+            <button class="combine-button" id="combineBtn">Combine</button>
+            <button class="clear-button" id="clearBtn">Clear</button>
+          </div>
+
+          <div id="message" style="margin-top:14px;">Drag two items into the slots.</div>
+        </div>
+
+        <div class="panel">
+          <h2>Discovered Recipes</h2>
+          <div id="log"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const itemData = {
+      Bread: { icon: "🍞" },
+      Butter: { icon: "🧈" },
+      Garlic: { icon: "🧄" },
+      Tomato: { icon: "🍅" },
+      Cheese: { icon: "🧀" },
+      Dough: { icon: "🥖" },
+      Meat: { icon: "🥩" },
+      Pasta: { icon: "🍝" },
+      Egg: { icon: "🥚" },
+      Milk: { icon: "🥛" },
+
+      Toast: { icon: "🍞" },
+      GarlicBread: { icon: "🥖" },
+      Pizza: { icon: "🍕" },
+      Burger: { icon: "🍔" },
+      ScrambledEggs: { icon: "🍳" },
+      CheeseSauce: { icon: "🫕" },
+      MacAndCheese: { icon: "🧀" },
+      Sandwich: { icon: "🥪" },
+      PastaDish: { icon: "🍝" },
+
+      Savory: { icon: "🧂" },
+      Creamy: { icon: "🥛" },
+      Umami: { icon: "🍄" },
+	  Apple: { icon: "🍎" },
+Banana: { icon: "🍌" },
+Strawberry: { icon: "🍓" },
+Grape: { icon: "🍇" },
+Lemon: { icon: "🍋" },
+Orange: { icon: "🍊" },
+Peach: { icon: "🍑" },
+Carrot: { icon: "🥕" },
+Onion: { icon: "🧅" },
+Potato: { icon: "🥔" },
+Corn: { icon: "🌽" },
+Lettuce: { icon: "🥬" },
+Cucumber: { icon: "🥒" },
+Pepper: { icon: "🫑" },
+Mushroom: { icon: "🍄" },
+
+Salad: { icon: "🥗" },
+FruitSalad: { icon: "🍇" },
+Soup: { icon: "🍲" },
+Fries: { icon: "🍟" },
+Juice: { icon: "🧃" },
+Smoothie: { icon: "🥤" },
+Jam: { icon: "🫙" },
+Sauce: { icon: "🥣" },
+Stuffing: { icon: "🥙" },
+RoastedVeggies: { icon: "🍽️" }
+    };
+
+    const recipes = {
+      "Bread+Butter": "Toast",
+      "Bread+Garlic": "GarlicBread",
+      "Dough+Tomato": "Pizza",
+      "Dough+Cheese": "Pizza",
+      "Bread+Meat": "Sandwich",
+      "Bread+Cheese": "Sandwich",
+      "Egg+Milk": "ScrambledEggs",
+      "Cheese+Milk": "CheeseSauce",
+      "Pasta+CheeseSauce": "MacAndCheese",
+      "Pasta+Tomato": "PastaDish",
+
+      "Butter+Garlic": "Savory",
+      "Cheese+Milk": "Creamy",
+      "Meat+Tomato": "Umami",
+
+      "Bread+Savory": "GarlicBread",
+      "Creamy+Pasta": "MacAndCheese",
+      "Pasta+Umami": "PastaDish",
+	  "Apple+Banana": "FruitSalad",
+"Apple+Strawberry": "FruitSalad",
+"Banana+Strawberry": "Smoothie",
+"Strawberry+Sugar": "Jam",
+"Apple+Sugar": "Jam",
+"Lemon+Water": "Juice",
+"Orange+Water": "Juice",
+
+"Lettuce+Tomato": "Salad",
+"Lettuce+Cucumber": "Salad",
+"Lettuce+Onion": "Salad",
+"Carrot+Onion": "Soup",
+"Potato+Butter": "Fries",
+"Potato+Cheese": "Fries",
+"Tomato+Onion": "Sauce",
+"Tomato+Garlic": "Sauce",
+"Pepper+Onion": "RoastedVeggies",
+"Carrot+Pepper": "RoastedVeggies",
+"Mushroom+Butter": "Savory",
+"Bread+Lettuce": "Sandwich",
+"Bread+Tomato": "Sandwich",
+"Bread+Cheese": "Sandwich"
+    };
+
+let inventory = [
+  "Bread",
+  "Butter",
+  "Garlic",
+  "Tomato",
+  "Cheese",
+  "Pasta",
+  "Egg",
+  "Milk",
+  "Apple",
+  "Banana",
+  "Strawberry",
+  "Carrot",
+  "Onion",
+  "Potato",
+  "Lettuce",
+  "Cucumber"
+];
+
+    let selectedSlots = [null, null];
+    let discoveredRecipes = [];
+
+    const inventoryEl = document.getElementById("inventory");
+    const slotEls = [
+      document.getElementById("slot1"),
+      document.getElementById("slot2")
+    ];
+    const messageEl = document.getElementById("message");
+    const logEl = document.getElementById("log");
+    const combineBtn = document.getElementById("combineBtn");
+    const clearBtn = document.getElementById("clearBtn");
+
+    function getIcon(itemName) {
+      return itemData[itemName]?.icon || "❓";
+    }
+
+    function normalizeCombo(a, b) {
+      return [a, b].sort().join("+");
+    }
+
+    function createItemCard(itemName) {
+      const item = document.createElement("div");
+      item.className = "item";
+      item.draggable = true;
+      item.dataset.item = itemName;
+
+      item.innerHTML = `
+        <span class="icon">${getIcon(itemName)}</span>
+        <span class="name">${itemName}</span>
+      `;
+
+      item.addEventListener("dragstart", (e) => {
+        item.classList.add("dragging");
+        e.dataTransfer.setData("text/plain", itemName);
+      });
+
+      item.addEventListener("dragend", () => {
+        item.classList.remove("dragging");
+      });
+
+      return item;
+    }
+
+    function renderInventory() {
+      inventoryEl.innerHTML = "";
+      inventory.forEach((itemName) => {
+        inventoryEl.appendChild(createItemCard(itemName));
+      });
+    }
+
+    function renderSlots() {
+      slotEls.forEach((slotEl, index) => {
+        const itemName = selectedSlots[index];
+
+        if (!itemName) {
+          slotEl.innerHTML = `<div class="slot-label">Drop item here</div>`;
+          return;
+        }
+
+        slotEl.innerHTML = `
+          <div class="slot-content">
+            <span class="icon">${getIcon(itemName)}</span>
+            <span class="name">${itemName}</span>
+          </div>
+        `;
+      });
+    }
+
+    function renderLog() {
+      logEl.innerHTML = "";
+
+      if (discoveredRecipes.length === 0) {
+        logEl.innerHTML = `<div class="slot-label">No recipes discovered yet.</div>`;
+        return;
+      }
+
+      discoveredRecipes.forEach((entry) => {
+        const div = document.createElement("div");
+        div.className = "log-entry";
+        div.innerHTML = `
+          <div>${getIcon(entry.a)} ${entry.a} + ${getIcon(entry.b)} ${entry.b}</div>
+          <div class="result-badge">= ${getIcon(entry.result)} ${entry.result}</div>
+        `;
+        logEl.appendChild(div);
+      });
+    }
+
+    function setMessage(text) {
+      messageEl.textContent = text;
+    }
+
+    function clearSlots() {
+      selectedSlots = [null, null];
+      renderSlots();
+    }
+
+    function addToInventory(itemName) {
+      if (!inventory.includes(itemName)) {
+        inventory.push(itemName);
+      }
+    }
+
+    function addRecipeToLog(a, b, result) {
+      const exists = discoveredRecipes.some(
+        (entry) =>
+          normalizeCombo(entry.a, entry.b) === normalizeCombo(a, b) &&
+          entry.result === result
+      );
+
+      if (!exists) {
+        discoveredRecipes.unshift({ a, b, result });
+      }
+    }
+
+    function combineItems() {
+      const [a, b] = selectedSlots;
+
+      if (!a || !b) {
+        setMessage("You need two items.");
+        return;
+      }
+
+      const key = normalizeCombo(a, b);
+      const result = recipes[key];
+
+      if (result) {
+        const alreadyHadItem = inventory.includes(result);
+
+        addToInventory(result);
+        addRecipeToLog(a, b, result);
+
+        renderInventory();
+        renderLog();
+
+        if (alreadyHadItem) {
+          setMessage(`${a} + ${b} = ${result} (already discovered)`);
+        } else {
+          setMessage(`${a} + ${b} = ${result}! New item created.`);
+        }
+      } else {
+        setMessage(`${a} + ${b} does nothing.`);
+      }
+
+      clearSlots();
+    }
+
+    slotEls.forEach((slotEl, index) => {
+      slotEl.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        slotEl.classList.add("over");
+      });
+
+      slotEl.addEventListener("dragleave", () => {
+        slotEl.classList.remove("over");
+      });
+
+      slotEl.addEventListener("drop", (e) => {
+        e.preventDefault();
+        slotEl.classList.remove("over");
+
+        const itemName = e.dataTransfer.getData("text/plain");
+        if (!itemName) return;
+
+        selectedSlots[index] = itemName;
+        renderSlots();
+      });
+    });
+
+    combineBtn.addEventListener("click", combineItems);
+    clearBtn.addEventListener("click", () => {
+      clearSlots();
+      setMessage("Slots cleared.");
+    });
+
+    renderInventory();
+    renderSlots();
+    renderLog();
+  </script>
+</body>
+</html>
