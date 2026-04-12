@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GitHub Link Generator</title>
+  <style>
+    :root {
+      --bg: #f7f8fc;
+      --panel: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #dbe1ea;
+      --accent: #ec4899;
+      --accent-dark: #db2777;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(236,72,153,0.08), transparent 25%),
+        linear-gradient(180deg, #fafbff 0%, #f5f7fb 100%);
+      color: var(--text);
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 28px 18px 40px;
+    }
+
+    .hero {
+      margin-bottom: 22px;
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.9rem, 4vw, 2.9rem);
+      line-height: 1.05;
+    }
+
+    .hero p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 760px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .card h2 {
+      margin: 0 0 14px;
+      font-size: 1.1rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px 13px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+      line-height: 1.45;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: 2px solid rgba(236,72,153,0.2);
+      border-color: var(--accent);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    button {
+      appearance: none;
+      border: none;
+      border-radius: 999px;
+      padding: 11px 16px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    .primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .primary:hover {
+      background: var(--accent-dark);
+    }
+
+    .secondary {
+      background: #f3f4f6;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .output-block {
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .output-block label {
+      font-size: 0.88rem;
+    }
+
+    .output-row {
+      display: flex;
+      gap: 8px;
+      align-items: stretch;
+    }
+
+    .output-row textarea,
+    .output-row input {
+      flex: 1;
+      min-width: 0;
+      background: #fcfcff;
+    }
+
+    .copy-btn {
+      border-radius: 12px;
+      min-width: 86px;
+      background: #111827;
+      color: #fff;
+      padding: 0 14px;
+    }
+
+    .hint,
+    .pattern-note {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    .preview {
+      margin-top: 14px;
+      padding: 14px;
+      border: 1px dashed var(--border);
+      border-radius: 14px;
+      background: #fafbff;
+    }
+
+    .badge-preview img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .inline-note {
+      margin-top: 8px;
+      font-size: 0.86rem;
+      color: var(--muted);
+    }
+
+    code {
+      background: #f3f4f6;
+      padding: 2px 6px;
+      border-radius: 8px;
+      font-size: 0.95em;
+    }
+
+    @media (max-width: 840px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .output-row {
+        flex-direction: column;
+      }
+
+      .copy-btn {
+        min-height: 42px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>GitHub Link Generator</h1>
+      <p>
+        Generate GitHub links from common URL patterns, then copy them as a plain URL,
+        markdown link, badge markdown, or HTML button.
+      </p>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <h2>Build Link</h2>
+
+        <div class="form-grid">
+          <div class="field full">
+            <label for="pattern">Link type</label>
+            <select id="pattern"></select>
+          </div>
+
+          <div class="field">
+            <label for="owner">Owner / Username</label>
+            <input id="owner" type="text" placeholder="monapdx" />
+          </div>
+
+          <div class="field">
+            <label for="repo">Repository</label>
+            <input id="repo" type="text" placeholder="Frontend-Widgets" />
+          </div>
+
+          <div class="field dynamic-field" data-field="branch">
+            <label for="branch">Branch</label>
+            <input id="branch" type="text" placeholder="main" value="main" />
+          </div>
+
+          <div class="field dynamic-field" data-field="path">
+            <label for="path">Path</label>
+            <input id="path" type="text" placeholder="src/index.js" />
+          </div>
+
+          <div class="field dynamic-field" data-field="template">
+            <label for="template">Issue template filename</label>
+            <input id="template" type="text" placeholder="add-template.yml" />
+          </div>
+
+          <div class="field dynamic-field" data-field="labels">
+            <label for="labels">Labels</label>
+            <input id="labels" type="text" placeholder="bug,help wanted" />
+          </div>
+
+          <div class="field dynamic-field" data-field="title">
+            <label for="title">Issue title</label>
+            <input id="title" type="text" placeholder="Suggestion: add new widget" />
+          </div>
+
+          <div class="field dynamic-field full" data-field="body">
+            <label for="body">Issue body</label>
+            <textarea id="body" placeholder="Write some default issue body text here..."></textarea>
+          </div>
+
+          <div class="field dynamic-field" data-field="discussionCategory">
+            <label for="discussionCategory">Discussion category</label>
+            <input id="discussionCategory" type="text" placeholder="ideas" />
+          </div>
+
+          <div class="field dynamic-field" data-field="wikiPage">
+            <label for="wikiPage">Wiki page</label>
+            <input id="wikiPage" type="text" placeholder="Home" />
+          </div>
+
+          <div class="field dynamic-field" data-field="base">
+            <label for="base">Compare base</label>
+            <input id="base" type="text" placeholder="main" value="main" />
+          </div>
+
+          <div class="field dynamic-field" data-field="head">
+            <label for="head">Compare head</label>
+            <input id="head" type="text" placeholder="feature-branch" />
+          </div>
+
+          <div class="field dynamic-field" data-field="commit">
+            <label for="commit">Commit SHA</label>
+            <input id="commit" type="text" placeholder="abc123def456" />
+          </div>
+
+          <div class="field dynamic-field" data-field="releaseTag">
+            <label for="releaseTag">Release tag</label>
+            <input id="releaseTag" type="text" placeholder="v1.0.0" />
+          </div>
+
+          <div class="field full">
+            <label for="linkText">Link text / button text</label>
+            <input id="linkText" type="text" placeholder="Open on GitHub" value="Open on GitHub" />
+          </div>
+
+          <div class="field">
+            <label for="badgeLabel">Badge label</label>
+            <input id="badgeLabel" type="text" placeholder="Live Demo" value="Open on GitHub" />
+          </div>
+
+          <div class="field">
+            <label for="badgeColor">Badge color</label>
+            <input id="badgeColor" type="text" placeholder="pink" value="pink" />
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="primary" id="generateBtn">Generate</button>
+          <button class="secondary" id="resetBtn" type="button">Reset</button>
+        </div>
+
+        <p class="inline-note" id="patternNote"></p>
+      </section>
+
+      <section class="card">
+        <h2>Output</h2>
+
+        <div class="output-block">
+          <label for="plainUrl">Plain URL</label>
+          <div class="output-row">
+            <input id="plainUrl" type="text" readonly />
+            <button class="copy-btn" data-copy-target="plainUrl">Copy</button>
+          </div>
+        </div>
+
+        <div class="output-block">
+          <label for="markdownLink">Markdown Link</label>
+          <div class="output-row">
+            <textarea id="markdownLink" readonly></textarea>
+            <button class="copy-btn" data-copy-target="markdownLink">Copy</button>
+          </div>
+        </div>
+
+        <div class="output-block">
+          <label for="badgeMarkdown">Badge Markdown</label>
+          <div class="output-row">
+            <textarea id="badgeMarkdown" readonly></textarea>
+            <button class="copy-btn" data-copy-target="badgeMarkdown">Copy</button>
+          </div>
+        </div>
+
+        <div class="output-block">
+          <label for="htmlLink">HTML Link/Button</label>
+          <div class="output-row">
+            <textarea id="htmlLink" readonly></textarea>
+            <button class="copy-btn" data-copy-target="htmlLink">Copy</button>
+          </div>
+        </div>
+
+        <div class="preview">
+          <strong>Preview</strong>
+          <div class="pattern-note" style="margin-top:8px;">Markdown badges do not render live in this preview, but the generated code is ready to paste into GitHub.</div>
+          <div style="margin-top:12px;">
+            <a id="liveLinkPreview" href="#" target="_blank" rel="noopener noreferrer">Open on GitHub</a>
+          </div>
+          <div class="badge-preview" style="margin-top:12px;">
+            <a id="liveBadgePreviewLink" href="#" target="_blank" rel="noopener noreferrer">
+              <img id="liveBadgePreviewImg" alt="Badge preview" />
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const patterns = {
+      repo: {
+        label: "Repository",
+        fields: ["owner", "repo"],
+        note: "Main repository URL.",
+        build: ({ owner, repo }) => `https://github.com/${owner}/${repo}`
+      },
+      issues: {
+        label: "Issues",
+        fields: ["owner", "repo"],
+        note: "Repository issues list.",
+        build: ({ owner, repo }) => `https://github.com/${owner}/${repo}/issues`
+      },
+      newIssue: {
+        label: "New Issue",
+        fields: ["owner", "repo", "title", "body", "labels"],
+        note: "Prefill a new issue with optional title, body, and labels.",
+        build: ({ owner, repo, title, body, labels }) => {
+          const params = new URLSearchParams();
+          if (title) params.set("title", title);
+          if (body) params.set("body", body);
+          if (labels) params.set("labels", labels);
+          const query = params.toString();
+          return `https://github.com/${owner}/${repo}/issues/new${query ? `?${query}` : ""}`;
+        }
+      },
+      issueTemplate: {
+        label: "Issue Template",
+        fields: ["owner", "repo", "template", "title", "body", "labels"],
+        note: "Open a specific issue template, with optional prefilled values.",
+        build: ({ owner, repo, template, title, body, labels }) => {
+          const params = new URLSearchParams();
+          if (template) params.set("template", template);
+          if (title) params.set("title", title);
+          if (body) params.set("body", body);
+          if (labels) params.set("labels", labels);
+          return `https://github.com/${owner}/${repo}/issues/new?${params.toString()}`;
+        }
+      },
+      pulls: {
+        label: "Pull Requests",
+        fields: ["owner", "repo"],
+        note: "Repository pull requests tab.",
+        build: ({ owner, repo }) => `https://github.com/${owner}/${repo}/pulls`
+      },
+      actions: {
+        label: "Actions",
+        fields: ["owner", "repo"],
+        note: "Repository Actions tab.",
+        build: ({ owner, repo }) => `https://github.com/${owner}/${repo}/actions`
+      },
+      discussions: {
+        label: "Discussions",
+        fields: ["owner", "repo"],
+        note: "Repository discussions home.",
+        build: ({ owner, repo }) => `https://github.com/${owner}/${repo}/discussions`
+      },
+      discussionCategory: {
+        label: "Discussion Category",
+        fields: ["owner", "repo", "discussionCategory"],
+        note: "Discussion category link.",
+        build: ({ owner, repo, discussionCategory }) =>
+          `https://github.com/${owner}/${repo}/discussions/categories/${encodeURIComponent(discussionCategory)}`
+      },
+      releases: {
+        label: "Releases",
+        fields: ["owner", "repo"],
+        note: "Repository releases page.",
+        build: ({ owner, repo }) => `https://github.com/${owner}/${repo}/releases`
+      },
+      latestRelease: {
+        label: "Latest Release",
+        fields: ["owner", "repo"],
+        note: "Redirects to the latest release.",
+        build: ({ owner, repo }) => `https://github.com/${owner}/${repo}/releases/latest`
+      },
+      releaseTag: {
+        label: "Specific Release Tag",
+        fields: ["owner", "repo", "releaseTag"],
+        note: "Direct link to a particular release tag.",
+        build: ({ owner, repo, releaseTag }) =>
+          `https://github.com/${owner}/${repo}/releases/tag/${encodeURIComponent(releaseTag)}`
+      },
+      wiki: {
+        label: "Wiki",
+        fields: ["owner", "repo"],
+        note: "Repository wiki home.",
+        build: ({ owner, repo }) => `https://github.com/${owner}/${repo}/wiki`
+      },
+      wikiPage: {
+        label: "Wiki Page",
+        fields: ["owner", "repo", "wikiPage"],
+        note: "Direct link to a wiki page.",
+        build: ({ owner, repo, wikiPage }) =>
+          `https://github.com/${owner}/${repo}/wiki/${encodeURIComponent(wikiPage)}`
+      },
+      pages: {
+        label: "GitHub Pages Site",
+        fields: ["owner", "repo"],
+        note: "Standard Pages URL pattern for a project site.",
+        build: ({ owner, repo }) => `https://${owner}.github.io/${repo}/`
+      },
+      file: {
+        label: "File View",
+        fields: ["owner", "repo", "branch", "path"],
+        note: "GitHub file view using /blob/.",
+        build: ({ owner, repo, branch, path }) =>
+          `https://github.com/${owner}/${repo}/blob/${branch}/${cleanPath(path)}`
+      },
+      rawFile: {
+        label: "Raw File",
+        fields: ["owner", "repo", "branch", "path"],
+        note: "Raw file URL from raw.githubusercontent.com.",
+        build: ({ owner, repo, branch, path }) =>
+          `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${cleanPath(path)}`
+      },
+      folder: {
+        label: "Folder View",
+        fields: ["owner", "repo", "branch", "path"],
+        note: "GitHub folder view using /tree/.",
+        build: ({ owner, repo, branch, path }) =>
+          `https://github.com/${owner}/${repo}/tree/${branch}/${cleanPath(path)}`
+      },
+      editFile: {
+        label: "Edit File",
+        fields: ["owner", "repo", "branch", "path"],
+        note: "Direct edit link for a file in the browser.",
+        build: ({ owner, repo, branch, path }) =>
+          `https://github.com/${owner}/${repo}/edit/${branch}/${cleanPath(path)}`
+      },
+      deleteFile: {
+        label: "Delete File",
+        fields: ["owner", "repo", "branch", "path"],
+        note: "Direct delete link for a file in the browser.",
+        build: ({ owner, repo, branch, path }) =>
+          `https://github.com/${owner}/${repo}/delete/${branch}/${cleanPath(path)}`
+      },
+      compare: {
+        label: "Compare Branches",
+        fields: ["owner", "repo", "base", "head"],
+        note: "Compare base and head refs.",
+        build: ({ owner, repo, base, head }) =>
+          `https://github.com/${owner}/${repo}/compare/${encodeURIComponent(base)}...${encodeURIComponent(head)}`
+      },
+      commit: {
+        label: "Commit",
+        fields: ["owner", "repo", "commit"],
+        note: "Direct commit URL.",
+        build: ({ owner, repo, commit }) =>
+          `https://github.com/${owner}/${repo}/commit/${encodeURIComponent(commit)}`
+      }
+    };
+
+    function cleanPath(path) {
+      return String(path || "").replace(/^\/+/, "");
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    function buildBadgeImageUrl(label, color) {
+      const safeLabel = encodeURIComponent(label || "Open on GitHub");
+      const safeColor = encodeURIComponent(color || "pink");
+      return `https://img.shields.io/badge/${safeLabel}-${safeColor}?style=for-the-badge&logo=github`;
+    }
+
+    const patternSelect = document.getElementById("pattern");
+    const patternNote = document.getElementById("patternNote");
+    const dynamicFields = document.querySelectorAll(".dynamic-field");
+
+    const inputs = {
+      owner: document.getElementById("owner"),
+      repo: document.getElementById("repo"),
+      branch: document.getElementById("branch"),
+      path: document.getElementById("path"),
+      template: document.getElementById("template"),
+      labels: document.getElementById("labels"),
+      title: document.getElementById("title"),
+      body: document.getElementById("body"),
+      discussionCategory: document.getElementById("discussionCategory"),
+      wikiPage: document.getElementById("wikiPage"),
+      base: document.getElementById("base"),
+      head: document.getElementById("head"),
+      commit: document.getElementById("commit"),
+      releaseTag: document.getElementById("releaseTag"),
+      linkText: document.getElementById("linkText"),
+      badgeLabel: document.getElementById("badgeLabel"),
+      badgeColor: document.getElementById("badgeColor")
+    };
+
+    const outputs = {
+      plainUrl: document.getElementById("plainUrl"),
+      markdownLink: document.getElementById("markdownLink"),
+      badgeMarkdown: document.getElementById("badgeMarkdown"),
+      htmlLink: document.getElementById("htmlLink")
+    };
+
+    const liveLinkPreview = document.getElementById("liveLinkPreview");
+    const liveBadgePreviewLink = document.getElementById("liveBadgePreviewLink");
+    const liveBadgePreviewImg = document.getElementById("liveBadgePreviewImg");
+
+    function populatePatternOptions() {
+      Object.entries(patterns).forEach(([key, config]) => {
+        const option = document.createElement("option");
+        option.value = key;
+        option.textContent = config.label;
+        patternSelect.appendChild(option);
+      });
+    }
+
+    function updateVisibleFields() {
+      const selected = patterns[patternSelect.value];
+      const needed = new Set(selected.fields);
+
+      dynamicFields.forEach((field) => {
+        const name = field.getAttribute("data-field");
+        field.classList.toggle("hidden", !needed.has(name));
+      });
+
+      patternNote.textContent = selected.note || "";
+    }
+
+    function getFormValues() {
+      return Object.fromEntries(
+        Object.entries(inputs).map(([key, el]) => [key, el.value.trim()])
+      );
+    }
+
+    function validate(values, selectedPattern) {
+      const required = selectedPattern.fields;
+      const missing = required.filter((key) => !values[key]);
+
+      if (missing.length) {
+        alert(`Please fill in: ${missing.join(", ")}`);
+        return false;
+      }
+
+      return true;
+    }
+
+    function generateOutputs() {
+      const selectedPattern = patterns[patternSelect.value];
+      const values = getFormValues();
+
+      if (!validate(values, selectedPattern)) return;
+
+      const url = selectedPattern.build(values);
+      const linkText = values.linkText || "Open on GitHub";
+      const badgeUrl = buildBadgeImageUrl(values.badgeLabel, values.badgeColor);
+
+      const markdownLink = `[${linkText}](${url})`;
+      const badgeMarkdown = `[![${values.badgeLabel || "Open on GitHub"}](${badgeUrl})(${url})`;
+      const htmlLink = `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(linkText)}</a>`;
+
+      outputs.plainUrl.value = url;
+      outputs.markdownLink.value = markdownLink;
+      outputs.badgeMarkdown.value = badgeMarkdown;
+      outputs.htmlLink.value = htmlLink;
+
+      liveLinkPreview.href = url;
+      liveLinkPreview.textContent = linkText;
+
+      liveBadgePreviewLink.href = url;
+      liveBadgePreviewImg.src = badgeUrl;
+      liveBadgePreviewImg.alt = values.badgeLabel || "Open on GitHub";
+    }
+
+    function resetForm() {
+      Object.values(inputs).forEach((el) => {
+        if (el.tagName === "TEXTAREA" || el.tagName === "INPUT") {
+          if (el.id === "branch" || el.id === "base") {
+            el.value = "main";
+          } else if (el.id === "linkText") {
+            el.value = "Open on GitHub";
+          } else if (el.id === "badgeLabel") {
+            el.value = "Open on GitHub";
+          } else if (el.id === "badgeColor") {
+            el.value = "pink";
+          } else {
+            el.value = "";
+          }
+        }
+      });
+
+      patternSelect.value = "repo";
+      updateVisibleFields();
+
+      Object.values(outputs).forEach((el) => (el.value = ""));
+      liveLinkPreview.href = "#";
+      liveLinkPreview.textContent = "Open on GitHub";
+      liveBadgePreviewLink.href = "#";
+      liveBadgePreviewImg.removeAttribute("src");
+      liveBadgePreviewImg.alt = "Badge preview";
+    }
+
+    async function copyTarget(id, button) {
+      const target = document.getElementById(id);
+      if (!target || !target.value) return;
+
+      try {
+        await navigator.clipboard.writeText(target.value);
+        const old = button.textContent;
+        button.textContent = "Copied";
+        setTimeout(() => {
+          button.textContent = old;
+        }, 1200);
+      } catch (err) {
+        alert("Copy failed. You can still copy it manually.");
+      }
+    }
+
+    document.getElementById("generateBtn").addEventListener("click", generateOutputs);
+    document.getElementById("resetBtn").addEventListener("click", resetForm);
+    patternSelect.addEventListener("change", updateVisibleFields);
+
+    document.querySelectorAll(".copy-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        copyTarget(btn.getAttribute("data-copy-target"), btn);
+      });
+    });
+
+    populatePatternOptions();
+    patternSelect.value = "repo";
+    updateVisibleFields();
+  </script>
+</body>
+</html>
