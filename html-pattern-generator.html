@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HTML Pattern Instance Generator</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f6f7fb;
+      color: #1f2937;
+    }
+    .app {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 20px;
+    }
+    .panel {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 1.5rem;
+    }
+    p {
+      margin: 0 0 16px;
+      line-height: 1.45;
+      color: #4b5563;
+    }
+    label {
+      display: block;
+      margin: 14px 0 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    textarea, input {
+      width: 100%;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      padding: 12px;
+      font: inherit;
+      background: #fff;
+    }
+    textarea {
+      min-height: 220px;
+      resize: vertical;
+      line-height: 1.45;
+    }
+    .hint {
+      margin-top: 8px;
+      font-size: 0.86rem;
+      color: #6b7280;
+    }
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 16px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      background: #111827;
+      color: #fff;
+    }
+    button.secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+    .output-grid {
+      display: grid;
+      gap: 16px;
+    }
+    .output-box {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .output-box h2 {
+      margin: 0;
+      padding: 12px 14px;
+      font-size: 0.95rem;
+      background: #f9fafb;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .output-box .content {
+      padding: 14px;
+    }
+    .output-toolbar {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .mini-btn {
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 0.88rem;
+      background: #eef2ff;
+      color: #1f2937;
+    }
+    #preview {
+      min-height: 240px;
+      background: linear-gradient(180deg, #ffffff 0%, #fbfbfd 100%);
+    }
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: Consolas, Monaco, monospace;
+      font-size: 0.9rem;
+    }
+    .example-card {
+      border: 1px dashed #cbd5e1;
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 14px;
+      background: #f8fafc;
+    }
+    .example-card code {
+      display: block;
+      white-space: pre-wrap;
+      font-family: Consolas, Monaco, monospace;
+      font-size: 0.85rem;
+      color: #0f172a;
+    }
+    @media (max-width: 860px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <section class="panel">
+      <h1>HTML Pattern Instance Generator</h1>
+      <p>
+        Paste an HTML pattern, choose how many copies you want, and use placeholders like
+        <strong>{{i}}</strong>, <strong>{{n}}</strong>, or <strong>{{i:02}}</strong>.
+      </p>
+
+      <label for="count">Number of instances</label>
+      <input id="count" type="number" min="1" value="6" />
+
+      <label for="pattern">HTML pattern</label>
+      <textarea id="pattern"><div class="card card-{{i}}">
+  <h3>Card {{i}}</h3>
+  <p>This is item {{i}} of {{n}}.</p>
+  <a href="#item-{{i:02}}">Open item {{i:02}}</a>
+</div></textarea>
+      <div class="hint">
+        Supported placeholders: {{i}} = current number, {{n}} = total count, {{i:02}} = zero-padded index.
+      </div>
+
+      <div class="buttons">
+        <button id="generateBtn">Generate</button>
+        <button id="copyBtn" class="secondary">Copy HTML</button>
+        <button id="copyPreviewBtn" class="secondary">Copy Preview HTML</button>
+        <button id="downloadBtn" class="secondary">Download .html</button>
+      </div>
+
+      <div class="example-card">
+        <strong>Example pattern idea</strong>
+        <code>&lt;li class="menu-item item-{{i}}"&gt;Menu Item {{i}}&lt;/li&gt;</code>
+      </div>
+    </section>
+
+    <section class="output-grid">
+      <div class="panel output-box">
+        <h2>Rendered preview</h2>
+        <div class="content">
+          <div class="output-toolbar">
+            <button id="copyRenderedBtn" class="mini-btn">Copy Rendered HTML</button>
+          </div>
+          <div id="preview"></div>
+        </div>
+      </div>
+
+      <div class="panel output-box">
+        <h2>Generated HTML</h2>
+        <div class="content">
+          <div class="output-toolbar">
+            <button id="copyCodeBtn" class="mini-btn">Copy Code</button>
+          </div>
+          <pre id="codeOutput"></pre>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const countInput = document.getElementById('count');
+    const patternInput = document.getElementById('pattern');
+    const preview = document.getElementById('preview');
+    const codeOutput = document.getElementById('codeOutput');
+    const generateBtn = document.getElementById('generateBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const copyPreviewBtn = document.getElementById('copyPreviewBtn');
+    const copyRenderedBtn = document.getElementById('copyRenderedBtn');
+    const copyCodeBtn = document.getElementById('copyCodeBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+
+    function padNumber(value, width) {
+      return String(value).padStart(width, '0');
+    }
+
+    function fillPattern(pattern, index, total) {
+      return pattern
+        .replace(/\{\{\s*n\s*\}\}/g, total)
+        .replace(/\{\{\s*i:(\d+)\s*\}\}/g, (_, width) => padNumber(index, Number(width)))
+        .replace(/\{\{\s*i\s*\}\}/g, index);
+    }
+
+    function generateInstances() {
+      const total = Math.max(1, Number(countInput.value) || 1);
+      const pattern = patternInput.value;
+      const parts = [];
+
+      for (let i = 1; i <= total; i += 1) {
+        parts.push(fillPattern(pattern, i, total));
+      }
+
+      const html = parts.join('\n\n');
+      preview.innerHTML = html;
+      codeOutput.textContent = html;
+      return html;
+    }
+
+    async function copyTextToClipboard(text, button, defaultLabel) {
+      try {
+        await navigator.clipboard.writeText(text);
+        button.textContent = 'Copied!';
+        setTimeout(() => {
+          button.textContent = defaultLabel;
+        }, 1200);
+      } catch (error) {
+        alert('Could not copy to clipboard.');
+      }
+    }
+
+    async function copyHtml() {
+      const html = generateInstances();
+      await copyTextToClipboard(html, copyBtn, 'Copy HTML');
+    }
+
+    async function copyPreviewHtml() {
+      generateInstances();
+      await copyTextToClipboard(preview.innerHTML, copyPreviewBtn, 'Copy Preview HTML');
+    }
+
+    async function copyRenderedHtml() {
+      generateInstances();
+      await copyTextToClipboard(preview.innerHTML, copyRenderedBtn, 'Copy Rendered HTML');
+    }
+
+    async function copyCodeHtml() {
+      const html = generateInstances();
+      await copyTextToClipboard(html, copyCodeBtn, 'Copy Code');
+    }
+
+    function downloadHtml() {
+      const html = generateInstances();
+      const blob = new Blob([html], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'generated-patterns.html';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    generateBtn.addEventListener('click', generateInstances);
+    copyBtn.addEventListener('click', copyHtml);
+    copyPreviewBtn.addEventListener('click', copyPreviewHtml);
+    copyRenderedBtn.addEventListener('click', copyRenderedHtml);
+    copyCodeBtn.addEventListener('click', copyCodeHtml);
+    downloadBtn.addEventListener('click', downloadHtml);
+
+    countInput.addEventListener('input', generateInstances);
+    patternInput.addEventListener('input', generateInstances);
+
+    generateInstances();
+  </script>
+</body>
+</html>
