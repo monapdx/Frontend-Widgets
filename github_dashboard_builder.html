@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GitHub Dashboard Builder</title>
+  <style>
+    :root {
+      --bg: #0b0c10;
+      --panel: #11131a;
+      --panel-2: #171923;
+      --soft: #202433;
+      --border: #2c3243;
+      --text: #f4f7ff;
+      --muted: #aab4cb;
+      --accent: #ff1493;
+      --accent-2: #ff4db2;
+      --danger: #fb7185;
+      --shadow: 0 16px 40px rgba(0,0,0,.35);
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background:
+        radial-gradient(circle at top right, rgba(255,20,147,.18), transparent 26%),
+        radial-gradient(circle at top left, rgba(86,130,255,.12), transparent 22%),
+        var(--bg);
+      color: var(--text);
+    }
+
+    button, input, textarea, select { font: inherit; }
+
+    .app {
+      display: grid;
+      grid-template-columns: 340px 1fr 1fr;
+      min-height: 100vh;
+    }
+
+    .sidebar, .builder, .preview {
+      border-right: 1px solid var(--border);
+      min-width: 0;
+    }
+
+    .preview { border-right: 0; }
+
+    .pane {
+      padding: 20px;
+      height: 100vh;
+      overflow: auto;
+    }
+
+    .hero { margin-bottom: 18px; }
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: 1.45rem;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+    .hero p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+
+    .panel {
+      background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+
+    .panel h2, .panel h3 { margin: 0 0 10px; font-size: 1rem; }
+    .panel p.small, .small { margin: 0; color: var(--muted); font-size: 0.88rem; }
+
+    .button-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    button {
+      border: 1px solid var(--border);
+      background: var(--soft);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: .18s ease;
+    }
+
+    button:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    button.primary {
+      background: linear-gradient(180deg, var(--accent), var(--accent-2));
+      border-color: transparent;
+      color: white;
+      font-weight: 700;
+    }
+
+    button.ghost { background: transparent; }
+    button.danger {
+      background: rgba(251, 113, 133, 0.12);
+      color: #ffd7df;
+      border-color: rgba(251, 113, 133, 0.35);
+    }
+
+    .block-types {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .block-types button {
+      text-align: left;
+      min-height: 64px;
+      font-size: 0.92rem;
+      line-height: 1.2;
+    }
+
+    .block-types span {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .list { display: grid; gap: 10px; }
+
+    .block-card {
+      border: 1px solid var(--border);
+      background: var(--panel);
+      border-radius: 16px;
+      padding: 12px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .block-card header {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .block-card header strong { font-size: 0.98rem; }
+    .meta {
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; }
+    .toolbar button { padding: 7px 10px; font-size: 0.85rem; }
+
+    .field { display: grid; gap: 6px; }
+    .field label { font-size: 0.84rem; color: var(--muted); font-weight: 600; }
+
+    .field input,
+    .field textarea,
+    .field select {
+      width: 100%;
+      background: var(--panel-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 12px;
+      outline: none;
+    }
+
+    .field textarea { resize: vertical; min-height: 88px; }
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(255,20,147,.14);
+    }
+
+    pre, .markdown-output {
+      background: #0a0d14;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      line-height: 1.5;
+      font-size: 0.93rem;
+    }
+
+    .preview-box {
+      background: #0a0d14;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      line-height: 1.55;
+    }
+
+    .preview-box h1,
+    .preview-box h2,
+    .preview-box h3 { margin-top: 1.1em; margin-bottom: 0.45em; }
+    .preview-box h1:first-child { margin-top: 0; }
+    .preview-box code {
+      background: rgba(255,255,255,.06);
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    .preview-box table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid var(--border);
+      margin: 12px 0;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .preview-box th,
+    .preview-box td {
+      padding: 10px 12px;
+      border-top: 1px solid var(--border);
+      vertical-align: top;
+      text-align: left;
+    }
+
+    .preview-box thead th {
+      background: rgba(255,255,255,.04);
+      border-top: 0;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.05);
+      color: var(--muted);
+      font-size: 0.76rem;
+      border: 1px solid var(--border);
+      margin-bottom: 12px;
+    }
+
+    .empty {
+      border: 1px dashed var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 1180px) {
+      .app { grid-template-columns: 320px 1fr; }
+      .preview {
+        grid-column: 1 / -1;
+        border-top: 1px solid var(--border);
+      }
+      .preview .pane { height: auto; min-height: 40vh; }
+    }
+
+    @media (max-width: 760px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar, .builder, .preview {
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .pane { height: auto; }
+      .button-grid, .block-types { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="pane">
+        <div class="hero">
+          <h1>GitHub Dashboard Builder</h1>
+          <p>Build GitHub-friendly markdown dashboards, READMEs, profile pages, and project hubs from reusable blocks.</p>
+        </div>
+
+        <section class="panel">
+          <h2>Project</h2>
+          <div class="field">
+            <label for="docName">Output filename</label>
+            <input id="docName" type="text" value="README.md" />
+          </div>
+          <div class="field" style="margin-top:10px;">
+            <label for="docTitle">Internal project label</label>
+            <input id="docTitle" type="text" value="GitHub Dashboard" />
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>Presets</h2>
+          <div class="button-grid">
+            <button data-preset="readme">README</button>
+            <button data-preset="profile">Profile README</button>
+            <button data-preset="docs">Docs Hub</button>
+            <button data-preset="roadmap">Roadmap</button>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>Add block</h2>
+          <div class="block-types" id="addBlockButtons"></div>
+        </section>
+
+        <section class="panel">
+          <h2>Export</h2>
+          <div class="button-grid">
+            <button class="primary" id="copyMarkdownBtn">Copy .md</button>
+            <button id="downloadMarkdownBtn">Download .md</button>
+            <button id="downloadJsonBtn">Download JSON</button>
+            <button id="loadJsonBtn">Load JSON</button>
+          </div>
+          <input id="jsonInput" class="hidden" type="file" accept="application/json" />
+        </section>
+      </div>
+    </aside>
+
+    <main class="builder">
+      <div class="pane">
+        <div class="pill">Builder</div>
+        <div id="blocksList" class="list"></div>
+      </div>
+    </main>
+
+    <section class="preview">
+      <div class="pane">
+        <div class="pill">Generated Markdown</div>
+        <pre id="markdownOutput" class="markdown-output"></pre>
+        <div class="pill">Quick Preview</div>
+        <div id="renderedPreview" class="preview-box"></div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const BLOCK_TYPES = {
+      heading: { label: 'Heading', hint: 'Title and intro', defaults: () => ({ level: 1, text: 'Project Title', body: 'A short introduction or project summary.' }) },
+      badges: { label: 'Badges', hint: 'Shields and status', defaults: () => ({ items: '[![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](#license)\n[![Demo](https://img.shields.io/badge/demo-live-hotpink?style=flat-square)](https://example.com)' }) },
+      links: { label: 'Quick Links', hint: 'Jump links or CTAs', defaults: () => ({ items: 'Live Demo|https://example.com\nOpen Issues|https://github.com/owner/repo/issues\nDocumentation|#documentation' }) },
+      paragraph: { label: 'Paragraph', hint: 'Freeform text', defaults: () => ({ title: 'Overview', body: 'Write a short paragraph here using plain markdown-friendly text.' }) },
+      toc: { label: 'Table of Contents', hint: 'Auto-generated links', defaults: () => ({}) },
+      checklist: { label: 'Checklist', hint: 'Roadmap/tasks', defaults: () => ({ title: 'Roadmap', items: 'true|Launch MVP\nfalse|Add JSON import/export presets\nfalse|Publish demo on GitHub Pages' }) },
+      table: { label: 'Table', hint: 'Structured info', defaults: () => ({ title: 'Feature Matrix', headers: 'Feature|Status|Notes', rows: 'Markdown export|Done|Downloads a .md file\nJSON config|Done|Export and import layouts\nDrag and drop|Planned|Could be added later' }) },
+      details: { label: 'Details', hint: 'Collapsible section', defaults: () => ({ summary: 'See more', body: 'Put extra notes, setup instructions, or FAQ content here.' }) },
+      code: { label: 'Code Block', hint: 'Snippet or shell command', defaults: () => ({ title: 'Install', language: 'bash', body: 'npm install\nnpm run dev' }) },
+      image: { label: 'Image', hint: 'Screenshot or banner', defaults: () => ({ alt: 'Project screenshot', url: 'https://placehold.co/1200x700/png', title: 'Preview' }) },
+      quote: { label: 'Quote', hint: 'Callout or note', defaults: () => ({ body: 'Built for people who want GitHub pages that feel useful, clear, and intentional.' }) },
+      buttons: { label: 'Buttons', hint: 'Badge-style links', defaults: () => ({ items: 'Star Repo|https://github.com/owner/repo|https://img.shields.io/badge/Star-Repo-ff69b4?style=for-the-badge\nLive Demo|https://example.com|https://img.shields.io/badge/Live-Demo-111827?style=for-the-badge' }) },
+      divider: { label: 'Divider', hint: 'Horizontal rule', defaults: () => ({}) },
+      custom: { label: 'Custom Markdown', hint: 'Paste your own block', defaults: () => ({ body: '## Custom Section\n\nAdd any markdown here.' }) }
+    };
+
+    const state = { docName: 'README.md', docTitle: 'GitHub Dashboard', blocks: [] };
+
+    const blocksList = document.getElementById('blocksList');
+    const markdownOutput = document.getElementById('markdownOutput');
+    const renderedPreview = document.getElementById('renderedPreview');
+    const addBlockButtons = document.getElementById('addBlockButtons');
+    const docNameInput = document.getElementById('docName');
+    const docTitleInput = document.getElementById('docTitle');
+    const jsonInput = document.getElementById('jsonInput');
+
+    function uid() {
+      return Math.random().toString(36).slice(2, 10);
+    }
+
+    function escapeHtml(value) {
+      return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function slugify(value) {
+      return String(value || '')
+        .toLowerCase()
+        .trim()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+    }
+
+    function splitLines(value) {
+      return String(value || '').split('\n').map(line => line.trim()).filter(Boolean);
+    }
+
+    function splitPipe(value) {
+      return String(value || '').split('|').map(part => part.trim());
+    }
+
+    function parsePipeLines(value) {
+      return splitLines(value).map(splitPipe);
+    }
+
+    function makeBlock(type, overrides = {}) {
+      return { id: uid(), type, data: { ...BLOCK_TYPES[type].defaults(), ...overrides } };
+    }
+
+    function addBlock(type) {
+      if (!BLOCK_TYPES[type]) return;
+      state.blocks.push(makeBlock(type));
+      render();
+    }
+
+    function removeBlock(id) {
+      state.blocks = state.blocks.filter(block => block.id !== id);
+      render();
+    }
+
+    function moveBlock(id, direction) {
+      const index = state.blocks.findIndex(block => block.id === id);
+      if (index === -1) return;
+      const nextIndex = direction === 'up' ? index - 1 : index + 1;
+      if (nextIndex < 0 || nextIndex >= state.blocks.length) return;
+      const copy = state.blocks.slice();
+      [copy[index], copy[nextIndex]] = [copy[nextIndex], copy[index]];
+      state.blocks = copy;
+      render();
+    }
+
+    function updateBlock(id, key, value) {
+      const block = state.blocks.find(item => item.id === id);
+      if (!block) return;
+      block.data[key] = value;
+      renderMarkdownOnly();
+      saveState();
+    }
+
+    function saveState() {
+      localStorage.setItem('github-dashboard-builder-state-v2', JSON.stringify(state));
+    }
+
+    function extractHeadingTitles() {
+      return state.blocks.map(block => {
+        if (block.type === 'heading') return block.data.text;
+        if (['paragraph', 'table', 'checklist', 'code', 'image'].includes(block.type)) return block.data.title;
+        return '';
+      }).filter(Boolean);
+    }
+
+    function buildMarkdownForBlock(block) {
+      const d = block.data || {};
+
+      if (block.type === 'heading') {
+        const level = Math.max(1, Math.min(3, Number(d.level || 1)));
+        return '#'.repeat(level) + ' ' + (d.text || 'Heading') + '\n\n' + (d.body || '');
+      }
+      if (block.type === 'badges') return d.items || '';
+      if (block.type === 'links') {
+        const rows = parsePipeLines(d.items).map(parts => `- [${parts[0] || 'Link'}](${parts[1] || '#'})`);
+        return '## Quick Links\n\n' + rows.join('\n');
+      }
+      if (block.type === 'paragraph') return '## ' + (d.title || 'Section') + '\n\n' + (d.body || '');
+      if (block.type === 'toc') {
+        const items = extractHeadingTitles();
+        const lines = items.length ? items.map(item => `- [${item}](#${slugify(item)})`).join('\n') : '- No headings yet';
+        return '## Table of Contents\n\n' + lines;
+      }
+      if (block.type === 'checklist') {
+        const rows = parsePipeLines(d.items).map(parts => `- [${parts[0] === 'true' ? 'x' : ' '}] ${parts[1] || ''}`);
+        return '## ' + (d.title || 'Checklist') + '\n\n' + rows.join('\n');
+      }
+      if (block.type === 'table') {
+        const headers = splitPipe(d.headers || 'Column 1|Column 2');
+        const rows = splitLines(d.rows).map(splitPipe);
+        const head = '| ' + headers.join(' | ') + ' |';
+        const divider = '| ' + headers.map(() => '---').join(' | ') + ' |';
+        const body = rows.map(row => '| ' + headers.map((_, i) => row[i] || '').join(' | ') + ' |').join('\n');
+        return '## ' + (d.title || 'Table') + '\n\n' + [head, divider, body].filter(Boolean).join('\n');
+      }
+      if (block.type === 'details') return `<details>\n<summary>${d.summary || 'See more'}</summary>\n\n${d.body || ''}\n\n</details>`;
+      if (block.type === 'code') return `## ${d.title || 'Code'}\n\n\`\`\`${d.language || ''}\n${d.body || ''}\n\`\`\``;
+      if (block.type === 'image') return `## ${d.title || 'Image'}\n\n![${d.alt || ''}](${d.url || ''})`;
+      if (block.type === 'quote') return splitLines(d.body).map(line => `> ${line}`).join('\n');
+      if (block.type === 'buttons') return parsePipeLines(d.items).map(parts => `[![${parts[0] || 'Button'}](${parts[2] || ''})](${parts[1] || '#'})`).join('\n');
+      if (block.type === 'divider') return '---';
+      if (block.type === 'custom') return d.body || '';
+      return '';
+    }
+
+    function generateMarkdown() {
+      return state.blocks.map(buildMarkdownForBlock).filter(Boolean).join('\n\n');
+    }
+
+    function renderField(block, key, label, type = 'text', placeholder = '') {
+      const value = block.data[key] == null ? '' : String(block.data[key]);
+      const safePlaceholder = escapeHtml(placeholder);
+
+      if (type === 'textarea') {
+        return `<div class="field"><label>${label}</label><textarea data-id="${block.id}" data-key="${key}" placeholder="${safePlaceholder}">${escapeHtml(value)}</textarea></div>`;
+      }
+      if (type === 'select-level') {
+        return `<div class="field"><label>${label}</label><select data-id="${block.id}" data-key="${key}">${[1,2,3].map(n => `<option value="${n}"${String(n) === value ? ' selected' : ''}>H${n}</option>`).join('')}</select></div>`;
+      }
+      return `<div class="field"><label>${label}</label><input data-id="${block.id}" data-key="${key}" type="text" value="${escapeHtml(value)}" placeholder="${safePlaceholder}"></div>`;
+    }
+
+    function blockFields(block) {
+      if (block.type === 'heading') return renderField(block, 'level', 'Heading level', 'select-level') + renderField(block, 'text', 'Heading text') + renderField(block, 'body', 'Body text', 'textarea');
+      if (block.type === 'badges') return renderField(block, 'items', 'One badge markdown snippet per line', 'textarea');
+      if (block.type === 'links') return renderField(block, 'items', 'One link per line: Label|URL', 'textarea');
+      if (block.type === 'paragraph') return renderField(block, 'title', 'Section title') + renderField(block, 'body', 'Paragraph text', 'textarea');
+      if (block.type === 'toc') return '<p class="small">This block auto-builds links from your current heading-like sections.</p>';
+      if (block.type === 'checklist') return renderField(block, 'title', 'Checklist title') + renderField(block, 'items', 'One item per line: true|Label or false|Label', 'textarea');
+      if (block.type === 'table') return renderField(block, 'title', 'Table title') + renderField(block, 'headers', 'Headers: col1|col2|col3') + renderField(block, 'rows', 'Rows: one row per line, values separated by |', 'textarea');
+      if (block.type === 'details') return renderField(block, 'summary', 'Summary text') + renderField(block, 'body', 'Hidden content', 'textarea');
+      if (block.type === 'code') return renderField(block, 'title', 'Code section title') + renderField(block, 'language', 'Code fence language') + renderField(block, 'body', 'Code', 'textarea');
+      if (block.type === 'image') return renderField(block, 'title', 'Image section title') + renderField(block, 'alt', 'Alt text') + renderField(block, 'url', 'Image URL');
+      if (block.type === 'quote') return renderField(block, 'body', 'Quoted text', 'textarea');
+      if (block.type === 'buttons') return renderField(block, 'items', 'One button per line: Label|URL|ShieldImageURL', 'textarea');
+      if (block.type === 'divider') return '<p class="small">Inserts a horizontal rule.</p>';
+      if (block.type === 'custom') return renderField(block, 'body', 'Custom markdown', 'textarea');
+      return '';
+    }
+
+    function renderBlocks() {
+      if (!state.blocks.length) {
+        blocksList.innerHTML = '<div class="empty">No blocks yet. Add one from the left to start building your markdown dashboard.</div>';
+        return;
+      }
+
+      blocksList.innerHTML = state.blocks.map((block, index) => `
+        <article class="block-card">
+          <header>
+            <div>
+              <strong>${BLOCK_TYPES[block.type].label}</strong>
+              <div class="meta">Block ${index + 1} · ${block.type}</div>
+            </div>
+            <div class="toolbar">
+              <button class="ghost" data-action="up" data-id="${block.id}">↑</button>
+              <button class="ghost" data-action="down" data-id="${block.id}">↓</button>
+              <button class="danger" data-action="delete" data-id="${block.id}">Delete</button>
+            </div>
+          </header>
+          ${blockFields(block)}
+        </article>
+      `).join('');
+    }
+
+    function isTableLine(line) {
+      const trimmed = line.trim();
+      return trimmed.startsWith('|') && trimmed.endsWith('|');
+    }
+
+    function isDividerRow(line) {
+      const cells = line.trim().slice(1, -1).split('|').map(cell => cell.trim());
+      return cells.length > 0 && cells.every(cell => /^:?-{3,}:?$/.test(cell));
+    }
+
+    function renderPreview(markdown) {
+      const lines = markdown.split('\n');
+      const html = [];
+      let inCode = false;
+      let inList = false;
+      let tableBuffer = [];
+
+      function closeList() {
+        if (inList) {
+          html.push('</ul>');
+          inList = false;
+        }
+      }
+
+      function flushTable() {
+        if (!tableBuffer.length) return;
+
+        if (tableBuffer.length < 2) {
+          tableBuffer.forEach(line => {
+            html.push('<div style="overflow:auto"><code>' + escapeHtml(line) + '</code></div>');
+          });
+          tableBuffer = [];
+          return;
+        }
+
+        const rows = tableBuffer.map(line => line.trim().slice(1, -1).split('|').map(cell => cell.trim()));
+        const header = rows[0];
+        const bodyRows = isDividerRow(tableBuffer[1]) ? rows.slice(2) : rows.slice(1);
+
+        let tableHtml = '<div style="overflow:auto"><table><thead><tr>';
+        tableHtml += header.map(cell => `<th>${escapeHtml(cell)}</th>`).join('');
+        tableHtml += '</tr></thead>';
+
+        if (bodyRows.length) {
+          tableHtml += '<tbody>';
+          tableHtml += bodyRows.map(row => '<tr>' + header.map((_, i) => `<td>${escapeHtml(row[i] || '')}</td>`).join('') + '</tr>').join('');
+          tableHtml += '</tbody>';
+        }
+
+        tableHtml += '</table></div>';
+        html.push(tableHtml);
+        tableBuffer = [];
+      }
+
+      for (const line of lines) {
+        if (line.startsWith('```')) {
+          flushTable();
+          closeList();
+          if (!inCode) {
+            inCode = true;
+            html.push('<pre><code>');
+          } else {
+            inCode = false;
+            html.push('</code></pre>');
+          }
+          continue;
+        }
+
+        if (inCode) {
+          html.push(escapeHtml(line) + '\n');
+          continue;
+        }
+
+        if (isTableLine(line)) {
+          closeList();
+          tableBuffer.push(line);
+          continue;
+        } else {
+          flushTable();
+        }
+
+        if (/^- /.test(line)) {
+          if (!inList) {
+            html.push('<ul>');
+            inList = true;
+          }
+          html.push('<li>' + escapeHtml(line.replace(/^- /, '')) + '</li>');
+          continue;
+        }
+
+        closeList();
+
+        if (!line.trim()) {
+          html.push('');
+        } else if (line === '---') {
+          html.push('<hr style="border:none;border-top:1px solid #2c3243; margin:20px 0;">');
+        } else if (line.startsWith('# ')) {
+          html.push('<h1>' + escapeHtml(line.slice(2)) + '</h1>');
+        } else if (line.startsWith('## ')) {
+          html.push('<h2>' + escapeHtml(line.slice(3)) + '</h2>');
+        } else if (line.startsWith('### ')) {
+          html.push('<h3>' + escapeHtml(line.slice(4)) + '</h3>');
+        } else if (line.startsWith('> ')) {
+          html.push('<blockquote>' + escapeHtml(line.slice(2)) + '</blockquote>');
+        } else if (line.startsWith('<details>') || line.startsWith('<summary>') || line.startsWith('</details>')) {
+          html.push('<div><code>' + escapeHtml(line) + '</code></div>');
+        } else {
+          html.push('<p>' + escapeHtml(line) + '</p>');
+        }
+      }
+
+      flushTable();
+      closeList();
+      renderedPreview.innerHTML = html.join('\n') || '<p class="small">Nothing yet.</p>';
+    }
+
+    function renderMarkdownOnly() {
+      const markdown = generateMarkdown();
+      markdownOutput.textContent = markdown || 'Nothing yet.';
+      renderPreview(markdown);
+    }
+
+    function render() {
+      state.docName = docNameInput.value.trim() || 'README.md';
+      state.docTitle = docTitleInput.value.trim() || 'GitHub Dashboard';
+      renderBlocks();
+      renderMarkdownOnly();
+      saveState();
+    }
+
+    function downloadFile(name, content, mime) {
+      const blob = new Blob([content], { type: mime });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function applyPreset(name) {
+      if (name === 'readme') {
+        state.docName = 'README.md';
+        state.docTitle = 'Project README';
+        state.blocks = [
+          makeBlock('heading', { text: 'Project Name', body: 'A short and compelling overview of what this project does and why it exists.' }),
+          makeBlock('badges'),
+          makeBlock('links'),
+          makeBlock('toc'),
+          makeBlock('paragraph', { title: 'Features', body: '- Fast to use\n- GitHub-friendly output\n- Downloadable markdown' }),
+          makeBlock('checklist', { title: 'Roadmap', items: 'true|Core builder\ntrue|Markdown export\nfalse|More advanced templates' }),
+          makeBlock('table'),
+          makeBlock('details', { summary: 'Setup instructions', body: '1. Clone the repo\n2. Open the file\n3. Start customizing blocks' })
+        ];
+      }
+
+      if (name === 'profile') {
+        state.docName = 'README.md';
+        state.docTitle = 'Profile README';
+        state.blocks = [
+          makeBlock('heading', { text: 'Hi, I am Your Name', body: 'I build unusual tools, experiments, and interfaces on the open web.' }),
+          makeBlock('buttons', { items: 'Portfolio|https://example.com|https://img.shields.io/badge/View-Portfolio-ff69b4?style=for-the-badge\nGitHub|https://github.com/username|https://img.shields.io/badge/GitHub-Profile-111827?style=for-the-badge' }),
+          makeBlock('paragraph', { title: 'About Me', body: 'A few lines about what you make, what you care about, and what kind of projects people will find here.' }),
+          makeBlock('table', { title: 'Current Focus', headers: 'Area|Details', rows: 'Frontend tools|Generators and visual builders\nGitHub UX|Contributor-friendly repo tooling' }),
+          makeBlock('checklist', { title: 'Now', items: 'false|Shipping a new tool\nfalse|Improving README polish\nfalse|Exploring playful web ideas' })
+        ];
+      }
+
+      if (name === 'docs') {
+        state.docName = 'docs-index.md';
+        state.docTitle = 'Docs Hub';
+        state.blocks = [
+          makeBlock('heading', { text: 'Documentation Hub', body: 'Start here to find setup instructions, guides, references, and project links.' }),
+          makeBlock('toc'),
+          makeBlock('table', { title: 'Guides', headers: 'Guide|Purpose|Link', rows: 'Getting Started|Initial setup|#getting-started\nContributing|How to help|#contributing\nFAQ|Common questions|#faq' }),
+          makeBlock('details', { summary: 'FAQ', body: '- Question one\n- Question two\n- Question three' }),
+          makeBlock('paragraph', { title: 'Resources', body: '- Design assets\n- Screenshots\n- Sample configs' })
+        ];
+      }
+
+      if (name === 'roadmap') {
+        state.docName = 'ROADMAP.md';
+        state.docTitle = 'Roadmap';
+        state.blocks = [
+          makeBlock('heading', { text: 'Project Roadmap', body: 'Planned work, future improvements, and active priorities.' }),
+          makeBlock('checklist', { title: 'Phase 1', items: 'true|Define scope\ntrue|Create first prototype\nfalse|Test with users' }),
+          makeBlock('checklist', { title: 'Phase 2', items: 'false|Refine UX\nfalse|Add more block types\nfalse|Publish landing page' }),
+          makeBlock('quote', { body: 'A roadmap is most useful when it stays honest, concrete, and easy to scan.' })
+        ];
+      }
+
+      docNameInput.value = state.docName;
+      docTitleInput.value = state.docTitle;
+      render();
+    }
+
+    function wireEvents() {
+      addBlockButtons.innerHTML = Object.entries(BLOCK_TYPES).map(([type, info]) => `<button data-type="${type}">${info.label}<span>${info.hint}</span></button>`).join('');
+
+      addBlockButtons.addEventListener('click', event => {
+        const button = event.target.closest('button[data-type]');
+        if (!button) return;
+        addBlock(button.dataset.type);
+      });
+
+      blocksList.addEventListener('input', event => {
+        const el = event.target;
+        const id = el.dataset.id;
+        const key = el.dataset.key;
+        if (!id || !key) return;
+        updateBlock(id, key, el.value);
+      });
+
+      blocksList.addEventListener('click', event => {
+        const button = event.target.closest('button[data-action]');
+        if (!button) return;
+        const { action, id } = button.dataset;
+        if (action === 'delete') removeBlock(id);
+        if (action === 'up') moveBlock(id, 'up');
+        if (action === 'down') moveBlock(id, 'down');
+      });
+
+      docNameInput.addEventListener('input', render);
+      docTitleInput.addEventListener('input', render);
+
+      document.querySelectorAll('[data-preset]').forEach(button => {
+        button.addEventListener('click', () => applyPreset(button.dataset.preset));
+      });
+
+      document.getElementById('copyMarkdownBtn').addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(generateMarkdown());
+          alert('Markdown copied to clipboard.');
+        } catch {
+          alert('Clipboard copy failed in this browser.');
+        }
+      });
+
+      document.getElementById('downloadMarkdownBtn').addEventListener('click', () => {
+        downloadFile(state.docName || 'README.md', generateMarkdown(), 'text/markdown;charset=utf-8');
+      });
+
+      document.getElementById('downloadJsonBtn').addEventListener('click', () => {
+        const safeName = (state.docTitle || 'dashboard').replace(/\s+/g, '-').toLowerCase() + '.json';
+        downloadFile(safeName, JSON.stringify(state, null, 2), 'application/json;charset=utf-8');
+      });
+
+      document.getElementById('loadJsonBtn').addEventListener('click', () => {
+        jsonInput.click();
+      });
+
+      jsonInput.addEventListener('change', event => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          try {
+            const parsed = JSON.parse(String(reader.result || ''));
+            if (!Array.isArray(parsed.blocks)) throw new Error('Invalid config');
+            state.docName = parsed.docName || 'README.md';
+            state.docTitle = parsed.docTitle || 'GitHub Dashboard';
+            state.blocks = parsed.blocks;
+            docNameInput.value = state.docName;
+            docTitleInput.value = state.docTitle;
+            render();
+          } catch {
+            alert('That JSON file could not be loaded.');
+          }
+        };
+        reader.readAsText(file);
+        event.target.value = '';
+      });
+    }
+
+    function loadSavedState() {
+      const saved = localStorage.getItem('github-dashboard-builder-state-v2');
+      if (!saved) {
+        applyPreset('readme');
+        return;
+      }
+      try {
+        const parsed = JSON.parse(saved);
+        if (!Array.isArray(parsed.blocks)) throw new Error('Bad state');
+        state.docName = parsed.docName || 'README.md';
+        state.docTitle = parsed.docTitle || 'GitHub Dashboard';
+        state.blocks = parsed.blocks;
+        docNameInput.value = state.docName;
+        docTitleInput.value = state.docTitle;
+        render();
+      } catch {
+        applyPreset('readme');
+      }
+    }
+
+    wireEvents();
+    loadSavedState();
+  </script>
+</body>
+</html>

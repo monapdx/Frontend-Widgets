@@ -411,6 +411,12 @@
                 <label for="targetUrl">Target URL</label>
                 <input id="targetUrl" type="text" value="https://github.com/monapdx/90s-collage-maker/issues/new?template=suggest-category.yml" />
               </div>
+
+              <div class="field">
+                <label>Emoji picker</label>
+                <div class="chip-row" id="emojiPicker"></div>
+                <p class="hint">Click an emoji to add it to the badge text field.</p>
+              </div>
             </div>
 
             <div class="stack">
@@ -469,6 +475,7 @@
               <button class="tab active" data-tab="markdown" type="button">Markdown</button>
               <button class="tab" data-tab="html" type="button">HTML</button>
               <button class="tab" data-tab="url" type="button">Badge URL</button>
+              <button class="tab" data-tab="plain-link" type="button">Plain Link</button>
             </div>
 
             <div class="tab-panel active" id="panel-markdown">
@@ -503,6 +510,28 @@
                 </div>
                 <div class="copy-row">
                   <button class="btn accent" type="button" data-copy="urlOutput">Copy URL</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="tab-panel" id="panel-plain-link">
+              <div class="code-box layout-stack">
+                <div class="mini-grid">
+                  <div class="field">
+                    <label for="plainLinkText">Link text</label>
+                    <input id="plainLinkText" type="text" value="Suggest Category" />
+                  </div>
+                  <div class="field">
+                    <label for="plainLinkUrl">Link URL</label>
+                    <input id="plainLinkUrl" type="text" value="https://github.com/monapdx/90s-collage-maker/issues/new?template=suggest-category.yml" />
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="plainLinkOutput">Plain Markdown link</label>
+                  <textarea id="plainLinkOutput" readonly></textarea>
+                </div>
+                <div class="copy-row">
+                  <button class="btn accent" type="button" data-copy="plainLinkOutput">Copy Plain Link</button>
                 </div>
               </div>
             </div>
@@ -557,6 +586,21 @@
       { name: "Gray", value: "6b7280" }
     ];
 
+    const EMOJIS = [
+  "📁","✨","📝","📌","💖","🔥","🎀","🧩","🛠️","📚","🎨","🚀","💡","⭐","🔗","🗂️","📎","💬","✅","🎉",
+  "💊", /* pill */
+  "💰","💸","🪙", /* money */
+  "🩺","🏥","⚕️","💉", /* healthcare */
+  "✈️","🌍","🧳", /* travel */
+  "📣","✊","🗳️","⚖️", /* activism/politics */
+  "📱","☎️", /* phone */
+  "⚖️","📜","🏛️", /* legal/law */
+  "📊","📈","📉","🧮", /* data/stats */
+  "🔒","🛡️","🕶️", /* privacy/safety */
+  "🎙️","🎧", /* podcasts */
+  "🎬","🍿" /* films */
+];
+
     const els = {
       singleSegment: document.getElementById("singleSegment"),
       leftText: document.getElementById("leftText"),
@@ -575,6 +619,10 @@
       htmlOutput: document.getElementById("htmlOutput"),
       urlOutput: document.getElementById("urlOutput"),
       colorChips: document.getElementById("colorChips"),
+      emojiPicker: document.getElementById("emojiPicker"),
+      plainLinkText: document.getElementById("plainLinkText"),
+      plainLinkUrl: document.getElementById("plainLinkUrl"),
+      plainLinkOutput: document.getElementById("plainLinkOutput"),
       resetBtn: document.getElementById("resetBtn")
     };
 
@@ -588,7 +636,9 @@
       color: "8a2be2",
       logo: "",
       logoColor: "",
-      labelColor: ""
+      labelColor: "",
+      plainLinkText: "Suggest Category",
+      plainLinkUrl: "https://github.com/monapdx/90s-collage-maker/issues/new?template=suggest-category.yml"
     };
 
     function encodeSegment(text) {
@@ -635,6 +685,12 @@
       return `<a href="${target}"><img alt="${alt}" src="${badgeUrl}" /></a>`;
     }
 
+    function buildPlainMarkdownLink() {
+      const text = (els.plainLinkText.value || "Link").trim();
+      const url = (els.plainLinkUrl.value || "https://github.com/").trim();
+      return `[${text}](${url})`;
+    }
+
     function escapeHtml(str) {
       return str
         .replaceAll("&", "&amp;")
@@ -661,6 +717,7 @@
       els.markdownOutput.value = markdown;
       els.htmlOutput.value = html;
       els.urlOutput.value = badgeUrl;
+      els.plainLinkOutput.value = buildPlainMarkdownLink();
     }
 
     function renderColorChips() {
@@ -678,6 +735,22 @@
       });
     }
 
+    function renderEmojiPicker() {
+      els.emojiPicker.innerHTML = "";
+      EMOJIS.forEach((emoji) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "chip";
+        button.textContent = emoji;
+        button.addEventListener("click", () => {
+          const current = els.leftText.value.trim();
+          els.leftText.value = current ? `${current} ${emoji}` : emoji;
+          updateOutputs();
+        });
+        els.emojiPicker.appendChild(button);
+      });
+    }
+
     function resetForm() {
       els.singleSegment.checked = defaults.singleSegment;
       els.leftText.value = defaults.leftText;
@@ -689,6 +762,8 @@
       els.logo.value = defaults.logo;
       els.logoColor.value = defaults.logoColor;
       els.labelColor.value = defaults.labelColor;
+      els.plainLinkText.value = defaults.plainLinkText;
+      els.plainLinkUrl.value = defaults.plainLinkUrl;
       updateOutputs();
     }
 
@@ -726,6 +801,7 @@
     els.resetBtn.addEventListener("click", resetForm);
 
     renderColorChips();
+    renderEmojiPicker();
     updateOutputs();
   </script>
 </body>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>README TOC + Anchor Generator</title>
+  <style>
+    body { font-family: Inter, Arial; margin:0; background:#f7f7fb; }
+    .wrap { max-width:1100px; margin:auto; padding:20px; }
+    textarea { width:100%; min-height:300px; padding:12px; border-radius:12px; border:1px solid #ccc; }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+    .card { background:white; padding:16px; border-radius:16px; border:1px solid #ddd; }
+    button { padding:8px 12px; border-radius:10px; border:1px solid #ccc; cursor:pointer; }
+    .primary { background:#8a2be2; color:white; border:none; }
+    pre { background:#f6f8fa; padding:12px; border-radius:12px; overflow:auto; }
+    .anchors { margin-top:15px; max-height:200px; overflow:auto; }
+    .anchor-item { display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid #eee; }
+    .anchor-item code { font-size:0.85rem; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>README TOC Generator</h1>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Input README.md</h3>
+      <input type="file" id="file" />
+      <br><br>
+      <textarea id="input"></textarea>
+      <br><br>
+      <button class="primary" onclick="generate()">Generate</button>
+    </div>
+
+    <div class="card">
+      <h3>Markdown Table of Contents</h3>
+      <pre id="output"></pre>
+      <button onclick="copyTOC()">Copy TOC</button>
+
+      <h3 style="margin-top:20px;">Individual Anchor Links</h3>
+      <div id="anchors" class="anchors"></div>
+      <button onclick="copyAllAnchors()">Copy All Anchors</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function slugify(text, map) {
+  let slug = text.toLowerCase()
+    .replace(/[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,./:;<=>?@[\]^`{|}~]/g, '')
+    .replace(/\s+/g, '-');
+
+  if(map[slug] !== undefined) {
+    map[slug]++;
+    slug = slug + '-' + map[slug];
+  } else {
+    map[slug] = 0;
+  }
+  return slug;
+}
+
+let anchorList = [];
+
+function generate() {
+  const text = document.getElementById('input').value;
+  const lines = text.split('\n');
+  const map = {};
+
+  let toc = [];
+  anchorList = [];
+
+  lines.forEach(line => {
+    const match = line.match(/^(#{1,6})\s+(.*)/);
+    if(match) {
+      const level = match[1].length;
+      const title = match[2].trim();
+      const slug = slugify(title, map);
+
+      const indent = '  '.repeat(level - 1);
+      toc.push(`${indent}- [${title}](#${slug})`);
+
+      anchorList.push({ title, slug });
+    }
+  });
+
+  document.getElementById('output').textContent = toc.join('\n');
+  renderAnchors();
+}
+
+function renderAnchors() {
+  const container = document.getElementById('anchors');
+  container.innerHTML = '';
+
+  anchorList.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'anchor-item';
+
+    const url = `#${item.slug}`;
+
+    div.innerHTML = `
+      <span>${item.title}</span>
+      <code>${url}</code>
+      <button onclick="copyText('${url}')">Copy</button>
+    `;
+
+    container.appendChild(div);
+  });
+}
+
+function copyText(text) {
+  navigator.clipboard.writeText(text);
+}
+
+function copyTOC() {
+  const text = document.getElementById('output').textContent;
+  navigator.clipboard.writeText(text);
+}
+
+function copyAllAnchors() {
+  const text = anchorList.map(a => `${a.title} -> #${a.slug}`).join('\n');
+  navigator.clipboard.writeText(text);
+}
+
+// file upload
+const fileInput = document.getElementById('file');
+fileInput.addEventListener('change', e => {
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('input').value = e.target.result;
+  };
+  reader.readAsText(file);
+});
+</script>
+</body>
+</html>
