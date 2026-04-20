@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fringe Ideology Affinity Quiz</title>
+  <style>
+    :root{
+      --bg:#0b0d10; --panel:#12151a; --ink:#e9eef5; --muted:#9aa6b2; --accent:#62d2a2; --accent2:#7aa2ff; --warn:#ff7aa2;
+      --bar:#2a2f39; --good:#62d2a2; --mid:#ffcc66; --low:#ff8a66;
+      --radius:14px;
+    }
+    html,body{height:100%;}
+    body{margin:0;background:radial-gradient(1200px 800px at 10% 0%, #111622 0%, #0b0d10 40%, #07090c 100%);
+      color:var(--ink);font:16px/1.5 system-ui, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, Apple Color Emoji, Segoe UI Emoji;}
+    .wrap{max-width:1000px;margin:40px auto;padding:0 18px 80px;}
+    header{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:18px;}
+    h1{font-weight:800;letter-spacing:.3px;margin:0;font-size:clamp(22px,3vw,30px);} 
+    p.lede{color:var(--muted);margin:.25rem 0 1rem;}
+    .card{background:linear-gradient(180deg,#151a22,#10141a);border:1px solid #202633;border-radius:var(--radius);box-shadow:0 10px 30px rgba(0,0,0,.35);}
+    .pad{padding:20px;}
+    .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+    button, .btn{
+      appearance:none;border:1px solid #2a3340;background:#161b22;color:var(--ink);border-radius:12px;padding:10px 14px;cursor:pointer;
+      transition:transform .06s ease, background .2s ease, border-color .2s ease; font-weight:600;}
+    button:hover{background:#1a2030;border-color:#334155}
+    button:active{transform:scale(.98)}
+    .btn.primary{background:linear-gradient(180deg,#3546ff,#6f8bff);border-color:#4a64ff;color:white}
+    .grid{display:grid;gap:14px}
+    .q{background:linear-gradient(180deg,#151a22,#0f1319);border:1px solid #1e2430;border-radius:12px;padding:14px}
+    .q small{color:var(--muted)}
+    .q-title{font-weight:650;margin-bottom:10px}
+    .scale{display:grid;grid-template-columns:repeat(5,minmax(50px,1fr));gap:6px}
+    .scale label{display:flex;flex-direction:column;align-items:center;gap:6px;background:#0e1217;border:1px solid #1d2430;border-radius:10px;padding:10px 6px;cursor:pointer}
+    .scale input{appearance:none}
+    .scale input:checked + span{outline:2px solid var(--accent2);outline-offset:2px;border-radius:8px}
+    .scale .n{font-variant-numeric:tabular-nums;color:#b5c0cd}
+
+    .section-title{margin:26px 0 8px;color:#cbd5e1;text-transform:uppercase;letter-spacing:.12em;font-size:12px}
+
+    .results{margin-top:20px;display:none}
+    .row{display:grid;grid-template-columns:180px 1fr;gap:12px;align-items:center;margin:6px 0}
+    .bar{height:12px;background:var(--bar);border-radius:999px;overflow:hidden;border:1px solid #262b35}
+    .bar span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--good),var(--accent2));}
+    .row.low .bar span{background:linear-gradient(90deg,var(--low),#ff6d6d)}
+    .row.mid .bar span{background:linear-gradient(90deg,var(--mid),#ffd37a)}
+
+    .muted{color:var(--muted)}
+    .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;border:1px solid #273042;background:#121822}
+    .flex{display:flex;gap:8px;flex-wrap:wrap}
+    details{background:#0f141b;border:1px solid #202633;border-radius:12px;padding:10px}
+    details[open]{background:#0e131a}
+    summary{cursor:pointer;font-weight:650}
+    .foot{margin-top:18px;color:#8b97a6}
+    .mono{font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Fringe Ideology Affinity Quiz</h1>
+        <p class="lede">Answer 1–5 for each statement. When you submit, results calculate automatically with category scores and group affinities.</p>
+      </div>
+      <div class="controls">
+        <button id="btnFill">Prefill (your answers)</button>
+        <button id="btnClear">Clear</button>
+      </div>
+    </header>
+
+    <section class="card pad">
+      <form id="quiz" class="grid" novalidate></form>
+      <div class="pad" style="display:flex;gap:10px;flex-wrap:wrap">
+        <button type="button" class="btn primary" id="btnSubmit">Calculate Results</button>
+        <button type="button" class="btn" id="btnCopy">Copy JSON</button>
+      </div>
+    </section>
+
+    <section id="results" class="results card pad">
+      <h2 style="margin:0 0 6px">Your Results</h2>
+      <p class="muted" id="summary"></p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start">
+        <div>
+          <h3 class="section-title">Category Scores</h3>
+          <div id="catBars"></div>
+        </div>
+        <div>
+          <h3 class="section-title">Group Affinities</h3>
+          <div id="groupBars"></div>
+        </div>
+      </div>
+      <details style="margin-top:14px">
+        <summary>Scoring methodology</summary>
+        <p class="muted">Each 1–5 response maps to weights (1→−2, 2→−1, 3→0, 4→+1, 5→+2). Category totals are summed across their questions, then normalized to 0–100%. Group affinities are computed as averages of relevant categories (see code for mapping).</p>
+      </details>
+      <p class="foot">Pro tip: Bookmark this page; your answers persist in localStorage.</p>
+    </section>
+  </div>
+
+  <script>
+    // --- Data ---------------------------------------------------------------
+    const questions = [
+      [1, 'Government should be radically decentralized or abolished altogether.'],
+      [2, 'Hierarchy is inherently corrupt and should be dismantled wherever it exists.'],
+      [3, 'The state is an oppressive tool used by elites to control the masses.'],
+      [4, 'Surveillance and policing are fundamentally incompatible with a free society.'],
+      [5, 'I would trust a grassroots collective over a bureaucratic institution.'],
+      [6, 'Capitalism is exploitative and cannot be reformed — it must be replaced.'],
+      [7, 'Technology should be used to reduce labor and increase human freedom, not profits.'],
+      [8, 'Workers should own the means of production.'],
+      [9, 'Barter, gift economies, or community-supported models make more sense than money.'],
+      [10,'Universal basic income is a step in the right direction, but not a final goal.'],
+      [11,'Traditional values are tools of social control.'],
+      [12,'Cancel culture is a necessary mechanism to hold people accountable.'],
+      [13,'Western civilization is not inherently superior to other cultures.'],
+      [14,'The nuclear family model is outdated and restrictive.'],
+      [15,'A better world involves radical inclusivity and acceptance of all lifestyles.'],
+      [16,'Labels like “man” and “woman” are mostly social constructs.'],
+      [17,'I feel alienated from mainstream society and its values.'],
+      [18,'I believe in forming my own identity outside of societal expectations.'],
+      [19,'I’m open to psychedelic or spiritual experiences to better understand myself.'],
+      [20,'I often question whether I exist within a simulation or illusion of some kind.'],
+      [21,'Modern technology is alienating humans from nature and community.'],
+      [22,'Scientific consensus is often driven by money and corporate interests.'],
+      [23,'Ancient/indigenous knowledge has answers we’ve lost.'],
+      [24,'We should live more simply, even if that means rejecting modern comforts.'],
+      [25,'Humans are not meant to live in cities.'],
+      [26,'Civil disobedience is a moral imperative in a corrupt society.'],
+      [27,'I would break the law if I believed it served a higher ethical purpose.'],
+      [28,'Voting is largely a symbolic act with little actual power.'],
+      [29,'Revolution is inevitable and necessary.'],
+      [30,'I root for whistleblowers and dissidents even if they break rules.'],
+      [31,'There are non-human intelligences interacting with or influencing Earth.'],
+      [32,'Religion is either a control system or an outdated mythos.'],
+      [33,'Secret societies/hidden powers influence world events more than we know.'],
+      [34,'Reincarnation, astral projection, or mystical phenomena are real/possible.'],
+      [35,'I feel drawn to alternative spiritual paths (paganism, gnosticism, chaos magick).'],
+    ];
+
+    const categories = {
+      'Anti-State': [1,2,3,4,5,26,27,28,29,30],
+      'Anti-Capitalism': [6,7,8,9,10],
+      'Cultural Radicalism': [11,12,13,14,15],
+      'Identity / Egoism': [16,17,18],
+      'Psychedelic / Mystical': [19,20,34,35],
+      'Tech Skepticism / Nature': [21,22,23,24,25],
+      'Belief / Conspiracy': [31,32,33],
+    };
+
+    // Group affinity as average of normalized categories (0..100)
+    const groups = {
+      'Anarcho-Communists / Post-Left': ['Anti-State','Anti-Capitalism','Cultural Radicalism','Identity / Egoism'],
+      'Collapse-aware Leftists': ['Anti-Capitalism','Anti-State','Tech Skepticism / Nature'],
+      'Egoist Anarchists': ['Identity / Egoism','Anti-State'],
+      'Neo-Luddites': ['Tech Skepticism / Nature','Anti-Capitalism'],
+      'Solarpunks': ['Tech Skepticism / Nature','Cultural Radicalism'],
+      'Psychedelic Revivalists': ['Psychedelic / Mystical','Identity / Egoism'],
+      'Transhumanists (reverse tech-skepticism)': ['__TRANSHUMAN__'],
+      'Conspiracists': ['Belief / Conspiracy'],
+    };
+
+    const weight = {1:-2, 2:-1, 3:0, 4:1, 5:2};
+
+    // --- Render -------------------------------------------------------------
+    const form = document.querySelector('#quiz');
+
+    const makeQuestion = (num, text) => {
+      const div = document.createElement('div');
+      div.className = 'q';
+      div.innerHTML = `
+        <div class="q-title">Q${num}. ${text}<br><small>1 = Strongly Disagree ··· 5 = Strongly Agree</small></div>
+        <div class="scale" role="radiogroup" aria-label="Question ${num}">
+          ${[1,2,3,4,5].map(v => `
+            <label>
+              <input type="radio" name="q${num}" value="${v}" aria-label="${v}" />
+              <span><span class="n">${v}</span></span>
+            </label>
+          `).join('')}
+        </div>`;
+      return div;
+    };
+
+    // Section labels (optional aesthetic grouping)
+    const sections = {
+      'Power & Authority':[1,2,3,4,5],
+      'Economy & Labor':[6,7,8,9,10],
+      'Culture & Society':[11,12,13,14,15],
+      'Identity & Self':[16,17,18,19,20],
+      'Science, Tech & Nature':[21,22,23,24,25],
+      'Politics & Rebellion':[26,27,28,29,30],
+      'Belief, Faith & Unknown':[31,32,33,34,35]
+    };
+
+    for (const [section, nums] of Object.entries(sections)){
+      const h = document.createElement('div');
+      h.className = 'section-title';
+      h.textContent = section;
+      form.appendChild(h);
+      nums.forEach(n => form.appendChild(makeQuestion(n, questions[n-1][1])));
+    }
+
+    // --- Persistence --------------------------------------------------------
+    const LS_KEY = 'fringe-quiz-answers-v1';
+    function saveAnswers(){
+      const data = {};
+      questions.forEach(([n]) => {
+        const v = form.querySelector(`input[name=q${n}]:checked`);
+        if(v) data[n] = Number(v.value);
+      });
+      localStorage.setItem(LS_KEY, JSON.stringify(data));
+      return data;
+    }
+    function loadAnswers(){
+      try{ const data = JSON.parse(localStorage.getItem(LS_KEY)||'{}');
+        for(const [k,val] of Object.entries(data)){
+          const inp = form.querySelector(`input[name=q${k}][value='${val}']`);
+          if(inp) inp.checked = true;
+        }
+      }catch(e){}
+    }
+    form.addEventListener('change', saveAnswers);
+    loadAnswers();
+
+    // Prefill with your answers from the conversation (optional)
+    const yourAnswers = {1:4,2:4,3:3,4:4,5:4,6:5,7:5,8:4,9:5,10:5,11:5,12:4,13:5,14:5,15:5,16:4,17:5,18:5,19:4,20:2,21:4,22:4,23:3,24:2,25:1,26:5,27:5,28:5,29:5,30:5,31:1,32:5,33:2,34:3,35:1};
+    document.querySelector('#btnFill').addEventListener('click', () => {
+      for(const [n,v] of Object.entries(yourAnswers)){
+        const el = form.querySelector(`input[name=q${n}][value='${v}']`);
+        if(el) el.checked = true;
+      }
+      saveAnswers();
+    });
+    document.querySelector('#btnClear').addEventListener('click', () => {
+      form.querySelectorAll('input[type=radio]').forEach(i=> i.checked=false);
+      localStorage.removeItem(LS_KEY);
+    });
+
+    // --- Scoring ------------------------------------------------------------
+    const maxByCat = Object.fromEntries(Object.entries(categories).map(([k,arr])=>[k, arr.length*2]));
+    const normalize = (score, max) => ((score + max) / (2*max)) * 100; // −max..+max → 0..100
+
+    function compute(){
+      // Collect answers
+      const ans = {};
+      let answered = 0;
+      questions.forEach(([n])=>{
+        const v = form.querySelector(`input[name=q${n}]:checked`);
+        if(v){ ans[n] = Number(v.value); answered++; }
+      });
+
+      // Category totals
+      const catTotals = {};
+      for(const [cat, qs] of Object.entries(categories)){
+        let sum = 0;
+        qs.forEach(q => sum += weight[ans[q]||3] || 0); // unanswered treated as neutral (3)
+        catTotals[cat] = sum;
+      }
+
+      // Normalized categories
+      const catPct = Object.fromEntries(Object.entries(catTotals).map(([k,v])=>[k, +normalize(v, maxByCat[k]).toFixed(1)]));
+
+      // Group affinities
+      const groupPct = {};
+      for(const [g, cats] of Object.entries(groups)){
+        if(cats[0] === '__TRANSHUMAN__'){
+          const tech = catPct['Tech Skepticism / Nature'];
+          groupPct[g] = +(100 - tech).toFixed(1);
+        } else {
+          const vals = cats.map(c => catPct[c]);
+          groupPct[g] = +((vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1));
+        }
+      }
+
+      return {answered, catTotals, catPct, groupPct};
+    }
+
+    // --- UI: Results --------------------------------------------------------
+    const resEl = document.querySelector('#results');
+    const catBars = document.querySelector('#catBars');
+    const groupBars = document.querySelector('#groupBars');
+    const summary = document.querySelector('#summary');
+
+    function barRow(label, value){
+      const row = document.createElement('div');
+      row.className = 'row';
+      if(value < 40) row.classList.add('low');
+      else if(value < 70) row.classList.add('mid');
+      row.innerHTML = `
+        <div class="muted">${label}</div>
+        <div class="bar" aria-label="${label}: ${value}%" title="${value}%">
+          <span style="width:${value}%"></span>
+        </div>`;
+      return row;
+    }
+
+    function render(){
+      const {answered, catPct, groupPct} = compute();
+      const total = questions.length;
+      summary.textContent = `${answered}/${total} questions answered. Unanswered are treated as neutral for scoring.`;
+
+      // Categories
+      catBars.innerHTML = '';
+      Object.entries(catPct).sort((a,b)=>b[1]-a[1]).forEach(([k,v])=> catBars.appendChild(barRow(k, v)) );
+
+      // Groups
+      groupBars.innerHTML = '';
+      Object.entries(groupPct).sort((a,b)=>b[1]-a[1]).forEach(([k,v])=> groupBars.appendChild(barRow(k, v)) );
+
+      resEl.style.display = 'block';
+      window.scrollTo({top: resEl.offsetTop - 10, behavior:'smooth'});
+    }
+
+    document.querySelector('#btnSubmit').addEventListener('click', render);
+
+    // Copy JSON of raw + computed
+    document.querySelector('#btnCopy').addEventListener('click', () => {
+      const {catTotals, catPct, groupPct} = compute();
+      const payload = {answers: JSON.parse(localStorage.getItem(LS_KEY)||'{}'), catTotals, catPct, groupPct};
+      navigator.clipboard.writeText(JSON.stringify(payload, null, 2)).then(()=>{
+        const btn = document.querySelector('#btnCopy');
+        const prev = btn.textContent; btn.textContent = 'Copied!';
+        setTimeout(()=>btn.textContent=prev, 1200);
+      });
+    });
+  </script>
+</body>
+</html>
