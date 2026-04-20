@@ -345,30 +345,6 @@ Generate and customize Github links based on URL patterns.
 
 ---
 
-## Recommended File Layout (per project)
-
-```
-project-name/
-├── index.html        # the main entry point
-├── styles.css        # styles (or inline in HTML)
-├── script.js         # optional interactive behavior
-└── assets/           # optional images, fonts, etc.
-```
-
----
-
-## Contributing
-
-Got a fix, a feature, or a brand‑new mini‑project?
-1. **Fork** this repo and create a branch: `git checkout -b feature/your-idea`
-2. Add your project in its own folder (see layout above).
-3. Include a short **README.md** inside your folder with: purpose, features, how to use, and license note.
-4. Open a **Pull Request** describing your changes and screenshots/GIFs if relevant.
-
-Please read the **[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)** and **[CONTRIBUTING.md](CONTRIBUTING.md)** before submitting.
-
----
-
 ## License
 
 Unless otherwise noted inside a project folder, this repository is released under the **MIT License**.  
