@@ -68,12 +68,16 @@ Load + browse your ChatGPT conversations.json offline.
 <details>
 <summary>Snippet Saver</summary>
 
+<img src="img/snippet-saver.gif">
+
 Save + delete notes & snippets right in the browser.
 
 </details>
 
 <details>
 <summary>Voice Recorder</summary>
+
+<img src="img/voice-recorder.gif">
 
 Record + download audio and voice notes right in the browser.
 
@@ -83,6 +87,8 @@ Record + download audio and voice notes right in the browser.
 
 <details>
 <summary>Scratch-it Generator</summary>
+
+<img src="img/scratch-off.gif">
 
 Upload your own image and generate a scratch-it card.
 
@@ -125,6 +131,8 @@ Upload image ---> describe ---> generate ALT text.
 
 <details>
 <summary>Quiz Builder</summary>
+
+<img src="img/quiz-builder.gif">
 
 Dead simple + fast quiz generator.
 
@@ -301,6 +309,8 @@ Challenge yourself to write a poem that reads the same both horizontally + verti
 
 <details>
 <summary>Rhyme Finder</summary>
+
+<img src="img/rhyme-search.gif">
 
 Advanced search for rhyming words via the Datamuse API.
 
