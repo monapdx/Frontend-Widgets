@@ -61,6 +61,8 @@ Choose a HEX color ---> get Tailwind classes.
 <details>
 <summary>Offline ChatGPT</summary>
 
+<img src="img/offline-gpt.gif">
+
 Load + browse your ChatGPT conversations.json offline.
 
 </details>
@@ -205,12 +207,16 @@ Enter sender + recipient names + messages = chat app animation.
 <details>
 <summary>JSON to Typescript</summary>
 
+<img src="img/json-to-typescript.gif">
+
 Upload a JSON file ---> get Typescript types.
 
 </details>
 
 <details>
 <summary>CSV to SQL Generator</summary>
+
+<img src="img/csv-to-sql.gif">
 
 Upload CSV ---> SQL.
 
@@ -250,6 +256,8 @@ Add sections, questions, responses, point values + export to CSV or JSON.
 
 <details>
 <summary>Email Inbox Viewer</summary>
+
+<img src="img/mbox-viewer.gif">
 
 Load + browse any .mbox file.
 
