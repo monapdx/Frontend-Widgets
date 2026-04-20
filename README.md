@@ -1,5 +1,5 @@
 # Frontend Widgets
-[![Browser](https://img.shields.io/badge/%F0%9F%8C%8D%20Browser-111111?style=for-the-badge)](#) [![Art & Color](https://img.shields.io/badge/%F0%9F%8E%A8%20Art%20%26%20Color-111111?style=for-the-badge)](#) [![Code Generators](https://img.shields.io/badge/%F0%9F%93%9D%20Code%20Generators-111111?style=for-the-badge)](#) [![Quizzes](https://img.shields.io/badge/%E2%9D%93Quizzes-111111?style=for-the-badge)](#) [![Email](https://img.shields.io/badge/%F0%9F%93%A7Email-111111?style=for-the-badge)](#) [![Images](https://img.shields.io/badge/%E2%9C%A8Images-111111?style=for-the-badge)](#) [![Games](https://img.shields.io/badge/%F0%9F%A7%A9Games-111111?style=for-the-badge)](#) [![Writing](https://img.shields.io/badge/%F0%9F%91%89Writing-111111?style=for-the-badge)](#) 
+[![Browser](https://img.shields.io/badge/%F0%9F%8C%8D%20Browser-111111?style=for-the-badge)](#browser) [![Art & Color](https://img.shields.io/badge/%F0%9F%8E%A8%20Art%20%26%20Color-111111?style=for-the-badge)](#art-color) [![Code Generators](https://img.shields.io/badge/%F0%9F%93%9D%20Code%20Generators-111111?style=for-the-badge)](#code-generators) [![Quizzes](https://img.shields.io/badge/%E2%9D%93Quizzes-111111?style=for-the-badge)](#quizzes) [![Email](https://img.shields.io/badge/%F0%9F%93%A7Email-111111?style=for-the-badge)](#email) [![Images](https://img.shields.io/badge/%E2%9C%A8Images-111111?style=for-the-badge)](#images) [![Games](https://img.shields.io/badge/%F0%9F%A7%A9Games-111111?style=for-the-badge)](#games) [![Writing](https://img.shields.io/badge/%F0%9F%91%89Writing-111111?style=for-the-badge)](#writing) 
 
 A curated collection of simple, standalone **HTML + CSS + JavaScript** projects you can **download, customize, and remix**.  
 Everything here is designed to be **copy‑paste friendly**, with minimal dependencies.
@@ -13,12 +13,16 @@ Everything here is designed to be **copy‑paste friendly**, with minimal depend
 
 Choose your favorites with color picker + generate your custom palette.
 
+<img src="https://raw.githubusercontent.com/monapdx/Frontend-Widgets/refs/heads/main/img/personal-palette.gif">
+
 </details>
 
 <details>
 <summary>Pixel Art Palette Extractor</summary>
 
 Upload pixel art ---> color palette extracted.
+
+<img src="https://raw.githubusercontent.com/monapdx/Frontend-Widgets/refs/heads/main/img/pixel-palette-extractor.gif">
 
 </details>
 
@@ -33,6 +37,8 @@ Dead simple random color palette generator.
 <summary>Pixel Drawing Board</summary>
 
 Drawing board + editor for creating + exporting pixel art.
+
+<img src="https://raw.githubusercontent.com/monapdx/Frontend-Widgets/refs/heads/main/img/pixel-art-drawing-board.gif">
 
 </details>
 
@@ -55,6 +61,8 @@ Choose a HEX color ---> get Tailwind classes.
 <details>
 <summary>Offline ChatGPT</summary>
 
+<img src="img/offline-gpt.gif">
+
 Load + browse your ChatGPT conversations.json offline.
 
 </details>
@@ -62,12 +70,16 @@ Load + browse your ChatGPT conversations.json offline.
 <details>
 <summary>Snippet Saver</summary>
 
+<img src="img/snippet-saver.gif">
+
 Save + delete notes & snippets right in the browser.
 
 </details>
 
 <details>
 <summary>Voice Recorder</summary>
+
+<img src="img/voice-recorder.gif">
 
 Record + download audio and voice notes right in the browser.
 
@@ -77,6 +89,8 @@ Record + download audio and voice notes right in the browser.
 
 <details>
 <summary>Scratch-it Generator</summary>
+
+<img src="img/scratch-off.gif">
 
 Upload your own image and generate a scratch-it card.
 
@@ -99,6 +113,8 @@ URL ---> QR code.
 <details>
 <summary>Editable Table Generator</summary>
 
+<img src="img/editable-table-generator.gif">
+
 Columns + rows + headings = generate custom HTML table. Click in any table cell to edit content.
 
 </details>
@@ -119,6 +135,8 @@ Upload image ---> describe ---> generate ALT text.
 
 <details>
 <summary>Quiz Builder</summary>
+
+<img src="img/quiz-builder.gif">
 
 Dead simple + fast quiz generator.
 
@@ -191,12 +209,16 @@ Enter sender + recipient names + messages = chat app animation.
 <details>
 <summary>JSON to Typescript</summary>
 
+<img src="img/json-to-typescript.gif">
+
 Upload a JSON file ---> get Typescript types.
 
 </details>
 
 <details>
 <summary>CSV to SQL Generator</summary>
+
+<img src="img/csv-to-sql.gif">
 
 Upload CSV ---> SQL.
 
@@ -237,6 +259,8 @@ Add sections, questions, responses, point values + export to CSV or JSON.
 <details>
 <summary>Email Inbox Viewer</summary>
 
+<img src="img/mbox-viewer.gif">
+
 Load + browse any .mbox file.
 
 </details>
@@ -246,7 +270,11 @@ Load + browse any .mbox file.
 <details>
 <summary>Quote Graphic Generator</summary>
 
+
 Enter favorite quotes + choose font + pick gradient colors = export image.
+
+<img src="https://raw.githubusercontent.com/monapdx/Frontend-Widgets/refs/heads/main/img/quote-image-generator.gif">
+
 
 </details>
 
@@ -292,6 +320,8 @@ Challenge yourself to write a poem that reads the same both horizontally + verti
 <details>
 <summary>Rhyme Finder</summary>
 
+<img src="img/rhyme-search.gif">
+
 Advanced search for rhyming words via the Datamuse API.
 
 </details>
@@ -332,78 +362,6 @@ Generate markdown buttons for Github.
 Generate and customize Github links based on URL patterns.
 
 </details>
-
-
-## Examples
-
-### Pixel Art Drawing Board
-
-<img src="https://raw.githubusercontent.com/monapdx/Frontend-Widgets/refs/heads/main/img/pixel-art-drawing-board.gif">
-
-### Quote Image Generator
-
-<img src="https://raw.githubusercontent.com/monapdx/Frontend-Widgets/refs/heads/main/img/quote-image-generator.gif">
-
-### Personal Palette Generator
-
-<img src="https://raw.githubusercontent.com/monapdx/Frontend-Widgets/refs/heads/main/img/personal-palette.gif">
-
-### Pixel Art Palette Extractor
-
-<img src="https://raw.githubusercontent.com/monapdx/Frontend-Widgets/refs/heads/main/img/pixel-palette-extractor.gif">
-
-## Quick Start
-
-**Option A — Download everything**
-1. Click “Code” → “Download ZIP” on the GitHub repo.
-2. Unzip and open any `index.html` file in your browser.
-3. Tweak the HTML/CSS/JS to fit your needs.
-
-**Option B — Grab one project**
-1. Navigate to the folder you want in this repository.
-2. Download only the files in that folder (right‑click → Save link as).
-3. Open the HTML in your browser and edit.
-
-**Option C — GitHub Pages (recommended)**
-1. Fork this repo (or use it as a template).
-2. Push to your GitHub account.
-3. In your repo: **Settings → Pages → Source: `main` → `/root`**.  
-4. Your projects will be live at `https://<your-username>.github.io/<repo>/...`
-
----
-
-## How To Customize
-
-- **Change colors & fonts:** tweak values in the `:root` CSS custom properties or the `.css` file in the same folder.
-- **Swap copy/content:** edit text inside the HTML. Keep the structure, replace the words.
-- **Add images:** place your images in the same folder and reference them with a relative path (e.g. `./hero.png`).
-- **Disable features:** comment‑out or remove event listeners in the JS files.
-- **Mobile tweaks:** use CSS media queries (e.g. `@media (max-width: 640px)`).
-- **Accessibility:** ensure sufficient color contrast, add `alt` text to images, and use semantic HTML elements.
-
----
-
-## Recommended File Layout (per project)
-
-```
-project-name/
-├── index.html        # the main entry point
-├── styles.css        # styles (or inline in HTML)
-├── script.js         # optional interactive behavior
-└── assets/           # optional images, fonts, etc.
-```
-
----
-
-## Contributing
-
-Got a fix, a feature, or a brand‑new mini‑project?
-1. **Fork** this repo and create a branch: `git checkout -b feature/your-idea`
-2. Add your project in its own folder (see layout above).
-3. Include a short **README.md** inside your folder with: purpose, features, how to use, and license note.
-4. Open a **Pull Request** describing your changes and screenshots/GIFs if relevant.
-
-Please read the **[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)** and **[CONTRIBUTING.md](CONTRIBUTING.md)** before submitting.
 
 ---
 
