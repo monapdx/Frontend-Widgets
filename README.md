@@ -13,12 +13,16 @@ Everything here is designed to be **copy‑paste friendly**, with minimal depend
 
 Choose your favorites with color picker + generate your custom palette.
 
+<img src="https://raw.githubusercontent.com/monapdx/Frontend-Widgets/refs/heads/main/img/personal-palette.gif">
+
 </details>
 
 <details>
 <summary>Pixel Art Palette Extractor</summary>
 
 Upload pixel art ---> color palette extracted.
+
+<img src="https://raw.githubusercontent.com/monapdx/Frontend-Widgets/refs/heads/main/img/pixel-palette-extractor.gif">
 
 </details>
 
@@ -33,6 +37,8 @@ Dead simple random color palette generator.
 <summary>Pixel Drawing Board</summary>
 
 Drawing board + editor for creating + exporting pixel art.
+
+<img src="https://raw.githubusercontent.com/monapdx/Frontend-Widgets/refs/heads/main/img/pixel-art-drawing-board.gif">
 
 </details>
 
@@ -246,7 +252,11 @@ Load + browse any .mbox file.
 <details>
 <summary>Quote Graphic Generator</summary>
 
+
 Enter favorite quotes + choose font + pick gradient colors = export image.
+
+<img src="https://raw.githubusercontent.com/monapdx/Frontend-Widgets/refs/heads/main/img/quote-image-generator.gif">
+
 
 </details>
 
@@ -332,54 +342,6 @@ Generate markdown buttons for Github.
 Generate and customize Github links based on URL patterns.
 
 </details>
-
-
-## Examples
-
-### Pixel Art Drawing Board
-
-<img src="https://raw.githubusercontent.com/monapdx/Frontend-Widgets/refs/heads/main/img/pixel-art-drawing-board.gif">
-
-### Quote Image Generator
-
-<img src="https://raw.githubusercontent.com/monapdx/Frontend-Widgets/refs/heads/main/img/quote-image-generator.gif">
-
-### Personal Palette Generator
-
-<img src="https://raw.githubusercontent.com/monapdx/Frontend-Widgets/refs/heads/main/img/personal-palette.gif">
-
-### Pixel Art Palette Extractor
-
-<img src="https://raw.githubusercontent.com/monapdx/Frontend-Widgets/refs/heads/main/img/pixel-palette-extractor.gif">
-
-## Quick Start
-
-**Option A — Download everything**
-1. Click “Code” → “Download ZIP” on the GitHub repo.
-2. Unzip and open any `index.html` file in your browser.
-3. Tweak the HTML/CSS/JS to fit your needs.
-
-**Option B — Grab one project**
-1. Navigate to the folder you want in this repository.
-2. Download only the files in that folder (right‑click → Save link as).
-3. Open the HTML in your browser and edit.
-
-**Option C — GitHub Pages (recommended)**
-1. Fork this repo (or use it as a template).
-2. Push to your GitHub account.
-3. In your repo: **Settings → Pages → Source: `main` → `/root`**.  
-4. Your projects will be live at `https://<your-username>.github.io/<repo>/...`
-
----
-
-## How To Customize
-
-- **Change colors & fonts:** tweak values in the `:root` CSS custom properties or the `.css` file in the same folder.
-- **Swap copy/content:** edit text inside the HTML. Keep the structure, replace the words.
-- **Add images:** place your images in the same folder and reference them with a relative path (e.g. `./hero.png`).
-- **Disable features:** comment‑out or remove event listeners in the JS files.
-- **Mobile tweaks:** use CSS media queries (e.g. `@media (max-width: 640px)`).
-- **Accessibility:** ensure sufficient color contrast, add `alt` text to images, and use semantic HTML elements.
 
 ---
 
