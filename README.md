@@ -113,6 +113,8 @@ URL ---> QR code.
 <details>
 <summary>Editable Table Generator</summary>
 
+<img src="img/editable-table-generator.gif">
+
 Columns + rows + headings = generate custom HTML table. Click in any table cell to edit content.
 
 </details>
