@@ -78,6 +78,68 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
     .panel h2, .panel h3 { margin: 0 0 10px; font-size: 1rem; }
     .panel p.small, .small { margin: 0; color: var(--muted); font-size: 0.88rem; }
 
+    .sidebar-section {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .sidebar-section.is-collapsed .sidebar-section-body,
+    .preview-markdown-section.is-collapsed .sidebar-section-body {
+      display: none;
+    }
+
+    .sidebar-section-toggle {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 14px;
+      margin: 0;
+      border: none;
+      border-radius: var(--radius);
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .sidebar-section-toggle:hover {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .sidebar-section-toggle:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: -2px;
+    }
+
+    .sidebar-section-title {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .sidebar-section-chevron {
+      flex-shrink: 0;
+      font-size: 0.75rem;
+      color: var(--muted);
+      transition: transform 0.2s ease;
+    }
+
+    .sidebar-section.is-collapsed .sidebar-section-chevron,
+    .preview-markdown-section.is-collapsed .sidebar-section-chevron {
+      transform: rotate(-90deg);
+    }
+
+    .sidebar-section-body {
+      padding: 0 14px 14px;
+      display: grid;
+      gap: 10px;
+    }
+
     .button-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -424,30 +486,45 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
           </div>
         </section>
 
-        <section class="panel">
-          <h2>Presets</h2>
-          <div class="button-grid">
-            <button data-preset="readme">README</button>
-            <button data-preset="profile">Profile README</button>
-            <button data-preset="docs">Docs Hub</button>
-            <button data-preset="roadmap">Roadmap</button>
+        <section class="panel sidebar-section is-collapsed" data-sidebar-section="presets">
+          <button type="button" class="sidebar-section-toggle" aria-expanded="false" aria-controls="sidebar-presets-body" id="sidebar-presets-head">
+            <span class="sidebar-section-title">Presets</span>
+            <span class="sidebar-section-chevron" aria-hidden="true">▾</span>
+          </button>
+          <div class="sidebar-section-body" id="sidebar-presets-body" role="region" aria-labelledby="sidebar-presets-head">
+            <div class="button-grid">
+              <button data-preset="readme">README</button>
+              <button data-preset="profile">Profile README</button>
+              <button data-preset="docs">Docs Hub</button>
+              <button data-preset="roadmap">Roadmap</button>
+            </div>
           </div>
         </section>
 
-        <section class="panel">
-          <h2>Add block</h2>
-          <div class="block-types" id="addBlockButtons"></div>
+        <section class="panel sidebar-section is-collapsed" data-sidebar-section="add">
+          <button type="button" class="sidebar-section-toggle" aria-expanded="false" aria-controls="sidebar-add-body" id="sidebar-add-head">
+            <span class="sidebar-section-title">Add block</span>
+            <span class="sidebar-section-chevron" aria-hidden="true">▾</span>
+          </button>
+          <div class="sidebar-section-body" id="sidebar-add-body" role="region" aria-labelledby="sidebar-add-head">
+            <div class="block-types" id="addBlockButtons"></div>
+          </div>
         </section>
 
-        <section class="panel">
-          <h2>Export</h2>
-          <div class="button-grid">
-            <button class="primary" id="copyMarkdownBtn">Copy .md</button>
-            <button id="downloadMarkdownBtn">Download .md</button>
-            <button id="downloadJsonBtn">Download JSON</button>
-            <button id="loadJsonBtn">Load JSON</button>
+        <section class="panel sidebar-section is-collapsed" data-sidebar-section="export">
+          <button type="button" class="sidebar-section-toggle" aria-expanded="false" aria-controls="sidebar-export-body" id="sidebar-export-head">
+            <span class="sidebar-section-title">Export</span>
+            <span class="sidebar-section-chevron" aria-hidden="true">▾</span>
+          </button>
+          <div class="sidebar-section-body" id="sidebar-export-body" role="region" aria-labelledby="sidebar-export-head">
+            <div class="button-grid">
+              <button class="primary" id="copyMarkdownBtn">Copy .md</button>
+              <button id="downloadMarkdownBtn">Download .md</button>
+              <button id="downloadJsonBtn">Download JSON</button>
+              <button id="loadJsonBtn">Load JSON</button>
+            </div>
+            <input id="jsonInput" class="hidden" type="file" accept="application/json" />
           </div>
-          <input id="jsonInput" class="hidden" type="file" accept="application/json" />
         </section>
       </div>
     </aside>
@@ -461,8 +538,15 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
 
     <section class="preview">
       <div class="pane">
-        <div class="pill">Generated Markdown</div>
-        <pre id="markdownOutput" class="markdown-output"></pre>
+        <div class="panel sidebar-section preview-markdown-section is-collapsed">
+          <button type="button" class="sidebar-section-toggle" aria-expanded="false" aria-controls="preview-markdown-body" id="preview-markdown-head">
+            <span class="sidebar-section-title">Generated Markdown</span>
+            <span class="sidebar-section-chevron" aria-hidden="true">▾</span>
+          </button>
+          <div class="sidebar-section-body" id="preview-markdown-body" role="region" aria-labelledby="preview-markdown-head">
+            <pre id="markdownOutput" class="markdown-output"></pre>
+          </div>
+        </div>
         <div class="pill">Quick Preview</div>
         <div id="renderedPreview" class="preview-box"></div>
       </div>
@@ -487,7 +571,14 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       custom: { label: 'Custom Markdown', hint: 'Paste your own block', defaults: () => ({ body: '## Custom Section\n\nAdd any markdown here.' }) }
     };
 
-    const state = { docName: 'README.md', docTitle: 'GitHub Dashboard', blocks: [], expandedBlockId: null };
+    const state = {
+      docName: 'README.md',
+      docTitle: 'GitHub Dashboard',
+      blocks: [],
+      expandedBlockId: null,
+      sidebarExpandedSection: null,
+      previewMarkdownExpanded: false
+    };
 
     const blocksList = document.getElementById('blocksList');
     const markdownOutput = document.getElementById('markdownOutput');
@@ -701,9 +792,34 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
           docName: state.docName,
           docTitle: state.docTitle,
           blocks: state.blocks,
-          expandedBlockId: state.expandedBlockId
+          expandedBlockId: state.expandedBlockId,
+          sidebarExpandedSection: state.sidebarExpandedSection,
+          previewMarkdownExpanded: state.previewMarkdownExpanded
         })
       );
+    }
+
+    function syncPreviewMarkdownSection() {
+      const el = document.querySelector('.preview-markdown-section');
+      if (!el) return;
+      const open = !!state.previewMarkdownExpanded;
+      el.classList.toggle('is-collapsed', !open);
+      const btn = el.querySelector('.sidebar-section-toggle');
+      if (btn) btn.setAttribute('aria-expanded', String(open));
+    }
+
+    function syncSidebarSections() {
+      const allowed = new Set(['presets', 'add', 'export']);
+      if (state.sidebarExpandedSection && !allowed.has(state.sidebarExpandedSection)) {
+        state.sidebarExpandedSection = null;
+      }
+      document.querySelectorAll('.sidebar [data-sidebar-section]').forEach(section => {
+        const id = section.dataset.sidebarSection;
+        const open = state.sidebarExpandedSection === id;
+        section.classList.toggle('is-collapsed', !open);
+        const btn = section.querySelector('.sidebar-section-toggle');
+        if (btn) btn.setAttribute('aria-expanded', String(open));
+      });
     }
 
     function ensureExpandedBlockId() {
@@ -1009,6 +1125,8 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       state.docTitle = docTitleInput.value.trim() || 'GitHub Dashboard';
       renderBlocks();
       renderMarkdownOnly();
+      syncSidebarSections();
+      syncPreviewMarkdownSection();
       saveState();
     }
 
@@ -1078,11 +1196,38 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       docNameInput.value = state.docName;
       docTitleInput.value = state.docTitle;
       state.expandedBlockId = state.blocks[0]?.id || null;
+      state.sidebarExpandedSection = null;
+      state.previewMarkdownExpanded = false;
       render();
     }
 
     function wireEvents() {
       addBlockButtons.innerHTML = Object.entries(BLOCK_TYPES).map(([type, info]) => `<button data-type="${type}">${info.label}<span>${info.hint}</span></button>`).join('');
+
+      const sidebarRoot = document.querySelector('.sidebar');
+      if (sidebarRoot) {
+        sidebarRoot.addEventListener('click', event => {
+          const btn = event.target.closest('.sidebar-section-toggle');
+          if (!btn) return;
+          const section = btn.closest('[data-sidebar-section]');
+          if (!section) return;
+          const id = section.dataset.sidebarSection;
+          state.sidebarExpandedSection = state.sidebarExpandedSection === id ? null : id;
+          syncSidebarSections();
+          saveState();
+        });
+      }
+
+      const previewRoot = document.querySelector('.preview');
+      if (previewRoot) {
+        previewRoot.addEventListener('click', event => {
+          const btn = event.target.closest('.preview-markdown-section .sidebar-section-toggle');
+          if (!btn) return;
+          state.previewMarkdownExpanded = !state.previewMarkdownExpanded;
+          syncPreviewMarkdownSection();
+          saveState();
+        });
+      }
 
       addBlockButtons.addEventListener('click', event => {
         const button = event.target.closest('button[data-type]');
@@ -1165,6 +1310,10 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
               parsed.expandedBlockId && state.blocks.some(b => b.id === parsed.expandedBlockId)
                 ? parsed.expandedBlockId
                 : state.blocks[0]?.id || null;
+            const side = parsed.sidebarExpandedSection;
+            state.sidebarExpandedSection =
+              side && ['presets', 'add', 'export'].includes(side) ? side : null;
+            state.previewMarkdownExpanded = Boolean(parsed.previewMarkdownExpanded);
             docNameInput.value = state.docName;
             docTitleInput.value = state.docTitle;
             render();
@@ -1193,6 +1342,10 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
           parsed.expandedBlockId && state.blocks.some(b => b.id === parsed.expandedBlockId)
             ? parsed.expandedBlockId
             : state.blocks[0]?.id || null;
+        const side = parsed.sidebarExpandedSection;
+        state.sidebarExpandedSection =
+          side && ['presets', 'add', 'export'].includes(side) ? side : null;
+        state.previewMarkdownExpanded = Boolean(parsed.previewMarkdownExpanded);
         docNameInput.value = state.docName;
         docTitleInput.value = state.docTitle;
         render();
