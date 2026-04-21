@@ -237,6 +237,68 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       border-top: 0;
     }
 
+    .preview-box .md-button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin: 10px 0;
+    }
+
+    .preview-box .md-button-row a {
+      display: inline-block;
+      line-height: 0;
+    }
+
+    .preview-box .md-button-row img {
+      max-height: 28px;
+      width: auto;
+      display: block;
+    }
+
+    .preview-box details {
+      margin: 14px 0;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      white-space: pre-line;
+    }
+
+    .preview-box details > summary {
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--text);
+      list-style: none;
+    }
+
+    .preview-box details > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .preview-box details > summary::before {
+      content: "▸ ";
+      display: inline-block;
+      margin-right: 6px;
+      transition: transform 0.15s ease;
+      color: var(--muted);
+    }
+
+    .preview-box details[open] > summary::before {
+      transform: rotate(90deg);
+    }
+
+    .preview-box a {
+      color: var(--accent-2);
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+
+    .preview-box a:hover {
+      color: var(--accent);
+    }
+
     .pill {
       display: inline-flex;
       align-items: center;
@@ -386,6 +448,110 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
         .replace(/"/g, '&quot;');
     }
 
+    /** Only http(s) URLs in preview to avoid javascript: / data: surprises. */
+    function isSafeHttpUrl(s) {
+      const u = String(s || '').trim();
+      if (!/^https?:\/\//i.test(u)) return false;
+      try {
+        const parsed = new URL(u);
+        return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+      } catch {
+        return false;
+      }
+    }
+
+    /** http(s), same-document #fragments, and simple mailto: links for preview. */
+    function isSafeLinkHref(href) {
+      const u = String(href || '').trim();
+      if (!u) return false;
+      if (isSafeHttpUrl(u)) return true;
+      if (u.startsWith('#')) {
+        if (u.length < 2) return false;
+        if (/javascript:/i.test(u) || /data:/i.test(u)) return false;
+        return /^#[^\s#"'<>`]+$/i.test(u);
+      }
+      if (/^mailto:/i.test(u)) {
+        const rest = u.slice(7).trim();
+        return rest.includes('@') && !/[\s"'<>()]/.test(rest);
+      }
+      return false;
+    }
+
+    /**
+     * Turn inline markdown [label](href) into <a>; escapes all other text.
+     * Skips image syntax ![...](...) via negative lookbehind.
+     */
+    function renderInlineMarkdownLinks(text) {
+      const s = String(text || '');
+      const re = /(?<!!)\[([^\]]+)\]\(([^)]+)\)/g;
+      let out = '';
+      let last = 0;
+      let m;
+      while ((m = re.exec(s)) !== null) {
+        out += escapeHtml(s.slice(last, m.index));
+        const label = m[1];
+        const href = m[2];
+        if (isSafeLinkHref(href)) {
+          const ht = href.trim();
+          const isFrag = ht.startsWith('#');
+          const rel = isFrag ? '' : ' rel="noopener noreferrer"';
+          const tgt = isFrag ? '' : ' target="_blank"';
+          out += `<a href="${escapeHtml(ht)}"${tgt}${rel}>${escapeHtml(label)}</a>`;
+        } else {
+          out += escapeHtml(m[0]);
+        }
+        last = m.index + m[0].length;
+      }
+      out += escapeHtml(s.slice(last));
+      return out;
+    }
+
+    /** Light cleanup before injecting HTML preview fragments (details, etc.). */
+    function stripUnsafeHtmlFragment(html) {
+      return String(html || '')
+        .replace(/<script\b[\s\S]*?<\/script>/gi, '')
+        .replace(/\s(on\w+)\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, ' ');
+    }
+
+    /**
+     * Renders list text after "- " for preview: task items, markdown links, or plain text.
+     */
+    function renderListItemBody(raw) {
+      const t = String(raw || '');
+      const task = t.match(/^\[([xX ])\]\s*(.+)$/);
+      if (task) {
+        const done = String(task[1]).trim().toLowerCase() === 'x';
+        return `<span class="md-task">${done ? '&#9745;' : '&#9744;'}</span> ${renderInlineMarkdownLinks(task[2])}`;
+      }
+      const link = t.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+      if (link && isSafeLinkHref(link[2])) {
+        const ht = link[2].trim();
+        const isFrag = ht.startsWith('#');
+        const rel = isFrag ? '' : ' rel="noopener noreferrer"';
+        const tgt = isFrag ? '' : ' target="_blank"';
+        return `<a href="${escapeHtml(ht)}"${tgt}${rel}>${escapeHtml(link[1])}</a>`;
+      }
+      return renderInlineMarkdownLinks(t);
+    }
+
+    /**
+     * GitHub-style shield / markdown button: [![alt](imageUrl)](href)
+     */
+    function renderLinkedImageLine(trimmed) {
+      const m = trimmed.match(/^\[!\[([^\]]*)\]\(([^)]+)\)\]\(([^)]+)\)$/);
+      if (!m || !isSafeHttpUrl(m[2]) || !isSafeHttpUrl(m[3])) return null;
+      const alt = m[1];
+      const imgSrc = m[2];
+      const href = m[3];
+      return `<div class="md-button-row"><a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer"><img src="${escapeHtml(imgSrc)}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async"></a></div>`;
+    }
+
+    function renderStandaloneImageLine(trimmed) {
+      const m = trimmed.match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
+      if (!m || !isSafeHttpUrl(m[2])) return null;
+      return `<p><img src="${escapeHtml(m[2])}" alt="${escapeHtml(m[1])}" loading="lazy" decoding="async" style="max-width:100%;height:auto"></p>`;
+    }
+
     function slugify(value) {
       return String(value || '')
         .toLowerCase()
@@ -483,7 +649,10 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
         const body = rows.map(row => '| ' + headers.map((_, i) => row[i] || '').join(' | ') + ' |').join('\n');
         return '## ' + (d.title || 'Table') + '\n\n' + [head, divider, body].filter(Boolean).join('\n');
       }
-      if (block.type === 'details') return `<details>\n<summary>${d.summary || 'See more'}</summary>\n\n${d.body || ''}\n\n</details>`;
+      if (block.type === 'details') {
+        const summary = escapeHtml(d.summary || 'See more');
+        return `<details>\n<summary>${summary}</summary>\n\n${d.body || ''}\n\n</details>`;
+      }
       if (block.type === 'code') return `## ${d.title || 'Code'}\n\n\`\`\`${d.language || ''}\n${d.body || ''}\n\`\`\``;
       if (block.type === 'image') return `## ${d.title || 'Image'}\n\n![${d.alt || ''}](${d.url || ''})`;
       if (block.type === 'quote') return splitLines(d.body).map(line => `> ${line}`).join('\n');
@@ -568,6 +737,7 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       let inCode = false;
       let inList = false;
       let tableBuffer = [];
+      let detailsBuffer = null;
 
       function closeList() {
         if (inList) {
@@ -592,12 +762,12 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
         const bodyRows = isDividerRow(tableBuffer[1]) ? rows.slice(2) : rows.slice(1);
 
         let tableHtml = '<div style="overflow:auto"><table><thead><tr>';
-        tableHtml += header.map(cell => `<th>${escapeHtml(cell)}</th>`).join('');
+        tableHtml += header.map(cell => `<th>${renderInlineMarkdownLinks(cell)}</th>`).join('');
         tableHtml += '</tr></thead>';
 
         if (bodyRows.length) {
           tableHtml += '<tbody>';
-          tableHtml += bodyRows.map(row => '<tr>' + header.map((_, i) => `<td>${escapeHtml(row[i] || '')}</td>`).join('') + '</tr>').join('');
+          tableHtml += bodyRows.map(row => '<tr>' + header.map((_, i) => `<td>${renderInlineMarkdownLinks(row[i] || '')}</td>`).join('') + '</tr>').join('');
           tableHtml += '</tbody>';
         }
 
@@ -606,7 +776,18 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
         tableBuffer = [];
       }
 
-      for (const line of lines) {
+      for (const rawLine of lines) {
+        const line = rawLine.replace(/\r$/, '');
+
+        if (detailsBuffer !== null) {
+          detailsBuffer.push(line);
+          if (/^<\/details>\s*$/i.test(line.trim())) {
+            html.push(stripUnsafeHtmlFragment(detailsBuffer.join('\n')));
+            detailsBuffer = null;
+          }
+          continue;
+        }
+
         if (line.startsWith('```')) {
           flushTable();
           closeList();
@@ -638,7 +819,7 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
             html.push('<ul>');
             inList = true;
           }
-          html.push('<li>' + escapeHtml(line.replace(/^- /, '')) + '</li>');
+          html.push('<li>' + renderListItemBody(line.replace(/^- /, '')) + '</li>');
           continue;
         }
 
@@ -649,22 +830,48 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
         } else if (line === '---') {
           html.push('<hr style="border:none;border-top:1px solid #2c3243; margin:20px 0;">');
         } else if (line.startsWith('# ')) {
-          html.push('<h1>' + escapeHtml(line.slice(2)) + '</h1>');
+          html.push('<h1>' + renderInlineMarkdownLinks(line.slice(2)) + '</h1>');
         } else if (line.startsWith('## ')) {
-          html.push('<h2>' + escapeHtml(line.slice(3)) + '</h2>');
+          html.push('<h2>' + renderInlineMarkdownLinks(line.slice(3)) + '</h2>');
         } else if (line.startsWith('### ')) {
-          html.push('<h3>' + escapeHtml(line.slice(4)) + '</h3>');
+          html.push('<h3>' + renderInlineMarkdownLinks(line.slice(4)) + '</h3>');
         } else if (line.startsWith('> ')) {
-          html.push('<blockquote>' + escapeHtml(line.slice(2)) + '</blockquote>');
-        } else if (line.startsWith('<details>') || line.startsWith('<summary>') || line.startsWith('</details>')) {
-          html.push('<div><code>' + escapeHtml(line) + '</code></div>');
+          html.push('<blockquote>' + renderInlineMarkdownLinks(line.slice(2)) + '</blockquote>');
+        } else if (/^<details\b/i.test(line.trimStart())) {
+          flushTable();
+          closeList();
+          const trimmed = line.trim();
+          if (/<\/details>/i.test(trimmed)) {
+            html.push(stripUnsafeHtmlFragment(trimmed));
+          } else {
+            detailsBuffer = [line];
+          }
         } else {
-          html.push('<p>' + escapeHtml(line) + '</p>');
+          const trimmed = line.trim();
+          const linkedImg = renderLinkedImageLine(trimmed);
+          if (linkedImg) {
+            html.push(linkedImg);
+          } else {
+            const soloImg = renderStandaloneImageLine(trimmed);
+            if (soloImg) {
+              html.push(soloImg);
+            } else {
+              html.push('<p>' + renderInlineMarkdownLinks(line) + '</p>');
+            }
+          }
         }
       }
 
       flushTable();
       closeList();
+      if (detailsBuffer !== null) {
+        html.push(
+          '<p class="small">Unclosed &lt;details&gt; block:</p><pre><code>' +
+            escapeHtml(detailsBuffer.join('\n')) +
+            '</code></pre>'
+        );
+        detailsBuffer = null;
+      }
       renderedPreview.innerHTML = html.join('\n') || '<p class="small">Nothing yet.</p>';
     }
 
