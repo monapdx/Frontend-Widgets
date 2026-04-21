@@ -10,6 +10,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
   <style id="base-theme">
+html { -webkit-text-size-adjust: 100%; }
+img, video, canvas, svg { max-width: 100%; height: auto; }
+
+
     :root {
       --accent: #007bff;
       --accent-600: #0056b3;
@@ -19,74 +23,74 @@
       --border: #ddd;
       --input-bg: #f2f2f2;
       --chip-bg: #f7f7f7;
-      --radius: 8px;
-      --shadow: 0 6px 18px rgba(0,0,0,.06);
-      --space: clamp(10px, 2vw, 16px);
+      --radius: 0.5rem;
+      --shadow: 0 0.375rem 1.125rem rgba(0,0,0,.06);
+      --space: clamp(0.625rem, 2vw, 1rem);
     }
     @media (prefers-color-scheme: dark) {
       :root { --bg:#0e1013; --text:#e8e8ea; --muted:#a2a7b0; --border:#262a33; --input-bg:#171b22; --chip-bg:#141820; --accent:#69a7ff; --accent-600:#4d83d1; }
     }
     * { box-sizing: border-box; }
     body { margin: 0; padding: var(--space); font-family: Arial, Helvetica, sans-serif; color: var(--text); background: var(--bg); }
-    .wrap { max-width: min(1000px, 100%); margin: 0 auto; padding-inline: max(0px, env(safe-area-inset-left)); }
+    .wrap { max-width: min(62.5rem, 100%); margin: 0 auto; padding-inline: max(0rem, env(safe-area-inset-left)); }
 
     /* Fluid, responsive type */
-    h1 { font-family: "Oswald", sans-serif; text-transform: uppercase; letter-spacing:.05em; font-size: clamp(1.25rem, 2vw + .5rem, 1.8rem); margin: 0 0 .6rem; }
-    h2 { font-family: "Oswald", sans-serif; text-transform: uppercase; letter-spacing:.05em; font-size: clamp(1rem, 1.2vw + .6rem, 1.25rem); margin: 0 0 .7rem; padding: 4px 8px; }
-    h3 { font-family: "Oswald", sans-serif; text-transform: uppercase; letter-spacing:.03em; font-size: clamp(.9rem, 1vw + .5rem, 1.05rem); }
+    h1 { font-family: "Oswald", serif; text-transform: uppercase; letter-spacing:.05em; font-size: clamp(1.25rem, 2vw + .5rem, 1.8rem); margin: 0 0 .6rem; }
+    h2 { font-family: "Oswald", serif; text-transform: uppercase; letter-spacing:.05em; font-size: clamp(1rem, 1.2vw + .6rem, 1.25rem); margin: 0 0 .7rem; padding: 0.25rem 0.5rem; }
+    h3 { font-family: "Oswald", serif; text-transform: uppercase; letter-spacing:.03em; font-size: clamp(.9rem, 1vw + .5rem, 1.05rem); }
 
     .card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--space); box-shadow: var(--shadow); }
 
     /* Main input row becomes single-column on narrow screens */
     .row { display: grid; grid-template-columns: 1fr auto; gap: var(--space); align-items: end; }
 
-    .controls { display: grid; grid-template-columns: repeat(4, minmax(180px, 1fr)); gap: var(--space); margin-top: var(--space); }
+    .controls { display: grid; grid-template-columns: repeat(4, minmax(11.25rem, 1fr)); gap: var(--space); margin-top: var(--space); }
 
-    label { font-size: .9rem; color: var(--muted); margin-bottom: 4px; display: grid; gap: 6px; font-weight: 700; }
+    label { font-size: .9rem; color: var(--muted); margin-bottom: 0.25rem; display: grid; gap: 0.375rem; font-weight: 700; }
     input[type="text"], input[type="number"], select, textarea {
-      width: 100%; padding: 12px 12px; font-size: clamp(.95rem, .8vw + .6rem, 1rem);
-      border: 1px solid var(--border); background: var(--input-bg); border-radius: 6px; color: var(--text);
+      width: 100%; padding: 0.75rem; font-size: clamp(.95rem, .8vw + .6rem, 1rem);
+      border: 1px solid var(--border); background: var(--input-bg); border-radius: 0.375rem; color: var(--text);
     }
-    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 35%, transparent); }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 0.1875rem color-mix(in srgb, var(--accent) 35%, transparent); }
 
-    button { background: var(--accent); color: #fff; font-size: clamp(.95rem, .8vw + .6rem, 1rem); padding: 12px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: 700; transition: background .2s ease, transform .03s ease; }
+    button { background: var(--accent); color: #fff; font-size: clamp(.95rem, .8vw + .6rem, 1rem); padding: 0.75rem 1rem; border: none; border-radius: 0.375rem; cursor: pointer; font-weight: 700; transition: background .2s ease, transform .03s ease; touch-action: manipulation; }
     button:hover { background: var(--accent-600); }
     button:active { transform: translateY(1px); }
     button.primary { width: auto; }
 
     .tiny { font-size: .8rem; color: var(--muted); }
     .results { margin-top: var(--space); display: grid; gap: var(--space); grid-template-columns: 1fr; }
-    .group { border: 1px solid var(--border); border-radius: 6px; padding: 10px; background: var(--bg); }
-    .group h3 { margin: 0 0 8px; color: var(--text); display:flex; align-items:center; justify-content:space-between; }
-    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
-    .chip { padding: 8px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--chip-bg); font-family: "Oswald", sans-serif; line-height: 1; }
-    .footer { margin-top: 14px; display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+    .group { border: 1px solid var(--border); border-radius: 0.375rem; padding: 0.625rem; background: var(--bg); }
+    .group h3 { margin: 0 0 0.5rem; color: var(--text); display:flex; align-items:center; justify-content:space-between; }
+    .chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .chip { padding: 0.5rem 0.75rem; border-radius: 62.5rem; border: 1px solid var(--border); background: var(--chip-bg); font-family: "Oswald", serif; line-height: 1; }
+    .footer { margin-top: 0.875rem; display: flex; gap: 0.625rem; align-items: center; justify-content: space-between; flex-wrap: wrap; }
 
     /* Make results switch to a 2-column masonry on medium screens for denser layout */
-    @media (min-width: 880px) {
+    @media (min-width: 55rem) {
       .results { grid-template-columns: 1fr 1fr; }
     }
 
     /* Tablet breakpoint: relax columns */
-    @media (max-width: 880px) {
-      .controls { grid-template-columns: repeat(2, minmax(160px, 1fr)); }
+    @media (max-width: 55rem) {
+      .controls { grid-template-columns: repeat(2, minmax(10rem, 1fr)); }
       .row { grid-template-columns: 1fr auto; }
       button.primary { width: auto; }
     }
 
     /* Mobile breakpoint: single column, full-width buttons/inputs */
-    @media (max-width: 600px) {
-      body { padding: 12px; }
+    @media (max-width: 37.5rem) {
+      body { padding: 0.75rem; }
       .wrap { padding: 0; }
       .row { grid-template-columns: 1fr; }
       button.primary { width: 100%; }
       .controls { grid-template-columns: 1fr; }
-      .footer { gap: 6px; }
+      .footer { gap: 0.375rem; }
     }
 
     /* Ultra-small devices */
-    @media (max-width: 380px) {
-      .chip { padding: 6px 10px; }
+    @media (max-width: 23.75rem) {
+      .chip { padding: 0.375rem 0.625rem; }
     }
   </style>
 </head>
@@ -135,7 +139,7 @@
       </div>
     </div>
 
-    <div id="status" class="tiny" style="margin-top:10px" aria-live="polite"></div>
+    <div id="status" class="tiny" style="margin-top:0.625rem" aria-live="polite"></div>
     <div id="results" class="results"></div>
   </div>
 

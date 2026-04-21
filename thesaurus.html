@@ -1,4 +1,9 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Thesaurus</title>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -42,9 +47,13 @@ $(document).ready(function() {
 
 </script>
 <style type="text/css">
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+img, video, canvas, svg { max-width: 100%; height: auto; }
+
+
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
 
 
@@ -56,8 +65,8 @@ font-family: "Oswald", serif;
 	text-transform: uppercase;
 	letter-spacing: 0.05em;
 	margin-top: 0;
-	padding: 5px 10px;
-	margin-bottom: 15px;
+	padding: 0.3125rem 0.625rem;
+	margin-bottom: 0.9375rem;
 	position: relative;
 }
 
@@ -69,16 +78,16 @@ label {
 	text-transform: uppercase;
 	letter-spacing: 0.05em;
 	margin-top: 0;
-	padding: 5px 10px;
-	margin-bottom: 15px;
+	padding: 0.3125rem 0.625rem;
+	margin-bottom: 0.9375rem;
 	position: relative;
     font-weight:bold;
 }
 
 #searchWord {
   width: 100%;
-  padding: 10px;
-  font-size: 16px;
+  padding: 0.625rem;
+  font-size: 1rem;
   border: 1px solid #ddd;
    background-color: #f2f2f2;
 
@@ -86,20 +95,22 @@ label {
 
 input:focus {outline: none; /* Remove the default focus outline */
   border-color: blue; /* Change the border color on focus */
-  box-shadow: 0 0 5px rgba(0, 0, 255, 0.5);}
+  box-shadow: 0 0 0.3125rem rgba(0, 0, 255, 0.5);}
 
 button {
 font-family: "Oswald", serif;
-  margin-top: 10px;
+  margin-top: 0.625rem;
   width: 100%;
   background: #007bff; /* Blue button */
   color: #fff;
-  font-size: 16px;
-  padding: 10px;
+  font-size: 1rem;
+  padding: 0.625rem;
   border: none;
-  border-radius: 4px;
+  border-radius: 0.25rem;
   cursor: pointer;
   font-weight: bold;
+  touch-action: manipulation;
+  min-height: 2.75rem;
   transition: background 0.3s ease;
   float:left;
 }
@@ -111,9 +122,15 @@ button:hover {
 #synonymsResult {font-family: "Oswald", serif;}
 
 </style>
+</head>
+<body>
+
 <form id="searchForm">
     <label for="searchWord"></label><h2>THESAURUS</h2>
     <input type="text" id="searchWord" name="word"><br><br>
     <button type="submit">SEARCH</button><br>
 </form>
 <div id="synonymsResult"></div>
+
+</body>
+</html>
