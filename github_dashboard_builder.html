@@ -141,17 +141,78 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       border-radius: 16px;
       padding: 12px;
       display: grid;
+      gap: 0;
+    }
+
+    .block-card.is-collapsed .block-card-body {
+      display: none;
+    }
+
+    .block-card-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .block-card.is-collapsed .block-card-header {
+      margin-bottom: 0;
+    }
+
+    .block-card-toggle {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 4px 8px;
+      margin: -4px -8px;
+      border: none;
+      border-radius: 10px;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .block-card-toggle:hover {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .block-card-toggle:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .block-card-toggle-text {
+      display: grid;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .block-card-toggle-text strong { font-size: 0.98rem; }
+
+    .block-card-chevron {
+      flex-shrink: 0;
+      font-size: 0.75rem;
+      color: var(--muted);
+      transition: transform 0.2s ease;
+    }
+
+    .block-card.is-collapsed .block-card-chevron {
+      transform: rotate(-90deg);
+    }
+
+    .block-card-body {
+      display: grid;
       gap: 12px;
     }
 
-    .block-card header {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .block-card header strong { font-size: 0.98rem; }
     .meta {
       font-size: 0.78rem;
       color: var(--muted);
@@ -426,7 +487,7 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       custom: { label: 'Custom Markdown', hint: 'Paste your own block', defaults: () => ({ body: '## Custom Section\n\nAdd any markdown here.' }) }
     };
 
-    const state = { docName: 'README.md', docTitle: 'GitHub Dashboard', blocks: [] };
+    const state = { docName: 'README.md', docTitle: 'GitHub Dashboard', blocks: [], expandedBlockId: null };
 
     const blocksList = document.getElementById('blocksList');
     const markdownOutput = document.getElementById('markdownOutput');
@@ -514,6 +575,25 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
     }
 
     /**
+     * Our generator emits <details><summary>…</summary> then plain body lines; linkify body for preview.
+     * Unknown shapes are returned unchanged (after stripUnsafeHtmlFragment).
+     */
+    function processDetailsChunkForPreview(html) {
+      const stripped = stripUnsafeHtmlFragment(String(html || ''));
+      const m = stripped.match(/^<details([^>]*)>\s*<summary>([\s\S]*?)<\/summary>\s*([\s\S]*?)<\/details>\s*$/i);
+      if (!m) return stripped;
+      const attrs = m[1] || '';
+      const summaryInner = m[2];
+      const body = m[3].replace(/\s+$/, '');
+      const paras = [];
+      for (const line of body.split('\n')) {
+        if (!line.trim()) continue;
+        paras.push('<p>' + renderInlineMarkdownLinks(line) + '</p>');
+      }
+      return `<details${attrs}>\n<summary>${summaryInner}</summary>\n${paras.join('\n')}\n</details>`;
+    }
+
+    /**
      * Renders list text after "- " for preview: task items, markdown links, or plain text.
      */
     function renderListItemBody(raw) {
@@ -579,12 +659,19 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
 
     function addBlock(type) {
       if (!BLOCK_TYPES[type]) return;
-      state.blocks.push(makeBlock(type));
+      const block = makeBlock(type);
+      state.blocks.push(block);
+      state.expandedBlockId = block.id;
       render();
     }
 
     function removeBlock(id) {
+      const index = state.blocks.findIndex(block => block.id === id);
       state.blocks = state.blocks.filter(block => block.id !== id);
+      if (state.expandedBlockId === id) {
+        const next = state.blocks[index] || state.blocks[index - 1];
+        state.expandedBlockId = next ? next.id : null;
+      }
       render();
     }
 
@@ -608,7 +695,32 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
     }
 
     function saveState() {
-      localStorage.setItem('github-dashboard-builder-state-v2', JSON.stringify(state));
+      localStorage.setItem(
+        'github-dashboard-builder-state-v2',
+        JSON.stringify({
+          docName: state.docName,
+          docTitle: state.docTitle,
+          blocks: state.blocks,
+          expandedBlockId: state.expandedBlockId
+        })
+      );
+    }
+
+    function ensureExpandedBlockId() {
+      if (!state.blocks.length) {
+        state.expandedBlockId = null;
+        return;
+      }
+      if (!state.expandedBlockId || !state.blocks.some(b => b.id === state.expandedBlockId)) {
+        state.expandedBlockId = state.blocks[0].id;
+      }
+    }
+
+    function setExpandedBlockId(id) {
+      if (!id || state.expandedBlockId === id) return;
+      state.expandedBlockId = id;
+      renderBlocks();
+      saveState();
     }
 
     function extractHeadingTitles() {
@@ -700,25 +812,36 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
     function renderBlocks() {
       if (!state.blocks.length) {
         blocksList.innerHTML = '<div class="empty">No blocks yet. Add one from the left to start building your markdown dashboard.</div>';
+        state.expandedBlockId = null;
         return;
       }
 
-      blocksList.innerHTML = state.blocks.map((block, index) => `
-        <article class="block-card">
-          <header>
-            <div>
-              <strong>${BLOCK_TYPES[block.type].label}</strong>
-              <div class="meta">Block ${index + 1} · ${block.type}</div>
-            </div>
+      ensureExpandedBlockId();
+
+      blocksList.innerHTML = state.blocks.map((block, index) => {
+        const expanded = state.expandedBlockId === block.id;
+        const collapsedClass = expanded ? '' : ' is-collapsed';
+        return `
+        <article class="block-card${collapsedClass}" data-block-id="${block.id}">
+          <div class="block-card-header">
+            <button type="button" class="block-card-toggle" aria-expanded="${expanded}" aria-controls="block-body-${block.id}" id="block-head-${block.id}">
+              <span class="block-card-toggle-text">
+                <strong>${BLOCK_TYPES[block.type].label}</strong>
+                <span class="meta">Block ${index + 1} · ${block.type}</span>
+              </span>
+              <span class="block-card-chevron" aria-hidden="true">▾</span>
+            </button>
             <div class="toolbar">
               <button class="ghost" data-action="up" data-id="${block.id}">↑</button>
               <button class="ghost" data-action="down" data-id="${block.id}">↓</button>
               <button class="danger" data-action="delete" data-id="${block.id}">Delete</button>
             </div>
-          </header>
-          ${blockFields(block)}
-        </article>
-      `).join('');
+          </div>
+          <div class="block-card-body" id="block-body-${block.id}" role="region" aria-labelledby="block-head-${block.id}">
+            ${blockFields(block)}
+          </div>
+        </article>`;
+      }).join('');
     }
 
     function isTableLine(line) {
@@ -782,7 +905,7 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
         if (detailsBuffer !== null) {
           detailsBuffer.push(line);
           if (/^<\/details>\s*$/i.test(line.trim())) {
-            html.push(stripUnsafeHtmlFragment(detailsBuffer.join('\n')));
+            html.push(processDetailsChunkForPreview(detailsBuffer.join('\n')));
             detailsBuffer = null;
           }
           continue;
@@ -842,7 +965,7 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
           closeList();
           const trimmed = line.trim();
           if (/<\/details>/i.test(trimmed)) {
-            html.push(stripUnsafeHtmlFragment(trimmed));
+            html.push(processDetailsChunkForPreview(trimmed));
           } else {
             detailsBuffer = [line];
           }
@@ -954,6 +1077,7 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
 
       docNameInput.value = state.docName;
       docTitleInput.value = state.docTitle;
+      state.expandedBlockId = state.blocks[0]?.id || null;
       render();
     }
 
@@ -975,12 +1099,26 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       });
 
       blocksList.addEventListener('click', event => {
+        const toggle = event.target.closest('.block-card-toggle');
+        if (toggle) {
+          const card = toggle.closest('[data-block-id]');
+          if (card?.dataset.blockId) setExpandedBlockId(card.dataset.blockId);
+          return;
+        }
         const button = event.target.closest('button[data-action]');
         if (!button) return;
         const { action, id } = button.dataset;
         if (action === 'delete') removeBlock(id);
         if (action === 'up') moveBlock(id, 'up');
         if (action === 'down') moveBlock(id, 'down');
+      });
+
+      blocksList.addEventListener('focusin', event => {
+        const el = event.target;
+        if (!el.matches('input, textarea, select')) return;
+        const card = el.closest('[data-block-id]');
+        if (!card?.dataset.blockId) return;
+        setExpandedBlockId(card.dataset.blockId);
       });
 
       docNameInput.addEventListener('input', render);
@@ -1023,6 +1161,10 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
             state.docName = parsed.docName || 'README.md';
             state.docTitle = parsed.docTitle || 'GitHub Dashboard';
             state.blocks = parsed.blocks;
+            state.expandedBlockId =
+              parsed.expandedBlockId && state.blocks.some(b => b.id === parsed.expandedBlockId)
+                ? parsed.expandedBlockId
+                : state.blocks[0]?.id || null;
             docNameInput.value = state.docName;
             docTitleInput.value = state.docTitle;
             render();
@@ -1047,6 +1189,10 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
         state.docName = parsed.docName || 'README.md';
         state.docTitle = parsed.docTitle || 'GitHub Dashboard';
         state.blocks = parsed.blocks;
+        state.expandedBlockId =
+          parsed.expandedBlockId && state.blocks.some(b => b.id === parsed.expandedBlockId)
+            ? parsed.expandedBlockId
+            : state.blocks[0]?.id || null;
         docNameInput.value = state.docName;
         docTitleInput.value = state.docTitle;
         render();
