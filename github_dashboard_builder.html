@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GitHub Dashboard Builder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
@@ -22,6 +25,14 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       --danger: #fb7185;
       --shadow: 0 16px 40px rgba(0,0,0,.35);
       --radius: 16px;
+      /* Neo-brutalist export controls */
+      --brutal-ink: #07080d;
+      --brutal-shadow: 5px 5px 0 var(--brutal-ink);
+      --brutal-shadow-sm: 3px 3px 0 var(--brutal-ink);
+      --brutal-lime: #c8f542;
+      --brutal-cream: #f2efe6;
+      --brutal-yellow: #ffe14a;
+      --font-export: "Oswald", system-ui, sans-serif;
     }
 
     * { box-sizing: border-box; }
@@ -146,6 +157,186 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       gap: 10px;
     }
 
+    /* Neo-brutalist + Oswald: Export (stacked) + Presets (2×2 grid) */
+    .export-actions {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .preset-actions,
+    .add-block-actions {
+      gap: 12px;
+    }
+
+    .export-actions button,
+    .preset-actions button,
+    .add-block-actions button {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 3rem;
+      padding: 0.75rem 1rem;
+      font-family: var(--font-export);
+      font-size: 0.875rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border-radius: 6px;
+      border: 3px solid var(--brutal-ink);
+      color: var(--brutal-ink);
+      background: var(--brutal-cream);
+      box-shadow: var(--brutal-shadow);
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+    }
+
+    .export-actions button:hover,
+    .preset-actions button:hover,
+    .add-block-actions button:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 7px 7px 0 var(--brutal-ink);
+    }
+
+    .export-actions button:active,
+    .preset-actions button:active,
+    .add-block-actions button:active {
+      transform: translate(3px, 3px);
+      box-shadow: var(--brutal-shadow-sm);
+    }
+
+    .export-actions button:focus-visible,
+    .preset-actions button:focus-visible,
+    .add-block-actions button:focus-visible {
+      outline: 3px solid var(--brutal-lime);
+      outline-offset: 3px;
+    }
+
+    .export-actions #copyMarkdownBtn {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--brutal-ink);
+      box-shadow: var(--brutal-shadow);
+    }
+
+    .export-actions #copyMarkdownBtn:hover {
+      background: #ff4db2;
+    }
+
+    .export-actions #downloadMarkdownBtn,
+    .export-actions #downloadJsonBtn {
+      background: var(--brutal-yellow);
+      color: var(--brutal-ink);
+    }
+
+    .export-actions #downloadMarkdownBtn:hover,
+    .export-actions #downloadJsonBtn:hover {
+      background: #fff08a;
+    }
+
+    .export-actions #loadJsonBtn {
+      background: var(--brutal-lime);
+      color: var(--brutal-ink);
+    }
+
+    .export-actions #loadJsonBtn:hover {
+      background: #def65a;
+    }
+
+    .preset-actions [data-preset="readme"] {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .preset-actions [data-preset="readme"]:hover {
+      background: #ff4db2;
+    }
+
+    .preset-actions [data-preset="profile"] {
+      background: var(--brutal-yellow);
+    }
+
+    .preset-actions [data-preset="profile"]:hover {
+      background: #fff08a;
+    }
+
+    .preset-actions [data-preset="docs"] {
+      background: var(--brutal-lime);
+    }
+
+    .preset-actions [data-preset="docs"]:hover {
+      background: #def65a;
+    }
+
+    .preset-actions [data-preset="roadmap"] {
+      background: var(--brutal-cream);
+    }
+
+    .preset-actions [data-preset="roadmap"]:hover {
+      background: #faf7ef;
+    }
+
+    /* Add block — same brutal frame; label + hint stack; cycle fills */
+    .block-types.add-block-actions button {
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      min-height: 4.5rem;
+      text-transform: none;
+      letter-spacing: 0.03em;
+      font-size: 0.8125rem;
+      line-height: 1.25;
+    }
+
+    .block-types.add-block-actions button span {
+      font-family: Inter, system-ui, sans-serif;
+      font-size: 0.6875rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: var(--brutal-ink);
+      opacity: 0.72;
+      margin-top: 4px;
+      text-transform: none;
+    }
+
+    .add-block-actions button:nth-child(4n + 1) {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .add-block-actions button:nth-child(4n + 1) span {
+      color: rgba(255, 255, 255, 0.9);
+      opacity: 1;
+    }
+
+    .add-block-actions button:nth-child(4n + 1):hover {
+      background: #ff4db2;
+    }
+
+    .add-block-actions button:nth-child(4n + 2) {
+      background: var(--brutal-yellow);
+    }
+
+    .add-block-actions button:nth-child(4n + 2):hover {
+      background: #fff08a;
+    }
+
+    .add-block-actions button:nth-child(4n + 3) {
+      background: var(--brutal-lime);
+    }
+
+    .add-block-actions button:nth-child(4n + 3):hover {
+      background: #def65a;
+    }
+
+    .add-block-actions button:nth-child(4n + 4) {
+      background: var(--brutal-cream);
+    }
+
+    .add-block-actions button:nth-child(4n + 4):hover {
+      background: #faf7ef;
+    }
+
     button {
       border: 1px solid var(--border);
       background: var(--soft);
@@ -193,6 +384,10 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       font-size: 0.75rem;
       color: var(--muted);
       margin-top: 4px;
+    }
+
+    .block-types.add-block-actions {
+      gap: 12px;
     }
 
     .list { display: grid; gap: 10px; }
@@ -492,7 +687,7 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
             <span class="sidebar-section-chevron" aria-hidden="true">▾</span>
           </button>
           <div class="sidebar-section-body" id="sidebar-presets-body" role="region" aria-labelledby="sidebar-presets-head">
-            <div class="button-grid">
+            <div class="button-grid preset-actions">
               <button data-preset="readme">README</button>
               <button data-preset="profile">Profile README</button>
               <button data-preset="docs">Docs Hub</button>
@@ -507,7 +702,7 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
             <span class="sidebar-section-chevron" aria-hidden="true">▾</span>
           </button>
           <div class="sidebar-section-body" id="sidebar-add-body" role="region" aria-labelledby="sidebar-add-head">
-            <div class="block-types" id="addBlockButtons"></div>
+            <div class="block-types add-block-actions" id="addBlockButtons"></div>
           </div>
         </section>
 
@@ -517,7 +712,7 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
             <span class="sidebar-section-chevron" aria-hidden="true">▾</span>
           </button>
           <div class="sidebar-section-body" id="sidebar-export-body" role="region" aria-labelledby="sidebar-export-head">
-            <div class="button-grid">
+            <div class="button-grid export-actions">
               <button class="primary" id="copyMarkdownBtn">Copy .md</button>
               <button id="downloadMarkdownBtn">Download .md</button>
               <button id="downloadJsonBtn">Download JSON</button>
