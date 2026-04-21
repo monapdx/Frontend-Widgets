@@ -8,6 +8,11 @@
     
     
     <style>
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+img, video, canvas, svg { max-width: 100%; height: auto; }
+
+
     @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 @import url('https://fonts.googleapis.com/css2?family=Lobster&family=Tiny5&display=swap');
     
@@ -15,14 +20,14 @@
         body {
             font-family: "IBM Plex Mono", monospace;
             text-align: center;
-            margin-top: 50px;
+            margin-top: 3.125rem;
         }
         h1 {font-family: "Lobster", serif;}
         .color-palette {
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 0.625rem;
         }
         .color-item {
             display: flex;
@@ -30,21 +35,21 @@
             align-items: center;
         }
         .color-box {
-            width: 100px;
-            height: 100px;
-            border-radius: 10px;
+            width: 6.25rem;
+            height: 6.25rem;
+            border-radius: 0.625rem;
         }
         .hex-code {
-            margin-top: 5px;
-            font-size: 14px;
+            margin-top: 0.3125rem;
+            font-size: 0.875rem;
             font-weight: bold;
             
         }
         button {
         	font-family: "Lobster", serif;
-            margin-top: 30px;
-            padding: 10px 20px;
-            font-size: 16px;
+            margin-top: 1.875rem;
+            padding: 0.625rem 1.25rem;
+            font-size: 1rem;
             cursor: pointer;
         }
     </style>

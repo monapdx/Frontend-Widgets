@@ -5,15 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Editable Table Generator</title>
   <style>
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+img, video, canvas, svg { max-width: 100%; height: auto; }
+
+
    @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
     body {
  font-family: "Oswald", serif;
-      margin: 20px;
+      margin: 1.25rem;
     }
     #table-container {
-      margin-top: 20px;
+      margin-top: 1.25rem;
     }
     .grid-table {
       display: grid;
@@ -39,29 +44,29 @@
 	font-family:"Lobster", serif;
   font-weight: bold;
   display: block;
-  margin-bottom: 8px;
-  font-size: 14px;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
   color: #555;
 }
 
 input {
   width: 100%;
-  padding: 10px;
-  font-size: 16px;
+  padding: 0.625rem;
+  font-size: 1rem;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 0.25rem;
 }
 
 button {
 	font-family: "Lobster", serif;
-  margin-top: 10px;
+  margin-top: 0.625rem;
   width: 100%;
   background: #007bff; /* Blue button */
   color: #fff;
-  font-size: 16px;
-  padding: 10px;
+  font-size: 1rem;
+  padding: 0.625rem;
   border: none;
-  border-radius: 4px;
+  border-radius: 0.25rem;
   cursor: pointer;
   font-weight: bold;
   transition: background 0.3s ease;
@@ -72,15 +77,15 @@ button:hover {
 }
 
 
-#delete-btn {width:150px;height:auto;float:left;padding:3px;font-family: "Lobster", serif;}
-#save-btn {width:150px;float:left;padding:3px;height:auto;font-family: "Lobster", serif;}
-#search {width:auto;height:auto;float:left;padding:3px;font-family: "Lobster", serif;}
+#delete-btn {width:9.375rem;height:auto;float:left;padding:0.1875rem;font-family: "Lobster", serif;}
+#save-btn {width:9.375rem;float:left;padding:0.1875rem;height:auto;font-family: "Lobster", serif;}
+#search {width:auto;height:auto;float:left;padding:0.1875rem;font-family: "Lobster", serif;}
 
-	#generate {width:150px;float:left;padding:3px;height:auto;font-family: "Lobster", serif;}
-	#save {width:150px;float:right;padding:3px;height:auto;font-family: "Lobster", serif;}
+	#generate {width:9.375rem;float:left;padding:0.1875rem;height:auto;font-family: "Lobster", serif;}
+	#save {width:9.375rem;float:right;padding:0.1875rem;height:auto;font-family: "Lobster", serif;}
 	
-	#generate-btn {width:150px;float:left;padding:3px;height:auto;font-family: "Lobster", serif;}
-	#download-btn {width:150px;float:right;padding:3px;height:auto;font-family: "Lobster", serif;}
+	#generate-btn {width:9.375rem;float:left;padding:0.1875rem;height:auto;font-family: "Lobster", serif;}
+	#download-btn {width:9.375rem;float:right;padding:0.1875rem;height:auto;font-family: "Lobster", serif;}
   </style>
   
 <style>

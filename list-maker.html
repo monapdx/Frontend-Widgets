@@ -5,53 +5,58 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Simple Shopping List App</title>
   <style>
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+img, video, canvas, svg { max-width: 100%; height: auto; }
+
+
     body {
       font-family: "Oswald", serif;
-      margin: 20px;
+      margin: 1.25rem;
     }
     #list-container {
-      margin-top: 20px;
+      margin-top: 1.25rem;
     }
     .list-item {
       display: flex;
       align-items: center;
-      margin: 10px 0;
+      margin: 0.625rem 0;
     }
     .list-item input {
-      margin-right: 10px;
+      margin-right: 0.625rem;
       font-family: "Lobster", serif;
-      font-size:18px;
+      font-size:1.125rem;
     }
     .crossed {
       text-decoration: line-through;
       color: grey;
     }
     .export-btn {
-      margin-top: 20px;
+      margin-top: 1.25rem;
     }
 .list-item {
-font-size:18px;
+font-size:1.125rem;
   display: flex;
   align-items: center;
   justify-content: space-between; /* Ensures spacing between text and delete button */
-  margin: 10px 0;
-  padding: 5px;
+  margin: 0.625rem 0;
+  padding: 0.3125rem;
   border-bottom: 1px solid #ddd; /* Optional: Adds a subtle separation between items */
 }
 
 .list-item span {
   flex-grow: 1; /* Allows the text to take up remaining space */
-  margin-left: 10px; /* Ensures some space between the checkbox and text */
+  margin-left: 0.625rem; /* Ensures some space between the checkbox and text */
 }
 
 .list-item button {
-  margin-left: 20px; /* Increases space between text and delete button */
-  padding: 3px 8px;
+  margin-left: 1.25rem; /* Increases space between text and delete button */
+  padding: 0.1875rem 0.5rem;
   border: none;
   background-color: #ff4d4d;
   color: white;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 0.25rem;
 }
 
 .list-item button:hover {
@@ -65,18 +70,18 @@ font-size:18px;
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
 
-#export-btn	{font-family: "Lobster", serif;font-size:20px;}
-#new-item {font-family: "Lobster", serif;font-size:18px; border-radius: 5px; /* Round the corners */
+#export-btn	{font-family: "Lobster", serif;font-size:1.25rem;}
+#new-item {font-family: "Lobster", serif;font-size:1.125rem; border-radius: 0.3125rem; /* Round the corners */
   background-color: #f2f2f2; /* Set a light background color */}
   #new-item:focus {outline: none; /* Remove the default focus outline */
   border-color: blue; /* Change the border color on focus */
-  box-shadow: 0 0 5px rgba(0, 0, 255, 0.5); /* Add a subtle shadow */}
-#list-title {font-family: "Lobster", serif;font-size:18px;border-radius: 5px; /* Round the corners */
+  box-shadow: 0 0 0.3125rem rgba(0, 0, 255, 0.5); /* Add a subtle shadow */}
+#list-title {font-family: "Lobster", serif;font-size:1.125rem;border-radius: 0.3125rem; /* Round the corners */
   background-color: #f2f2f2;}
   #list-title:focus {outline: none; /* Remove the default focus outline */
   border-color: blue; /* Change the border color on focus */
-  box-shadow: 0 0 5px rgba(0, 0, 255, 0.5);}
-label {font-family: "Oswald", serif;font-size:18px;font-weight:bold;}
+  box-shadow: 0 0 0.3125rem rgba(0, 0, 255, 0.5);}
+label {font-family: "Oswald", serif;font-size:1.125rem;font-weight:bold;}
   </style>
 </head>
 <body>
@@ -161,9 +166,9 @@ exportBtn.addEventListener('click', function() {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${listTitle || "Shopping List"}</title>
     <style>
-      body { font-family: Arial, sans-serif; margin: 20px; padding: 20px; max-width: 600px; }
-      .list-container { margin-top: 20px; }
-      .list-item { display: block; margin: 10px 0; padding: 5px; border-bottom: 1px solid #ddd; }
+      body { font-family: Arial, sans-serif; margin: 1.25rem; padding: 1.25rem; max-width: 37.5rem; }
+      .list-container { margin-top: 1.25rem; }
+      .list-item { display: block; margin: 0.625rem 0; padding: 0.3125rem; border-bottom: 1px solid #ddd; }
       .crossed { text-decoration: line-through; color: grey; }
     </style>
   </head>

@@ -5,6 +5,10 @@
   <title>Quiz Builder</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
+html { -webkit-text-size-adjust: 100%; }
+img, video, canvas, svg { max-width: 100%; height: auto; }
+
+
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       margin: 0;
@@ -202,15 +206,15 @@
       html += "  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n";
       html += "  <style>\n";
       html += "    @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');\n";
-      html += "    body { font-family: \"Oswald\", serif; margin: 20px; text-align: center; }\n";
-      html += "    #correct-words { margin-top: 20px; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; }\n";
-      html += "    #correct-words li { list-style-type: none; margin: 5px; padding: 10px; background-color: #a8e6ce; border-radius: 5px; }\n";
+      html += "    body { font-family: \"Oswald\", serif; margin: 1.25rem; text-align: center; }\n";
+      html += "    #correct-words { margin-top: 1.25rem; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; }\n";
+      html += "    #correct-words li { list-style-type: none; margin: 0.3125rem; padding: 0.625rem; background-color: #a8e6ce; border-radius: 0.3125rem; }\n";
       html += "    #correct-words li:hover { border: 1px outset #a8e6ce; background-color: #f0fff0; }\n";
-      html += "    #counter { margin-top: 20px; font-size: 1.2em; }\n";
+      html += "    #counter { margin-top: 1.25rem; font-size: 1.2em; }\n";
       html += "    h1 { font-weight: 800; font-style: normal; }\n";
-      html += "    input { width: 100%; padding: 10px; font-size: 16px; border: 1px solid #ddd; }\n";
-      html += "    input:focus { outline: none; border-color: blue; box-shadow: 0 0 5px rgba(0, 0, 255, 0.5); }\n";
-      html += "    button.answer { margin-top: 10px; width: 100%; background: #007bff; color: #fff; font-size: 16px; padding: 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background 0.3s ease; }\n";
+      html += "    input { width: 100%; padding: 0.625rem; font-size: 1rem; border: 1px solid #ddd; }\n";
+      html += "    input:focus { outline: none; border-color: blue; box-shadow: 0 0 0.3125rem rgba(0, 0, 255, 0.5); }\n";
+      html += "    button.answer { margin-top: 0.625rem; width: 100%; background: #007bff; color: #fff; font-size: 1rem; padding: 0.625rem; border: none; border-radius: 0.25rem; cursor: pointer; font-weight: bold; transition: background 0.3s ease; }\n";
       html += "    button.answer:hover { background: #0056b3; }\n";
       html += "  </style>\n";
       html += "</head>\n";

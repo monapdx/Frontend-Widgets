@@ -6,23 +6,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SMS Templates</title>
   <style>
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+img, video, canvas, svg { max-width: 100%; height: auto; }
+
+
   @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
   
     body {
 font-family: "Oswald", serif;
       line-height: 1.6;
-      margin: 20px;
+      margin: 1.25rem;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px;
+      margin-top: 1.25rem;
     }
 
     table th,
     table td {
-      padding: 10px;
+      padding: 0.625rem;
       border: 1px solid #ddd;
     }
 
@@ -32,7 +37,7 @@ font-family: "Oswald", serif;
 
     table td .copy-button {
     font-family: "Oswald", serif;
-      padding: 5px 10px;
+      padding: 0.3125rem 0.625rem;
       background: #007bff; /* Blue button */
   color: #fff;
       border: none;
@@ -46,14 +51,14 @@ font-family: "Oswald", serif;
 
     textarea {
       width: 90%;
-      padding: 10px;
-      margin-bottom: 10px;
-      font-size: 16px;
+      padding: 0.625rem;
+      margin-bottom: 0.625rem;
+      font-size: 1rem;
     }
 
     .add-template-btn {
       font-family: "Oswald", serif;
-      padding: 10px;
+      padding: 0.625rem;
         background: #007bff;
       color: white;
       border: none;

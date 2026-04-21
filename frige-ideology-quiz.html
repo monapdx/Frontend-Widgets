@@ -5,53 +5,58 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Fringe Ideology Affinity Quiz</title>
   <style>
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+img, video, canvas, svg { max-width: 100%; height: auto; }
+
+
     :root{
       --bg:#0b0d10; --panel:#12151a; --ink:#e9eef5; --muted:#9aa6b2; --accent:#62d2a2; --accent2:#7aa2ff; --warn:#ff7aa2;
       --bar:#2a2f39; --good:#62d2a2; --mid:#ffcc66; --low:#ff8a66;
-      --radius:14px;
+      --radius:0.875rem;
     }
     html,body{height:100%;}
-    body{margin:0;background:radial-gradient(1200px 800px at 10% 0%, #111622 0%, #0b0d10 40%, #07090c 100%);
-      color:var(--ink);font:16px/1.5 system-ui, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, Apple Color Emoji, Segoe UI Emoji;}
-    .wrap{max-width:1000px;margin:40px auto;padding:0 18px 80px;}
-    header{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:18px;}
-    h1{font-weight:800;letter-spacing:.3px;margin:0;font-size:clamp(22px,3vw,30px);} 
+    body{margin:0;background:radial-gradient(75rem 50rem at 10% 0%, #111622 0%, #0b0d10 40%, #07090c 100%);
+      color:var(--ink);font:1rem/1.5 system-ui, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, Apple Color Emoji, Segoe UI Emoji;}
+    .wrap{max-width:62.5rem;margin:2.5rem auto;padding:0 1.125rem 5rem;}
+    header{display:flex;gap:1rem;align-items:center;justify-content:space-between;margin-bottom:1.125rem;}
+    h1{font-weight:800;letter-spacing:0.0187rem;margin:0;font-size:clamp(1.375rem,3vw,1.875rem);} 
     p.lede{color:var(--muted);margin:.25rem 0 1rem;}
-    .card{background:linear-gradient(180deg,#151a22,#10141a);border:1px solid #202633;border-radius:var(--radius);box-shadow:0 10px 30px rgba(0,0,0,.35);}
-    .pad{padding:20px;}
-    .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+    .card{background:linear-gradient(180deg,#151a22,#10141a);border:1px solid #202633;border-radius:var(--radius);box-shadow:0 0.625rem 1.875rem rgba(0,0,0,.35);}
+    .pad{padding:1.25rem;}
+    .controls{display:flex;flex-wrap:wrap;gap:0.625rem;align-items:center}
     button, .btn{
-      appearance:none;border:1px solid #2a3340;background:#161b22;color:var(--ink);border-radius:12px;padding:10px 14px;cursor:pointer;
+      appearance:none;border:1px solid #2a3340;background:#161b22;color:var(--ink);border-radius:0.75rem;padding:0.625rem 0.875rem;cursor:pointer;
       transition:transform .06s ease, background .2s ease, border-color .2s ease; font-weight:600;}
     button:hover{background:#1a2030;border-color:#334155}
     button:active{transform:scale(.98)}
     .btn.primary{background:linear-gradient(180deg,#3546ff,#6f8bff);border-color:#4a64ff;color:white}
-    .grid{display:grid;gap:14px}
-    .q{background:linear-gradient(180deg,#151a22,#0f1319);border:1px solid #1e2430;border-radius:12px;padding:14px}
+    .grid{display:grid;gap:0.875rem}
+    .q{background:linear-gradient(180deg,#151a22,#0f1319);border:1px solid #1e2430;border-radius:0.75rem;padding:0.875rem}
     .q small{color:var(--muted)}
-    .q-title{font-weight:650;margin-bottom:10px}
-    .scale{display:grid;grid-template-columns:repeat(5,minmax(50px,1fr));gap:6px}
-    .scale label{display:flex;flex-direction:column;align-items:center;gap:6px;background:#0e1217;border:1px solid #1d2430;border-radius:10px;padding:10px 6px;cursor:pointer}
+    .q-title{font-weight:650;margin-bottom:0.625rem}
+    .scale{display:grid;grid-template-columns:repeat(5,minmax(3.125rem,1fr));gap:0.375rem}
+    .scale label{display:flex;flex-direction:column;align-items:center;gap:0.375rem;background:#0e1217;border:1px solid #1d2430;border-radius:0.625rem;padding:0.625rem 0.375rem;cursor:pointer}
     .scale input{appearance:none}
-    .scale input:checked + span{outline:2px solid var(--accent2);outline-offset:2px;border-radius:8px}
+    .scale input:checked + span{outline:0.125rem solid var(--accent2);outline-offset:0.125rem;border-radius:0.5rem}
     .scale .n{font-variant-numeric:tabular-nums;color:#b5c0cd}
 
-    .section-title{margin:26px 0 8px;color:#cbd5e1;text-transform:uppercase;letter-spacing:.12em;font-size:12px}
+    .section-title{margin:1.625rem 0 0.5rem;color:#cbd5e1;text-transform:uppercase;letter-spacing:.12em;font-size:0.75rem}
 
-    .results{margin-top:20px;display:none}
-    .row{display:grid;grid-template-columns:180px 1fr;gap:12px;align-items:center;margin:6px 0}
-    .bar{height:12px;background:var(--bar);border-radius:999px;overflow:hidden;border:1px solid #262b35}
+    .results{margin-top:1.25rem;display:none}
+    .row{display:grid;grid-template-columns:11.25rem 1fr;gap:0.75rem;align-items:center;margin:0.375rem 0}
+    .bar{height:0.75rem;background:var(--bar);border-radius:62.4375rem;overflow:hidden;border:1px solid #262b35}
     .bar span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--good),var(--accent2));}
     .row.low .bar span{background:linear-gradient(90deg,var(--low),#ff6d6d)}
     .row.mid .bar span{background:linear-gradient(90deg,var(--mid),#ffd37a)}
 
     .muted{color:var(--muted)}
-    .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;border:1px solid #273042;background:#121822}
-    .flex{display:flex;gap:8px;flex-wrap:wrap}
-    details{background:#0f141b;border:1px solid #202633;border-radius:12px;padding:10px}
+    .pill{display:inline-flex;align-items:center;gap:0.375rem;padding:0.375rem 0.625rem;border-radius:62.4375rem;border:1px solid #273042;background:#121822}
+    .flex{display:flex;gap:0.5rem;flex-wrap:wrap}
+    details{background:#0f141b;border:1px solid #202633;border-radius:0.75rem;padding:0.625rem}
     details[open]{background:#0e131a}
     summary{cursor:pointer;font-weight:650}
-    .foot{margin-top:18px;color:#8b97a6}
+    .foot{margin-top:1.125rem;color:#8b97a6}
     .mono{font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace}
   </style>
 </head>
