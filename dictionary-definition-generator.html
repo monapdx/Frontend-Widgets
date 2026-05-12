@@ -5,27 +5,175 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dictionary Definition Generator</title>
   <link rel="stylesheet" href="neo-brutal.css" />
-<link rel="stylesheet" href="styles-vanilla.css">
+  <link rel="stylesheet" href="styles-vanilla.css" />
     <style>
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
 
+.dict-page .grid-two {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+@media (min-width: 640px) {
+  .dict-page .grid-two {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.dict-page .toggle-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 0.65rem 0.75rem;
+  border: 3px solid #0a0a0a;
+  background: #fffef0;
+}
+.dict-page .toggle-row input[type="checkbox"] {
+  margin-top: 0.2rem;
+  flex-shrink: 0;
+}
+.dict-page .toggle-row label {
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.dict-page .hint {
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #3d4656;
+}
+.dict-page .preview-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+.dict-page .preview-title {
+  margin: 0;
+  font-size: 1.1rem;
+}
+.dict-page .output-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.dict-page #previewArea {
+  min-height: 10rem;
+}
+.dict-page .empty-state {
+  padding: 1.25rem 1rem;
+  text-align: center;
+  font-weight: 600;
+  line-height: 1.5;
+  border: 3px dashed #0a0a0a;
+  background: #fffef0;
+  color: #3d4656;
+}
+.dict-page .empty-state strong {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: #0a0a0a;
+  font-size: 1rem;
+}
+.dict-page .copy-status {
+  margin-top: 0.75rem;
+  min-height: 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #3d4656;
+}
+.dict-page .dictionary-entry {
+  padding: 1.25rem 1.35rem;
+  border: 3px solid #0a0a0a;
+  box-shadow: 6px 6px 0 #0a0a0a;
+  background: #fafafa;
+}
+.dict-page .dictionary-entry .entry-word {
+  margin: 0 0 0.35rem;
+  font-size: 1.75rem;
+  letter-spacing: -0.02em;
+}
+.dict-page .dictionary-entry .phonetic-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+.dict-page .dictionary-entry .part-of-speech {
+  text-transform: lowercase;
+  font-style: italic;
+  color: #3d4656;
+}
+.dict-page .dictionary-entry .divider {
+  height: 3px;
+  background: #0a0a0a;
+  margin: 0.85rem 0;
+}
+.dict-page .dictionary-entry .pronunciation {
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+.dict-page .dictionary-entry .sense-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 800;
+  margin-bottom: 0.35rem;
+  color: #3d4656;
+}
+.dict-page .dictionary-entry .definition-list {
+  margin: 0;
+  padding-left: 1.25rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.dict-page .dictionary-entry .definition-list li {
+  margin-bottom: 0.35rem;
+}
+.dict-page .dictionary-entry .mini-note {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 800;
+  margin: 1rem 0 0.35rem;
+  color: #3d4656;
+}
+.dict-page .dictionary-entry .tagline {
+  font-style: italic;
+  font-weight: 600;
+  line-height: 1.45;
+  color: #3d4656;
+}
     </style>
   <link rel="stylesheet" href="neo-brutal-overrides.css" />
 </head>
-<body>
-  <div class="app">
-    <section class="panel controls">
-      <div class="eyebrow">Frontend Widget</div>
-      <h1>Dictionary Definition Generator</h1>
-      <p class="intro">
-       
+<body class="dict-page">
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
+      <h1>Dictionary definition generator</h1>
+      <p class="page-description">
+        Enter a word, pronunciation, and one definition per line to build a dictionary-style preview you can copy as HTML or plain text.
       </p>
+    </header>
+
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
+      </div>
+
+      <div class="widget-grid">
+        <section class="panel">
+          <h2>Entry details</h2>
 
       <div class="field">
         <label for="wordInput">Word</label>
-        <input id="wordInput" type="text" placeholder="" />
+        <input id="wordInput" type="text" placeholder="e.g. luminescence" />
       </div>
 
       <div class="grid-two">
@@ -46,7 +194,7 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
 
         <div class="field">
           <label for="pronunciationInput">Pronunciation</label>
-          <input id="pronunciationInput" type="text" placeholder="" />
+          <input id="pronunciationInput" type="text" placeholder="e.g. ˌluːmɪˈnɛsns" />
         </div>
       </div>
 
@@ -64,29 +212,29 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
 
       <div class="field">
         <label for="exampleInput">Usage note or example sentence</label>
-        <textarea id="exampleInput" placeholder=""></textarea>
+        <textarea id="exampleInput" placeholder="Optional example sentence"></textarea>
       </div>
 
       <div class="field">
         <div class="toggle-row">
           <input id="capitalizeToggle" type="checkbox" checked />
-          <label for="capitalizeToggle" style="margin: 0; font-weight: 600;">Capitalize word in preview heading</label>
+          <label for="capitalizeToggle">Capitalize word in preview heading</label>
         </div>
       </div>
 
       <div class="actions">
-        <button class="primary" id="generateBtn">Generate Entry</button>
-        <button class="secondary" id="sampleBtn" type="button">Load Sample</button>
+        <button class="primary" id="generateBtn" type="button">Generate entry</button>
+        <button class="secondary" id="sampleBtn" type="button">Load sample</button>
         <button class="secondary" id="resetBtn" type="button">Reset</button>
       </div>
-    </section>
+        </section>
 
-    <section class="panel preview-wrap">
+        <section class="panel">
       <div class="preview-head">
-        <h2 class="preview-title">Generated Dictionary Entry</h2>
+        <h2 class="preview-title">Generated dictionary entry</h2>
         <div class="output-tools">
           <button class="secondary" id="copyBtn" type="button">Copy HTML</button>
-          <button class="secondary" id="copyTextBtn" type="button">Copy Plain Text</button>
+          <button class="secondary" id="copyTextBtn" type="button">Copy plain text</button>
         </div>
       </div>
 
@@ -94,12 +242,14 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
         <div class="empty-state">
           <div>
             <strong>No entry yet</strong>
-            Fill out the fields and click <em>Generate Entry</em> to create a polished dictionary-style definition block.
+            Fill out the fields and click <em>Generate entry</em> to create a polished dictionary-style definition block.
           </div>
         </div>
       </div>
       <div class="copy-status" id="copyStatus"></div>
-    </section>
+        </section>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -289,15 +439,15 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
     }
 
     function setSample() {
-      wordInput.value = '';
-      partOfSpeech.value = '';
-      pronunciationInput.value = '';
-      syllablesInput.value = '';
+      wordInput.value = 'luminescence';
+      partOfSpeech.value = 'noun';
+      pronunciationInput.value = 'ˌluːmɪˈnɛsns';
+      syllablesInput.value = 'lu-mi-nes-cence';
       definitionsInput.value = [
-        '',
-        ''
+        'the emission of light by a substance not resulting from heat',
+        'a soft glowing quality'
       ].join('\n');
-      exampleInput.value = '';
+      exampleInput.value = 'The luminescence of the ocean at night can feel almost unreal.';
       capitalizeToggle.checked = true;
       renderEntry();
     }
@@ -314,7 +464,7 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
         <div class="empty-state">
           <div>
             <strong>No entry yet</strong>
-            Fill out the fields and click <em>Generate Entry</em> to create a polished dictionary-style definition block.
+            Fill out the fields and click <em>Generate entry</em> to create a polished dictionary-style definition block.
           </div>
         </div>
       `;
@@ -358,7 +508,7 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       });
     });
 
-    setSample();
+    resetForm();
   </script>
 </body>
 </html>

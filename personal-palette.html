@@ -3,73 +3,217 @@
 <head>
   <meta charset="UTF-8" />
   <title>Favorite Colors Palette</title>
-  <link rel="stylesheet" href="neo-brutal.css" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<link rel="stylesheet" href="styles-vanilla.css" />
-    <style>
-*, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
-img, video, canvas, svg { max-width: 100%; height: auto; }
+  <link rel="stylesheet" href="neo-brutal.css" />
+  <link rel="stylesheet" href="styles-vanilla.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    img, video, canvas, svg { max-width: 100%; height: auto; }
 
-    </style>
+    .palette-page .builder-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1rem;
+      align-items: flex-end;
+      margin-bottom: 0.75rem;
+    }
+    .palette-page .builder-row label {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+    .palette-page .mini-hint {
+      font-size: 0.85rem;
+      color: #3d4656;
+      font-weight: 600;
+      line-height: 1.45;
+    }
+    .palette-page .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      min-height: 2rem;
+      margin: 0.75rem 0 1rem;
+    }
+    .palette-page .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.6rem;
+      border: 3px solid #0a0a0a;
+      background: #fafafa;
+      font-weight: 700;
+      font-size: 0.8rem;
+      cursor: pointer;
+      box-shadow: 4px 4px 0 #0a0a0a;
+    }
+    .palette-page .chip .dot {
+      width: 0.75rem;
+      height: 0.75rem;
+      border-radius: 50%;
+      border: 2px solid #0a0a0a;
+      flex-shrink: 0;
+    }
+    .palette-page .chip .x {
+      font-weight: 900;
+      margin-left: 0.15rem;
+      opacity: 0.7;
+    }
+    .palette-page .chip.copied {
+      outline: 3px solid #56ccf2;
+      outline-offset: 2px;
+    }
+    .palette-page .input-split {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    @media (min-width: 720px) {
+      .palette-page .input-split {
+        grid-template-columns: minmax(0, 1fr) 12rem;
+        align-items: stretch;
+      }
+    }
+    .palette-page .input-split textarea {
+      min-height: 10rem;
+      resize: vertical;
+    }
+    .palette-page .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .palette-page .controls .hint {
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: #3d4656;
+      font-weight: 600;
+    }
+    .palette-page #error.error {
+      margin-top: 0.75rem;
+      padding: 0.65rem 0.75rem;
+      font-weight: 700;
+      color: #7a1528;
+      border: 3px solid #0a0a0a;
+      background: #ffe0e8;
+    }
+    .palette-page .palette {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+    }
+    .palette-page .swatch-card {
+      border: 3px solid #0a0a0a;
+      overflow: hidden;
+      box-shadow: 6px 6px 0 #0a0a0a;
+      background: #fafafa;
+    }
+    .palette-page .swatch {
+      height: 4.5rem;
+      width: 100%;
+    }
+    .palette-page .hex-label {
+      width: 100%;
+      border: 0;
+      border-top: 3px solid #0a0a0a;
+      padding: 0.5rem;
+      font: inherit;
+      font-weight: 800;
+      font-size: 0.75rem;
+      cursor: pointer;
+      background: #fff6b0;
+    }
+    .palette-page .hex-label.copied {
+      background: #c6ff00;
+    }
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+  </style>
   <link rel="stylesheet" href="neo-brutal-overrides.css" />
 </head>
-<body>
-  <div class="app">
-    <h1>Favorite Color Grid</h1>
-    <p class="subtitle">
-      Pick colors (or type a color name like <code>hotpink</code> / <code>rgb(10,20,30)</code>), click <strong>Add</strong>,
-      then hit <strong>Generate palette</strong>. Click any hex value to copy it.
-    </p>
+<body class="palette-page">
 
-    <!-- NEW: Color picker + one-click add -->
-    <div class="builder" aria-label="Color picker and quick add">
-      <div class="builder-row">
-        <label>
-          Picker
-          <input id="colorPicker" type="color" value="#FF4AA2" aria-label="Color picker" />
-        </label>
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
+      <h1>Personal palette generator</h1>
+      <p class="page-description">
+        Pick colors (or type a name like <code>hotpink</code> / <code>rgb(10,20,30)</code>), click <strong>Add</strong>,
+        then <strong>Generate palette</strong>. Click any hex value to copy it.
+      </p>
+    </header>
 
-        <label style="flex: 1 1 260px;">
-          Color (hex / name / rgb)
-          <input id="colorText" class="textlike" type="text" value="#FF4AA2" spellcheck="false"
-            placeholder="#0066F2 or hotpink or rgb(255, 0, 0)" />
-        </label>
-
-        <button id="addColorBtn" class="btn primary" type="button">Add</button>
-        <button id="clearBtn" class="btn danger" type="button" title="Clears textarea + selected chips + palette">Clear</button>
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
       </div>
 
-      <div class="builder-row" style="justify-content: space-between; gap: 12px;">
-        <div class="mini-hint">
-          Tip: click a chip to copy its hex. Click the <strong>×</strong> to remove it.
-        </div>
-      </div>
+      <div class="widget-grid">
+        <section class="panel">
+          <h2 class="visually-hidden">Build palette</h2>
+          <div class="builder" aria-label="Color picker and quick add">
+            <div class="builder-row">
+              <label>
+                Picker
+                <input id="colorPicker" type="color" value="#FF4AA2" aria-label="Color picker" />
+              </label>
+              <label style="flex: 1 1 220px;">
+                Color (hex / name / rgb)
+                <input id="colorText" class="textlike" type="text" value="#FF4AA2" spellcheck="false"
+                  placeholder="#0066F2 or hotpink or rgb(255, 0, 0)" />
+              </label>
+              <button id="addColorBtn" class="primary" type="button">Add</button>
+              <button id="clearBtn" class="secondary" type="button" title="Clears textarea + selected chips + palette">Clear</button>
+            </div>
+            <div class="builder-row" style="justify-content: space-between;">
+              <div class="mini-hint">
+                Tip: click a chip to copy its hex. Click the <strong>×</strong> to remove it.
+              </div>
+            </div>
+            <div id="chips" class="chips" aria-label="Selected colors"></div>
+          </div>
 
-      <div id="chips" class="chips" aria-label="Selected colors"></div>
-    </div>
-
-    <!-- Existing input + generate controls -->
-    <div class="input-row">
-      <textarea id="hexInput" spellcheck="false"
-        placeholder="#0066F2
+          <div class="input-split">
+            <div>
+              <label for="hexInput">Colors (one per line)</label>
+              <textarea id="hexInput" spellcheck="false" placeholder="#0066F2
 #B9D3B0
 #00E0F2
 ff009c
 f4b400"></textarea>
+            </div>
+            <div class="controls">
+              <button id="generateBtn" class="primary" type="button">Generate palette</button>
+              <div class="hint">
+                • One color per line<br />
+                • Hex: 3- or 6-digit, with or without <code>#</code><br />
+                • Also accepts CSS color names / rgb / hsl in the field above
+              </div>
+            </div>
+          </div>
+        </section>
 
-      <div class="controls">
-        <button id="generateBtn" class="btn primary" type="button">Generate palette</button>
-        <div class="hint">
-          • One color per line<br />
-          • Hex: 3- or 6-digit, with or without the <code>#</code><br />
-          • Also accepts CSS colors (names / rgb / hsl) in the picker box above
-        </div>
+        <section class="panel">
+          <h2>Palette</h2>
+          <div id="error" class="error" role="status"></div>
+          <div id="palette" class="palette"></div>
+        </section>
       </div>
     </div>
-
-    <div id="error" class="error"></div>
-    <div id="palette" class="palette"></div>
   </div>
 
   <script>
@@ -84,7 +228,6 @@ f4b400"></textarea>
     const clearBtn = document.getElementById("clearBtn");
     const chipsWrap = document.getElementById("chips");
 
-    // -------- helpers --------
     function normalizeHex(str) {
       let h = (str || "").trim();
       if (!h) return null;
@@ -93,34 +236,23 @@ f4b400"></textarea>
       return "#" + h.toUpperCase();
     }
 
-    // Accept: hex, rgb(), hsl(), named colors, etc. Convert to HEX if possible.
     function cssColorToHex(value) {
       const v = (value || "").trim();
       if (!v) return null;
-
-      // If it's already hex-ish, normalize directly.
       const direct = normalizeHex(v);
       if (direct) return direct;
-
-      // Use the browser's CSS parser to validate & resolve to rgb.
       const probe = document.createElement("div");
       probe.style.color = "";
       probe.style.color = v;
-
-      if (!probe.style.color) return null; // invalid value
-
-      // computedStyle will be in rgb(a) form
+      if (!probe.style.color) return null;
       document.body.appendChild(probe);
       const computed = getComputedStyle(probe).color;
       probe.remove();
-
       const m = computed.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
       if (!m) return null;
-
       const r = Math.max(0, Math.min(255, parseInt(m[1], 10)));
       const g = Math.max(0, Math.min(255, parseInt(m[2], 10)));
       const b = Math.max(0, Math.min(255, parseInt(m[3], 10)));
-
       const toHex = (n) => n.toString(16).padStart(2, "0").toUpperCase();
       return "#" + toHex(r) + toHex(g) + toHex(b);
     }
@@ -131,7 +263,6 @@ f4b400"></textarea>
         labelEl.classList.add("copied");
         setTimeout(() => labelEl.classList.remove("copied"), 1200);
       }
-
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(text).then(markCopied).catch(() => {
           const temp = document.createElement("input");
@@ -162,21 +293,17 @@ f4b400"></textarea>
       return out;
     }
 
-    // -------- palette rendering (existing behavior) --------
     function createSwatch(hex) {
       const card = document.createElement("div");
       card.className = "swatch-card";
-
       const swatch = document.createElement("div");
       swatch.className = "swatch";
       swatch.style.backgroundColor = hex;
-
       const label = document.createElement("button");
       label.type = "button";
       label.className = "hex-label";
       label.textContent = hex;
       label.addEventListener("click", () => copyText(hex, label));
-
       card.appendChild(swatch);
       card.appendChild(label);
       return card;
@@ -186,31 +313,24 @@ f4b400"></textarea>
       const lines = input.value.split(/\r?\n/);
       const valid = [];
       const invalid = [];
-
       lines.forEach((line, idx) => {
         if (!line.trim()) return;
         const clean = cssColorToHex(line);
         if (clean) valid.push(clean);
         else invalid.push(idx + 1);
       });
-
       const uniqueValid = uniqPreserveOrder(valid);
-
       palette.innerHTML = "";
       errorBox.textContent = "";
-
       uniqueValid.forEach(hex => palette.appendChild(createSwatch(hex)));
-
       if (invalid.length) {
         errorBox.textContent = "Ignored invalid color on line(s): " + invalid.join(", ");
       }
-
       if (!uniqueValid.length && !invalid.length) {
         errorBox.textContent = "Add at least one color to generate a palette.";
       }
     }
 
-    // -------- chips (selected colors) --------
     function getTextareaColors() {
       const lines = input.value.split(/\r?\n/);
       const valid = [];
@@ -225,37 +345,29 @@ f4b400"></textarea>
     function rebuildChips() {
       const colors = getTextareaColors();
       chipsWrap.innerHTML = "";
-
       colors.forEach((hex) => {
         const chip = document.createElement("div");
         chip.className = "chip";
         chip.title = "Click to copy " + hex;
-
         const dot = document.createElement("span");
         dot.className = "dot";
         dot.style.background = hex;
-
         const text = document.createElement("span");
         text.textContent = hex;
-
         const x = document.createElement("span");
         x.className = "x";
         x.textContent = "×";
         x.title = "Remove " + hex;
-
         chip.addEventListener("click", (e) => {
-          // If they clicked the x, remove; otherwise copy.
           if (e.target === x) return;
           copyText(hex, chip);
         });
-
         x.addEventListener("click", (e) => {
           e.stopPropagation();
           removeHexFromTextarea(hex);
           rebuildChips();
           generatePalette();
         });
-
         chip.appendChild(dot);
         chip.appendChild(text);
         chip.appendChild(x);
@@ -267,20 +379,17 @@ f4b400"></textarea>
       const lines = input.value.split(/\r?\n/);
       const kept = [];
       for (const line of lines) {
-        const clean = cssColorToHex(line);
-        // keep any line that doesn't resolve to this hex (also keep blank lines trimmed away)
         if (!line.trim()) continue;
+        const clean = cssColorToHex(line);
         if (clean && clean.toUpperCase() === hex.toUpperCase()) continue;
         kept.push(line.trim());
       }
       input.value = kept.join("\n");
     }
 
-    // -------- add flow --------
     function appendHexToTextarea(hex) {
       const existing = getTextareaColors().map(x => x.toUpperCase());
       if (existing.includes(hex.toUpperCase())) return false;
-
       const current = input.value.trim();
       input.value = current ? (current + "\n" + hex) : hex;
       return true;
@@ -288,26 +397,17 @@ f4b400"></textarea>
 
     function addCurrentColor() {
       errorBox.textContent = "";
-
       const desired = colorText.value.trim() || picker.value;
       const hex = cssColorToHex(desired);
-
       if (!hex) {
-        errorBox.textContent = "That doesn't look like a valid color. Try a hex like #FF00AA, a name like hotpink, or rgb(12, 34, 56).";
+        errorBox.textContent = "That doesn't look like a valid color. Try hex, a name like hotpink, or rgb(12, 34, 56).";
         return;
       }
-
-      // keep picker + text field in sync
       try { picker.value = hex; } catch (_) {}
       colorText.value = hex;
-
       const added = appendHexToTextarea(hex);
       rebuildChips();
-
-      if (!added) {
-        // not an "error", but a helpful nudge
-        errorBox.textContent = "Already in your list: " + hex;
-      }
+      if (!added) errorBox.textContent = "Already in your list: " + hex;
     }
 
     function clearAll() {
@@ -317,35 +417,23 @@ f4b400"></textarea>
       rebuildChips();
     }
 
-    // -------- events --------
     generateBtn.addEventListener("click", () => {
-      rebuildChips(); // keep chips synced if user typed manually
+      rebuildChips();
       generatePalette();
     });
-
     addColorBtn.addEventListener("click", addCurrentColor);
-
     clearBtn.addEventListener("click", clearAll);
-
     picker.addEventListener("input", () => {
-      // picker always yields hex
       colorText.value = picker.value.toUpperCase();
     });
-
     colorText.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
         e.preventDefault();
         addCurrentColor();
       }
     });
+    input.addEventListener("input", () => rebuildChips());
 
-    // keep chips synced if they paste/modify textarea
-    input.addEventListener("input", () => {
-      rebuildChips();
-    });
-
-    // Optional: seed from the placeholder on first load
-    // If empty, fill with example colors then generate.
     if (!input.value.trim()) {
       input.value = "#0066F2\n#B9D3B0\n#00E0F2\nFF009C\nF4B400";
     }

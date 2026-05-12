@@ -5,60 +5,143 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Fake data generator</title>
   <link rel="stylesheet" href="neo-brutal.css" />
-<link rel="stylesheet" href="styles-vanilla.css" />
+  <link rel="stylesheet" href="styles-vanilla.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    .fake-page .row-3 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    @media (min-width: 640px) {
+      .fake-page .row-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+    .fake-page .muted-box {
+      margin-top: 0.75rem;
+      padding: 0.65rem 0.75rem;
+      font-size: 0.85rem;
+      line-height: 1.45;
+      font-weight: 600;
+      color: #3d4656;
+      border: 3px solid #0a0a0a;
+      background: #fffef0;
+    }
+    .fake-page #data-output {
+      min-height: 12rem;
+      max-height: min(32rem, 55vh);
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.82rem;
+      line-height: 1.45;
+      padding: 1rem;
+      margin: 0;
+      border: 3px solid #0a0a0a;
+      background: #fffef0;
+    }
+  </style>
   <link rel="stylesheet" href="neo-brutal-overrides.css" />
 </head>
-<body>
+<body class="fake-page">
 
-<div class="card">
-            <h2>Fake Data Generator</h2>
-            <p class="subtle">Define a schema one field per line using the format <span class="pill">name:type</span>. Then generate mock rows as JSON, CSV, or SQL inserts.</p>
-            <div class="field">
-              <label for="schema-input">Schema</label>
-              <textarea id="schema-input" placeholder="Example:
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
+      <h1>Fake data generator</h1>
+      <p class="page-description">
+        Define a schema one field per line using <span class="pill">name:type</span>. Then generate mock rows as JSON, CSV, or SQL inserts.
+      </p>
+    </header>
+
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
+      </div>
+
+      <div class="widget-grid">
+        <section class="panel">
+          <h2>Schema &amp; options</h2>
+          <div class="field">
+            <label for="schema-input">Schema</label>
+            <textarea id="schema-input" rows="8" placeholder="Example:
 id:number
 name:fullName
 email:email
 created_at:date
 is_active:boolean"></textarea>
+          </div>
+          <div class="row-3">
+            <div class="field">
+              <label for="row-count">Rows</label>
+              <input id="row-count" type="number" min="1" max="500" value="10" />
             </div>
-            <div class="row-3">
-              <div class="field">
-                <label for="row-count">Rows</label>
-                <input id="row-count" type="number" min="1" max="500" value="10" />
-              </div>
-              <div class="field">
-                <label for="data-format">Output format</label>
-                <select id="data-format">
-                  <option value="json" selected>JSON</option>
-                  <option value="csv">CSV</option>
-                  <option value="sql">SQL inserts</option>
-                </select>
-              </div>
-              <div class="field">
-                <label for="table-name">Table name</label>
-                <input id="table-name" type="text" placeholder="users" value="users" />
-              </div>
+            <div class="field">
+              <label for="data-format">Output format</label>
+              <select id="data-format">
+                <option value="json" selected>JSON</option>
+                <option value="csv">CSV</option>
+                <option value="sql">SQL inserts</option>
+              </select>
             </div>
-            <div class="muted-box">
-              Supported types: number, integer, fullName, firstName, lastName, email, phone, company, city, country, username, boolean, uuid, slug, sentence, paragraph, date, timestamp, price.
-            </div>
-            <div class="actions">
-              <button class="primary" id="generate-data-btn">Generate fake data</button>
-              <button class="secondary" id="copy-data-btn">Copy output</button>
-              <button class="secondary" id="download-data-btn">Download file</button>
-              <button class="secondary" id="sample-data-btn">Load sample</button>
+            <div class="field">
+              <label for="table-name">Table name</label>
+              <input id="table-name" type="text" placeholder="users" value="users" />
             </div>
           </div>
-        </div>
-        <div class="stack">
-          <div class="card">
-            <h3>Output</h3>
-            <div id="data-output" class="output">Generated data will appear here.</div>
+          <div class="muted-box">
+            Supported types: number, integer, fullName, firstName, lastName, email, phone, company, city, country, username, boolean, uuid, slug, sentence, paragraph, date, timestamp, price.
           </div>
-		  
-		  <script>
-    // Fake data generator
+          <div class="actions">
+            <button class="primary" type="button" id="generate-data-btn">Generate fake data</button>
+            <button class="secondary" type="button" id="copy-data-btn">Copy output</button>
+            <button class="secondary" type="button" id="download-data-btn">Download file</button>
+            <button class="secondary" type="button" id="sample-data-btn">Load sample</button>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>Output</h2>
+          <pre id="data-output">Generated data will appear here.</pre>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const $ = (sel) => document.querySelector(sel);
+
+    function titleCase(str) {
+      return String(str || '')
+        .replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
+    }
+
+    function slugify(value) {
+      return String(value || '')
+        .normalize('NFKD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-zA-Z0-9]+/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '')
+        .toLowerCase();
+    }
+
+    function copyText(text) {
+      const t = String(text || '');
+      if (!t.trim()) {
+        alert('Nothing to copy.');
+        return;
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(t).then(() => alert('Copied to clipboard.')).catch(() => alert('Could not copy.'));
+      } else {
+        alert('Clipboard not available in this context.');
+      }
+    }
+
     const fakeData = {
       firstNames: ['Mona', 'Ashly', 'Riley', 'Jordan', 'Avery', 'Taylor', 'Morgan', 'Dakota', 'Robin', 'Sydney'],
       lastNames: ['Lorenzana', 'Reed', 'Williams', 'Nguyen', 'Garcia', 'Bennett', 'Miller', 'Santos', 'Chen', 'Brooks'],
@@ -71,7 +154,6 @@ is_active:boolean"></textarea>
     function rand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
     function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
     function randBool() { return Math.random() > 0.5; }
-    function randDigits(n) { return Array.from({ length: n }, () => randInt(0, 9)).join(''); }
     function randWord(count = 1) { return Array.from({ length: count }, () => rand(fakeData.words)).join(' '); }
     function randSentence() {
       const len = randInt(5, 11);
@@ -128,21 +210,11 @@ is_active:boolean"></textarea>
     function parseSchema() {
       const raw = $('#schema-input').value.trim();
       const lines = raw.split(/\n+/).map((line) => line.trim()).filter(Boolean);
-      const schema = lines.map((line) => {
+      return lines.map((line) => {
         const [name, type] = line.split(':').map((part) => part.trim());
         return { name, type };
       }).filter((item) => item.name && item.type);
-
-      const tbody = $('#schema-table tbody');
-      if (!schema.length) {
-        tbody.innerHTML = '<tr><td colspan="2" class="small">No valid schema parsed yet.</td></tr>';
-      } else {
-        tbody.innerHTML = schema.map((field) => `<tr><td>${field.name}</td><td>${field.type}</td></tr>`).join('');
-      }
-      return schema;
     }
-
-    $('#schema-input').addEventListener('input', parseSchema);
 
     function generateFakeData() {
       const schema = parseSchema();
@@ -219,11 +291,8 @@ is_active:boolean"></textarea>
       $('#row-count').value = '10';
       $('#data-format').value = 'json';
       $('#table-name').value = 'users';
-      parseSchema();
       generateFakeData();
     });
-	
-	</script>
-
+  </script>
 </body>
 </html>
