@@ -293,3 +293,475 @@ html.nb-skin .tab.active,
 html.nb-skin [role="tab"][aria-selected="true"] {
   background: #c6ff00 !important;
 }
+
+/* -------------------------------------------------------------------------
+   offline-GPT.html — Chat Archive Viewer (IDs beat generic .card rules)
+   ------------------------------------------------------------------------- */
+html.nb-skin body > #wrap {
+  background: transparent !important;
+}
+
+html.nb-skin #left {
+  background: #f3f5fa !important;
+  color: #0a0a0a !important;
+  border-right: 3px solid #0a0a0a !important;
+}
+
+html.nb-skin #right {
+  background: transparent !important;
+  color: #0a0a0a !important;
+}
+
+html.nb-skin .pane-title {
+  background: #fff6b0 !important;
+  color: #0a0a0a !important;
+  border-bottom: 3px solid #0a0a0a !important;
+}
+
+html.nb-skin .search input {
+  background: #fffef0 !important;
+  color: #0a0a0a !important;
+  border: 3px solid #0a0a0a !important;
+  border-radius: 0 !important;
+}
+
+html.nb-skin .chat {
+  background: #fafafa !important;
+  color: #0a0a0a !important;
+  border: 3px solid #0a0a0a !important;
+  border-radius: 0 !important;
+  box-shadow: 4px 4px 0 #0a0a0a !important;
+}
+
+html.nb-skin .chat:hover {
+  background: #fff !important;
+  border-color: #0a0a0a !important;
+}
+
+html.nb-skin .chat-title {
+  color: #0a0a0a !important;
+}
+
+html.nb-skin .chat-sub,
+html.nb-skin .tag {
+  color: #3d4656 !important;
+  border-color: #0a0a0a !important;
+}
+
+html.nb-skin #empty {
+  color: #3d4656 !important;
+}
+
+html.nb-skin #empty h2 {
+  color: #0a0a0a !important;
+}
+
+html.nb-skin #drop {
+  background: #fafafa !important;
+  color: #3d4656 !important;
+  border: 3px dashed #0a0a0a !important;
+  border-radius: 0 !important;
+}
+
+html.nb-skin .conv-header {
+  background: #fafafa !important;
+  color: #0a0a0a !important;
+  border: 3px solid #0a0a0a !important;
+  border-radius: 0 !important;
+  box-shadow: 6px 6px 0 #0a0a0a !important;
+}
+
+html.nb-skin .conv-title {
+  color: #0a0a0a !important;
+}
+
+html.nb-skin .conv-meta {
+  color: #3d4656 !important;
+}
+
+html.nb-skin .toolbar label {
+  background: #fff6b0 !important;
+  color: #0a0a0a !important;
+  border: 3px solid #0a0a0a !important;
+  border-radius: 0 !important;
+}
+
+html.nb-skin .messages .msg {
+  background: #fafafa !important;
+  color: #0a0a0a !important;
+  border: 3px solid #0a0a0a !important;
+  border-radius: 0 !important;
+}
+
+html.nb-skin .msg-body {
+  color: #1a1f2a !important;
+}
+
+html.nb-skin .role {
+  color: #0a0a0a !important;
+  border: 2px solid #0a0a0a !important;
+  background: #e8ecf4 !important;
+}
+
+html.nb-skin .role.user {
+  border-color: #0a0a0a !important;
+  color: #1e3a5f !important;
+  background: #d4e4ff !important;
+}
+
+html.nb-skin .role.assistant {
+  border-color: #0a0a0a !important;
+  color: #1b3d24 !important;
+  background: #daf6d0 !important;
+}
+
+html.nb-skin .role.system {
+  border-color: #0a0a0a !important;
+  color: #4a3b12 !important;
+  background: #fff6b0 !important;
+}
+
+html.nb-skin .msg-meta {
+  color: #5c6578 !important;
+}
+
+html.nb-skin .sr {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  border: 0 !important;
+}
+
+/* -------------------------------------------------------------------------
+   email-viewer.html — MBOX / Gmail-style shell
+   ------------------------------------------------------------------------- */
+html.nb-skin .app {
+  background: transparent !important;
+  color: #0a0a0a !important;
+}
+
+html.nb-skin .topbar {
+  background: #c6ff00 !important;
+  color: #0a0a0a !important;
+  border-bottom: 3px solid #0a0a0a !important;
+  backdrop-filter: none !important;
+}
+
+html.nb-skin .topbar .brand,
+html.nb-skin .topbar .brand b {
+  color: #0a0a0a !important;
+}
+
+html.nb-skin .sidebar {
+  background: #f3f5fa !important;
+  color: #0a0a0a !important;
+  border-right: 3px solid #0a0a0a !important;
+}
+
+html.nb-skin .section h4 {
+  color: #3d4656 !important;
+}
+
+html.nb-skin .nav button {
+  all: revert !important;
+  display: flex !important;
+  gap: 0.625rem !important;
+  align-items: center !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 0.5rem 0.625rem !important;
+  border-radius: 0 !important;
+  border: 2px solid transparent !important;
+  background: transparent !important;
+  color: #3d4656 !important;
+  font: inherit !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+}
+
+html.nb-skin .nav button:hover,
+html.nb-skin .nav button.active {
+  background: #fff6b0 !important;
+  color: #0a0a0a !important;
+  border-color: #0a0a0a !important;
+}
+
+html.nb-skin .badge {
+  background: #e8ecf4 !important;
+  color: #0a0a0a !important;
+  border: 2px solid #0a0a0a !important;
+}
+
+html.nb-skin .chip {
+  background: #fafafa !important;
+  color: #0a0a0a !important;
+  border: 3px solid #0a0a0a !important;
+  border-radius: 0 !important;
+}
+
+html.nb-skin .chip.active {
+  background: #c6ff00 !important;
+  border-color: #0a0a0a !important;
+  color: #0a0a0a !important;
+}
+
+html.nb-skin .drop {
+  background: #fafafa !important;
+  color: #3d4656 !important;
+  border: 3px dashed #0a0a0a !important;
+}
+
+html.nb-skin .content .list {
+  background: #fafafa !important;
+  color: #0a0a0a !important;
+  border-right: 3px solid #0a0a0a !important;
+}
+
+html.nb-skin .content .row {
+  border-bottom: 2px solid #d9dee8 !important;
+  color: #0a0a0a !important;
+}
+
+html.nb-skin .content .row:hover {
+  background: #f0f4ff !important;
+}
+
+html.nb-skin .content .row.active {
+  background: #fff6b0 !important;
+}
+
+html.nb-skin .subj {
+  color: #0a0a0a !important;
+}
+
+html.nb-skin .from,
+html.nb-skin .date {
+  color: #5c6578 !important;
+}
+
+html.nb-skin .label-pill {
+  background: #e8ecf4 !important;
+  color: #0a0a0a !important;
+  border: 2px solid #0a0a0a !important;
+}
+
+html.nb-skin .viewer .head {
+  background: #fafafa !important;
+  color: #0a0a0a !important;
+  border-bottom: 3px solid #0a0a0a !important;
+}
+
+html.nb-skin .viewer h2 {
+  color: #0a0a0a !important;
+}
+
+html.nb-skin .kv {
+  color: #3d4656 !important;
+}
+
+html.nb-skin .kv div b {
+  color: #0a0a0a !important;
+}
+
+html.nb-skin .body .htmlbox {
+  background: #fafafa !important;
+  border: 3px solid #0a0a0a !important;
+  border-radius: 0 !important;
+}
+
+html.nb-skin .body pre {
+  background: #fffef0 !important;
+  color: #0a0a0a !important;
+  border: 3px solid #0a0a0a !important;
+  border-radius: 0 !important;
+}
+
+html.nb-skin .att {
+  background: #fafafa !important;
+  color: #0a0a0a !important;
+  border: 3px solid #0a0a0a !important;
+}
+
+html.nb-skin .att .meta {
+  color: #3d4656 !important;
+}
+
+html.nb-skin .search {
+  background: #fffef0 !important;
+  border: 3px solid #0a0a0a !important;
+  border-radius: 0 !important;
+}
+
+html.nb-skin .search input {
+  color: #0a0a0a !important;
+  background: transparent !important;
+}
+
+html.nb-skin .progress {
+  background: #e2e6ef !important;
+  border: 2px solid #0a0a0a !important;
+}
+
+/* -------------------------------------------------------------------------
+   scratch-it-generator.html
+   ------------------------------------------------------------------------- */
+html.nb-skin body > .wrap > .card {
+  background: #fafafa !important;
+  color: #0a0a0a !important;
+  border: 3px solid #0a0a0a !important;
+  border-radius: 0 !important;
+  box-shadow: 8px 8px 0 #0a0a0a !important;
+}
+
+html.nb-skin body > .wrap > .card .panel label,
+html.nb-skin body > .wrap > .card .hint {
+  color: #3d4656 !important;
+}
+
+html.nb-skin body > .wrap > .card h2 {
+  color: #0a0a0a !important;
+}
+
+html.nb-skin body > .wrap input[type="file"],
+html.nb-skin body > .wrap input[type="text"],
+html.nb-skin body > .wrap textarea,
+html.nb-skin body > .wrap input[type="number"] {
+  background: #fffef0 !important;
+  color: #0a0a0a !important;
+  border: 3px solid #0a0a0a !important;
+  border-radius: 0 !important;
+}
+
+html.nb-skin body > .wrap .scratch-wrap {
+  background: #e8ecf4 !important;
+  border: 3px solid #0a0a0a !important;
+  border-radius: 0 !important;
+}
+
+html.nb-skin body > .wrap .under {
+  background: radial-gradient(circle at 30% 30%, #fff6b0, #e8ecf4) !important;
+}
+
+html.nb-skin body > .wrap .under .msg {
+  color: #0a0a0a !important;
+  text-shadow: none !important;
+}
+
+html.nb-skin body > .wrap .codebox {
+  background: #fffef0 !important;
+  color: #0a0a0a !important;
+  border: 3px solid #0a0a0a !important;
+  border-radius: 0 !important;
+}
+
+html.nb-skin body > .wrap .pill {
+  background: #fff6b0 !important;
+  color: #0a0a0a !important;
+  border: 3px solid #0a0a0a !important;
+}
+
+/* -------------------------------------------------------------------------
+   styles-vanilla.css widgets (pixel-art-to-svg, json-schema-to-typescript, …)
+   ------------------------------------------------------------------------- */
+html.nb-skin .page-shell,
+html.nb-skin .widget-shell {
+  background: #fafafa !important;
+  color: #0a0a0a !important;
+  border: 3px solid #0a0a0a !important;
+  border-radius: 0 !important;
+  box-shadow: 8px 8px 0 #0a0a0a !important;
+}
+
+html.nb-skin .widget-topbar {
+  border-bottom: 3px solid #0a0a0a !important;
+  background: #fff6b0 !important;
+}
+
+html.nb-skin .widget-grid .panel {
+  background: #fafafa !important;
+  color: #0a0a0a !important;
+  border: 3px solid #0a0a0a !important;
+  border-radius: 0 !important;
+}
+
+html.nb-skin .widget-grid .panel h2,
+html.nb-skin .widget-grid .panel h3 {
+  color: #0a0a0a !important;
+}
+
+html.nb-skin .preview-box,
+html.nb-skin .output-box,
+html.nb-skin .code-box {
+  background: #fffef0 !important;
+  color: #0a0a0a !important;
+  border: 3px solid #0a0a0a !important;
+  border-radius: 0 !important;
+}
+
+html.nb-skin .preview-box .small,
+html.nb-skin .svg-preview {
+  color: #3d4656 !important;
+}
+
+html.nb-skin .eyebrow {
+  color: #0a0a0a !important;
+}
+
+html.nb-skin .page-description,
+html.nb-skin .lede {
+  color: #3d4656 !important;
+}
+
+html.nb-skin .back-link {
+  color: #0a0a0a !important;
+  border: 2px solid #0a0a0a !important;
+  padding: 0.35rem 0.65rem !important;
+  background: #fff !important;
+  border-radius: 0 !important;
+}
+
+html.nb-skin .note {
+  color: #3d4656 !important;
+}
+
+html.nb-skin .page-header h1 {
+  color: #0a0a0a !important;
+}
+
+html.nb-skin .match-item {
+  background: #fafafa !important;
+  color: #0a0a0a !important;
+  border: 3px solid #0a0a0a !important;
+}
+
+html.nb-skin .kv .panelish {
+  background: #fff6b0 !important;
+  color: #0a0a0a !important;
+  border: 3px solid #0a0a0a !important;
+}
+
+html.nb-skin #viewer {
+  color: #0a0a0a !important;
+}
+
+html.nb-skin .kbd {
+  background: #fff6b0 !important;
+  color: #0a0a0a !important;
+  border: 2px solid #0a0a0a !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+}
+
+html.nb-skin #previewCanvas {
+  border: 3px solid #0a0a0a !important;
+  background: #fff !important;
+}
+
+html.nb-skin .output-box pre,
+html.nb-skin .preview-box pre {
+  color: #0a0a0a !important;
+  background: transparent !important;
+}
