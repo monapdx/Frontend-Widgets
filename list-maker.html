@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="nb-skin" lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Simple Shopping List App</title>
+  <link rel="stylesheet" href="neo-brutal.css" />
   <style>
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
@@ -160,7 +161,7 @@ label {font-family: "Oswald", serif;font-size:1.125rem;font-weight:bold;}
 
 exportBtn.addEventListener('click', function() {
   let html = `<!DOCTYPE html>
-  <html lang="en">
+  <html class="nb-skin" lang="en">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -171,7 +172,7 @@ exportBtn.addEventListener('click', function() {
       .list-item { display: block; margin: 0.625rem 0; padding: 0.3125rem; border-bottom: 1px solid #ddd; }
       .crossed { text-decoration: line-through; color: grey; }
     </style>
-  </head>
+</head>
   <body>
     <h1>${listTitle || "Shopping List"}</h1>
     <div class="list-container">`;

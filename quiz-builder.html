@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="nb-skin" lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Quiz Builder</title>
+  <link rel="stylesheet" href="neo-brutal.css" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
 html { -webkit-text-size-adjust: 100%; }
@@ -199,7 +200,7 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       // Build final HTML string with simple concatenation (no template literals)
       var html = "";
       html += "<!DOCTYPE html>\n";
-      html += "<html lang=\"en\">\n";
+      html += "<html class="nb-skin" lang=\"en\">\n";
       html += "<head>\n";
       html += "  <meta charset=\"UTF-8\">\n";
       html += "  <title>" + safeTitle + "</title>\n";
