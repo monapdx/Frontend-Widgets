@@ -5,110 +5,225 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Alt text generator</title>
   <link rel="stylesheet" href="neo-brutal.css" />
-<link rel="stylesheet" href="styles-vanilla.css" />
+  <link rel="stylesheet" href="styles-vanilla.css" />
   <link rel="stylesheet" href="neo-brutal-overrides.css" />
+  <style>
+    /* Page layout: balanced width, form + preview/output side-by-side on wide screens */
+    .alt-gen {
+      width: min(72rem, calc(100% - 2rem));
+      margin: 0 auto 2.5rem;
+      padding: 0 0.5rem;
+    }
+
+    .alt-gen-head {
+      margin-bottom: 1.25rem;
+    }
+
+    .alt-gen-head h1 {
+      margin: 0 0 0.5rem;
+      font-size: clamp(1.35rem, 2.5vw, 1.85rem);
+    }
+
+    .alt-gen-head .subtle {
+      margin: 0;
+      max-width: 62ch;
+      line-height: 1.5;
+    }
+
+    .alt-gen-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+      align-items: start;
+    }
+
+    @media (min-width: 960px) {
+      .alt-gen-layout {
+        grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      }
+    }
+
+    .alt-gen-side {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      min-width: 0;
+    }
+
+    .alt-gen .card {
+      margin: 0;
+    }
+
+    .alt-gen .card h2,
+    .alt-gen .card h3 {
+      margin-top: 0;
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
+      letter-spacing: 0.08em;
+    }
+
+    .alt-gen .row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    @media (min-width: 560px) {
+      .alt-gen .row {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .alt-gen .preview-box {
+      min-height: 12rem;
+      max-height: min(22rem, 42vh);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .alt-gen .preview-box .image-preview {
+      max-width: 100%;
+      max-height: min(20rem, 38vh);
+      width: auto;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .alt-gen .muted-box {
+      text-align: center;
+      max-width: 36ch;
+      margin: 0 auto;
+      line-height: 1.45;
+    }
+
+    .alt-gen #alt-output.output {
+      min-height: 10rem;
+      max-height: min(28rem, 50vh);
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.88rem;
+      line-height: 1.45;
+      padding: 1rem;
+    }
+
+    .alt-gen .checklist {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr));
+      gap: 0.5rem 1rem;
+    }
+
+    .alt-gen .check-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 0;
+      font-weight: 600;
+    }
+
+    .alt-gen .field textarea {
+      min-height: 6rem;
+      max-height: 12rem;
+    }
+  </style>
 </head>
 <body>
 
-<div class="card">
-            <h2>Accessibility Alt-Text Generator</h2>
-            <p class="subtle">Upload an image, select what matters, and generate several alt-text styles. This is structured rather than AI-powered, so it works offline and gives predictable output.</p>
-            <div class="field">
-              <label for="alt-image">Image upload</label>
-              <input id="alt-image" type="file" accept="image/*" />
-            </div>
-            <div class="row">
-              <div class="field">
-                <label for="alt-subject">Main subject</label>
-                <input id="alt-subject" type="text" placeholder="Example: small brown dog" />
-              </div>
-              <div class="field">
-                <label for="alt-setting">Setting / location</label>
-                <input id="alt-setting" type="text" placeholder="Example: standing in a grassy park" />
-              </div>
-            </div>
-            <div class="row">
-              <div class="field">
-                <label for="alt-action">Action</label>
-                <input id="alt-action" type="text" placeholder="Example: looking up at the camera" />
-              </div>
-              <div class="field">
-                <label for="alt-mood">Mood / emotion</label>
-                <input id="alt-mood" type="text" placeholder="Example: playful and alert" />
-              </div>
-            </div>
-            <div class="field">
-              <label for="alt-extra">Important extra details</label>
-              <textarea id="alt-extra" placeholder="Colors, visible text, composition, accessibility-critical details, or anything that should be included."></textarea>
-            </div>
-            <div class="field">
-              <label>What should the alt text prioritize?</label>
-              <div class="checklist">
-                <label class="check-item"><input type="checkbox" value="subject" checked /> Subject</label>
-                <label class="check-item"><input type="checkbox" value="setting" checked /> Setting</label>
-                <label class="check-item"><input type="checkbox" value="action" checked /> Action</label>
-                <label class="check-item"><input type="checkbox" value="mood" /> Emotion</label>
-                <label class="check-item"><input type="checkbox" value="extra" checked /> Important details</label>
-                <label class="check-item"><input type="checkbox" value="text" /> Visible text</label>
-              </div>
-            </div>
-            <div class="row">
-              <div class="field">
-                <label for="alt-verbosity">Verbosity</label>
-                <select id="alt-verbosity">
-                  <option value="brief">Brief</option>
-                  <option value="balanced" selected>Balanced</option>
-                  <option value="detailed">Detailed</option>
-                </select>
-              </div>
-              <div class="field">
-                <label for="alt-tone">Tone</label>
-                <select id="alt-tone">
-                  <option value="neutral" selected>Neutral</option>
-                  <option value="descriptive">Descriptive</option>
-                  <option value="ecommerce">Product-style</option>
-                </select>
-              </div>
-            </div>
-            <div class="actions">
-              <button class="primary" id="generate-alt-btn">Generate alt text</button>
-              <button class="secondary" id="copy-alt-btn">Copy output</button>
-              <button class="secondary" id="sample-alt-btn">Load sample</button>
-            </div>
+  <main class="alt-gen">
+    <header class="alt-gen-head">
+      <h1>Accessibility alt-text generator</h1>
+      <p class="subtle">Upload an image, select what matters, and generate several alt-text styles. This is structured rather than AI-powered, so it works offline and gives predictable output.</p>
+    </header>
+
+    <div class="alt-gen-layout">
+      <section class="card alt-gen-form" aria-labelledby="alt-form-title">
+        <h2 id="alt-form-title">Inputs</h2>
+        <div class="field">
+          <label for="alt-image">Image upload</label>
+          <input id="alt-image" type="file" accept="image/*" />
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="alt-subject">Main subject</label>
+            <input id="alt-subject" type="text" placeholder="Example: small brown dog" />
+          </div>
+          <div class="field">
+            <label for="alt-setting">Setting / location</label>
+            <input id="alt-setting" type="text" placeholder="Example: standing in a grassy park" />
           </div>
         </div>
-        <div class="stack">
-          <div class="card">
-            <h3>Image preview</h3>
-            <div class="preview-box">
-              <img id="alt-image-preview" class="image-preview" alt="Uploaded preview" style="display:none;" />
-              <div id="alt-image-empty" class="muted-box">No image uploaded yet. You can still use the generator with text-only description fields.</div>
-            </div>
+        <div class="row">
+          <div class="field">
+            <label for="alt-action">Action</label>
+            <input id="alt-action" type="text" placeholder="Example: looking up at the camera" />
           </div>
-          <div class="card">
-            <h3>Generated output</h3>
-            <div id="alt-output" class="output">Your generated alt-text variations will appear here.</div>
+          <div class="field">
+            <label for="alt-mood">Mood / emotion</label>
+            <input id="alt-mood" type="text" placeholder="Example: playful and alert" />
           </div>
         </div>
+        <div class="field">
+          <label for="alt-extra">Important extra details</label>
+          <textarea id="alt-extra" rows="4" placeholder="Colors, visible text, composition, accessibility-critical details, or anything that should be included."></textarea>
+        </div>
+        <div class="field">
+          <label>What should the alt text prioritize?</label>
+          <div class="checklist">
+            <label class="check-item"><input type="checkbox" value="subject" checked /> Subject</label>
+            <label class="check-item"><input type="checkbox" value="setting" checked /> Setting</label>
+            <label class="check-item"><input type="checkbox" value="action" checked /> Action</label>
+            <label class="check-item"><input type="checkbox" value="mood" /> Emotion</label>
+            <label class="check-item"><input type="checkbox" value="extra" checked /> Important details</label>
+            <label class="check-item"><input type="checkbox" value="text" /> Visible text</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="alt-verbosity">Verbosity</label>
+            <select id="alt-verbosity">
+              <option value="brief">Brief</option>
+              <option value="balanced" selected>Balanced</option>
+              <option value="detailed">Detailed</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="alt-tone">Tone</label>
+            <select id="alt-tone">
+              <option value="neutral" selected>Neutral</option>
+              <option value="descriptive">Descriptive</option>
+              <option value="ecommerce">Product-style</option>
+            </select>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="primary" type="button" id="generate-alt-btn">Generate alt text</button>
+          <button class="secondary" type="button" id="copy-alt-btn">Copy output</button>
+          <button class="secondary" type="button" id="sample-alt-btn">Load sample</button>
+        </div>
+      </section>
+
+      <div class="alt-gen-side">
+        <section class="card" aria-labelledby="alt-preview-title">
+          <h3 id="alt-preview-title">Image preview</h3>
+          <div class="preview-box">
+            <img id="alt-image-preview" class="image-preview" alt="Uploaded preview" style="display:none;" />
+            <div id="alt-image-empty" class="muted-box">No image uploaded yet. You can still use the generator with text-only description fields.</div>
+          </div>
+        </section>
+        <section class="card" aria-labelledby="alt-output-title">
+          <h3 id="alt-output-title">Generated output</h3>
+          <div id="alt-output" class="output">Your generated alt-text variations will appear here.</div>
+        </section>
       </div>
-    </section>
-	
-	
-	<script>
+    </div>
+  </main>
+
+  <script>
     const $ = (sel) => document.querySelector(sel);
     const $$ = (sel) => Array.from(document.querySelectorAll(sel));
-
-    // Tabs
-    $$('.tab-btn').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        $$('.tab-btn').forEach((b) => {
-          b.classList.toggle('active', b === btn);
-          b.setAttribute('aria-selected', String(b === btn));
-        });
-        $$('.panel').forEach((panel) => panel.classList.remove('active'));
-        $('#panel-' + btn.dataset.tab).classList.add('active');
-      });
-    });
 
     function copyText(text) {
       navigator.clipboard.writeText(text).then(() => {
@@ -118,32 +233,10 @@
       });
     }
 
-    function slugify(value, separator = '-') {
-      return value
-        .normalize('NFKD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^a-zA-Z0-9]+/g, separator)
-        .replace(new RegExp('\\' + separator + '+', 'g'), separator)
-        .replace(new RegExp('^\\' + separator + '|\\' + separator + '$', 'g'), '')
-        .toLowerCase();
-    }
-
     function titleCase(str) {
       return str.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
     }
 
-    function formatDate(style) {
-      const d = new Date();
-      const y = d.getFullYear();
-      const m = String(d.getMonth() + 1).padStart(2, '0');
-      const day = String(d.getDate()).padStart(2, '0');
-      if (style === 'yyyymmdd') return `${y}${m}${day}`;
-      if (style === 'yyyy-mm') return `${y}-${m}`;
-      if (style === 'yyyy-mm-dd') return `${y}-${m}-${day}`;
-      return '';
-    }
-
-    // Alt text generator
     const altImageInput = $('#alt-image');
     altImageInput.addEventListener('change', (event) => {
       const file = event.target.files?.[0];
@@ -175,7 +268,7 @@
       const extra = $('#alt-extra').value.trim();
       const verbosity = $('#alt-verbosity').value;
       const tone = $('#alt-tone').value;
-      const priorities = $$('#panel-alttext .check-item input:checked').map((el) => el.value);
+      const priorities = $$('.alt-gen-form .check-item input:checked').map((el) => el.value);
 
       const chosen = [];
       if (priorities.includes('subject') && subject) chosen.push(subject);
@@ -227,7 +320,7 @@
       $('#alt-tone').value = 'neutral';
       generateAltText();
     });
-	</script>
+  </script>
 
 </body>
 </html>
