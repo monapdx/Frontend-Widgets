@@ -106,6 +106,7 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       white-space: pre;
     }
   </style>
+  <link rel="stylesheet" href="neo-brutal-overrides.css" />
 </head>
 <body>
   <div class="container">
@@ -218,7 +219,8 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       html += "    button.answer { margin-top: 0.625rem; width: 100%; background: #007bff; color: #fff; font-size: 1rem; padding: 0.625rem; border: none; border-radius: 0.25rem; cursor: pointer; font-weight: bold; transition: background 0.3s ease; }\n";
       html += "    button.answer:hover { background: #0056b3; }\n";
       html += "  </style>\n";
-      html += "</head>\n";
+      html += "  <link rel="stylesheet" href="neo-brutal-overrides.css" />
+</head>\n";
       html += "<body>\n";
       html += "  <h1>" + safeTitle + "</h1>\n";
       html += "  <p>" + safeDescription + "</p>\n";

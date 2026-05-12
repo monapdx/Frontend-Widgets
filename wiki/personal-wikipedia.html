@@ -46,6 +46,7 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
     .danger{color:#b91c1c}
     .small{font-size:12px}
   </style>
+  <link rel="stylesheet" href="../neo-brutal-overrides.css" />
 </head>
 <body>
   <header>
@@ -285,7 +286,8 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       const page=document.getElementById('wiki-page').outerHTML;
       const css=document.querySelector('style').innerHTML;
       const html=`<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>${esc(doc.title)} — Personal Wikipedia</title>
-      <style>${css}</style></head><body>${page}</body></html>`;
+      <style>${css}</style>  <link rel="stylesheet" href="../neo-brutal-overrides.css" />
+</head><body>${page}</body></html>`;
       const blob=new Blob([html],{type:'text/html;charset=utf-8'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=fslug(doc.title)+'.html'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
     }
 

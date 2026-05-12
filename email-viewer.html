@@ -67,6 +67,7 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
     .progress{height:0.375rem;background:#12192a;border-radius:62.4375rem;overflow:hidden}
     .progress>div{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:0%}
   </style>
+  <link rel="stylesheet" href="neo-brutal-overrides.css" />
 </head>
 <body>
   <div class="app">
@@ -452,7 +453,8 @@ function openEmail(e){
     // Sanitize by isolating in sandboxed iframe; we also strip <script> tags.
     const safe = e.content.value.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi,'');
     doc.open();
-    doc.write('<!doctype html><html><head><meta charset="utf-8"></head><body>'+safe+'</body></html>');
+    doc.write('<!doctype html><html><head><meta charset="utf-8">  <link rel="stylesheet" href="neo-brutal-overrides.css" />
+</head><body>'+safe+'</body></html>');
     doc.close();
   } else {
     htmlBox.classList.add('hidden'); textBox.classList.remove('hidden');

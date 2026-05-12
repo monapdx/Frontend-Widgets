@@ -27,6 +27,7 @@ html.nb-skin {
   --nb-white: #fafafa;
   --nb-border: 3px solid var(--nb-black);
   --nb-shadow: 6px 6px 0 var(--nb-black);
+  --nb-shadow-sm: 4px 4px 0 var(--nb-black);
   --nb-shadow-lg: 8px 8px 0 var(--nb-black);
   --nb-shadow-press: 2px 2px 0 var(--nb-black);
 }

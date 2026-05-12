@@ -1,0 +1,295 @@
+/**
+ * Load this stylesheet LAST in <head> (after any inline <style> blocks)
+ * so legacy dark-theme rules from individual pages lose to these resets.
+ */
+html.nb-skin {
+  /* Neutralize common dark-theme custom properties */
+  --bg: #eef2f8 !important;
+  --bg-0: #eef2f8 !important;
+  --bg-1: #fafafa !important;
+  --panel: #fafafa !important;
+  --panel-2: #f3f5fa !important;
+  --card: #fafafa !important;
+  --surface: #fafafa !important;
+  --ink: #0a0a0a !important;
+  --text: #0a0a0a !important;
+  --muted: #3d4656 !important;
+  --border: #0a0a0a !important;
+  --line: #0a0a0a !important;
+  --shadow: 6px 6px 0 #0a0a0a !important;
+}
+
+/* Page chrome */
+html.nb-skin body {
+  background-color: #eef2f8 !important;
+  background-image:
+    radial-gradient(circle at 10% 15%, rgba(255, 89, 172, 0.2) 0%, transparent 32%),
+    radial-gradient(circle at 92% 12%, rgba(86, 204, 242, 0.22) 0%, transparent 36%),
+    radial-gradient(circle at 72% 88%, rgba(198, 255, 0, 0.18) 0%, transparent 38%),
+    linear-gradient(rgba(10, 10, 10, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(10, 10, 10, 0.07) 1px, transparent 1px) !important;
+  background-size: auto, auto, auto, 22px 22px, 22px 22px !important;
+  background-attachment: fixed !important;
+  color: #0a0a0a !important;
+}
+
+html.nb-skin main,
+html.nb-skin #app,
+html.nb-skin .app,
+html.nb-skin .page,
+html.nb-skin .shell,
+html.nb-skin .layout,
+html.nb-skin .wrap-inner {
+  background: transparent !important;
+  color: inherit !important;
+}
+
+/* Headers / nav strips that were dark */
+html.nb-skin header:not(.hero) {
+  background: #c6ff00 !important;
+  color: #0a0a0a !important;
+  border-bottom: 3px solid #0a0a0a !important;
+  box-shadow: 0 6px 0 #0a0a0a !important;
+}
+
+html.nb-skin header:not(.hero) a,
+html.nb-skin header:not(.hero) .title,
+html.nb-skin header:not(.hero) h1,
+html.nb-skin header:not(.hero) p {
+  color: #0a0a0a !important;
+}
+
+/* Generic panels & cards (high specificity) */
+html.nb-skin article.card,
+html.nb-skin .card,
+html.nb-skin .panel,
+html.nb-skin .pane,
+html.nb-skin .box,
+html.nb-skin .deck,
+html.nb-skin .tile,
+html.nb-skin .snippet,
+html.nb-skin .form-group,
+html.nb-skin .field,
+html.nb-skin .code-box,
+html.nb-skin .preview-box,
+html.nb-skin .phone,
+html.nb-skin .device,
+html.nb-skin .tab-panel,
+html.nb-skin .tab-panel.active,
+html.nb-skin .results,
+html.nb-skin .toggle-row,
+html.nb-skin details {
+  background: #fafafa !important;
+  color: #0a0a0a !important;
+  border-color: #0a0a0a !important;
+}
+
+html.nb-skin .card[class],
+html.nb-skin section.card {
+  background: #fafafa !important;
+}
+
+/* Tables */
+html.nb-skin thead,
+html.nb-skin tbody,
+html.nb-skin tr {
+  background: #fafafa !important;
+  color: #0a0a0a !important;
+}
+
+html.nb-skin td,
+html.nb-skin th {
+  color: #0a0a0a !important;
+}
+
+/* Typography that was light-on-dark */
+html.nb-skin h1,
+html.nb-skin h2,
+html.nb-skin h3,
+html.nb-skin h4,
+html.nb-skin h5,
+html.nb-skin h6,
+html.nb-skin p,
+html.nb-skin li,
+html.nb-skin dt,
+html.nb-skin dd,
+html.nb-skin figcaption,
+html.nb-skin .title-row,
+html.nb-skin .sub,
+html.nb-skin .lede,
+html.nb-skin .section-title {
+  color: #0a0a0a !important;
+}
+
+html.nb-skin .muted,
+html.nb-skin .hint,
+html.nb-skin .small,
+html.nb-skin .meta,
+html.nb-skin [class*="muted"] {
+  color: #3d4656 !important;
+}
+
+html.nb-skin label,
+html.nb-skin legend {
+  color: #1e2430 !important;
+}
+
+/* Form controls — pull everything out of “dark UI” mode */
+html.nb-skin input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="hidden"]):not([type="image"]):not([type="button"]):not([type="submit"]):not([type="reset"]),
+html.nb-skin select {
+  background: #fff6b0 !important;
+  color: #0a0a0a !important;
+  border: 3px solid #0a0a0a !important;
+  border-radius: 0 !important;
+  box-shadow: 4px 4px 0 #0a0a0a !important;
+}
+
+html.nb-skin textarea,
+html.nb-skin input[readonly],
+html.nb-skin textarea[readonly] {
+  background: #fffef0 !important;
+  color: #0a0a0a !important;
+  border: 3px solid #0a0a0a !important;
+  border-radius: 0 !important;
+  box-shadow: 4px 4px 0 #0a0a0a !important;
+}
+
+html.nb-skin pre,
+html.nb-skin .markdown-output,
+html.nb-skin .code-block {
+  background: #f4f4f6 !important;
+  color: #111827 !important;
+  border: 3px solid #0a0a0a !important;
+}
+
+html.nb-skin code {
+  background: #e8ecf4 !important;
+  color: #111827 !important;
+}
+
+html.nb-skin ::placeholder {
+  color: #5c6578 !important;
+  opacity: 1 !important;
+}
+
+/* Buttons: undo pill gradients / dark secondaries from legacy CSS */
+html.nb-skin button,
+html.nb-skin input[type="button"],
+html.nb-skin input[type="submit"],
+html.nb-skin input[type="reset"] {
+  border-radius: 0 !important;
+  background: #ff59ac !important;
+  color: #fff !important;
+  border: 3px solid #0a0a0a !important;
+  box-shadow: 6px 6px 0 #0a0a0a !important;
+}
+
+html.nb-skin button.secondary,
+html.nb-skin button.ghost,
+html.nb-skin .btn.secondary,
+html.nb-skin .btn.ghost {
+  background: #fafafa !important;
+  color: #0a0a0a !important;
+}
+
+html.nb-skin button.primary,
+html.nb-skin .btn.primary {
+  background: #ff59ac !important;
+  color: #fff !important;
+}
+
+/* Links */
+html.nb-skin a:not(.btn):not([class*="btn"]) {
+  color: #0b4f6c !important;
+}
+
+/* Range / progress accents */
+html.nb-skin input[type="range"] {
+  accent-color: #ff59ac !important;
+}
+
+/* Remove soft glow focus from legacy sheets */
+html.nb-skin input:focus,
+html.nb-skin select:focus,
+html.nb-skin textarea:focus,
+html.nb-skin button:focus {
+  outline: 3px solid #56ccf2 !important;
+  outline-offset: 2px !important;
+  box-shadow: 4px 4px 0 #0a0a0a, 0 0 0 3px #56ccf2 !important;
+}
+
+/* Chat / device mockups that used near-black shells */
+html.nb-skin .phone,
+html.nb-skin .phone-body,
+html.nb-skin .screen,
+html.nb-skin .chat-scroll {
+  background: #fafafa !important;
+  color: #0a0a0a !important;
+  border-color: #0a0a0a !important;
+}
+
+/* Index hub: keep hero readable */
+html.nb-skin header.hero h1,
+html.nb-skin header.hero p {
+  color: #0a0a0a !important;
+}
+
+/* Quiz / results panels (e.g. fringe-ideology-quiz) */
+html.nb-skin .q,
+html.nb-skin .q-title,
+html.nb-skin .q-slider-wrap {
+  background: #fafafa !important;
+  color: #0a0a0a !important;
+  border-color: #0a0a0a !important;
+}
+
+html.nb-skin .q small,
+html.nb-skin .q-slider-endlabels,
+html.nb-skin .q-slider-ticks,
+html.nb-skin .quiz-section-label,
+html.nb-skin .quiz-step-count,
+html.nb-skin .section-title,
+html.nb-skin .foot {
+  color: #3d4656 !important;
+}
+
+html.nb-skin .quiz-meta,
+html.nb-skin .quiz-nav {
+  background: transparent !important;
+}
+
+html.nb-skin .quiz-progress-track {
+  background: #e2e6ef !important;
+  border: 2px solid #0a0a0a !important;
+}
+
+html.nb-skin .pill {
+  background: #fff6b0 !important;
+  color: #0a0a0a !important;
+  border: 3px solid #0a0a0a !important;
+  border-radius: 0 !important;
+}
+
+html.nb-skin .row .muted {
+  color: #3d4656 !important;
+}
+
+/* Nav / tabs (generic) */
+html.nb-skin nav,
+html.nb-skin .tabs,
+html.nb-skin .tab-row {
+  background: transparent !important;
+}
+
+html.nb-skin .tab,
+html.nb-skin [role="tab"] {
+  background: #fafafa !important;
+  color: #0a0a0a !important;
+  border: 3px solid #0a0a0a !important;
+  border-radius: 0 !important;
+}
+
+html.nb-skin .tab.active,
+html.nb-skin [role="tab"][aria-selected="true"] {
+  background: #c6ff00 !important;
+}
