@@ -1,11 +1,34 @@
 /**
- * Neo-brutalist skin — shared across Frontend-Widgets standalone pages.
- * Opt in: <html class="nb-skin"> … load this file after page-specific <style> if overrides are needed.
+ * Polished neo-brutalist hub skin
+ * Drop-in replacement for neo-brutal.css on the Frontend Tools & Widgets index.
  */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap");
 
 html.nb-skin {
   -webkit-text-size-adjust: 100%;
+  color-scheme: light;
+
+  --nb-black: #09090b;
+  --nb-ink: #111827;
+  --nb-muted: #4b5563;
+  --nb-soft: #eef2f8;
+  --nb-paper: #fffdf5;
+  --nb-card: #ffffff;
+  --nb-cream: #fff7d6;
+  --nb-lime: #c8ff00;
+  --nb-pink: #ff4fa3;
+  --nb-pink-hot: #ff168d;
+  --nb-cyan: #51d5ff;
+  --nb-purple: #b77cff;
+  --nb-orange: #ffb000;
+
+  --nb-border-width: 3px;
+  --nb-border: var(--nb-border-width) solid var(--nb-black);
+  --nb-shadow-xs: 2px 2px 0 var(--nb-black);
+  --nb-shadow-sm: 4px 4px 0 var(--nb-black);
+  --nb-shadow: 6px 6px 0 var(--nb-black);
+  --nb-shadow-lg: 9px 9px 0 var(--nb-black);
+  --nb-radius: 0.85rem;
 }
 
 html.nb-skin *,
@@ -14,22 +37,27 @@ html.nb-skin *::after {
   box-sizing: border-box;
 }
 
-html.nb-skin {
-  --nb-black: #0a0a0a;
-  --nb-ink: #0a0a0a;
-  --nb-lime: #c6ff00;
-  --nb-pink: #ff59ac;
-  --nb-pink-hot: #ff149f;
-  --nb-cyan: #56ccf2;
-  --nb-purple: #bb6bd9;
-  --nb-yellow: #fff6b0;
-  --nb-cream: #faf7ef;
-  --nb-white: #fafafa;
-  --nb-border: 3px solid var(--nb-black);
-  --nb-shadow: 6px 6px 0 var(--nb-black);
-  --nb-shadow-sm: 4px 4px 0 var(--nb-black);
-  --nb-shadow-lg: 8px 8px 0 var(--nb-black);
-  --nb-shadow-press: 2px 2px 0 var(--nb-black);
+html.nb-skin body {
+  margin: 0;
+  min-height: 100vh;
+  padding: clamp(0.75rem, 2.5vw, 1.5rem);
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--nb-ink);
+  line-height: 1.5;
+  background-color: var(--nb-soft);
+  background-image:
+    radial-gradient(circle at 8% 10%, rgba(255, 79, 163, 0.24) 0 0, transparent 30rem),
+    radial-gradient(circle at 92% 8%, rgba(81, 213, 255, 0.26) 0 0, transparent 26rem),
+    radial-gradient(circle at 78% 92%, rgba(200, 255, 0, 0.22) 0 0, transparent 25rem),
+    linear-gradient(rgba(9, 9, 11, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(9, 9, 11, 0.055) 1px, transparent 1px);
+  background-size: auto, auto, auto, 24px 24px, 24px 24px;
+  background-attachment: fixed;
+}
+
+html.nb-skin ::selection {
+  background: var(--nb-lime);
+  color: var(--nb-black);
 }
 
 html.nb-skin img,
@@ -40,495 +68,352 @@ html.nb-skin svg {
   height: auto;
 }
 
-html.nb-skin body {
-  margin: 0;
-  min-height: 100vh;
-  padding: clamp(0.5rem, 2vw, 1.25rem);
-  font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-  color: var(--nb-ink);
-  background-color: #eef2f8;
-  background-image:
-    radial-gradient(circle at 10% 15%, rgba(255, 89, 172, 0.2) 0%, transparent 32%),
-    radial-gradient(circle at 92% 12%, rgba(86, 204, 242, 0.22) 0%, transparent 36%),
-    radial-gradient(circle at 72% 88%, rgba(198, 255, 0, 0.18) 0%, transparent 38%),
-    linear-gradient(rgba(10, 10, 10, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(10, 10, 10, 0.07) 1px, transparent 1px);
-  background-size: auto, auto, auto, 22px 22px, 22px 22px;
-  background-attachment: fixed;
-  line-height: 1.45;
-}
-
-/* --- Typography -------------------------------------------------------- */
-html.nb-skin h1,
-html.nb-skin h2,
-html.nb-skin h3 {
-  font-family: "Inter", "Arial Black", "Helvetica Neue", system-ui, sans-serif;
-  font-weight: 900;
-  letter-spacing: 0.03em;
-  line-height: 1.15;
-}
-
-html.nb-skin h1 {
-  font-size: clamp(1.5rem, 1rem + 2.5vw, 2.35rem);
-  text-transform: uppercase;
-}
-
-html.nb-skin h2,
-html.nb-skin h3 {
-  text-transform: uppercase;
-  font-size: clamp(1rem, 0.85rem + 1vw, 1.2rem);
-}
-
-/* First main title on simple pages */
-html.nb-skin body > h1:first-of-type {
-  background: var(--nb-lime);
-  border: var(--nb-border);
-  box-shadow: var(--nb-shadow-lg);
-  padding: 1rem 1.15rem;
-  margin: 1rem clamp(0.75rem, 3vw, 1.5rem) 1rem;
-  max-width: min(72rem, calc(100% - 2rem));
-  margin-left: auto;
-  margin-right: auto;
-  color: var(--nb-black);
-}
-
-html.nb-skin body > h1:first-of-type + .muted,
-html.nb-skin body > h1:first-of-type + p {
-  max-width: min(72rem, calc(100% - 2rem));
-  margin: 0 auto 1rem;
-  padding: 0 clamp(0.75rem, 3vw, 1.5rem);
-  font-weight: 600;
-  color: #2a3140;
-}
-
-/* --- Hub (index) ------------------------------------------------------- */
 html.nb-skin .wrap {
-  max-width: 1200px;
+  width: min(1240px, 100%);
   margin: 0 auto;
-  padding: clamp(1rem, 3vw, 2rem) clamp(0.75rem, 3vw, 1.25rem) 3rem;
-}
-
-html.nb-skin .container {
-  max-width: min(72rem, 100%);
-  margin-left: auto;
-  margin-right: auto;
+  padding: clamp(1rem, 3vw, 2rem) clamp(0.5rem, 2vw, 1rem) 3rem;
 }
 
 html.nb-skin header.hero {
-  background: var(--nb-lime);
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
   border: var(--nb-border);
+  border-radius: calc(var(--nb-radius) + 0.25rem);
   box-shadow: var(--nb-shadow-lg);
-  padding: 1.25rem 1.35rem;
+  background:
+    linear-gradient(135deg, var(--nb-lime) 0 55%, var(--nb-cyan) 55% 73%, var(--nb-pink) 73% 100%);
+  padding: clamp(1.35rem, 4vw, 2.5rem);
   margin-bottom: 1.25rem;
+}
+
+html.nb-skin header.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto -3rem -4rem auto;
+  width: 16rem;
+  height: 16rem;
+  border: var(--nb-border);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.42);
+  z-index: -1;
+}
+
+html.nb-skin h1,
+html.nb-skin h2,
+html.nb-skin h3 {
+  margin: 0;
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.045em;
+  color: var(--nb-black);
 }
 
 html.nb-skin header.hero h1 {
-  margin: 0;
-  color: var(--nb-black);
+  max-width: 13ch;
+  font-size: clamp(2.35rem, 7vw, 5.7rem);
   text-transform: uppercase;
+  text-wrap: balance;
 }
 
 html.nb-skin header.hero p {
-  margin: 0.5rem 0 0;
-  color: #1e2430;
-  font-weight: 600;
-  text-transform: none;
-  letter-spacing: 0;
-  font-size: 0.98rem;
+  max-width: 62ch;
+  margin: 0.9rem 0 0;
+  font-size: clamp(1rem, 1vw + 0.85rem, 1.35rem);
+  font-weight: 800;
+  color: #171717;
 }
 
 html.nb-skin .toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.85rem;
   align-items: center;
-  margin-bottom: 1.25rem;
-}
-
-html.nb-skin .toolbar .hint {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: #2a3140;
+  margin: 0 0 1.35rem;
 }
 
 html.nb-skin .input {
-  flex: 1 1 280px;
   position: relative;
+}
+
+html.nb-skin .input svg {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  translate: 0 -50%;
+  pointer-events: none;
+  color: var(--nb-black);
 }
 
 html.nb-skin .input input {
   width: 100%;
+  min-height: 3.25rem;
   border: var(--nb-border);
-  border-radius: 0;
-  box-shadow: var(--nb-shadow-sm);
-  background: var(--nb-yellow);
+  border-radius: var(--nb-radius);
+  box-shadow: var(--nb-shadow);
+  background: var(--nb-paper);
   color: var(--nb-black);
-  padding: 0.65rem 0.75rem 0.65rem 2.5rem;
-  font-weight: 600;
+  padding: 0.8rem 1rem 0.8rem 3rem;
+  font: inherit;
+  font-weight: 800;
   outline: none;
+  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
 }
 
 html.nb-skin .input input:focus {
-  outline: 3px solid var(--nb-cyan);
-  outline-offset: 2px;
+  background: #ffffff;
+  transform: translate(-2px, -2px);
+  box-shadow: 8px 8px 0 var(--nb-black), 0 0 0 4px var(--nb-cyan);
 }
 
-html.nb-skin .input svg {
+html.nb-skin .toolbar .hint {
+  justify-self: end;
+  border: 2px solid var(--nb-black);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  padding: 0.45rem 0.7rem;
+  color: var(--nb-muted);
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+html.nb-skin .kbd {
+  display: inline-flex;
+  min-width: 1.55rem;
+  justify-content: center;
+  border: 2px solid var(--nb-black);
+  border-radius: 0.35rem;
+  background: var(--nb-lime);
   color: var(--nb-black);
-  opacity: 0.75;
+  box-shadow: var(--nb-shadow-xs);
+  padding: 0.05rem 0.3rem;
+  font: 900 0.78em ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
 html.nb-skin #grid.grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 255px), 1fr));
+  gap: clamp(1rem, 2vw, 1.45rem);
   align-items: stretch;
 }
 
 html.nb-skin article.card,
 html.nb-skin .card {
-  background: var(--nb-white);
-  border: var(--nb-border);
-  border-radius: 0;
-  box-shadow: var(--nb-shadow-lg);
-  padding: 1rem 1rem 1.1rem;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  min-height: 100%;
   overflow: hidden;
+  border: var(--nb-border);
+  border-radius: var(--nb-radius);
+  box-shadow: var(--nb-shadow);
+  background: var(--nb-card);
+  padding: 1rem;
+  transition: transform 130ms ease, box-shadow 130ms ease, background 130ms ease;
 }
 
 html.nb-skin article.card::before,
 html.nb-skin .card::before {
   content: "";
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 5px;
+  inset: 0 0 auto;
+  height: 0.55rem;
   background: var(--nb-pink);
+  border-bottom: 2px solid var(--nb-black);
 }
 
-html.nb-skin article.card:nth-child(4n + 2)::before,
-html.nb-skin .card:nth-child(4n + 2)::before {
-  background: var(--nb-cyan);
-}
-
-html.nb-skin article.card:nth-child(4n + 3)::before,
-html.nb-skin .card:nth-child(4n + 3)::before {
-  background: var(--nb-lime);
-}
-
-html.nb-skin article.card:nth-child(4n)::before,
-html.nb-skin .card:nth-child(4n)::before {
-  background: var(--nb-purple);
-}
+html.nb-skin article.card:nth-child(4n + 2)::before { background: var(--nb-cyan); }
+html.nb-skin article.card:nth-child(4n + 3)::before { background: var(--nb-lime); }
+html.nb-skin article.card:nth-child(4n)::before { background: var(--nb-purple); }
 
 html.nb-skin article.card:hover,
 html.nb-skin .card:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 9px 9px 0 var(--nb-black);
+  transform: translate(-3px, -3px) rotate(-0.2deg);
+  box-shadow: 10px 10px 0 var(--nb-black);
+  background: #fffefb;
+}
+
+html.nb-skin .card-header {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.65rem;
+  padding-top: 0.45rem;
 }
 
 html.nb-skin .card-header h3 {
-  margin: 0.35rem 0 0;
-  color: var(--nb-black);
-  font-size: 1rem;
+  font-size: clamp(1.05rem, 1vw + 0.85rem, 1.35rem);
+  text-transform: none;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
 }
 
 html.nb-skin .path {
   display: inline-flex;
   align-self: flex-start;
+  width: fit-content;
+  max-width: 100%;
+  border: 2px solid var(--nb-black);
+  border-radius: 999px;
   background: var(--nb-black);
-  color: var(--nb-white);
-  border: var(--nb-border);
-  box-shadow: var(--nb-shadow-sm);
-  border-radius: 0;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
+  color: #fff;
+  padding: 0.28rem 0.55rem;
+  font: 900 0.68rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   letter-spacing: 0.06em;
-  padding: 0.35rem 0.5rem;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
 }
 
+html.nb-skin article.card:nth-child(4n + 2) .path { background: var(--nb-cyan); color: var(--nb-black); }
+html.nb-skin article.card:nth-child(4n + 3) .path { background: var(--nb-lime); color: var(--nb-black); }
+html.nb-skin article.card:nth-child(4n) .path { background: var(--nb-purple); color: var(--nb-black); }
+
 html.nb-skin .blurb {
-  color: #2a3140;
-  font-weight: 600;
-  font-size: 0.9rem;
+  min-height: 0;
+  margin: 0;
+  color: var(--nb-muted);
+  font-size: 0.94rem;
+  font-weight: 650;
 }
 
 html.nb-skin .actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.55rem;
   margin-top: auto;
+  padding-top: 0.25rem;
 }
 
-html.nb-skin footer {
-  margin-top: 2.5rem;
-  padding: 1rem 1.25rem;
-  border: var(--nb-border);
-  box-shadow: var(--nb-shadow);
-  background: var(--nb-cream);
-  font-weight: 600;
-  color: #2a3140;
-}
-
-html.nb-skin footer a {
-  color: inherit;
-  font-weight: 800;
-}
-
-html.nb-skin .kbd {
-  border: var(--nb-border);
-  border-radius: 0;
-  background: var(--nb-white);
-  box-shadow: var(--nb-shadow-sm);
-  font-weight: 800;
-  padding: 0.15rem 0.45rem;
-}
-
-/* --- Buttons & links styled as buttons -------------------------------- */
+html.nb-skin a.btn,
+html.nb-skin .btn,
 html.nb-skin button,
 html.nb-skin input[type="button"],
 html.nb-skin input[type="submit"],
 html.nb-skin input[type="reset"] {
   appearance: none;
-  font: inherit;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.7rem;
   border: var(--nb-border);
-  border-radius: 0;
-  box-shadow: var(--nb-shadow);
-  background: var(--nb-pink);
-  color: #fff;
-  padding: 0.55rem 1rem;
+  border-radius: 0.65rem;
+  box-shadow: var(--nb-shadow-sm);
+  background: #fff;
+  color: var(--nb-black);
+  padding: 0.62rem 0.75rem;
+  text-decoration: none;
+  text-align: center;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
   cursor: pointer;
-  transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.12s ease;
+  transition: transform 90ms ease, box-shadow 90ms ease, background 120ms ease;
 }
 
+html.nb-skin a.btn.primary,
+html.nb-skin .btn.primary,
+html.nb-skin button.primary {
+  background: var(--nb-pink);
+  color: #fff;
+}
+
+html.nb-skin a.btn:hover,
+html.nb-skin .btn:hover,
 html.nb-skin button:hover,
 html.nb-skin input[type="button"]:hover,
 html.nb-skin input[type="submit"]:hover,
 html.nb-skin input[type="reset"]:hover {
-  background: var(--nb-pink-hot);
   transform: translate(-2px, -2px);
-  box-shadow: 8px 8px 0 var(--nb-black);
-}
-
-html.nb-skin button:active,
-html.nb-skin input[type="button"]:active,
-html.nb-skin input[type="submit"]:active,
-html.nb-skin input[type="reset"]:active {
-  transform: translate(3px, 3px);
-  box-shadow: var(--nb-shadow-press);
-}
-
-html.nb-skin button:disabled,
-html.nb-skin input:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: var(--nb-shadow-sm);
-}
-
-html.nb-skin a.btn,
-html.nb-skin .btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  font: inherit;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  border: var(--nb-border);
-  border-radius: 0;
   box-shadow: var(--nb-shadow);
-  background: #fff;
-  color: var(--nb-black);
-  padding: 0.55rem 1rem;
-  min-height: 2.5rem;
-  cursor: pointer;
-  transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.12s ease;
-}
-
-html.nb-skin a.btn:hover,
-html.nb-skin .btn:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 8px 8px 0 var(--nb-black);
-}
-
-html.nb-skin a.btn:active,
-html.nb-skin .btn:active {
-  transform: translate(3px, 3px);
-  box-shadow: var(--nb-shadow-press);
-}
-
-html.nb-skin a.btn.primary,
-html.nb-skin .btn.primary {
-  background: var(--nb-pink);
-  color: #fff;
 }
 
 html.nb-skin a.btn.primary:hover,
-html.nb-skin .btn.primary:hover {
+html.nb-skin .btn.primary:hover,
+html.nb-skin button.primary:hover {
   background: var(--nb-pink-hot);
 }
 
-/* --- Form controls ----------------------------------------------------- */
+html.nb-skin a.btn:active,
+html.nb-skin .btn:active,
+html.nb-skin button:active {
+  transform: translate(2px, 2px);
+  box-shadow: var(--nb-shadow-xs);
+}
+
+html.nb-skin a:not(.btn) {
+  color: #075985;
+  font-weight: 800;
+  text-decoration-thickness: 0.14em;
+  text-underline-offset: 0.16em;
+}
+
 html.nb-skin input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="hidden"]):not([type="image"]):not([type="button"]):not([type="submit"]):not([type="reset"]),
 html.nb-skin select,
 html.nb-skin textarea {
-  border: var(--nb-border);
-  border-radius: 0;
-  box-shadow: var(--nb-shadow-sm);
-  background: var(--nb-yellow);
-  color: var(--nb-black);
-  font: inherit;
-  font-weight: 600;
-  padding: 0.5rem 0.65rem;
   max-width: 100%;
-}
-
-html.nb-skin textarea {
-  background: #12151c;
-  color: #f0f4fc;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 0.9rem;
-}
-
-html.nb-skin select {
-  background: var(--nb-white);
+  border: var(--nb-border);
+  border-radius: 0.65rem;
+  box-shadow: var(--nb-shadow-sm);
+  background: var(--nb-paper);
+  color: var(--nb-black);
+  padding: 0.65rem 0.8rem;
+  font: inherit;
+  font-weight: 700;
 }
 
 html.nb-skin input:focus,
 html.nb-skin select:focus,
-html.nb-skin textarea:focus {
+html.nb-skin textarea:focus,
+html.nb-skin button:focus-visible,
+html.nb-skin a:focus-visible {
   outline: 3px solid var(--nb-cyan);
-  outline-offset: 2px;
+  outline-offset: 3px;
 }
 
-html.nb-skin input[type="range"] {
-  accent-color: var(--nb-pink);
-}
-
-html.nb-skin input[type="checkbox"],
-html.nb-skin input[type="radio"] {
-  width: 1.1rem;
-  height: 1.1rem;
-  accent-color: var(--nb-pink);
-}
-
-html.nb-skin label {
-  font-weight: 700;
-  color: #1e2430;
-}
-
-html.nb-skin fieldset {
+html.nb-skin footer {
+  margin-top: 2.5rem;
   border: var(--nb-border);
-  box-shadow: var(--nb-shadow-sm);
-  background: var(--nb-cream);
-  padding: 1rem;
+  border-radius: var(--nb-radius);
+  box-shadow: var(--nb-shadow);
+  background: var(--nb-paper);
+  padding: 1rem 1.15rem;
+  color: var(--nb-muted);
+  font-weight: 750;
 }
 
-html.nb-skin legend {
-  font-weight: 900;
-  text-transform: uppercase;
-  padding: 0 0.35rem;
+html.nb-skin footer p {
+  margin: 0;
 }
 
-html.nb-skin table {
-  border-collapse: collapse;
-  border: var(--nb-border);
-  box-shadow: var(--nb-shadow-sm);
-  background: var(--nb-white);
-}
+@media (max-width: 760px) {
+  html.nb-skin body {
+    padding: 0.55rem;
+  }
 
-html.nb-skin th,
-html.nb-skin td {
-  border: 2px solid var(--nb-black);
-  padding: 0.45rem 0.6rem;
-}
+  html.nb-skin .wrap {
+    padding-inline: 0;
+  }
 
-html.nb-skin th {
-  background: var(--nb-lime);
-  font-weight: 900;
-  text-transform: uppercase;
-  font-size: 0.78rem;
-}
-
-html.nb-skin a {
-  color: #0b4f6c;
-  font-weight: 700;
-}
-
-html.nb-skin a:hover {
-  color: var(--nb-pink-hot);
-}
-
-html.nb-skin pre,
-html.nb-skin code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-}
-
-html.nb-skin pre {
-  border: var(--nb-border);
-  box-shadow: var(--nb-shadow-sm);
-  background: #12151c;
-  color: #e8ecf5;
-  padding: 1rem;
-  overflow: auto;
-}
-
-html.nb-skin details {
-  border: var(--nb-border);
-  box-shadow: var(--nb-shadow-sm);
-  background: var(--nb-white);
-  padding: 0.75rem 1rem;
-}
-
-html.nb-skin summary {
-  font-weight: 900;
-  text-transform: uppercase;
-  cursor: pointer;
-}
-
-html.nb-skin hr {
-  border: none;
-  border-top: 3px solid var(--nb-black);
-  margin: 1.5rem 0;
-}
-
-html.nb-skin .muted,
-html.nb-skin [class*="muted"] {
-  color: #3d4656 !important;
-  font-weight: 600;
-}
-
-/* --- Layout helpers for generator pages -------------------------------- */
-html.nb-skin body > .card:first-of-type,
-html.nb-skin body > h1:first-of-type + .card,
-html.nb-skin body > h1:first-of-type + p + .card {
-  max-width: min(72rem, calc(100% - 2rem));
-  margin-left: auto;
-  margin-right: auto;
-}
-
-html.nb-skin body > p:first-of-type {
-  max-width: min(72rem, calc(100% - 2rem));
-  margin-left: auto;
-  margin-right: auto;
-  padding: 0 clamp(0.75rem, 3vw, 1.5rem);
-}
-
-@media (max-width: 640px) {
-  html.nb-skin #grid.grid {
+  html.nb-skin .toolbar {
     grid-template-columns: 1fr;
   }
 
-  html.nb-skin .actions .btn,
-  html.nb-skin .actions a.btn {
-    flex: 1 1 auto;
+  html.nb-skin .toolbar .hint {
+    justify-self: start;
+  }
+
+  html.nb-skin .actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.nb-skin *,
+  html.nb-skin *::before,
+  html.nb-skin *::after {
+    transition: none !important;
+    scroll-behavior: auto !important;
   }
 }
