@@ -52,6 +52,18 @@ html.nb-skin header:not(.hero) {
   box-shadow: 0 6px 0 #0a0a0a !important;
 }
 
+html.nb-skin .site-header,
+html.nb-skin .page-header {
+  padding: 1.1rem 1.15rem !important;
+}
+
+@media (min-width: 720px) {
+  html.nb-skin .site-header,
+  html.nb-skin .page-header {
+    padding: 1.35rem 1.5rem !important;
+  }
+}
+
 html.nb-skin header:not(.hero) a,
 html.nb-skin header:not(.hero) .title,
 html.nb-skin header:not(.hero) h1,
