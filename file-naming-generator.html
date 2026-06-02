@@ -15,15 +15,20 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
   <link rel="stylesheet" href="neo-brutal-overrides.css" />
 </head>
 <body>
-<div class="page">
-  <header class="hero">
-    <p class="eyebrow">Standalone Widget</p>
-    <h1>File Naming Convention Generator</h1>
-    <p class="lead">Build clean, repeatable file names for projects, exports, media, notes, or archives. Preview several outputs before using the pattern.</p>
-  </header>
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
+      <h1>File Naming Convention Generator</h1>
+      <p class="page-description">Build clean, repeatable file names for projects, exports, media, notes, or archives. Preview several outputs before using the pattern.</p>
+    </header>
 
-  <div class="grid">
-    <section class="card">
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
+      </div>
+
+      <div class="widget-grid">
+    <section class="panel">
       <div class="row">
         <div class="field">
           <label for="name-prefix">Prefix</label>
@@ -96,18 +101,22 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       </div>
     </section>
 
-    <div class="stack">
-      <section class="card">
+    <section class="panel">
+      <h2>Output</h2>
+      <div class="stack">
+      <section class="panel">
         <h3>Generated filenames</h3>
         <div id="names-output" class="output">Generated filenames will appear here.</div>
       </section>
-      <section class="card">
+      <section class="panel">
         <h3>Pattern summary</h3>
         <div id="pattern-output" class="output">Your file naming pattern summary will appear here.</div>
       </section>
+      </div>
+    </section>
+      </div>
     </div>
   </div>
-</div>
 
 <script>
 

@@ -22,14 +22,21 @@ button.copied { background:#16a34a; color:white; }
 
 <div class="page-shell">
 <header class="page-header">
+  <p class="eyebrow">Frontend Widget</p>
   <h1>CSV → SQL</h1>
-  <p>Paste or upload CSV → instantly get SQL</p>
+  <p class="page-description">Paste or upload CSV and instantly get SQL insert statements.</p>
 </header>
+
+<div class="widget-shell">
+  <div class="widget-topbar">
+    <a class="back-link" href="index.html">← Back to all widgets</a>
+  </div>
 
 <div class="widget-grid">
 
 <section class="panel">
-  <input id="csvInput" type="file" />
+  <label for="csvInput">Upload CSV file</label>
+  <input id="csvInput" type="file" accept=".csv,text/csv" />
   <textarea id="csvText" placeholder="Paste CSV here"></textarea>
 
   <input id="tableName" value="my_table" />
@@ -54,6 +61,7 @@ button.copied { background:#16a34a; color:white; }
   </div>
 </section>
 
+</div>
 </div>
 </div>
 

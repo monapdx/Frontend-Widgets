@@ -15,15 +15,20 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
   <link rel="stylesheet" href="neo-brutal-overrides.css" />
 </head>
 <body>
-<div class="page">
-  <header class="hero">
-    <p class="eyebrow">Standalone Widget</p>
-    <h1>HEX Color → Tailwind Classes</h1>
-    <p class="lead">Paste a HEX value and get approximate Tailwind color matches plus utility class ideas.</p>
-  </header>
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
+      <h1>HEX Color → Tailwind Classes</h1>
+      <p class="page-description">Paste a HEX value and get approximate Tailwind color matches plus utility class ideas.</p>
+    </header>
 
-  <div class="grid">
-    <section class="card">
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
+      </div>
+
+      <div class="widget-grid">
+    <section class="panel">
       <div class="field">
         <label for="hexInput">HEX value</label>
         <input id="hexInput" type="text" value="#ff009c" placeholder="#ff009c" />
@@ -49,13 +54,14 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       </div>
     </section>
 
-    <section class="card">
-      <h3>Closest Tailwind matches</h3>
+    <section class="panel">
+      <h2>Closest Tailwind matches</h2>
       <div id="matches" class="match-list"></div>
       <p class="footer-note">These are approximate matches against a small built-in Tailwind palette so the file works offline as a standalone widget.</p>
     </section>
+      </div>
+    </div>
   </div>
-</div>
 
 <script>
 

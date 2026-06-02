@@ -363,6 +363,37 @@ html.nb-skin textarea {
   font-weight: 700;
 }
 
+html.nb-skin input[type="file"]:not(.sr):not(.file):not([hidden]) {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  padding: 0.5rem 0.65rem;
+  border: var(--nb-border);
+  border-radius: 0.65rem;
+  box-shadow: var(--nb-shadow-sm);
+  background: var(--nb-paper);
+  color: var(--nb-black);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+html.nb-skin input[type="file"]:not(.sr):not(.file):not([hidden])::file-selector-button,
+html.nb-skin input[type="file"]:not(.sr):not(.file):not([hidden])::-webkit-file-upload-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0 0.85rem 0 0;
+  padding: 0.45rem 0.85rem;
+  background: var(--nb-pink);
+  color: #fff;
+  border: var(--nb-border);
+  border-radius: 0.45rem;
+  box-shadow: var(--nb-shadow-xs);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
 html.nb-skin input:focus,
 html.nb-skin select:focus,
 html.nb-skin textarea:focus,

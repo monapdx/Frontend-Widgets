@@ -15,15 +15,20 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
   <link rel="stylesheet" href="neo-brutal-overrides.css" />
 </head>
 <body>
-<div class="page">
-  <header class="hero">
-    <p class="eyebrow">Standalone Widget</p>
-    <h1>Regex Explainer</h1>
-    <p class="lead">Paste a regular expression and optional test text. The tool breaks the pattern into readable parts and shows likely matches.</p>
-  </header>
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
+      <h1>Regex Explainer</h1>
+      <p class="page-description">Paste a regular expression and optional test text. The tool breaks the pattern into readable parts and shows likely matches.</p>
+    </header>
 
-  <div class="grid">
-    <section class="card">
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
+      </div>
+
+      <div class="widget-grid">
+    <section class="panel">
       <div class="field">
         <label for="regex-input">Regular expression</label>
         <input id="regex-input" type="text" placeholder="^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$" />
@@ -56,22 +61,26 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       </div>
     </section>
 
-    <div class="stack">
-      <section class="card">
+    <section class="panel">
+      <h2>Results</h2>
+      <div class="stack">
+      <section class="panel">
         <h3>Explanation</h3>
         <div id="regex-output" class="output">The explanation will appear here.</div>
       </section>
-      <section class="card">
+      <section class="panel">
         <h3>Token breakdown</h3>
         <div class="output" id="regex-tokens">Token-by-token breakdown will appear here.</div>
       </section>
-      <section class="card">
+      <section class="panel">
         <h3>Match preview</h3>
         <div class="output" id="regex-matches">Matches will appear here when you provide test text.</div>
       </section>
+      </div>
+    </section>
+      </div>
     </div>
   </div>
-</div>
 
 <script>
 

@@ -171,7 +171,22 @@ textarea {
 
 input[type="file"] {
   width: 100%;
-  padding: 10px 0;
+  max-width: 100%;
+  padding: 0.5rem 0.65rem;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+input[type="file"]::file-selector-button,
+input[type="file"]::-webkit-file-upload-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin-right: 0.85rem;
+  padding: 0.45rem 0.85rem;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 button {

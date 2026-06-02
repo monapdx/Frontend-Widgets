@@ -166,6 +166,73 @@ html.nb-skin textarea[readonly] {
   box-shadow: 4px 4px 0 #0a0a0a !important;
 }
 
+/* File inputs — match text fields + neo-brutal “Choose file” button */
+html.nb-skin input[type="file"]:not(.sr):not(.file):not([hidden]) {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  padding: 0.5rem 0.65rem !important;
+  background: #fffef0 !important;
+  color: #0a0a0a !important;
+  border: 3px solid #0a0a0a !important;
+  border-radius: 0 !important;
+  box-shadow: 4px 4px 0 #0a0a0a !important;
+  font: inherit;
+  font-weight: 600;
+  line-height: 1.45;
+  cursor: pointer;
+}
+
+html.nb-skin input[type="file"]:not(.sr):not(.file):not([hidden])::file-selector-button,
+html.nb-skin input[type="file"]:not(.sr):not(.file):not([hidden])::-webkit-file-upload-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0 0.85rem 0 0;
+  padding: 0.45rem 0.85rem;
+  background: #ff59ac !important;
+  color: #fff !important;
+  border: 3px solid #0a0a0a !important;
+  border-radius: 0 !important;
+  box-shadow: 3px 3px 0 #0a0a0a !important;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+html.nb-skin input[type="file"]:not(.sr):not(.file):not([hidden]):hover::file-selector-button,
+html.nb-skin input[type="file"]:not(.sr):not(.file):not([hidden]):hover::-webkit-file-upload-button {
+  background: #ff168d !important;
+}
+
+html.nb-skin input[type="file"]:not(.sr):not(.file):not([hidden]):active::file-selector-button,
+html.nb-skin input[type="file"]:not(.sr):not(.file):not([hidden]):active::-webkit-file-upload-button {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 #0a0a0a !important;
+}
+
+html.nb-skin input[type="file"]:not(.sr):not(.file):not([hidden]):focus,
+html.nb-skin input[type="file"]:not(.sr):not(.file):not([hidden]):focus-within {
+  outline: 3px solid #56ccf2 !important;
+  outline-offset: 3px;
+}
+
+html.nb-skin input[type="file"].sr,
+html.nb-skin input[type="file"].file,
+html.nb-skin input[type="file"][hidden] {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
 html.nb-skin pre,
 html.nb-skin .markdown-output,
 html.nb-skin .code-block {
@@ -638,7 +705,6 @@ html.nb-skin body > .wrap > .card h2 {
   color: #0a0a0a !important;
 }
 
-html.nb-skin body > .wrap input[type="file"],
 html.nb-skin body > .wrap input[type="text"],
 html.nb-skin body > .wrap textarea,
 html.nb-skin body > .wrap input[type="number"] {
