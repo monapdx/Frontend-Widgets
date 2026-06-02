@@ -1,24 +1,18 @@
-<!DOCTYPE html>
+<!doctype html>
 <html class="nb-skin" lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Voice Memo Recorder</title>
   <link rel="stylesheet" href="neo-brutal.css" />
+  <link rel="stylesheet" href="styles-vanilla.css" />
   <style>
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
 
-
     @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
 
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; padding: 1.5rem; max-width: 32.5rem; margin: 0 auto; }
-    h2 {
-      font-family: "Oswald", serif;
-      font-size: 1.5em; line-height: 1.1; text-transform: uppercase; letter-spacing: .05em;
-      margin: 0 0 0.9375rem; padding: 0.3125rem 0.625rem; position: relative;
-    }
     .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
     button.record {
       font-family: "Oswald", serif;
@@ -43,17 +37,33 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
   <link rel="stylesheet" href="neo-brutal-overrides.css" />
 </head>
 <body>
-  <h2>Voice Memo Recorder</h2>
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
+      <h1>Voice Memo Recorder</h1>
+      <p class="page-description">Record short voice memos in the browser, play them back, and download as WebM, OGG, or M4A.</p>
+    </header>
 
-  <div class="controls">
-    <button id="startButton" class="record">RECORD</button>
-    <button id="stopButton" class="record" disabled>STOP</button>
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
+      </div>
+
+      <div class="widget-grid">
+        <section class="panel">
+          <div class="controls">
+            <button id="startButton" class="record">RECORD</button>
+            <button id="stopButton" class="record" disabled>STOP</button>
+          </div>
+
+          <div id="status" aria-live="polite"></div>
+
+          <audio id="audioPlayback" controls></audio>
+          <a id="downloadButton" download="voice-memo.webm">DOWNLOAD</a>
+        </section>
+      </div>
+    </div>
   </div>
-
-  <div id="status" aria-live="polite"></div>
-
-  <audio id="audioPlayback" controls></audio>
-  <a id="downloadButton" download="voice-memo.webm">DOWNLOAD</a>
 
   <script>
     const startButton = document.getElementById("startButton");

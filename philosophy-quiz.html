@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Which Philosophical Movements Align With You?</title>
   <link rel="stylesheet" href="neo-brutal.css" />
+  <link rel="stylesheet" href="styles-vanilla.css" />
 <style>
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
@@ -66,11 +67,21 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
   <link rel="stylesheet" href="neo-brutal-overrides.css" />
 </head>
 <body>
-<div class="wrap">
-  <div class="card" id="app" aria-live="polite">
+<div class="page-shell">
+  <header class="page-header">
+    <p class="eyebrow">Frontend Widget</p>
     <h1>Which Philosophical Movements Align With You?</h1>
-    <div class="sub">Answer instinctively. At the end, we’ll compute your alignment across several movements and show a chart.</div>
+    <p class="page-description">Answer instinctively. At the end, we'll compute your alignment across several movements and show a chart.</p>
+  </header>
 
+  <div class="widget-shell">
+    <div class="widget-topbar">
+      <a class="back-link" href="index.html">← Back to all widgets</a>
+    </div>
+
+    <div class="widget-grid">
+      <section class="panel">
+  <div class="card" id="app" aria-live="polite">
     <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
       <div class="bar" id="bar"></div>
     </div>
@@ -103,6 +114,9 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
     </section>
 
     <p class="hint" id="footHint">Use ↑/↓ to move choices. Press Enter to continue.</p>
+  </div>
+      </section>
+    </div>
   </div>
 </div>
 

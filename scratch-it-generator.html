@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Scratch-Off Card Generator (Image Upload + Hidden Text)</title>
   <link rel="stylesheet" href="neo-brutal.css" />
+  <link rel="stylesheet" href="styles-vanilla.css" />
   <style>
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
@@ -57,12 +58,21 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
   <link rel="stylesheet" href="neo-brutal-overrides.css" />
 </head>
 <body>
-  <div class="wrap">
-    <div class="card">
-      <div class="panel">
-        <h2 style="margin:0 0 6px;">Scratch-Off Generator</h2>
-        <div class="hint">Upload an image to act as the scratch surface. The hidden message is underneath.</div>
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
+      <h1>Scratch-Off Card Generator</h1>
+      <p class="page-description">Upload an image to act as the scratch surface. The hidden message is underneath.</p>
+    </header>
 
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
+      </div>
+
+      <div class="widget-grid">
+    <section class="panel card">
+      <div class="panel">
         <label>Scratch Surface Image (jpg/png/webp)</label>
         <input id="imgInput" type="file" accept="image/*" />
 
@@ -94,9 +104,9 @@ Use code: LOKI-LOVE</textarea>
         <label style="margin-top:14px;">Embed Code (demo snippet)</label>
         <div class="codebox" id="codebox"></div>
       </div>
-    </div>
+    </section>
 
-    <div class="card">
+    <section class="panel card">
       <div class="stage">
         <div class="scratch-wrap" id="wrap">
           <div class="under">
@@ -108,6 +118,8 @@ Use code: LOKI-LOVE</textarea>
           Mouse: click + drag to scratch. Mobile: touch + drag.  
           Tip: The image is drawn onto the canvas and “erased” where you scratch.
         </div>
+      </div>
+    </section>
       </div>
     </div>
   </div>

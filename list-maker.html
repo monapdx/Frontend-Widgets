@@ -1,32 +1,51 @@
-<!DOCTYPE html>
+<!doctype html>
 <html class="nb-skin" lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Simple Shopping List App</title>
   <link rel="stylesheet" href="neo-brutal.css" />
+  <link rel="stylesheet" href="styles-vanilla.css" />
   <style>
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
 
-
-    body {
+    .list-panel {
       font-family: "Oswald", serif;
-      margin: 1.25rem;
     }
     #list-container {
       margin-top: 1.25rem;
     }
     .list-item {
+      font-size: 1.125rem;
       display: flex;
       align-items: center;
+      justify-content: space-between;
       margin: 0.625rem 0;
+      padding: 0.3125rem;
+      border-bottom: 1px solid #ddd;
     }
     .list-item input {
       margin-right: 0.625rem;
       font-family: "Lobster", serif;
-      font-size:1.125rem;
+      font-size: 1.125rem;
+    }
+    .list-item span {
+      flex-grow: 1;
+      margin-left: 0.625rem;
+    }
+    .list-item button {
+      margin-left: 1.25rem;
+      padding: 0.1875rem 0.5rem;
+      border: none;
+      background-color: #ff4d4d;
+      color: white;
+      cursor: pointer;
+      border-radius: 0.25rem;
+    }
+    .list-item button:hover {
+      background-color: #d93636;
     }
     .crossed {
       text-decoration: line-through;
@@ -35,70 +54,67 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
     .export-btn {
       margin-top: 1.25rem;
     }
-.list-item {
-font-size:1.125rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between; /* Ensures spacing between text and delete button */
-  margin: 0.625rem 0;
-  padding: 0.3125rem;
-  border-bottom: 1px solid #ddd; /* Optional: Adds a subtle separation between items */
-}
 
-.list-item span {
-  flex-grow: 1; /* Allows the text to take up remaining space */
-  margin-left: 0.625rem; /* Ensures some space between the checkbox and text */
-}
+    @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+    @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
 
-.list-item button {
-  margin-left: 1.25rem; /* Increases space between text and delete button */
-  padding: 0.1875rem 0.5rem;
-  border: none;
-  background-color: #ff4d4d;
-  color: white;
-  cursor: pointer;
-  border-radius: 0.25rem;
-}
-
-.list-item button:hover {
-  background-color: #d93636;
-}
-	
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
-
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');	
-	
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
-
-#export-btn	{font-family: "Lobster", serif;font-size:1.25rem;}
-#new-item {font-family: "Lobster", serif;font-size:1.125rem; border-radius: 0.3125rem; /* Round the corners */
-  background-color: #f2f2f2; /* Set a light background color */}
-  #new-item:focus {outline: none; /* Remove the default focus outline */
-  border-color: blue; /* Change the border color on focus */
-  box-shadow: 0 0 0.3125rem rgba(0, 0, 255, 0.5); /* Add a subtle shadow */}
-#list-title {font-family: "Lobster", serif;font-size:1.125rem;border-radius: 0.3125rem; /* Round the corners */
-  background-color: #f2f2f2;}
-  #list-title:focus {outline: none; /* Remove the default focus outline */
-  border-color: blue; /* Change the border color on focus */
-  box-shadow: 0 0 0.3125rem rgba(0, 0, 255, 0.5);}
-label {font-family: "Oswald", serif;font-size:1.125rem;font-weight:bold;}
+    #export-btn { font-family: "Lobster", serif; font-size: 1.25rem; }
+    #new-item {
+      font-family: "Lobster", serif;
+      font-size: 1.125rem;
+      border-radius: 0.3125rem;
+      background-color: #f2f2f2;
+    }
+    #new-item:focus {
+      outline: none;
+      border-color: blue;
+      box-shadow: 0 0 0.3125rem rgba(0, 0, 255, 0.5);
+    }
+    #list-title {
+      font-family: "Lobster", serif;
+      font-size: 1.125rem;
+      border-radius: 0.3125rem;
+      background-color: #f2f2f2;
+    }
+    #list-title:focus {
+      outline: none;
+      border-color: blue;
+      box-shadow: 0 0 0.3125rem rgba(0, 0, 255, 0.5);
+    }
+    label { font-family: "Oswald", serif; font-size: 1.125rem; font-weight: bold; }
   </style>
   <link rel="stylesheet" href="neo-brutal-overrides.css" />
 </head>
 <body>
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
+      <h1>List Generator</h1>
+      <p class="page-description">Build a titled checklist, strike items off as you go, and export the list as HTML.</p>
+    </header>
 
-  <h1>LIST GENERATOR</h1>
-  <label for="list-title">List Title: </label>
-  <input type="text" id="list-title" placeholder="Enter List Title" />
-  
-  <div id="list-container"></div>
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
+      </div>
 
-  <div class="list-item">
-    <input type="text" id="new-item" placeholder="Add new item" />
+      <div class="widget-grid">
+        <section class="panel list-panel">
+          <label for="list-title">List Title: </label>
+          <input type="text" id="list-title" placeholder="Enter List Title" />
+
+          <div id="list-container"></div>
+
+          <div class="list-item">
+            <input type="text" id="new-item" placeholder="Add new item" />
+          </div>
+
+          <button class="export-btn" id="export-btn">Export List</button>
+        </section>
+      </div>
+    </div>
   </div>
-
-  <button class="export-btn" id="export-btn">Export List</button>
 
   <script>
     let listTitle = '';
@@ -133,7 +149,7 @@ label {font-family: "Oswald", serif;font-size:1.125rem;font-weight:bold;}
       listItems.forEach((item, index) => {
         const div = document.createElement('div');
         div.classList.add('list-item');
-        
+
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.checked = item.crossed;
@@ -160,8 +176,8 @@ label {font-family: "Oswald", serif;font-size:1.125rem;font-weight:bold;}
       });
     }
 
-exportBtn.addEventListener('click', function() {
-  let html = `<!DOCTYPE html>
+    exportBtn.addEventListener('click', function() {
+      let html = `<!DOCTYPE html>
   <html class="nb-skin" lang="en">
   <head>
     <meta charset="UTF-8">
@@ -179,25 +195,22 @@ exportBtn.addEventListener('click', function() {
     <h1>${listTitle || "Shopping List"}</h1>
     <div class="list-container">`;
 
-  listItems.forEach(item => {
-    const statusClass = item.crossed ? 'crossed' : '';
-    html += `<div class="list-item ${statusClass}">${item.text}</div>`;
-  });
+      listItems.forEach(item => {
+        const statusClass = item.crossed ? 'crossed' : '';
+        html += `<div class="list-item ${statusClass}">${item.text}</div>`;
+      });
 
-  html += `</div>
+      html += `</div>
   </body>
   </html>`;
 
-  const blob = new Blob([html], { type: "text/html" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = `${listTitle || "shopping-list"}.html`;
-  link.click();
-});
-
-
-
+      const blob = new Blob([html], { type: "text/html" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${listTitle || "shopping-list"}.html`;
+      link.click();
+    });
 
     renderList();
   </script>

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Countdown Timer Generator</title>
   <link rel="stylesheet" href="neo-brutal.css" />
+  <link rel="stylesheet" href="styles-vanilla.css" />
   <style>
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
@@ -198,6 +199,10 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       font-size: 0.9rem;
     }
 
+    .widget-grid > .app {
+      grid-column: 1 / -1;
+    }
+
     @media (max-width: 920px) {
       .app {
         grid-template-columns: 1fr;
@@ -283,11 +288,21 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
   <link rel="stylesheet" href="neo-brutal-overrides.css" />
 </head>
 <body>
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
+      <h1>Countdown Timer Generator</h1>
+      <p class="page-description">Set your deadline, style the widget, and this page will generate a standalone countdown timer you can paste into a file or download as its own HTML page.</p>
+    </header>
+
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
+      </div>
+
+      <div class="widget-grid">
   <div class="app">
     <section class="panel controls">
-      <h1>Countdown Timer Generator</h1>
-      <p class="intro">Set your deadline, style the widget, and this page will generate a standalone countdown timer you can paste into a file or download as its own HTML page.</p>
-
       <div class="field">
         <label for="title">Top label</label>
         <input id="title" type="text" value="Time Remaining Until" />
@@ -370,6 +385,9 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       <pre id="output"></pre>
       <p class="small">Tip: the generated timer uses the viewer’s local device time. If you want a timezone-specific deadline, convert that deadline to the equivalent local date/time before sharing, or I can help you make a timezone-aware version next.</p>
     </section>
+  </div>
+      </div>
+    </div>
   </div>
 
   <script>

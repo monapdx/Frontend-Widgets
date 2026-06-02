@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <title>Chat Archive Viewer — Flat View</title>
   <link rel="stylesheet" href="neo-brutal.css" />
+  <link rel="stylesheet" href="styles-vanilla.css" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
 html { -webkit-text-size-adjust: 100%; }
@@ -40,7 +41,7 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
   .btn:hover { border-color: #2a3140; }
   .btn:active { transform: translateY(1px); }
   .pill { font-size: 0.75rem; color: var(--muted); padding: 0.125rem 0.5rem; border: 1px solid var(--border); border-radius: 62.4375rem; }
-  #wrap { display: grid; grid-template-columns: 20rem 1fr; height: calc(100% - 3.25rem); }
+  #wrap, .widget-grid { display: grid; grid-template-columns: 20rem 1fr; min-height: 28rem; }
   #left, #right { overflow: auto; }
   #left { border-right: 1px solid var(--border); background: #0d0f14; }
   .pane-title { display:flex; align-items:center; justify-content:space-between; padding: 0.625rem 0.75rem; position: sticky; top: 0; background:#0d0f14; z-index:2; border-bottom: 1px solid var(--border);}
@@ -97,18 +98,26 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
   <link rel="stylesheet" href="neo-brutal-overrides.css" />
 </head>
 <body>
-<header>
-  <h1>Chat Archive Viewer</h1>
-  <label class="btn">
-    <input id="file" type="file" accept=".json,application/json" class="sr">
-    Load JSON…
-  </label>
-  <button class="btn" id="demoBtn" title="Load a tiny demo structure">Load Demo</button>
-  <span id="status" class="pill">No file loaded</span>
-</header>
+<div class="page-shell">
+  <header class="page-header">
+    <p class="eyebrow">Frontend Widget</p>
+    <h1>Chat Archive Viewer</h1>
+    <p class="page-description">Load your export JSON to browse chats by title. Flat chat view with no tree indentation.</p>
+  </header>
 
-<div id="wrap">
-  <aside id="left">
+  <div class="widget-shell">
+    <div class="widget-topbar">
+      <a class="back-link" href="index.html">← Back to all widgets</a>
+      <label class="btn">
+        <input id="file" type="file" accept=".json,application/json" class="sr">
+        Load JSON…
+      </label>
+      <button class="btn" id="demoBtn" title="Load a tiny demo structure">Load Demo</button>
+      <span id="status" class="pill">No file loaded</span>
+    </div>
+
+    <div class="widget-grid" id="wrap">
+  <section class="panel" id="left">
     <div class="pane-title">
       <div>Conversations</div>
       <div class="pill" id="count">0</div>
@@ -117,16 +126,18 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       <input id="q" type="search" placeholder="Filter by title… (Ctrl+/)">
     </div>
     <div class="list" id="list"></div>
-  </aside>
+  </section>
 
-  <main id="right">
+  <section class="panel" id="right">
     <div id="empty">
       <h2>Load your export JSON to browse chats by title</h2>
       <div id="drop">Drop the file here or use <span class="kbd">Load JSON…</span></div>
       <p class="pill" style="display:inline-block;margin-top:10px;">Flat chat view · no tree indentation</p>
     </div>
     <div id="viewer" hidden></div>
-  </main>
+  </section>
+    </div>
+  </div>
 </div>
 
 <script>

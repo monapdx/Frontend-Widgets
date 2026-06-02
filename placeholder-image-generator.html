@@ -5,6 +5,7 @@
   <meta charset="UTF-8" />
   <title>Placeholdr Image Tool</title>
   <link rel="stylesheet" href="neo-brutal.css" />
+  <link rel="stylesheet" href="styles-vanilla.css" />
   <style>
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
@@ -167,14 +168,30 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       font-size: 0.8rem;
       color: #fca5a5;
     }
+    .widget-grid > .panel {
+      grid-column: 1 / -1;
+      max-width: 45rem;
+      margin: 0 auto;
+      width: 100%;
+    }
   </style>
   <link rel="stylesheet" href="neo-brutal-overrides.css" />
 </head>
 <body>
-  <div class="app">
-    <h1>Placeholdr Image Builder</h1>
-    <p class="subtitle">Enter size, prompt, and style to generate a Placeholdr URL and preview the image.</p>
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
+      <h1>Placeholdr Image Builder</h1>
+      <p class="page-description">Enter size, prompt, and style to generate a Placeholdr URL and preview the image.</p>
+    </header>
 
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
+      </div>
+
+      <div class="widget-grid">
+        <section class="panel app">
     <form id="imageForm">
       <div class="field">
         <label for="width">Width (px)</label>
@@ -220,6 +237,9 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       </div>
       <div class="preview-wrapper">
         <img id="preview" alt="Generated placeholder preview" />
+      </div>
+    </div>
+        </section>
       </div>
     </div>
   </div>

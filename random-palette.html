@@ -1,100 +1,108 @@
-<!DOCTYPE html>
+<!doctype html>
 <html class="nb-skin" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Random Color Palette Generator</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Random Color Palette Generator</title>
   <link rel="stylesheet" href="neo-brutal.css" />
-    
-    
-    
-    <style>
+  <link rel="stylesheet" href="styles-vanilla.css" />
+  <style>
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
 
-
     @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=Lobster&family=Tiny5&display=swap');
-    
-    
-        body {
-            font-family: "IBM Plex Mono", monospace;
-            text-align: center;
-            margin-top: 3.125rem;
-        }
-        h1 {font-family: "Lobster", serif;}
-        .color-palette {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 0.625rem;
-        }
-        .color-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .color-box {
-            width: 6.25rem;
-            height: 6.25rem;
-            border-radius: 0.625rem;
-        }
-        .hex-code {
-            margin-top: 0.3125rem;
-            font-size: 0.875rem;
-            font-weight: bold;
-            
-        }
-        button {
-        	font-family: "Lobster", serif;
-            margin-top: 1.875rem;
-            padding: 0.625rem 1.25rem;
-            font-size: 1rem;
-            cursor: pointer;
-        }
-    </style>
+    @import url('https://fonts.googleapis.com/css2?family=Lobster&family=Tiny5&display=swap');
+
+    .palette-panel {
+      font-family: "IBM Plex Mono", monospace;
+      text-align: center;
+    }
+    .color-palette {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.625rem;
+    }
+    .color-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .color-box {
+      width: 6.25rem;
+      height: 6.25rem;
+      border-radius: 0.625rem;
+    }
+    .hex-code {
+      margin-top: 0.3125rem;
+      font-size: 0.875rem;
+      font-weight: bold;
+    }
+    .palette-panel button {
+      font-family: "Lobster", serif;
+      margin-top: 1.875rem;
+      padding: 0.625rem 1.25rem;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+  </style>
   <link rel="stylesheet" href="neo-brutal-overrides.css" />
 </head>
 <body>
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
+      <h1>Random Color Palette Generator</h1>
+      <p class="page-description">Generate a random seven-color palette with hex codes for quick inspiration.</p>
+    </header>
 
-    <h1>Random Color Palette Generator</h1>
-    <button onclick="generateColors()">Generate Palette</button><br><br>
-    
-    <div class="color-palette" id="colorPalette"></div>
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
+      </div>
 
-    <script>
-        function generateColors() {
-            const colorPalette = document.getElementById('colorPalette');
-            colorPalette.innerHTML = ''; // Clear existing colors
+      <div class="widget-grid">
+        <section class="panel palette-panel">
+          <button onclick="generateColors()">Generate Palette</button>
+          <div class="color-palette" id="colorPalette"></div>
+        </section>
+      </div>
+    </div>
+  </div>
 
-            for (let i = 0; i < 7; i++) {
-                const color = getRandomColor();
-                const colorItem = document.createElement('div');
-                colorItem.classList.add('color-item');
+  <script>
+    function generateColors() {
+      const colorPalette = document.getElementById('colorPalette');
+      colorPalette.innerHTML = ''; // Clear existing colors
 
-                const colorBox = document.createElement('div');
-                colorBox.classList.add('color-box');
-                colorBox.style.backgroundColor = color;
+      for (let i = 0; i < 7; i++) {
+        const color = getRandomColor();
+        const colorItem = document.createElement('div');
+        colorItem.classList.add('color-item');
 
-                const hexCode = document.createElement('div');
-                hexCode.classList.add('hex-code');
-                hexCode.textContent = color;
+        const colorBox = document.createElement('div');
+        colorBox.classList.add('color-box');
+        colorBox.style.backgroundColor = color;
 
-                colorItem.appendChild(colorBox);
-                colorItem.appendChild(hexCode);
-                colorPalette.appendChild(colorItem);
-            }
-        }
+        const hexCode = document.createElement('div');
+        hexCode.classList.add('hex-code');
+        hexCode.textContent = color;
 
-        function getRandomColor() {
-            const letters = '0123456789ABCDEF';
-            let color = '#';
-            for (let i = 0; i < 6; i++) {
-                color += letters[Math.floor(Math.random() * 16)];
-            }
-            return color;
-        }
-    </script>
+        colorItem.appendChild(colorBox);
+        colorItem.appendChild(hexCode);
+        colorPalette.appendChild(colorItem);
+      }
+    }
+
+    function getRandomColor() {
+      const letters = '0123456789ABCDEF';
+      let color = '#';
+      for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    }
+  </script>
 </body>
 </html>

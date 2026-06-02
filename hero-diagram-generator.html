@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Pipeline Hero Diagram SVG Generator</title>
   <link rel="stylesheet" href="neo-brutal.css" />
+  <link rel="stylesheet" href="styles-vanilla.css" />
   <style>
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
@@ -124,10 +125,20 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
   <link rel="stylesheet" href="neo-brutal-overrides.css" />
 </head>
 <body>
-<header>Pipeline Hero Diagram Generator (Title + Subtitle Boxes)</header>
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
+      <h1>Pipeline Hero Diagram Generator</h1>
+      <p class="page-description">Build title + subtitle box diagrams for pipeline flows. Each box is separated by a blank line; first line is the title, remaining lines are subtitles.</p>
+    </header>
 
-<div class="wrap">
-  <div class="panel">
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
+      </div>
+
+      <div class="widget-grid">
+  <section class="panel">
     <div class="hint">
       Format: each box is separated by a blank line.<br/>
       First line = <b>Title</b>. Remaining lines = <b>Subtitle</b> lines (auto-wrapped).<br/>
@@ -207,14 +218,16 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       <button id="btnDownload">Download SVG</button>
       <button id="btnReset">Reset to Example</button>
     </div>
-  </div>
+  </section>
 
-  <div class="preview">
+  <section class="panel preview">
     <div class="canvasWrap">
       <svg id="svg" viewBox="0 0 1200 260" aria-label="Pipeline diagram preview"></svg>
     </div>
+  </section>
+      </div>
+    </div>
   </div>
-</div>
 
 <script>
   const svg = document.getElementById("svg");

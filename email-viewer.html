@@ -1,22 +1,28 @@
-<!DOCTYPE html>
+<!doctype html>
 <html class="nb-skin" lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MBOX Viewer — Gmail‑style</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MBOX Viewer</title>
   <link rel="stylesheet" href="neo-brutal.css" />
+  <link rel="stylesheet" href="styles-vanilla.css" />
   <style>
+*, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
 
+    .mbox-widget-grid { grid-template-columns: 1fr; }
+    .mbox-panel { padding: 0; overflow: hidden; height: calc(100vh - 16rem); min-height: 32rem; }
 
     :root{
       --bg:#0b0e14; --card:#11151f; --muted:#2a3140; --ink:#e6edf3; --ink-dim:#b7c0cc; --accent:#4aa3ff; --accent-2:#7c4dff; --chip:#1b2230; --danger:#ff4769;
     }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{margin:0;background:var(--bg);color:var(--ink);font:0.875rem/1.45 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial}
-    .app{display:grid;grid-template-columns:16.25rem 1fr;grid-template-rows:3.5rem 1fr;grid-template-areas:"topbar topbar" "sidebar content";height:100%}
+    .app{
+      display:grid;grid-template-columns:16.25rem 1fr;grid-template-rows:3.5rem 1fr;grid-template-areas:"topbar topbar" "sidebar content";
+      height:100%;min-height:32rem;
+      background:var(--bg);color:var(--ink);font:0.875rem/1.45 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
+      border-radius:16px;
+    }
     .topbar{grid-area:topbar;display:flex;gap:0.625rem;align-items:center;padding:0.625rem 0.875rem;border-bottom:1px solid var(--muted);background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0));backdrop-filter:saturate(120%) blur(0.375rem);position:sticky;top:0;z-index:5}
     .brand{font-weight:700;letter-spacing:0.0125rem}
     .brand b{color:var(--accent)}
@@ -70,57 +76,75 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
   <link rel="stylesheet" href="neo-brutal-overrides.css" />
 </head>
 <body>
-  <div class="app">
-    <div class="topbar">
-      <div class="brand">📥 <b>MBOX</b> Viewer</div>
-      <label class="btn" title="Open .mbox file">
-        <input id="file" class="file" type="file" accept=".mbox,.mbx,text/plain" />
-        Open .mbox
-      </label>
-      <div id="dropzone" class="pill">Drag & drop .mbox here</div>
-      <div class="search">
-        🔎 <input id="q" placeholder="Search (from, subject, body) — press Enter" />
-      </div>
-      <div class="pill small" id="status">No file loaded</div>
-    </div>
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
+      <h1>MBOX Viewer</h1>
+      <p class="page-description">Open a Gmail-style .mbox export and browse messages with search, labels, and attachment previews.</p>
+    </header>
 
-    <aside class="sidebar">
-      <div class="section">
-        <h4>Mailboxes</h4>
-        <div class="nav" id="navBoxes"></div>
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
       </div>
-      <div class="section">
-        <h4>Labels</h4>
-        <div class="labels" id="labelChips"></div>
-        <div class="drop small">Gmail exports often include <code>X‑Gmail‑Labels</code> — we'll use those here.</div>
-      </div>
-      <div class="section">
-        <h4>Load Progress</h4>
-        <div class="progress" title="Parsing progress"><div id="bar"></div></div>
-        <div class="small" id="meta"></div>
-      </div>
-    </aside>
 
-    <section class="content">
-      <div class="list" id="list"></div>
-      <div class="viewer" id="viewer">
-        <div class="head">
-          <h2 id="vSubject">Open an email</h2>
-          <div class="kv small">
-            <div>From</div><div id="vFrom"><b>—</b></div>
-            <div>To</div><div id="vTo">—</div>
-            <div>Date</div><div id="vDate">—</div>
-            <div>Message‑ID</div><div id="vMsgId">—</div>
+      <div class="widget-grid mbox-widget-grid">
+        <section class="panel mbox-panel">
+          <div class="app">
+            <div class="topbar">
+              <div class="brand">📥 <b>MBOX</b> Viewer</div>
+              <label class="btn" title="Open .mbox file">
+                <input id="file" class="file" type="file" accept=".mbox,.mbx,text/plain" />
+                Open .mbox
+              </label>
+              <div id="dropzone" class="pill">Drag & drop .mbox here</div>
+              <div class="search">
+                🔎 <input id="q" placeholder="Search (from, subject, body) — press Enter" />
+              </div>
+              <div class="pill small" id="status">No file loaded</div>
+            </div>
+
+            <aside class="sidebar">
+              <div class="section">
+                <h4>Mailboxes</h4>
+                <div class="nav" id="navBoxes"></div>
+              </div>
+              <div class="section">
+                <h4>Labels</h4>
+                <div class="labels" id="labelChips"></div>
+                <div class="drop small">Gmail exports often include <code>X‑Gmail‑Labels</code> — we'll use those here.</div>
+              </div>
+              <div class="section">
+                <h4>Load Progress</h4>
+                <div class="progress" title="Parsing progress"><div id="bar"></div></div>
+                <div class="small" id="meta"></div>
+              </div>
+            </aside>
+
+            <section class="content">
+              <div class="list" id="list"></div>
+              <div class="viewer" id="viewer">
+                <div class="head">
+                  <h2 id="vSubject">Open an email</h2>
+                  <div class="kv small">
+                    <div>From</div><div id="vFrom"><b>—</b></div>
+                    <div>To</div><div id="vTo">—</div>
+                    <div>Date</div><div id="vDate">—</div>
+                    <div>Message‑ID</div><div id="vMsgId">—</div>
+                  </div>
+                  <div class="chips" id="vLabels"></div>
+                </div>
+                <div class="body" id="vBody">
+                  <div class="htmlbox hidden" id="htmlBox"><iframe id="htmlFrame"></iframe></div>
+                  <pre id="textBox" class="hidden"></pre>
+                </div>
+                <div class="attachments" id="vAtts"></div>
+              </div>
+            </section>
           </div>
-          <div class="chips" id="vLabels"></div>
-        </div>
-        <div class="body" id="vBody">
-          <div class="htmlbox hidden" id="htmlBox"><iframe id="htmlFrame"></iframe></div>
-          <pre id="textBox" class="hidden"></pre>
-        </div>
-        <div class="attachments" id="vAtts"></div>
+        </section>
       </div>
-    </section>
+    </div>
   </div>
 
 <script>

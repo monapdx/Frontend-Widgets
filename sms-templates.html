@@ -1,23 +1,21 @@
-<!DOCTYPE html>
+<!doctype html>
 <html class="nb-skin" lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SMS Templates</title>
   <link rel="stylesheet" href="neo-brutal.css" />
+  <link rel="stylesheet" href="styles-vanilla.css" />
   <style>
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
 
-
   @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
-  
-    body {
-font-family: "Oswald", serif;
+
+    .sms-panel {
+      font-family: "Oswald", serif;
       line-height: 1.6;
-      margin: 1.25rem;
     }
 
     table {
@@ -37,13 +35,13 @@ font-family: "Oswald", serif;
     }
 
     table td .copy-button {
-    font-family: "Oswald", serif;
+      font-family: "Oswald", serif;
       padding: 0.3125rem 0.625rem;
-      background: #007bff; /* Blue button */
-  color: #fff;
+      background: #007bff;
+      color: #fff;
       border: none;
       cursor: pointer;
-      width:100%;
+      width: 100%;
     }
 
     table td .copy-button.copied {
@@ -51,7 +49,7 @@ font-family: "Oswald", serif;
     }
 
     textarea {
-      width: 90%;
+      width: 100%;
       padding: 0.625rem;
       margin-bottom: 0.625rem;
       font-size: 1rem;
@@ -60,52 +58,55 @@ font-family: "Oswald", serif;
     .add-template-btn {
       font-family: "Oswald", serif;
       padding: 0.625rem;
-        background: #007bff;
+      background: #007bff;
       color: white;
       border: none;
       cursor: pointer;
     }
 
     .add-template-btn:hover {
-        background: #007bff;
+      background: #007bff;
     }
   </style>
   <link rel="stylesheet" href="neo-brutal-overrides.css" />
 </head>
-
 <body>
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
+      <h1>SMS Templates</h1>
+      <p class="page-description">Save reusable SMS message templates and copy them to the clipboard with one click.</p>
+    </header>
 
-  <h2>SMS Templates</h2>
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
+      </div>
 
-  <textarea id="new-template" placeholder="Enter new SMS template..."></textarea>
-  <button class="add-template-btn" onclick="addTemplate()">Add Template</button>
+      <div class="widget-grid">
+        <section class="panel sms-panel">
+          <textarea id="new-template" placeholder="Enter new SMS template..."></textarea>
+          <button class="add-template-btn" onclick="addTemplate()">Add Template</button>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Template</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody id="template-table-body">
-      <tr>
-       
-      </tr>
-      <tr>
-        
-      </tr>
-      <tr>
-        
-      </tr>
-      <tr>
-       
-      </tr>
-      <tr>
-       
-      </tr>
-      <!-- Add more rows as needed -->
-    </tbody>
-  </table>
+          <table>
+            <thead>
+              <tr>
+                <th>Template</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="template-table-body">
+              <tr></tr>
+              <tr></tr>
+              <tr></tr>
+              <tr></tr>
+              <tr></tr>
+            </tbody>
+          </table>
+        </section>
+      </div>
+    </div>
+  </div>
 
   <script>
     function copyText(button, text) {
@@ -116,7 +117,7 @@ font-family: "Oswald", serif;
           setTimeout(() => {
             button.textContent = 'Copy';
             button.classList.remove('copied');
-          }, 2000); // Reset button text after 2 seconds
+          }, 2000);
         })
         .catch(err => {
           console.error('Failed to copy: ', err);
@@ -132,10 +133,8 @@ font-family: "Oswald", serif;
         return;
       }
 
-      // Clear textarea
       textarea.value = '';
 
-      // Create new table row
       const newRow = document.createElement('tr');
       const templateCell = document.createElement('td');
       templateCell.textContent = newTemplate;
@@ -150,12 +149,10 @@ font-family: "Oswald", serif;
       newRow.appendChild(templateCell);
       newRow.appendChild(actionCell);
 
-      // Add row to table body
       const tableBody = document.getElementById('template-table-body');
       tableBody.appendChild(newRow);
     }
   </script>
 
 </body>
-
 </html>

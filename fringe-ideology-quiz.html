@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Fringe Ideology Affinity Quiz</title>
   <link rel="stylesheet" href="neo-brutal.css" />
+  <link rel="stylesheet" href="styles-vanilla.css" />
   <style>
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
@@ -77,19 +78,24 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
   <link rel="stylesheet" href="neo-brutal-overrides.css" />
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div>
-        <h1>Fringe Ideology Affinity Quiz</h1>
-        <p class="lede">One question at a time. Sliders are 1–5 (disagree → agree). Submit when you’re ready for scores.</p>
-      </div>
-      <div class="controls">
-        <button id="btnFill">Prefill (your answers)</button>
-        <button id="btnClear">Clear</button>
-      </div>
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
+      <h1>Fringe Ideology Affinity Quiz</h1>
+      <p class="page-description">One question at a time. Sliders are 1–5 (disagree → agree). Submit when you're ready for scores.</p>
     </header>
 
-    <section class="card pad">
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
+        <div class="controls">
+          <button id="btnFill">Prefill (your answers)</button>
+          <button id="btnClear">Clear</button>
+        </div>
+      </div>
+
+      <div class="widget-grid">
+    <section class="card pad panel">
       <div class="quiz-meta" aria-live="polite">
         <div class="quiz-section-label" id="quizSectionLabel"></div>
         <div class="quiz-progress-track" aria-hidden="true"><span class="quiz-progress-fill" id="quizProgressFill"></span></div>
@@ -106,7 +112,7 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       </div>
     </section>
 
-    <section id="results" class="results card pad">
+    <section id="results" class="results card pad panel">
       <h2 style="margin:0 0 6px">Your Results</h2>
       <p class="muted" id="summary"></p>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start">
@@ -125,6 +131,8 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       </details>
       <p class="foot">Answers save in localStorage.</p>
     </section>
+      </div>
+    </div>
   </div>
 
   <script>

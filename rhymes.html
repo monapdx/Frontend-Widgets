@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Rhyme Finder · Datamuse API</title>
   <link rel="stylesheet" href="neo-brutal.css" />
+  <link rel="stylesheet" href="styles-vanilla.css" />
   <!-- Fonts to match your tools -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -97,11 +98,20 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
   <link rel="stylesheet" href="neo-brutal-overrides.css" />
 </head>
 <body>
-  <div class="wrap">
-    <h1> <span class="tiny"></span></h1>
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
+      <h1>Rhyme Finder</h1>
+      <p class="page-description">Look up perfect and near rhymes via the Datamuse API, grouped by syllable count.</p>
+    </header>
 
-    <div class="card" id="lookup-card">
-      <h2>Rhyme Finder</h2>
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
+      </div>
+
+      <div class="widget-grid">
+        <section class="panel" id="lookup-card">
       <div class="row" style="align-items:end;">
         <div>
           <label for="word">Enter a word</label>
@@ -139,10 +149,14 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
           <button id="clearBtn">Clear</button>
         </div>
       </div>
-    </div>
+        </section>
 
-    <div id="status" class="tiny" style="margin-top:0.625rem" aria-live="polite"></div>
-    <div id="results" class="results"></div>
+        <section class="panel">
+          <div id="status" class="tiny" aria-live="polite"></div>
+          <div id="results" class="results"></div>
+        </section>
+      </div>
+    </div>
   </div>
 
   <script>

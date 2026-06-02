@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Frontend Button Generator</title>
   <link rel="stylesheet" href="neo-brutal.css" />
+  <link rel="stylesheet" href="styles-vanilla.css" />
 
   <!-- html2canvas for image export -->
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
@@ -240,13 +241,19 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
 </head>
 
 <body>
-  <div class="wrap">
-    <header>
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
       <h1>Frontend Button Generator</h1>
-      <div class="hint">Live preview • HTML/CSS output • PNG export</div>
+      <p class="page-description">Live preview • HTML/CSS output • PNG export</p>
     </header>
 
-    <div class="grid">
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
+      </div>
+
+      <div class="widget-grid">
       <!-- Controls -->
       <section class="panel">
         <h2>Controls</h2>
@@ -460,6 +467,7 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
           </div>
         </div>
       </section>
+      </div>
     </div>
   </div>
 

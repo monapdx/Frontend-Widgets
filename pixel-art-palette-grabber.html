@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Pixel Palette Extractor</title>
   <link rel="stylesheet" href="neo-brutal.css" />
+  <link rel="stylesheet" href="styles-vanilla.css" />
   <style>
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
@@ -123,11 +124,20 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
   <link rel="stylesheet" href="neo-brutal-overrides.css" />
 </head>
 <body>
-  <div class="wrap">
-    <h1>🎨 Pixel Palette Extractor</h1>
-    <p class="sub">Upload pixel art → extract every exact color used → copy/export the palette.</p>
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
+      <h1>Pixel Palette Extractor</h1>
+      <p class="page-description">Upload pixel art → extract every exact color used → copy/export the palette.</p>
+    </header>
 
-    <div class="panel">
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
+      </div>
+
+      <div class="widget-grid">
+        <section class="panel">
       <div class="row">
         <label>
           <div class="pill">Image upload</div><br/>
@@ -187,6 +197,8 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
           <canvas id="canvas"></canvas>
           <div class="hint">Tip: PNG is best for pixel art (JPG may introduce extra colors). Try Snap=8 or 16 if you get tons of near-duplicate shades.</div>
         </div>
+      </div>
+        </section>
       </div>
     </div>
   </div>
