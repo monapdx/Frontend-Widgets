@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Escort Worksheet — Light Tabs</title>
   <link rel="stylesheet" href="neo-brutal.css" />
+  <link rel="stylesheet" href="styles-vanilla.css" />
 
   <style>
 html { -webkit-text-size-adjust: 100%; }
@@ -31,18 +32,9 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       color:var(--ink);
       background: linear-gradient(#fff,#fff 240px,var(--page) 240px);
     }
-    .wrap{max-width:1100px;margin:0 auto;padding:18px 18px 70px}
-
-    header{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin:10px 0 14px}
-    .brand{display:flex;gap:12px;align-items:center;min-width:0}
-    .logo{
-      width:44px;height:44px;border-radius:12px;border:1px solid var(--line);
-      background:linear-gradient(#fff,#f2f5ff);box-shadow:var(--shadow2);
-      display:grid;place-items:center;color:var(--brand);font-weight:900;user-select:none
-    }
-    .title{min-width:0}
-    .title h1{margin:0;font-size:20px;letter-spacing:-.02em}
-    .title p{margin:6px 0 0;color:var(--muted);font-size:13px;line-height:1.35;max-width:72ch}
+    .wrap{padding:0 0 52px}
+    .widget-grid > .wrap { grid-column: 1 / -1; }
+    .tool-header{display:flex;justify-content:flex-end;margin:0 0 14px}
 
     .actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;align-items:center}
     .status{
@@ -178,16 +170,21 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
 </head>
 
 <body>
-  <div class="wrap">
-    <header>
-      <div class="brand">
-        <div class="logo" aria-hidden="true">E</div>
-        <div class="title">
-          <h1>Escort Business Plan</h1>
-          <p>If you're considering giving sex work a try, you'll want to spend some time thinking about your answers to the questions I've put together here for you. Best of luck!</p>
-        </div>
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
+      <h1>Escort Business Plan</h1>
+      <p class="page-description">If you're considering giving sex work a try, you'll want to spend some time thinking about your answers to the questions I've put together here for you. Best of luck!</p>
+    </header>
+
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
       </div>
 
+      <div class="widget-grid">
+  <div class="wrap">
+    <div class="tool-header">
       <div class="actions">
         <div class="status" title="Local autosave status">
           <span class="dot" id="saveDot"></span>
@@ -200,7 +197,7 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
 
         <input type="file" id="fileImport" accept="application/json" hidden/>
       </div>
-    </header>
+    </div>
 
     <nav class="tabs" id="tabs" aria-label="Worksheet sections (tabs)"></nav>
 
@@ -260,6 +257,9 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
           <div class="hint" id="quickSummary">Fill a couple fields and this will update.</div>
         </div>
       </aside>
+    </div>
+  </div>
+      </div>
     </div>
   </div>
 

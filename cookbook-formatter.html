@@ -1,54 +1,70 @@
-<!DOCTYPE html>
+<!doctype html>
 <html class="nb-skin" lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Kindle Cookbook Formatter</title>
   <link rel="stylesheet" href="neo-brutal.css" />
+  <link rel="stylesheet" href="styles-vanilla.css" />
+  <style>
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+img, video, canvas, svg { max-width: 100%; height: auto; }
+  </style>
   <link rel="stylesheet" href="cookbook-shared.css">
   <link rel="stylesheet" href="neo-brutal-overrides.css" />
 </head>
 <body>
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
+      <h1>Kindle Cookbook Formatter</h1>
+      <p class="page-description">Generate your Kindle cookbook with ease.</p>
+    </header>
 
-  <header>
-    <h1>KINDLE COOKBOOK FORMATTER</h1>
-    <p>Generate your Kindle cookbook with ease.</p>
-  </header>
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
+      </div>
 
-  <form id="cookbookForm">
-    <div class="form-group">
-      <label for="authorName">Author Name</label>
-      <input type="text" id="authorName" name="authorName" required>
+      <div class="widget-grid">
+        <section class="panel">
+          <form id="cookbookForm">
+            <div class="form-group">
+              <label for="authorName">Author Name</label>
+              <input type="text" id="authorName" name="authorName" required>
+            </div>
+
+            <div class="form-group">
+              <label for="bookTitle">Book Title</label>
+              <input type="text" id="bookTitle" name="bookTitle" required>
+            </div>
+
+            <div class="form-group">
+              <label for="bookUrl">Book URL</label>
+              <input type="url" id="bookUrl" name="bookUrl" required>
+            </div>
+
+            <div class="form-group">
+              <label for="numRecipes">Number of Recipes</label>
+              <input type="number" id="numRecipes" name="numRecipes" min="1" required>
+            </div>
+
+            <button type="submit">Generate Cookbook</button>
+          </form>
+
+          <div id="recipesSection" class="recipes-section"></div>
+        </section>
+
+        <section class="panel">
+          <div id="htmlOutput">
+            <h2>Generated HTML</h2>
+            <pre id="htmlCode"></pre>
+          </div>
+        </section>
+      </div>
     </div>
-
-    <div class="form-group">
-      <label for="bookTitle">Book Title</label>
-      <input type="text" id="bookTitle" name="bookTitle" required>
-    </div>
-
-    <div class="form-group">
-      <label for="bookUrl">Book URL</label>
-      <input type="url" id="bookUrl" name="bookUrl" required>
-    </div>
-
-    <div class="form-group">
-      <label for="numRecipes">Number of Recipes</label>
-      <input type="number" id="numRecipes" name="numRecipes" min="1" required>
-    </div>
-
-    <button type="submit">Generate Cookbook</button>
-  </form>
-
-  <div id="recipesSection" class="recipes-section"></div>
-
-  <div id="htmlOutput">
-    <h2>Generated HTML</h2>
-    <pre id="htmlCode"></pre>
   </div>
-
-  <footer>
-    <p>&copy; 2024 Cookbook Formatter</p>
-  </footer>
 
   <script>
     document.getElementById('numRecipes').addEventListener('input', function() {

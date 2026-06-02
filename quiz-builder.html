@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <title>Quiz Builder</title>
   <link rel="stylesheet" href="neo-brutal.css" />
+  <link rel="stylesheet" href="styles-vanilla.css" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
 html { -webkit-text-size-adjust: 100%; }
@@ -24,6 +25,9 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
     .container {
       max-width: 900px;
       margin: 0 auto;
+    }
+    .widget-grid > .grid {
+      grid-column: 1 / -1;
     }
     .grid {
       display: grid;
@@ -109,13 +113,19 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
   <link rel="stylesheet" href="neo-brutal-overrides.css" />
 </head>
 <body>
-  <div class="container">
-    <h1>Quiz Builder</h1>
-    <p>
-      Enter your quiz info below. Click "Generate &amp; Download HTML" to get a standalone quiz
-      file that uses your answers list.
-    </p>
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
+      <h1>Quiz Builder</h1>
+      <p class="page-description">Enter your quiz info below. Click "Generate &amp; Download HTML" to get a standalone quiz file that uses your answers list.</p>
+    </header>
 
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
+      </div>
+
+      <div class="widget-grid">
     <div class="grid">
       <div class="card">
         <label for="quiz-title">Quiz title</label>
@@ -147,6 +157,8 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
         <div class="hint">
           You can copy this directly or just use the downloaded file.
         </div>
+      </div>
+    </div>
       </div>
     </div>
   </div>

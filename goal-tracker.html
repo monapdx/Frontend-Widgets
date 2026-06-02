@@ -1,33 +1,25 @@
-<!DOCTYPE html>
+<!doctype html>
 <html class="nb-skin" lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Goal Progress Tracker</title>
   <link rel="stylesheet" href="neo-brutal.css" />
+  <link rel="stylesheet" href="styles-vanilla.css" />
   <style>
+*, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
 
 @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap");
 
-  /* --- Base / page --- */
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    background: #ffffff;
-    color: #111827; /* near-black */
+  .goal-panel {
+    color: #111827;
     font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial;
     line-height: 1.45;
   }
-  .container {
-    max-width: 1100px;
-    margin: 24px auto 56px;
-    padding: 0 16px;
-  }
 
-  /* --- Section headers (e.g., DICTIONARY / THESAURUS) --- */
-  h1, h2, h3 {
+  .goal-panel h2, .goal-panel h3 {
     margin: 0 0 10px;
     font-weight: 900;
     letter-spacing: .5px;
@@ -35,46 +27,42 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
     font-family: Oswald, Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
   }
 
-  /* --- Form blocks --- */
-  .form-block {
-    margin: 18px 0 30px;
-  }
-
-  label {
+  .goal-panel label {
     display: block;
     font-size: 14px;
     font-weight: 700;
     margin: 0 0 8px;
   }
 
-  input[type="text"],
-  input[type="url"],
-  input[type="number"],
-  input[type="search"] {
+  .goal-panel input[type="text"],
+  .goal-panel input[type="url"],
+  .goal-panel input[type="number"],
+  .goal-panel input[type="search"] {
     width: 100%;
-    background: #f3f4f6;      /* light gray like screenshot */
+    background: #f3f4f6;
     color: #111827;
-    border: 1px solid #e5e7eb; /* subtle border */
+    border: 1px solid #e5e7eb;
     border-radius: 8px;
     padding: 14px 16px;
     outline: none;
     transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
   }
-  input::placeholder { color: #9ca3af; }
-  input:focus {
+  .goal-panel input::placeholder { color: #9ca3af; }
+  .goal-panel input:focus {
     background: #ffffff;
-    border-color: #1d4ed8; /* blue-700 */
+    border-color: #1d4ed8;
     box-shadow: 0 0 0 3px rgba(59,130,246,.25);
   }
 
-  /* --- Buttons --- */
-  .btn, button, input[type="submit"] {
+  .goal-panel .btn,
+  .goal-panel button,
+  .goal-panel input[type="submit"] {
     appearance: none;
     border: 0;
     cursor: pointer;
     display: inline-block;
-    width: 100%;               /* full width like screenshot */
-    background: #0a84ff;       /* bright blue */
+    width: 100%;
+    background: #0a84ff;
     color: #ffffff;
     text-transform: uppercase;
     font-weight: 900;
@@ -84,74 +72,184 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
     box-shadow: 0 6px 18px rgba(10,132,255,.35);
     transition: filter .15s ease, transform .05s ease, box-shadow .2s ease;
   }
-  .btn:hover, button:hover, input[type="submit"]:hover {
+  .goal-panel .btn:hover,
+  .goal-panel button:hover,
+  .goal-panel input[type="submit"]:hover {
     filter: brightness(1.05);
     box-shadow: 0 8px 22px rgba(10,132,255,.42);
   }
-  .btn:active, button:active, input[type="submit"]:active {
+  .goal-panel .btn:active,
+  .goal-panel button:active,
+  .goal-panel input[type="submit"]:active {
     transform: translateY(1px);
   }
 
-  /* --- Spacing between input and button like screenshot --- */
-  .spacer-8 { height: 8px; }
-  .spacer-16 { height: 16px; }
-
-  /* --- Optional wrapper for each tool panel --- */
-  .panel {
-    padding: 0; /* screenshot shows no card frame—keep clean */
-    border: 0;
-    background: transparent;
+  #goalsWrap {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
   }
 
-  /* --- Responsive --- */
-  @media (max-width: 720px) {
-    .container { padding: 0 12px; }
+  #goalsWrap .card {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
   }
 
-</style>
+  #goalsWrap .media {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    background: #f3f4f6;
+  }
+
+  #goalsWrap .media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  #goalsWrap .badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(0,0,0,.7);
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  #goalsWrap .body {
+    padding: 12px;
+  }
+
+  #goalsWrap .title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  #goalsWrap .title-row a {
+    font-weight: 700;
+    color: inherit;
+  }
+
+  #goalsWrap .numbers {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+
+  #goalsWrap .numbers strong {
+    display: block;
+    font-size: 14px;
+    margin-top: 2px;
+  }
+
+  #goalsWrap .progress {
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+
+  #goalsWrap .progress .bar {
+    height: 100%;
+    background: #0a84ff;
+  }
+
+  #goalsWrap .actions {
+    display: grid;
+    gap: 8px;
+  }
+
+  #goalsWrap .btn-danger {
+    background: #dc2626;
+    box-shadow: 0 6px 18px rgba(220,38,38,.25);
+    width: auto;
+    flex-shrink: 0;
+  }
+
+  #goalsWrap .btn-secondary {
+    background: #6b7280;
+    box-shadow: none;
+  }
+
+  #emptyState.empty {
+    text-align: center;
+    padding: 2rem 1rem;
+    opacity: 0.75;
+  }
+
+  #hint {
+    margin: 10px 2px 0;
+    color: #6b7280;
+    font-size: 13px;
+  }
+
+  </style>
   <link rel="stylesheet" href="neo-brutal-overrides.css" />
 </head>
 <body>
-  <header>
-    <h1>Goal Progress Tracker</h1>
-    <p class="sub">Paste a product link, set the price and how much you've saved. I'll fetch the title & image and track your progress.</p>
-  </header>
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
+      <h1>Goal Progress Tracker</h1>
+      <p class="page-description">Paste a product link, set the price and how much you've saved. Fetch the title and image and track your progress locally.</p>
+    </header>
 
-  <div class="container">
-    <div class="panel" style="margin-bottom: 16px;">
-      <form id="addGoalForm">
-        <div>
-          <label for="url">Product URL</label>
-          <input id="url" type="url" placeholder="https://store.example.com/product" required />
-        </div>
-        <div>
-          <label for="price">Price (USD)</label>
-          <input id="price" type="number" inputmode="decimal" step="0.01" min="0" placeholder="999.99" required />
-        </div>
-        <div>
-          <label for="saved">Saved So Far (USD)</label>
-          <input id="saved" type="number" inputmode="decimal" step="0.01" min="0" placeholder="0.00" />
-        </div>
-        <div>
-          <label for="title">(Optional) Title</label>
-          <input id="title" type="text" placeholder="Auto-fills from link" />
-        </div>
-        <div style="display:flex; gap:8px; align-items:end;">
-          <button type="button" class="btn btn-secondary" id="fetchMetaBtn" title="Fetch title & image from the link">Fetch</button>
-          <button class="btn" type="submit">Add Goal</button>
-        </div>
-        <div style="grid-column: 1 / -1; display:none;" id="imageFieldWrap">
-          <label for="imageUrl">(Optional) Image URL (auto-filled if found)</label>
-          <input id="imageUrl" type="url" placeholder="https://...jpg" />
-        </div>
-      </form>
-      <p id="hint" style="margin:10px 2px 0; color:var(--muted); font-size:13px;">
-        Tip: If a site blocks previews, you can paste a title and/or image manually. Your goals are saved locally in your browser.
-      </p>
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
+      </div>
+
+      <div class="widget-grid">
+        <section class="panel goal-panel">
+          <form id="addGoalForm">
+            <div>
+              <label for="url">Product URL</label>
+              <input id="url" type="url" placeholder="https://store.example.com/product" required />
+            </div>
+            <div>
+              <label for="price">Price (USD)</label>
+              <input id="price" type="number" inputmode="decimal" step="0.01" min="0" placeholder="999.99" required />
+            </div>
+            <div>
+              <label for="saved">Saved So Far (USD)</label>
+              <input id="saved" type="number" inputmode="decimal" step="0.01" min="0" placeholder="0.00" />
+            </div>
+            <div>
+              <label for="title">(Optional) Title</label>
+              <input id="title" type="text" placeholder="Auto-fills from link" />
+            </div>
+            <div style="display:flex; gap:8px; align-items:end;">
+              <button type="button" class="btn btn-secondary" id="fetchMetaBtn" title="Fetch title & image from the link">Fetch</button>
+              <button class="btn" type="submit">Add Goal</button>
+            </div>
+            <div style="grid-column: 1 / -1; display:none;" id="imageFieldWrap">
+              <label for="imageUrl">(Optional) Image URL (auto-filled if found)</label>
+              <input id="imageUrl" type="url" placeholder="https://...jpg" />
+            </div>
+          </form>
+          <p id="hint">
+            Tip: If a site blocks previews, you can paste a title and/or image manually. Your goals are saved locally in your browser.
+          </p>
+        </section>
+
+        <section class="panel goal-panel">
+          <div id="goalsWrap"></div>
+          <div id="emptyState" class="empty" style="display:none;">No goals yet. Add your first one above ✨</div>
+        </section>
+      </div>
     </div>
-
-    <div id="goalsWrap" class="grid"></div>
-    <div id="emptyState" class="empty" style="display:none;">No goals yet. Add your first one above ✨</div>
   </div>
 
 <script>
@@ -216,7 +314,6 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       wrap.appendChild(card);
     });
 
-    // wire actions
     $$("[data-del]").forEach(b => b.onclick = () => {
       const id = b.getAttribute('data-del');
       state.goals = state.goals.filter(x => x.id !== id);
@@ -253,7 +350,6 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
 
   function placeholderImage(text){
     const t = encodeURIComponent((text || 'Goal').slice(0, 16));
-    // cute gradient placeholder using dummyimage
     return `https://dummyimage.com/800x500/0b1220/94a3b8&text=${t}`;
   }
 
@@ -261,7 +357,6 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
   function escapeAttr(s){ return escapeHtml(s).replace(/"/g, '&quot;'); }
 
   async function fetchMetadata(url){
-    // Try Jina Reader as a CORS-friendly fetcher, then parse OG/Twitter tags
     const normalized = normalizeUrl(url);
     const readerUrl = `https://r.jina.ai/http://${normalized.replace(/^https?:\/\//,'')}`;
     try {
@@ -289,7 +384,6 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
     try { return new URL(u).href; } catch { return 'https://' + (u||'').replace(/^\/*/, ''); }
   }
 
-  // Form handlers
   $('#fetchMetaBtn').addEventListener('click', async () => {
     const url = $('#url').value.trim();
     if (!url) return;
@@ -318,13 +412,11 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
     const goal = { id: uid(), url: normalizeUrl(url), title, image, price, saved };
     state.goals.unshift(goal);
     save();
-    // reset form
     e.target.reset();
     toggleImageField(false);
     render();
   });
 
-  // initial
   render();
 })();
 </script>

@@ -1,25 +1,20 @@
-<!DOCTYPE html>
+<!doctype html>
 <html class="nb-skin" lang="en">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Merged Tag Generator</title>
   <link rel="stylesheet" href="neo-brutal.css" />
+  <link rel="stylesheet" href="styles-vanilla.css" />
   <style>
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
 
-
     @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
 
-    body {
+    .tag-controls {
       font-family: "Oswald", serif;
-      padding: 2rem;
-    }
-
-    h2 {
-      margin-bottom: 1rem;
     }
 
     label {
@@ -71,11 +66,6 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       border-left: 0.125rem solid #ddd;
     }
 
-    .controls {
-      max-width: 37.5rem;
-      margin: 0 auto;
-    }
-
     #copyMessage {
       display: none;
       color: green;
@@ -87,94 +77,109 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
   <link rel="stylesheet" href="neo-brutal-overrides.css" />
 </head>
 <body>
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
+      <h1>Generate HTML Tags with Classes</h1>
+      <p class="page-description">Batch-generate empty HTML elements with optional classes, IDs, and nested parent/child structures.</p>
+    </header>
 
-  <h2>Generate HTML Tags with Classes</h2>
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
+      </div>
 
-  <div class="controls">
-    <label for="tagType">Tag Type:</label>
-    <select id="tagType">
-      <option value="a">A</option>
-      <option value="p">P</option>
-      <option value="h1">H1</option>
-      <option value="h2">H2</option>
-      <option value="img">IMG</option>
-      <option value="div">DIV</option>
-      <option value="span">SPAN</option>
-      <option value="input">INPUT</option>
-      <option value="section">SECTION</option>
-      <option value="option">OPTION</option>
-      <option value="ul">UL</option>
-      <option value="ol">OL</option>
-    </select>
+      <div class="widget-grid">
+        <section class="panel tag-controls">
+          <label for="tagType">Tag Type:</label>
+          <select id="tagType">
+            <option value="a">A</option>
+            <option value="p">P</option>
+            <option value="h1">H1</option>
+            <option value="h2">H2</option>
+            <option value="img">IMG</option>
+            <option value="div">DIV</option>
+            <option value="span">SPAN</option>
+            <option value="input">INPUT</option>
+            <option value="section">SECTION</option>
+            <option value="option">OPTION</option>
+            <option value="ul">UL</option>
+            <option value="ol">OL</option>
+          </select>
 
-    <div id="inputTypeContainer" style="display:none;">
-      <label for="inputType">Input Type:</label>
-      <select id="inputType">
-        <option value="text">Text</option>
-        <option value="checkbox">Checkbox</option>
-        <option value="radio">Radio</option>
-      </select>
+          <div id="inputTypeContainer" style="display:none;">
+            <label for="inputType">Input Type:</label>
+            <select id="inputType">
+              <option value="text">Text</option>
+              <option value="checkbox">Checkbox</option>
+              <option value="radio">Radio</option>
+            </select>
+          </div>
+
+          <label for="tagCount">How Many?</label>
+          <select id="tagCount">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="20">20</option>
+            <option value="25">25</option>
+            <option value="30">30</option>
+          </select>
+
+          <label for="tagClass">Class (optional):</label>
+          <input type="text" id="tagClass" placeholder="Enter class name" />
+
+          <label for="tagId">ID (optional):</label>
+          <input type="text" id="tagId" placeholder="Enter id" />
+
+          <label for="enableNested">Nested Tags:</label>
+          <input type="checkbox" id="enableNested" />
+
+          <div id="nestedOptions" style="display:none;">
+            <label for="parentTagType">Parent Tag:</label>
+            <select id="parentTagType">
+              <option value="div">DIV</option>
+              <option value="article">ARTICLE</option>
+              <option value="section">SECTION</option>
+              <option value="ul">UL</option>
+              <option value="ol">OL</option>
+            </select>
+
+            <label for="tagTypeNested">Child Tag:</label>
+            <select id="tagTypeNested">
+              <option value="p">P</option>
+              <option value="h1">H1</option>
+              <option value="h2">H2</option>
+              <option value="li">LI</option>
+              <option value="section">SECTION</option>
+              <option value="span">SPAN</option>
+              <option value="div">DIV</option>
+            </select>
+
+            <label for="childCount">Child Count:</label>
+            <select id="childCount">
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="15">15</option>
+            </select>
+
+            <label for="childClass">Child Class (optional):</label>
+            <input type="text" id="childClass" />
+
+            <label for="childId">Child ID (optional):</label>
+            <input type="text" id="childId" />
+          </div>
+
+          <button type="button" id="generateBtn">Generate Tags</button>
+        </section>
+
+        <section class="panel tag-controls">
+          <textarea id="output" readonly placeholder="Generated HTML will appear here..."></textarea>
+          <button type="button" id="copyBtn">Copy to Clipboard</button>
+          <div id="copyMessage">Copied!</div>
+        </section>
+      </div>
     </div>
-
-    <label for="tagCount">How Many?</label>
-    <select id="tagCount">
-      <option value="5">5</option>
-      <option value="10">10</option>
-      <option value="15">15</option>
-      <option value="20">20</option>
-      <option value="25">25</option>
-      <option value="30">30</option>
-    </select>
-
-    <label for="tagClass">Class (optional):</label>
-    <input type="text" id="tagClass" placeholder="Enter class name" />
-
-    <label for="tagId">ID (optional):</label>
-    <input type="text" id="tagId" placeholder="Enter id" />
-
-    <label for="enableNested">Nested Tags:</label>
-    <input type="checkbox" id="enableNested" />
-
-    <div id="nestedOptions" style="display:none;">
-      <label for="parentTagType">Parent Tag:</label>
-      <select id="parentTagType">
-        <option value="div">DIV</option>
-        <option value="article">ARTICLE</option>
-        <option value="section">SECTION</option>
-        <option value="ul">UL</option>
-        <option value="ol">OL</option>
-      </select>
-
-      <label for="tagTypeNested">Child Tag:</label>
-      <select id="tagTypeNested">
-        <option value="p">P</option>
-        <option value="h1">H1</option>
-        <option value="h2">H2</option>
-        <option value="li">LI</option>
-        <option value="section">SECTION</option>
-        <option value="span">SPAN</option>
-        <option value="div">DIV</option>
-      </select>
-
-      <label for="childCount">Child Count:</label>
-      <select id="childCount">
-        <option value="5">5</option>
-        <option value="10">10</option>
-        <option value="15">15</option>
-      </select>
-
-      <label for="childClass">Child Class (optional):</label>
-      <input type="text" id="childClass" />
-
-      <label for="childId">Child ID (optional):</label>
-      <input type="text" id="childId" />
-    </div>
-
-    <button type="button" id="generateBtn">Generate Tags</button>
-
-    <textarea id="output" readonly placeholder="Generated HTML will appear here..."></textarea>
-    <button type="button" id="copyBtn">Copy to Clipboard</button>
-    <div id="copyMessage">Copied!</div>
   </div>
 
   <script>

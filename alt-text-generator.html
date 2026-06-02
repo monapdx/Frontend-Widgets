@@ -9,72 +9,40 @@
   <link rel="stylesheet" href="neo-brutal-overrides.css" />
   <style>
     /* Page layout: balanced width, form + preview/output side-by-side on wide screens */
-    .alt-gen {
-      width: min(72rem, calc(100% - 2rem));
-      margin: 0 auto 2.5rem;
-      padding: 0 0.5rem;
-    }
-
-    .alt-gen-head {
-      margin-bottom: 1.25rem;
-    }
-
-    .alt-gen-head h1 {
-      margin: 0 0 0.5rem;
-      font-size: clamp(1.35rem, 2.5vw, 1.85rem);
-    }
-
-    .alt-gen-head .subtle {
-      margin: 0;
-      max-width: 62ch;
-      line-height: 1.5;
-    }
-
-    .alt-gen-layout {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1.25rem;
-      align-items: start;
-    }
-
-    @media (min-width: 960px) {
-      .alt-gen-layout {
-        grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-      }
-    }
-
-    .alt-gen-side {
+    .alt-gen-page .alt-gen-side {
       display: flex;
       flex-direction: column;
       gap: 1.25rem;
       min-width: 0;
     }
 
-    .alt-gen .card {
-      margin: 0;
+    @media (min-width: 960px) {
+      .alt-gen-page .widget-grid {
+        grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      }
     }
 
-    .alt-gen .card h2,
-    .alt-gen .card h3 {
+    .alt-gen-page .panel h2,
+    .alt-gen-page .panel h3 {
       margin-top: 0;
       margin-bottom: 0.75rem;
       font-size: 0.95rem;
       letter-spacing: 0.08em;
     }
 
-    .alt-gen .row {
+    .alt-gen-page .row {
       display: grid;
       grid-template-columns: 1fr;
       gap: 1rem;
     }
 
     @media (min-width: 560px) {
-      .alt-gen .row {
+      .alt-gen-page .row {
         grid-template-columns: 1fr 1fr;
       }
     }
 
-    .alt-gen .preview-box {
+    .alt-gen-page .preview-box {
       min-height: 12rem;
       max-height: min(22rem, 42vh);
       display: flex;
@@ -83,7 +51,7 @@
       padding: 1rem;
     }
 
-    .alt-gen .preview-box .image-preview {
+    .alt-gen-page .preview-box .image-preview {
       max-width: 100%;
       max-height: min(20rem, 38vh);
       width: auto;
@@ -91,14 +59,14 @@
       object-fit: contain;
     }
 
-    .alt-gen .muted-box {
+    .alt-gen-page .muted-box {
       text-align: center;
       max-width: 36ch;
       margin: 0 auto;
       line-height: 1.45;
     }
 
-    .alt-gen #alt-output.output {
+    .alt-gen-page #alt-output.output {
       min-height: 10rem;
       max-height: min(28rem, 50vh);
       overflow: auto;
@@ -110,13 +78,13 @@
       padding: 1rem;
     }
 
-    .alt-gen .checklist {
+    .alt-gen-page .checklist {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr));
       gap: 0.5rem 1rem;
     }
 
-    .alt-gen .check-item {
+    .alt-gen-page .check-item {
       display: flex;
       align-items: center;
       gap: 0.5rem;
@@ -124,22 +92,28 @@
       font-weight: 600;
     }
 
-    .alt-gen .field textarea {
+    .alt-gen-page .field textarea {
       min-height: 6rem;
       max-height: 12rem;
     }
   </style>
 </head>
-<body>
+<body class="alt-gen-page">
 
-  <main class="alt-gen">
-    <header class="alt-gen-head">
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
       <h1>Accessibility alt-text generator</h1>
-      <p class="subtle">Upload an image, select what matters, and generate several alt-text styles. This is structured rather than AI-powered, so it works offline and gives predictable output.</p>
+      <p class="page-description">Upload an image, select what matters, and generate several alt-text styles. This is structured rather than AI-powered, so it works offline and gives predictable output.</p>
     </header>
 
-    <div class="alt-gen-layout">
-      <section class="card alt-gen-form" aria-labelledby="alt-form-title">
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
+      </div>
+
+      <div class="widget-grid">
+      <section class="panel alt-gen-form" aria-labelledby="alt-form-title">
         <h2 id="alt-form-title">Inputs</h2>
         <div class="field">
           <label for="alt-image">Image upload</label>
@@ -206,20 +180,21 @@
       </section>
 
       <div class="alt-gen-side">
-        <section class="card" aria-labelledby="alt-preview-title">
+        <section class="panel" aria-labelledby="alt-preview-title">
           <h3 id="alt-preview-title">Image preview</h3>
           <div class="preview-box">
             <img id="alt-image-preview" class="image-preview" alt="Uploaded preview" style="display:none;" />
             <div id="alt-image-empty" class="muted-box">No image uploaded yet. You can still use the generator with text-only description fields.</div>
           </div>
         </section>
-        <section class="card" aria-labelledby="alt-output-title">
+        <section class="panel" aria-labelledby="alt-output-title">
           <h3 id="alt-output-title">Generated output</h3>
           <div id="alt-output" class="output">Your generated alt-text variations will appear here.</div>
         </section>
       </div>
+      </div>
     </div>
-  </main>
+  </div>
 
   <script>
     const $ = (sel) => document.querySelector(sel);

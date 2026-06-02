@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Prefix Word Bubbles</title>
   <link rel="stylesheet" href="neo-brutal.css" />
+  <link rel="stylesheet" href="styles-vanilla.css" />
   <style>
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
@@ -310,6 +311,10 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       line-height: 1.5;
     }
 
+    .widget-grid > .app {
+      grid-column: 1 / -1;
+    }
+
     @media (max-width: 900px) {
       .app {
         grid-template-columns: 1fr;
@@ -345,13 +350,21 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
   <link rel="stylesheet" href="neo-brutal-overrides.css" />
 </head>
 <body>
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
+      <h1>Word Bubbles</h1>
+      <p class="page-description">Type as many valid English words as you can that begin with the shown prefix before time runs out.</p>
+    </header>
+
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
+      </div>
+
+      <div class="widget-grid">
   <div class="app">
     <section class="card main">
-      <h1>Word Bubbles</h1>
-      <p class="subtitle">
-        Type as many valid English words as you can that begin with the shown prefix before time runs out.
-      </p>
-
       <div class="topbar">
         <div class="stat">
           <div class="stat-label">Prefix</div>
@@ -448,6 +461,9 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
         This version ships with a built-in starter dictionary so the game runs as a single file. You can later swap in a larger word list JSON for many more prefixes and answers.
       </p>
     </aside>
+  </div>
+      </div>
+    </div>
   </div>
 
   <script>

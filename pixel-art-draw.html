@@ -1,39 +1,22 @@
-<!DOCTYPE html>
+<!doctype html>
 <html class="nb-skin" lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pixel Art Drawing App</title>
   <link rel="stylesheet" href="neo-brutal.css" />
+  <link rel="stylesheet" href="styles-vanilla.css" />
   <style>
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
 
-
     @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
     @import url("https://fonts.googleapis.com/css2?family=Lobster&family=Tiny5&display=swap");
 
-    body {
+    .draw-app {
       font-family: "IBM Plex Mono", monospace;
       text-align: center;
-      margin: 0;
-      padding: 1.125rem;
-      background: #f6f8fa;
-    }
-
-    h1 {
-      margin: 0.5rem 0 0.375rem;
-    }
-
-    .panel {
-      max-width: 51.25rem;
-      margin: 0 auto;
-      padding: 0.875rem 0.875rem 0.625rem;
-      background: white;
-      border: 1px solid #e6e6e6;
-      border-radius: 0.75rem;
-      box-shadow: 0 0.625rem 1.875rem rgba(0,0,0,0.06);
     }
 
     .controls {
@@ -68,7 +51,7 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       cursor: pointer;
     }
 
-    button {
+    .draw-app button {
       background: #111;
       color: #fff;
       border: none;
@@ -81,16 +64,15 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       line-height: 1.1em;
     }
 
-    button:hover {
+    .draw-app button:hover {
       background: #333;
       transform: translateY(-0.0625rem);
     }
 
-    button:active {
+    .draw-app button:active {
       transform: translateY(0);
     }
 
-    /* Eraser toggle visual state */
     #eraserToggle.selected {
       background: #b3006d;
     }
@@ -153,55 +135,68 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
 </head>
 
 <body>
-  <div class="panel">
-    <h1>Pixel Art Drawing App</h1>
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
+      <h1>Pixel Art Drawing App</h1>
+      <p class="page-description">Paint on a pixel grid with a color palette, brush sizes, eraser, and PNG or JSON export.</p>
+    </header>
 
-    <div id="palette"></div>
-
-    <div class="controls">
-      <div class="group">
-        <input type="color" id="customColor" value="#000000" aria-label="Pick a custom color" />
-        <button id="addColor">Add Custom Color</button>
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
       </div>
 
-      <div class="group">
-        <button id="saveDrawing">Save PNG</button>
-        <button id="saveJSON">Export JSON</button>
-        <button id="clearGrid">Clear</button>
+      <div class="widget-grid">
+        <section class="panel draw-app">
+          <div id="palette"></div>
+
+          <div class="controls">
+            <div class="group">
+              <input type="color" id="customColor" value="#000000" aria-label="Pick a custom color" />
+              <button id="addColor">Add Custom Color</button>
+            </div>
+
+            <div class="group">
+              <button id="saveDrawing">Save PNG</button>
+              <button id="saveJSON">Export JSON</button>
+              <button id="clearGrid">Clear</button>
+            </div>
+
+            <div class="group">
+              <button id="eraserToggle">Eraser</button>
+
+              <label>Brush Size:
+                <select id="brushSize">
+                  <option value="1">1x1</option>
+                  <option value="2">2x2</option>
+                  <option value="3">3x3</option>
+                </select>
+              </label>
+
+              <label>Grid Size:
+                <select id="gridSelector">
+                  <option value="16">16x16</option>
+                  <option value="32" selected>32x32</option>
+                  <option value="48">48x48</option>
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <div class="hint">
+            Tip: click + drag to paint. Eraser paints white. Export JSON lets you reload later if you add an importer.
+          </div>
+
+          <div id="gridWrap">
+            <div id="grid"></div>
+          </div>
+        </section>
       </div>
-
-      <div class="group">
-        <button id="eraserToggle">Eraser</button>
-
-        <label>Brush Size:
-          <select id="brushSize">
-            <option value="1">1x1</option>
-            <option value="2">2x2</option>
-            <option value="3">3x3</option>
-          </select>
-        </label>
-
-        <label>Grid Size:
-          <select id="gridSelector">
-            <option value="16">16x16</option>
-            <option value="32" selected>32x32</option>
-            <option value="48">48x48</option>
-          </select>
-        </label>
-      </div>
-    </div>
-
-    <div class="hint">
-      Tip: click + drag to paint. Eraser paints white. Export JSON lets you reload later if you add an importer.
-    </div>
-
-    <div id="gridWrap">
-      <div id="grid"></div>
     </div>
   </div>
 
   <script>
-    // Core elements
     const grid = document.getElementById('grid');
     const palette = document.getElementById('palette');
     const clearButton = document.getElementById('clearGrid');
@@ -209,26 +204,22 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
     const customColorInput = document.getElementById('customColor');
     const addColorButton = document.getElementById('addColor');
 
-    // New controls
     const gridSelector = document.getElementById('gridSelector');
     const brushSizeSelect = document.getElementById('brushSize');
     const eraserToggle = document.getElementById('eraserToggle');
     const saveJSONButton = document.getElementById('saveJSON');
 
-    // Palette colors (your originals)
     const colors = [
       '#ff009c', '#04DAFC', '#0ABFBC', '#FFA500',
       '#b3006d', '#DA70D6', '#1E90FF', '#A8E6CE',
       '#FF8C94', 'black', 'white'
     ];
 
-    // State
     let currentColor = 'black';
     let gridSize = 32;
     let brushSize = 1;
     let isErasing = false;
 
-    // --- Helpers ---
     function setSelectedPaletteElement(el) {
       document.querySelectorAll('.color').forEach(c => c.classList.remove('selected'));
       el.classList.add('selected');
@@ -249,7 +240,6 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       }
     }
 
-    // --- Grid creation ---
     function createGrid(size) {
       gridSize = size;
       grid.innerHTML = '';
@@ -272,7 +262,6 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       }
     }
 
-    // --- Palette creation ---
     function initPalette() {
       palette.innerHTML = '';
 
@@ -297,7 +286,6 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       }
     }
 
-    // --- Custom color add ---
     addColorButton.addEventListener('click', () => {
       const customColor = customColorInput.value || '#000000';
 
@@ -320,19 +308,17 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       eraserToggle.classList.remove('selected');
     });
 
-    // --- Clear grid ---
     clearButton.addEventListener('click', () => {
       document.querySelectorAll('.cell').forEach(cell => {
         cell.style.backgroundColor = 'white';
       });
     });
 
-    // --- Save PNG ---
     saveButton.addEventListener('click', () => {
       const canvas = document.createElement('canvas');
       const context = canvas.getContext('2d');
 
-      const outputSize = 800; // px width/height
+      const outputSize = 800;
       const cellSize = outputSize / gridSize;
 
       canvas.width = outputSize;
@@ -351,7 +337,6 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       link.click();
     });
 
-    // --- Export JSON ---
     saveJSONButton.addEventListener('click', () => {
       const data = Array.from(grid.children).map(cell => cell.style.backgroundColor || 'white');
       const payload = { gridSize, pixels: data };
@@ -363,26 +348,22 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       link.click();
     });
 
-    // --- Grid size selector ---
     gridSelector.addEventListener('change', () => {
       const newSize = parseInt(gridSelector.value, 10);
       if (!Number.isFinite(newSize)) return;
       createGrid(newSize);
     });
 
-    // --- Brush size selector ---
     brushSizeSelect.addEventListener('change', () => {
       const v = parseInt(brushSizeSelect.value, 10);
       brushSize = Number.isFinite(v) ? v : 1;
     });
 
-    // --- Eraser toggle ---
     eraserToggle.addEventListener('click', () => {
       isErasing = !isErasing;
       eraserToggle.classList.toggle('selected', isErasing);
     });
 
-    // --- Init ---
     initPalette();
     createGrid(gridSize);
 

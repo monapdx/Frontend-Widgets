@@ -5,126 +5,94 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>QR codes</title>
   <link rel="stylesheet" href="neo-brutal.css" />
-<style type="text/css">
+  <link rel="stylesheet" href="styles-vanilla.css" />
+  <style>
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
 
-
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
-
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
 
-
-h2 {
-font-family: "Oswald", serif;
-	font-size: 1.5em;
-	line-height: 1.1em;
-	text-transform: uppercase;
-	letter-spacing: 0.05em;
-	margin-top: 0;
-	padding: 0.3125rem 0.625rem;
-	margin-bottom: 0.9375rem;
-	position: relative;
+.qr-page .field-label {
+  font-family: "Oswald", serif;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
 }
-
-
-
-/* Input Section */
-#input-container {
-  margin-bottom: 1.25rem;
-}
-
-label {
-  font-weight: bold;
+.qr-page #qr-code {
   display: block;
-  margin-bottom: 0.5rem;
-  font-size: 0.875rem;
-  color: #555;
+  margin-top: 1rem;
+  border: 3px solid #0a0a0a;
+  box-shadow: 4px 4px 0 #0a0a0a;
+  background: #fff;
 }
-
-#qr-text {
-  width: 100%;
-  padding: 0.625rem;
-  font-size: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 0.3125rem; /* Round the corners */
-  background-color: #f2f2f2;
-
-}
-
-input:focus {outline: none; /* Remove the default focus outline */
-  border-color: blue; /* Change the border color on focus */
-  box-shadow: 0 0 0.3125rem rgba(0, 0, 255, 0.5);}
-
-button {
-font-family: "Oswald", serif;
-  margin-top: 0.625rem;
-  width: 100%;
-  background: #007bff; /* Blue button */
-  color: #fff;
-  font-size: 1rem;
-  padding: 0.625rem;
-  border: none;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background 0.3s ease;
-  float:left;
-}
-
-button:hover {
-  background: #0056b3; /* Darker blue on hover */
-}
-
-</style>
+  </style>
   <link rel="stylesheet" href="neo-brutal-overrides.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
 </head>
-<body>
+<body class="qr-page">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
+      <h1>QR code generator</h1>
+      <p class="page-description">Enter text or a URL to generate a QR code you can preview and download as PNG.</p>
+    </header>
 
-  <link rel="stylesheet" href="neo-brutal-overrides.css" />
-</head>
-<body>
-  
-  <input type="text" id="qr-text" placeholder="Enter text or URL" /><br><br>
-  <button id="generate-btn">Generate</button><br><br><br>
-  <button id="download-btn" disabled>Download</button>
-<br><br>
-  <canvas id="qr-code"></canvas>
-  
-  <script type="text/javascript">
-  document.getElementById('generate-btn').addEventListener('click', () => {
-  const qrText = document.getElementById('qr-text').value;
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
+      </div>
 
-  if (qrText.trim() === '') {
-    alert('Please enter text or a URL!');
-    return;
-  }
+      <div class="widget-grid">
+        <section class="panel">
+          <div class="field">
+            <label class="field-label" for="qr-text">Text or URL</label>
+            <input type="text" id="qr-text" placeholder="Enter text or URL" />
+          </div>
+          <div class="actions">
+            <button id="generate-btn" type="button">Generate</button>
+            <button id="download-btn" class="secondary" type="button" disabled>Download PNG</button>
+          </div>
+        </section>
 
-  const qr = new QRious({
-    element: document.getElementById('qr-code'),
-    value: qrText,
-    size: 200, // QR code size in pixels
-  });
+        <section class="panel">
+          <h2>Preview</h2>
+          <canvas id="qr-code" width="200" height="200" aria-label="Generated QR code"></canvas>
+        </section>
+      </div>
+    </div>
+  </div>
 
-  // Enable the download button
-  const downloadBtn = document.getElementById('download-btn');
-  downloadBtn.disabled = false;
+  <script>
+    document.getElementById('generate-btn').addEventListener('click', () => {
+      const qrText = document.getElementById('qr-text').value;
 
-  // Add click event for downloading the QR code
-  downloadBtn.addEventListener('click', () => {
-    const canvas = document.getElementById('qr-code');
-    const dataURL = canvas.toDataURL('image/png');
-    const link = document.createElement('a');
-    link.href = dataURL;
-    link.download = 'qr-code.png';
-    link.click();
-  });
-});
-  
+      if (qrText.trim() === '') {
+        alert('Please enter text or a URL!');
+        return;
+      }
+
+      new QRious({
+        element: document.getElementById('qr-code'),
+        value: qrText,
+        size: 200,
+      });
+
+      const downloadBtn = document.getElementById('download-btn');
+      downloadBtn.disabled = false;
+
+      downloadBtn.onclick = () => {
+        const canvas = document.getElementById('qr-code');
+        const dataURL = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.href = dataURL;
+        link.download = 'qr-code.png';
+        link.click();
+      };
+    });
   </script>
-
 </body>
 </html>

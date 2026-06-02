@@ -1,71 +1,61 @@
-<!DOCTYPE html>
+<!doctype html>
 <html class="nb-skin" lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Notes</title>
   <link rel="stylesheet" href="neo-brutal.css" />
-<style type="text/css">
+  <link rel="stylesheet" href="styles-vanilla.css" />
+  <style>
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
 
-
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
-
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
 
-
-
 .snippet-container {
-            margin-top: 1.25rem;
-        }
-        .snippet {
-			font-family: "Oswald", serif;
-            margin-bottom: 0.625rem;
-            border: 1px solid #ddd;
-            padding: 0.625rem;
-            background-color: #f9f9f9;
-        }
-        input[readonly], textarea[readonly] {
-            background-color: #f9f9f9;
-			font-family: "Oswald", serif;
-            border: 1px solid #ddd;
-            padding: 0.5rem;
-            width: 100%;
-        }
-        textarea {
-              width: 100%;
+  margin-top: 1.25rem;
+}
+.snippet {
+  font-family: "Oswald", serif;
+  margin-bottom: 0.625rem;
+  border: 1px solid #ddd;
+  padding: 0.625rem;
+  background-color: #f9f9f9;
+}
+input[readonly], textarea[readonly] {
+  background-color: #f9f9f9;
+  font-family: "Oswald", serif;
+  border: 1px solid #ddd;
+  padding: 0.5rem;
+  width: 100%;
+}
+textarea {
+  width: 100%;
   padding: 0.625rem;
   font-size: 1rem;
   font-family: "Oswald", serif;
-    border: 1px solid #ddd;
-  border-radius: 0.3125rem; /* Round the corners */
+  border: 1px solid #ddd;
+  border-radius: 0.3125rem;
   background-color: #f2f2f2;
-        }
-        
-        textarea:focus {outline: none; /* Remove the default focus outline */
-  border-color: blue; /* Change the border color on focus */
-  box-shadow: 0 0 0.3125rem rgba(0, 0, 255, 0.5);}
-h2 {
-font-family: "Oswald", serif;
-	font-size: 1.5em;
-	line-height: 1em;
-	text-transform: uppercase;
-	letter-spacing: 0.05em;
-	margin-top: 0;
-	padding: 0.3125rem 0.625rem;
-	margin-bottom: 0.3125rem;
-	position: relative;
 }
-
-
-
-/* Input Section */
-#input-container {
-  margin-bottom: 1.25rem;
+textarea:focus {
+  outline: none;
+  border-color: blue;
+  box-shadow: 0 0 0.3125rem rgba(0, 0, 255, 0.5);
 }
-
+.field-label {
+  font-family: "Oswald", serif;
+  font-size: 1.5em;
+  line-height: 1em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 0;
+  padding: 0.3125rem 0.625rem;
+  margin-bottom: 0.3125rem;
+  position: relative;
+}
 label {
   font-weight: bold;
   display: block;
@@ -73,26 +63,24 @@ label {
   font-size: 0.875rem;
   color: #555;
 }
-
 input {
   width: 100%;
   padding: 0.625rem;
   font-size: 1rem;
   border: 1px solid #ddd;
-  border-radius: 0.3125rem; /* Round the corners */
+  border-radius: 0.3125rem;
   background-color: #f2f2f2;
-
 }
-
-input:focus {outline: none; /* Remove the default focus outline */
-  border-color: blue; /* Change the border color on focus */
-  box-shadow: 0 0 0.3125rem rgba(0, 0, 255, 0.5);}
-
+input:focus {
+  outline: none;
+  border-color: blue;
+  box-shadow: 0 0 0.3125rem rgba(0, 0, 255, 0.5);
+}
 button.add {
-font-family: "Oswald", serif;
+  font-family: "Oswald", serif;
   margin-top: 0.625rem;
   width: 100%;
-  background: #007bff; /* Blue button */
+  background: #007bff;
   color: #fff;
   font-size: 1rem;
   padding: 0.625rem;
@@ -101,99 +89,110 @@ font-family: "Oswald", serif;
   cursor: pointer;
   font-weight: bold;
   transition: background 0.3s ease;
-  height:auto;
+  height: auto;
 }
-
 button.add:hover {
-  background: #0056b3; /* Darker blue on hover */
+  background: #0056b3;
 }
-
-
-</style>
+  </style>
   <link rel="stylesheet" href="neo-brutal-overrides.css" />
 </head>
 <body>
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
+      <h1>Notes</h1>
+      <p class="page-description">Save titled text snippets in your browser with local storage.</p>
+    </header>
 
-<label for="title"></label><h2>TITLE</h2>
-    <input type="text" id="title" placeholder="Enter title">
-    <label for="snippet"></label><h2>SNIPPET</h2>
-    <textarea id="snippet" placeholder="Enter your snippet"></textarea><br><br>
-    <button id="save-btn" class="add">Save</button>
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
+      </div>
 
-    <div class="snippet-container" id="snippet-container"></div>
+      <div class="widget-grid">
+        <section class="panel">
+          <label for="title"></label>
+          <p class="field-label">Title</p>
+          <input type="text" id="title" placeholder="Enter title">
+          <label for="snippet"></label>
+          <p class="field-label">Snippet</p>
+          <textarea id="snippet" placeholder="Enter your snippet"></textarea><br><br>
+          <button id="save-btn" class="add">Save</button>
+
+          <div class="snippet-container" id="snippet-container"></div>
+        </section>
+      </div>
+    </div>
+  </div>
+
 <script>
-        const titleInput = document.getElementById('title');
-        const snippetInput = document.getElementById('snippet');
-        const saveButton = document.getElementById('save-btn');
-        const snippetContainer = document.getElementById('snippet-container');
+  const titleInput = document.getElementById('title');
+  const snippetInput = document.getElementById('snippet');
+  const saveButton = document.getElementById('save-btn');
+  const snippetContainer = document.getElementById('snippet-container');
 
-        // Load saved snippets from localStorage on page load
-        const loadSnippets = () => {
-            const snippets = JSON.parse(localStorage.getItem('snippets')) || [];
-            snippets.forEach(({ title, snippet }, index) => addSnippetToDOM(title, snippet, index));
-        };
+  const loadSnippets = () => {
+    const snippets = JSON.parse(localStorage.getItem('snippets')) || [];
+    snippets.forEach(({ title, snippet }, index) => addSnippetToDOM(title, snippet, index));
+  };
 
-        // Save snippet to localStorage
-        const saveSnippet = () => {
-            const title = titleInput.value.trim();
-            const snippet = snippetInput.value.trim();
+  const saveSnippet = () => {
+    const title = titleInput.value.trim();
+    const snippet = snippetInput.value.trim();
 
-            if (!title || !snippet) {
-                alert('Both Title and Snippet are required.');
-                return;
-            }
+    if (!title || !snippet) {
+      alert('Both Title and Snippet are required.');
+      return;
+    }
 
-            const snippets = JSON.parse(localStorage.getItem('snippets')) || [];
-            snippets.push({ title, snippet });
-            localStorage.setItem('snippets', JSON.stringify(snippets));
+    const snippets = JSON.parse(localStorage.getItem('snippets')) || [];
+    snippets.push({ title, snippet });
+    localStorage.setItem('snippets', JSON.stringify(snippets));
 
-            addSnippetToDOM(title, snippet, snippets.length - 1);
-            titleInput.value = '';
-            snippetInput.value = '';
-        };
+    addSnippetToDOM(title, snippet, snippets.length - 1);
+    titleInput.value = '';
+    snippetInput.value = '';
+  };
 
-        // Add snippet to the DOM
-        const addSnippetToDOM = (title, snippet, index) => {
-            const snippetDiv = document.createElement('div');
-            snippetDiv.className = 'snippet';
-            snippetDiv.setAttribute('data-index', index); // Track index for deletion
+  const addSnippetToDOM = (title, snippet, index) => {
+    const snippetDiv = document.createElement('div');
+    snippetDiv.className = 'snippet';
+    snippetDiv.setAttribute('data-index', index);
 
-            const titleField = document.createElement('input');
-            titleField.type = 'text';
-            titleField.value = title;
-            titleField.readOnly = true;
+    const titleField = document.createElement('input');
+    titleField.type = 'text';
+    titleField.value = title;
+    titleField.readOnly = true;
 
-            const snippetField = document.createElement('textarea');
-            snippetField.value = snippet;
-            snippetField.readOnly = true;
+    const snippetField = document.createElement('textarea');
+    snippetField.value = snippet;
+    snippetField.readOnly = true;
 
-            const deleteButton = document.createElement('button');
-            deleteButton.textContent = 'Delete';
-            deleteButton.className = 'delete-btn';
-            deleteButton.onclick = () => deleteSnippet(index);
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Delete';
+    deleteButton.className = 'delete-btn';
+    deleteButton.onclick = () => deleteSnippet(index);
 
-            snippetDiv.appendChild(titleField);
-            snippetDiv.appendChild(snippetField);
-            snippetDiv.appendChild(deleteButton);
-            snippetContainer.appendChild(snippetDiv);
-        };
+    snippetDiv.appendChild(titleField);
+    snippetDiv.appendChild(snippetField);
+    snippetDiv.appendChild(deleteButton);
+    snippetContainer.appendChild(snippetDiv);
+  };
 
-        // Delete snippet from localStorage and DOM
-        const deleteSnippet = (index) => {
-            let snippets = JSON.parse(localStorage.getItem('snippets')) || [];
-            snippets.splice(index, 1); // Remove snippet at index
-            localStorage.setItem('snippets', JSON.stringify(snippets)); // Update storage
+  const deleteSnippet = (index) => {
+    let snippets = JSON.parse(localStorage.getItem('snippets')) || [];
+    snippets.splice(index, 1);
+    localStorage.setItem('snippets', JSON.stringify(snippets));
 
-            // Refresh the DOM to reflect changes
-            snippetContainer.innerHTML = '';
-            loadSnippets(); // Reload all snippets
-        };
+    snippetContainer.innerHTML = '';
+    loadSnippets();
+  };
 
-        saveButton.addEventListener('click', saveSnippet);
+  saveButton.addEventListener('click', saveSnippet);
 
-        // Load snippets on page load
-        loadSnippets();
-    </script>
+  loadSnippets();
+</script>
 
 </body>
 </html>

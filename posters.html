@@ -2,22 +2,20 @@
 <html class="nb-skin" lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Movie Poster Grid</title>
   <link rel="stylesheet" href="neo-brutal.css" />
+  <link rel="stylesheet" href="styles-vanilla.css" />
   <style>
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
 
-
-    body { font-family: system-ui, Arial, sans-serif; margin: 1.25rem; }
-    h1 { font-size: 1.25rem; margin: 0 0 0.75rem; }
     .controls { display: flex; gap: 0.625rem; flex-wrap: wrap; margin-bottom: 0.875rem; }
     input { padding: 0.625rem; min-width: 17.5rem; }
     button { padding: 0.625rem 0.75rem; cursor: pointer; }
     .meta { font-size: 0.8125rem; opacity: 0.8; margin: 0.375rem 0 0.875rem; }
-    .grid {
+    .poster-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(8.75rem, 1fr));
       gap: 0.875rem;
@@ -64,22 +62,38 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
   <link rel="stylesheet" href="neo-brutal-overrides.css" />
 </head>
 <body>
-  <h1>Movie Poster Grid</h1>
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
+      <h1>Movie Poster Grid</h1>
+      <p class="page-description">Load TMDB poster art for a curated movie list and filter titles as you browse.</p>
+    </header>
 
-  <div class="controls">
-    <input id="filter" placeholder="Filter titles (optional)..." />
-    <button id="loadBtn">Load posters</button>
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
+      </div>
+
+      <div class="widget-grid">
+        <section class="panel">
+          <div class="controls">
+            <input id="filter" placeholder="Filter titles (optional)..." />
+            <button id="loadBtn">Load posters</button>
+          </div>
+
+          <div class="meta" id="meta"></div>
+        </section>
+
+        <section class="panel">
+          <div class="poster-grid" id="grid"></div>
+          <div class="errorBox" id="errors"></div>
+        </section>
+      </div>
+    </div>
   </div>
 
-  <div class="meta" id="meta"></div>
-  <div class="grid" id="grid"></div>
-  <div class="errorBox" id="errors"></div>
-
   <script>
-    // ✅ Paste your TMDB API key here (note: in a pure static page, this key is visible to anyone who views source)
     const TMDB_API_KEY = "e516578c74a767192a850553dfea5d36";
-
-    // Poster base (a common size). TMDB documents the pattern of base URL + size + poster_path.
     const POSTER_BASE = "https://image.tmdb.org/t/p/w342";
 
     const movies = [
@@ -204,7 +218,6 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       if (!res.ok) throw new Error(`TMDB search failed (${res.status}) for: ${title}`);
       const data = await res.json();
 
-      // Pick the first result; you can improve this by matching year, exact title, etc.
       return data.results && data.results.length ? data.results[0] : null;
     }
 
@@ -255,7 +268,6 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       let ok = 0, missing = 0;
       const errorLines = [];
 
-      // Basic throttling so you don’t hammer the API
       for (let i = 0; i < list.length; i++) {
         const title = list[i];
         try {
@@ -281,7 +293,7 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
         }
 
         meta.textContent = `Loaded ${i + 1}/${list.length} — posters: ${ok}, missing: ${missing}`;
-        await new Promise(r => setTimeout(r, 120)); // small delay
+        await new Promise(r => setTimeout(r, 120));
       }
 
       if (errorLines.length) {
