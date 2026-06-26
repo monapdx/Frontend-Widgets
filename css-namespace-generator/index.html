@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Generate safe, namespaced CSS class structures for web developers, Obsidian plugins, widgets, and templates.">
+  <title>Custom Namespacing Generator</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <svg class="brand-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 4h6v6H4V4zm10 0h6v6h-6V4zM4 14h6v6H4v-6zm10 0h6v6h-6v-6z" fill="currentColor"/>
+        </svg>
+        <div>
+          <h1>Custom Namespacing Generator</h1>
+          <p class="tagline">Safe, conflict-free CSS class structures</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button type="button" id="btn-random-prefix" class="btn btn-ghost" title="Suggest random prefix">
+          <span aria-hidden="true">🎲</span> Random Prefix
+        </button>
+        <button type="button" id="btn-theme-toggle" class="btn btn-icon" aria-label="Toggle dark mode">
+          <span class="icon-sun" aria-hidden="true">☀</span>
+          <span class="icon-moon" aria-hidden="true">☾</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-layout">
+    <!-- Input Panel -->
+    <aside class="panel panel-input" aria-label="Configuration">
+      <section class="card">
+        <h2>Project Configuration</h2>
+
+        <div class="form-grid">
+          <div class="field">
+            <label for="prefix">Project Prefix</label>
+            <input type="text" id="prefix" placeholder="otw" autocomplete="off" spellcheck="false">
+            <span class="hint">Short unique identifier (2–12 chars)</span>
+          </div>
+
+          <div class="field">
+            <label for="template">Template / Component Name</label>
+            <input type="text" id="template" placeholder="argument" autocomplete="off" spellcheck="false">
+          </div>
+
+          <div class="field">
+            <label for="theme">Theme Name <span class="optional">(optional)</span></label>
+            <input type="text" id="theme" placeholder="brutalist" autocomplete="off" spellcheck="false">
+          </div>
+
+          <div class="field">
+            <label for="component">Component Name <span class="optional">(optional)</span></label>
+            <input type="text" id="component" placeholder="quote-box" autocomplete="off" spellcheck="false">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="preset">Naming Preset</label>
+          <select id="preset">
+            <option value="simple">Simple</option>
+            <option value="hierarchical">Hierarchical</option>
+            <option value="bem">BEM Style</option>
+            <option value="scoped">Fully Scoped</option>
+            <option value="utility">Utility Style</option>
+            <option value="custom">Custom</option>
+          </select>
+        </div>
+
+        <!-- Custom pattern fields (shown when Custom preset selected) -->
+        <div id="custom-patterns" class="custom-patterns hidden">
+          <p class="section-desc">Use placeholders: <code>{prefix}</code> <code>{template}</code> <code>{theme}</code> <code>{component}</code></p>
+          <div class="field">
+            <label for="custom-root">Root / Block</label>
+            <input type="text" id="custom-root" value="{prefix}-{template}">
+          </div>
+          <div class="field">
+            <label for="custom-component">Component</label>
+            <input type="text" id="custom-component" value="{prefix}-{template}__{component}">
+          </div>
+          <div class="field">
+            <label for="custom-theme">Theme / Modifier</label>
+            <input type="text" id="custom-theme" value="{prefix}-{template}--{theme}">
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Batch Generator</h2>
+        <p class="section-desc">Enter one component name per line to generate classes for all.</p>
+        <div class="field">
+          <label for="batch-components">Components</label>
+          <textarea id="batch-components" rows="5" placeholder="quote-box&#10;author&#10;citation&#10;header&#10;footer" spellcheck="false"></textarea>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Collision Checker</h2>
+        <p class="section-desc">Paste existing CSS to detect potential naming conflicts.</p>
+        <div class="field">
+          <label for="collision-css">Existing CSS</label>
+          <textarea id="collision-css" rows="6" placeholder=".card { }&#10;.sidebar { }&#10;.quote-box { }" spellcheck="false"></textarea>
+        </div>
+        <div id="collision-results" class="collision-results" role="alert" aria-live="polite"></div>
+      </section>
+
+      <section class="card card-actions">
+        <h2>Project I/O</h2>
+        <div class="btn-row">
+          <button type="button" id="btn-export-json" class="btn btn-secondary">Export Config</button>
+          <button type="button" id="btn-import-json" class="btn btn-secondary">Import Config</button>
+          <input type="file" id="import-file" accept=".json,application/json" class="visually-hidden">
+        </div>
+        <div class="btn-row">
+          <button type="button" id="btn-export-css" class="btn btn-primary">Export CSS</button>
+          <button type="button" id="btn-export-html" class="btn btn-primary">Export HTML</button>
+        </div>
+      </section>
+    </aside>
+
+    <!-- Output Panel -->
+    <section class="panel panel-output" aria-label="Generated output">
+      <!-- Convention comparison -->
+      <section class="card">
+        <div class="card-header">
+          <h2>Generated Class Names</h2>
+          <button type="button" class="btn btn-sm btn-ghost copy-btn" data-copy-target="conventions-output">Copy All</button>
+        </div>
+        <div id="conventions-output" class="code-block conventions-grid"></div>
+      </section>
+
+      <!-- HTML Generator -->
+      <section class="card">
+        <div class="card-header">
+          <h2>HTML Generator</h2>
+          <button type="button" class="btn btn-sm btn-ghost copy-btn" data-copy-target="html-output">Copy</button>
+        </div>
+        <pre id="html-output" class="code-block"><code></code></pre>
+      </section>
+
+      <!-- CSS Generator -->
+      <section class="card">
+        <div class="card-header">
+          <h2>CSS Generator</h2>
+          <button type="button" class="btn btn-sm btn-ghost copy-btn" data-copy-target="css-output">Copy</button>
+        </div>
+        <pre id="css-output" class="code-block"><code></code></pre>
+      </section>
+
+      <!-- Namespace Preview -->
+      <section class="card">
+        <div class="card-header">
+          <h2>Namespace Preview</h2>
+          <button type="button" class="btn btn-sm btn-ghost copy-btn" data-copy-target="namespace-output">Copy</button>
+        </div>
+        <p class="section-desc">How scoped selectors appear when targeting child elements.</p>
+        <pre id="namespace-output" class="code-block"><code></code></pre>
+      </section>
+
+      <!-- Batch Output -->
+      <section class="card" id="batch-section">
+        <div class="card-header">
+          <h2>Batch Output</h2>
+          <button type="button" class="btn btn-sm btn-ghost copy-btn" data-copy-target="batch-output">Copy All</button>
+        </div>
+        <pre id="batch-output" class="code-block"><code></code></pre>
+      </section>
+    </section>
+
+    <!-- Live Preview Panel -->
+    <aside class="panel panel-preview" aria-label="Live preview">
+      <section class="card preview-card">
+        <h2>Live Preview</h2>
+        <p class="section-desc">Visual preview of generated structure with sample content.</p>
+        <div id="live-preview" class="live-preview-frame"></div>
+      </section>
+
+      <section class="card">
+        <h2>Quick Reference</h2>
+        <dl class="ref-list" id="quick-ref"></dl>
+      </section>
+    </aside>
+  </main>
+
+  <footer class="site-footer">
+    <p>Custom Namespacing Generator — 100% client-side. Works offline. No data leaves your browser.</p>
+  </footer>
+
+  <!-- Toast notification -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
