@@ -1,1 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>File Tree Generator</title>
+<style>
+:root {
+  --bg: #090a0d;
+  --panel: rgba(18, 20, 26, 0.86);
+  --panel-2: rgba(12, 13, 17, 0.96);
+  --line: rgba(255, 255, 255, 0.10);
+  --text: #f5f7fb;
+  --muted: #9aa1ad;
+  --accent: #b9ff66;
+  --accent-2: #85a8ff;
+  --shadow: 0 22px 80px rgba(0, 0, 0, 0.38);
+}
 
+* { box-sizing: border-box; }
+
+html { color-scheme: dark; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 15% 5%, rgba(133, 168, 255, 0.12), transparent 28rem),
+    radial-gradient(circle at 85% 0%, rgba(185, 255, 102, 0.08), transparent 24rem),
+    linear-gradient(145deg, #08090c, #0c0e13 48%, #07080a);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+button, textarea { font: inherit; }
+
+button { cursor: pointer; }
+
+.shell {
+  width: min(1480px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 54px 0 36px;
+}
+
+.hero {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.eyebrow {
+  margin: 0 0 12px;
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+h1 {
+  margin: 0;
+  max-width: 900px;
+  font-size: clamp(2.5rem, 6vw, 5.7rem);
+  line-height: 0.92;
+  letter-spacing: -0.055em;
+}
+
+.lede {
+  max-width: 760px;
+  margin: 20px 0 0;
+  color: var(--muted);
+  font-size: 1.06rem;
+  line-height: 1.6;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.panel {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.025), transparent 24%), var(--panel);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  backdrop-filter: blur(18px);
+}
+
+.panel-head {
+  min-height: 88px;
+  padding: 20px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.panel-head > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.step {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--accent);
+  font: 800 0.72rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+h2 {
+  margin: 0;
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+}
+
+textarea,
+pre {
+  width: 100%;
+  height: 460px;
+  margin: 0;
+  border: 0;
+  outline: 0;
+  resize: vertical;
+  background: var(--panel-2);
+  color: var(--text);
+  font: 500 0.98rem/1.75 ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  tab-size: 2;
+}
+
+textarea {
+  display: block;
+  padding: 24px;
+  caret-color: var(--accent);
+}
+
+textarea::placeholder { color: #5c626d; }
+
+pre {
+  padding: 24px;
+  overflow: auto;
+  white-space: pre;
+}
+
+pre code { font: inherit; }
+
+.hint-row {
+  padding: 14px 22px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+kbd, .hint-row code, .rule code {
+  padding: 2px 6px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: rgba(255,255,255,0.04);
+  color: var(--text);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.primary-btn,
+.ghost-btn,
+.text-btn {
+  border-radius: 10px;
+  padding: 9px 12px;
+  transition: 150ms ease;
+}
+
+.primary-btn {
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #0a0c08;
+  font-weight: 800;
+}
+
+.ghost-btn,
+.text-btn {
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.035);
+  color: var(--text);
+}
+
+.text-btn {
+  padding: 7px 10px;
+  font-size: 0.82rem;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255,255,255,0.24);
+}
+
+.primary-btn:hover { border-color: var(--accent); }
+
+.status {
+  height: 45px;
+  margin: 0;
+  padding: 13px 22px;
+  border-top: 1px solid var(--line);
+  color: var(--accent);
+  font-size: 0.8rem;
+}
+
+.rules {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  margin-top: 18px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--line);
+}
+
+.rule {
+  min-height: 115px;
+  padding: 20px;
+  background: rgba(11, 12, 16, 0.94);
+}
+
+.rule > span {
+  color: var(--accent-2);
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+}
+
+.rule p {
+  margin: 10px 0 0;
+  color: var(--muted);
+  line-height: 1.5;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 860px) {
+  .shell { padding-top: 28px; }
+  .hero { align-items: flex-start; }
+  .workspace { grid-template-columns: 1fr; }
+  textarea, pre { height: 340px; }
+  .rules { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 560px) {
+  .hero { flex-direction: column; }
+  .panel-head { align-items: flex-start; flex-direction: column; }
+  .actions { justify-content: flex-start; }
+}
+
+    
+    
+</style>
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">MODULAR MARKUP TOOL</p>
+        <h1>File Tree Generator</h1>
+        <p class="lede">
+          Type a structure the fast way: indentation controls nesting, and a trailing slash marks folders.
+        </p>
+      </div>
+      <button id="clearBtn" class="ghost-btn" type="button">Clear</button>
+    </header>
+
+    <section class="workspace">
+      <article class="panel">
+        <div class="panel-head">
+          <div>
+            <span class="step">01</span>
+            <h2>Write the structure</h2>
+          </div>
+          <button id="exampleBtn" class="text-btn" type="button">Load example</button>
+        </div>
+
+        <textarea
+          id="input"
+          spellcheck="false"
+          aria-label="Indented file tree input"
+          placeholder="Clients/
+  Client-A/
+    Project-A/
+      invoice.pdf
+    Project-B/
+  Client-B/
+    contract.pdf"
+        ></textarea>
+
+        <div class="hint-row">
+          <span><kbd>Tab</kbd> indent</span>
+          <span><code>/</code> folder</span>
+          <span>plain name = file</span>
+        </div>
+      </article>
+
+      <article class="panel output-panel">
+        <div class="panel-head">
+          <div>
+            <span class="step">02</span>
+            <h2>Use the tree</h2>
+          </div>
+          <div class="actions">
+            <button id="copyTreeBtn" class="text-btn" type="button">Copy tree</button>
+            <button id="copyMarkdownBtn" class="primary-btn" type="button">Copy Markdown</button>
+          </div>
+        </div>
+
+        <pre id="output" aria-live="polite"><code></code></pre>
+        <p id="status" class="status" role="status"></p>
+      </article>
+    </section>
+
+    <section class="rules">
+      <div class="rule">
+        <span>INDENT</span>
+        <p>Spaces or tabs define parent-child relationships.</p>
+      </div>
+      <div class="rule">
+        <span>SLASH</span>
+        <p>A trailing <code>/</code> explicitly marks a folder, including empty folders.</p>
+      </div>
+      <div class="rule">
+        <span>OUTPUT</span>
+        <p>Copy the ASCII tree alone or copy a ready-to-paste Markdown code block.</p>
+      </div>
+    </section>
+  </main>
+
+  <script>const input = document.querySelector("#input");
+const outputCode = document.querySelector("#output code");
+const status = document.querySelector("#status");
+const clearBtn = document.querySelector("#clearBtn");
+const exampleBtn = document.querySelector("#exampleBtn");
+const copyTreeBtn = document.querySelector("#copyTreeBtn");
+const copyMarkdownBtn = document.querySelector("#copyMarkdownBtn");
+
+const EXAMPLE = `Clients/
+  Client-A/
+    Project-Redesign/
+      brief.md
+      homepage.html
+    Project-Branding/
+      logo.svg
+  Client-B/
+    invoice.pdf
+  Client-C/
+    Project-Launch/
+      assets/
+        hero.jpg
+      notes.md`;
+
+function indentationWidth(prefix) {
+  let width = 0;
+  for (const ch of prefix) {
+    width += ch === "\t" ? 2 : 1;
+  }
+  return width;
+}
+
+function parseLines(text) {
+  const raw = text
+    .split(/\r?\n/)
+    .filter(line => line.trim().length > 0);
+
+  if (!raw.length) return [];
+
+  const entries = raw.map(line => {
+    const prefix = line.match(/^[\t ]*/)?.[0] ?? "";
+    return {
+      rawName: line.trim(),
+      indent: indentationWidth(prefix)
+    };
+  });
+
+  const positiveIndents = [...new Set(entries.map(x => x.indent).filter(Boolean))].sort((a,b) => a-b);
+  let unit = positiveIndents[0] || 2;
+
+  // Use the smallest positive delta when it is more reliable than the first indent.
+  const deltas = [];
+  for (let i = 1; i < positiveIndents.length; i++) {
+    const d = positiveIndents[i] - positiveIndents[i - 1];
+    if (d > 0) deltas.push(d);
+  }
+  if (deltas.length) unit = Math.min(unit, ...deltas);
+
+  const root = { children: [] };
+  const stack = [{ level: -1, node: root }];
+
+  for (const entry of entries) {
+    const level = Math.max(0, Math.round(entry.indent / unit));
+    const node = {
+      name: entry.rawName,
+      isFolder: entry.rawName.endsWith("/"),
+      children: []
+    };
+
+    while (stack.length > 1 && stack[stack.length - 1].level >= level) {
+      stack.pop();
+    }
+
+    const parent = stack[stack.length - 1].node;
+    parent.children.push(node);
+    stack.push({ level, node });
+  }
+
+  return root.children;
+}
+
+function renderNodes(nodes, prefix = "") {
+  const lines = [];
+
+  nodes.forEach((node, index) => {
+    const isLast = index === nodes.length - 1;
+    const connector = isLast ? "└── " : "├── ";
+    lines.push(prefix + connector + node.name);
+
+    if (node.children.length) {
+      const childPrefix = prefix + (isLast ? "    " : "│   ");
+      lines.push(...renderNodes(node.children, childPrefix));
+    }
+  });
+
+  return lines;
+}
+
+function generateTree(text) {
+  const nodes = parseLines(text);
+  if (!nodes.length) return "";
+
+  // If there is exactly one top-level node, render it without a leading branch.
+  if (nodes.length === 1) {
+    const root = nodes[0];
+    const lines = [root.name];
+    lines.push(...renderNodes(root.children, ""));
+    return lines.join("\n");
+  }
+
+  return renderNodes(nodes).join("\n");
+}
+
+function refresh() {
+  outputCode.textContent = generateTree(input.value);
+  status.textContent = "";
+}
+
+function flash(message) {
+  status.textContent = message;
+  window.clearTimeout(flash.timer);
+  flash.timer = window.setTimeout(() => {
+    status.textContent = "";
+  }, 1800);
+}
+
+async function copyText(text, successMessage) {
+  if (!text) {
+    flash("Nothing to copy yet.");
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(text);
+    flash(successMessage);
+  } catch {
+    const helper = document.createElement("textarea");
+    helper.value = text;
+    document.body.appendChild(helper);
+    helper.select();
+    document.execCommand("copy");
+    helper.remove();
+    flash(successMessage);
+  }
+}
+
+input.addEventListener("input", refresh);
+
+input.addEventListener("keydown", event => {
+  if (event.key !== "Tab") return;
+
+  event.preventDefault();
+  const start = input.selectionStart;
+  const end = input.selectionEnd;
+  const value = input.value;
+  const indent = "  ";
+
+  if (start === end) {
+    input.value = value.slice(0, start) + indent + value.slice(end);
+    input.selectionStart = input.selectionEnd = start + indent.length;
+  } else {
+    const blockStart = value.lastIndexOf("\\n", start - 1) + 1;
+    const block = value.slice(blockStart, end);
+    const indented = block
+      .split("\\n")
+      .map(line => indent + line)
+      .join("\n");
+
+    input.value = value.slice(0, blockStart) + indented + value.slice(end);
+    input.selectionStart = blockStart;
+    input.selectionEnd = blockStart + indented.length;
+  }
+
+  refresh();
+});
+
+clearBtn.addEventListener("click", () => {
+  input.value = "";
+  refresh();
+  input.focus();
+});
+
+exampleBtn.addEventListener("click", () => {
+  input.value = EXAMPLE;
+  refresh();
+  input.focus();
+});
+
+copyTreeBtn.addEventListener("click", () => {
+  copyText(generateTree(input.value), "Tree copied.");
+});
+
+copyMarkdownBtn.addEventListener("click", () => {
+  const tree = generateTree(input.value);
+  copyText(tree ? "```text\n" + tree + "\n```" : "", "Markdown copied.");
+});
+
+refresh();
+</script>
+</body>
+</html>
