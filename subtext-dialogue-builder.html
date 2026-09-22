@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Say Something Else — A Subtext Dialogue Builder</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Oswald:wght@500;600;700&display=swap');
+
+    :root {
+      --ink: #151515;
+      --paper: #fffdf8;
+      --lime: #39ff14;
+      --pink: #ff2bd6;
+      --aqua: #00e5ff;
+      --yellow: #fffb00;
+      --purple: #b967ff;
+      --shadow: 6px 6px 0 var(--ink);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background-color: #fffaf1;
+      background-image: radial-gradient(var(--ink) 1px, transparent 1px);
+      background-size: 22px 22px;
+      font-family: "IBM Plex Mono", monospace;
+    }
+
+    button, input, textarea, select { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+    .page { width: min(1120px, calc(100% - 30px)); margin: 28px auto 70px; }
+    .shell { border: 4px solid var(--ink); background: var(--paper); box-shadow: 10px 10px 0 var(--ink); }
+
+    header { padding: 34px 38px 28px; border-bottom: 4px solid var(--ink); position: relative; overflow: hidden; }
+    header::after {
+      content: "PRIVATE THOUGHTS / PUBLIC WORDS";
+      position: absolute; right: -48px; top: 28px; transform: rotate(7deg);
+      background: var(--yellow); border: 3px solid var(--ink); padding: 8px 55px; font-weight: 700; font-size: 12px;
+    }
+    .kicker { display: inline-block; background: var(--pink); border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); padding: 5px 10px; font-weight: 700; }
+    h1 { font: 700 clamp(42px, 8vw, 82px)/.9 Oswald, sans-serif; text-transform: uppercase; margin: 22px 0 14px; max-width: 760px; letter-spacing: -2px; }
+    h1 span { color: var(--pink); -webkit-text-stroke: 2px var(--ink); text-shadow: 4px 4px 0 var(--aqua); }
+    header p { max-width: 720px; font-size: 16px; line-height: 1.55; margin: 0; }
+
+    .tabs { display: flex; flex-wrap: wrap; gap: 0; border-bottom: 4px solid var(--ink); background: var(--ink); }
+    .tab { flex: 1; min-width: 170px; border: 0; border-right: 3px solid var(--ink); padding: 16px; background: #eee9df; font-weight: 700; text-transform: uppercase; }
+    .tab.active { background: var(--lime); }
+    .tab:last-child { border-right: 0; }
+
+    main { padding: 34px 38px 42px; }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    h2 { font: 700 33px/1 Oswald, sans-serif; text-transform: uppercase; margin: 0 0 10px; }
+    .lede { margin: 0 0 28px; max-width: 780px; line-height: 1.55; }
+    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; }
+    .card { border: 3px solid var(--ink); box-shadow: var(--shadow); background: white; padding: 20px; }
+    .card.a { border-top: 14px solid var(--pink); }
+    .card.b { border-top: 14px solid var(--aqua); }
+    .card.shared { grid-column: 1 / -1; border-top: 14px solid var(--yellow); }
+    .card h3 { margin: 0 0 17px; font: 700 23px Oswald, sans-serif; text-transform: uppercase; }
+    label { display: block; font-size: 12px; font-weight: 700; text-transform: uppercase; margin: 14px 0 6px; }
+    input, textarea, select {
+      width: 100%; border: 3px solid var(--ink); background: var(--paper); padding: 11px 12px; outline: none;
+    }
+    input:focus, textarea:focus, select:focus { box-shadow: 4px 4px 0 var(--purple); }
+    textarea { resize: vertical; min-height: 76px; }
+    .tiny { font-size: 11px; line-height: 1.45; }
+    .actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 28px; }
+    .btn { border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); background: white; padding: 11px 16px; font-weight: 700; text-transform: uppercase; }
+    .btn:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--ink); }
+    .btn.primary { background: var(--lime); }
+    .btn.pink { background: var(--pink); }
+    .btn.aqua { background: var(--aqua); }
+    .btn.danger { background: #fff; color: #9b0030; }
+
+    .progress-wrap { margin-bottom: 25px; }
+    .progress-label { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; margin-bottom: 7px; }
+    .progress { height: 20px; border: 3px solid var(--ink); background: white; }
+    .progress > div { height: 100%; width: 0; background: var(--lime); transition: width .2s; }
+    .brief { border: 3px solid var(--ink); background: var(--yellow); padding: 14px 16px; margin-bottom: 25px; line-height: 1.5; }
+
+    #turns { display: grid; gap: 22px; }
+    .turn { border: 3px solid var(--ink); background: white; box-shadow: var(--shadow); }
+    .turn-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 3px solid var(--ink); padding: 10px 14px; }
+    .turn.a .turn-head { background: var(--pink); }
+    .turn.b .turn-head { background: var(--aqua); }
+    .speaker { font-weight: 700; text-transform: uppercase; }
+    .turn-no { background: var(--ink); color: white; padding: 3px 8px; font-size: 11px; }
+    .turn-body { display: grid; grid-template-columns: 1fr 1fr 190px; gap: 16px; padding: 18px; }
+    .turn-body label { margin-top: 0; }
+    .remove { border: 2px solid var(--ink); background: white; font-weight: 700; }
+    .hint { margin: 13px 18px 18px; padding: 9px 11px; background: #f2edff; border-left: 7px solid var(--purple); font-size: 12px; line-height: 1.45; }
+
+    .reader-paper { border: 4px solid var(--ink); background: white; box-shadow: 8px 8px 0 var(--pink); padding: clamp(24px, 6vw, 65px); min-height: 360px; }
+    .reader-title { font: 700 38px Oswald, sans-serif; text-transform: uppercase; border-bottom: 4px solid var(--ink); padding-bottom: 14px; margin-bottom: 28px; }
+    .line { margin: 0 0 20px; line-height: 1.6; }
+    .line strong { text-transform: uppercase; }
+    .xray { margin: 6px 0 22px 25px; padding: 11px 14px; border: 2px dashed var(--ink); background: #f0ecff; font-size: 12px; }
+    .xray b { background: var(--purple); padding: 2px 5px; }
+    .empty { text-align: center; padding: 70px 20px; color: #5d5d5d; }
+    footer { border-top: 4px solid var(--ink); padding: 18px 38px; background: var(--purple); font-weight: 700; font-size: 12px; }
+    .status { position: fixed; right: 20px; bottom: 20px; background: var(--lime); border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); padding: 10px 14px; font-weight: 700; opacity: 0; transform: translateY(12px); transition: .2s; pointer-events: none; }
+    .status.show { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 760px) {
+      .page { width: min(100% - 18px, 1120px); margin-top: 10px; }
+      header, main { padding: 24px 19px 30px; }
+      header::after { display: none; }
+      .grid, .turn-body { grid-template-columns: 1fr; }
+      .card.shared { grid-column: auto; }
+      h1 { font-size: 49px; }
+      .tab { min-width: 33%; padding: 13px 6px; font-size: 11px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="shell">
+      <header>
+        <span class="kicker">CREATIVE WRITING LAB #02</span>
+        <h1>Say <span>Something Else</span></h1>
+        <p>Build a conversation about one thing that is secretly about another. Plan what each character wants, write what they say, and track what every line actually means.</p>
+      </header>
+
+      <nav class="tabs" aria-label="Builder stages">
+        <button class="tab active" data-panel="setup">01 / Set the trap</button>
+        <button class="tab" data-panel="write">02 / Write the scene</button>
+        <button class="tab" data-panel="read">03 / Read the result</button>
+      </nav>
+
+      <main>
+        <section class="panel active" id="setup">
+          <h2>Set the trap</h2>
+          <p class="lede">Good subtext needs pressure. Give both characters something they want and a reason they cannot ask for it directly.</p>
+          <div class="grid">
+            <div class="card a">
+              <h3>Character A</h3>
+              <label for="nameA">Name</label><input id="nameA" placeholder="Mara">
+              <label for="wantA">What do they want from this conversation?</label><textarea id="wantA" placeholder="For Lee to admit where he was last night"></textarea>
+              <label for="hideA">What won't they say aloud?</label><textarea id="hideA" placeholder="She already knows he lied"></textarea>
+            </div>
+            <div class="card b">
+              <h3>Character B</h3>
+              <label for="nameB">Name</label><input id="nameB" placeholder="Lee">
+              <label for="wantB">What do they want from this conversation?</label><textarea id="wantB" placeholder="To find out how much Mara knows"></textarea>
+              <label for="hideB">What won't they say aloud?</label><textarea id="hideB" placeholder="He went to see her estranged sister"></textarea>
+            </div>
+            <div class="card shared">
+              <h3>The conversation on the surface</h3>
+              <label for="surface">What harmless thing are they ostensibly discussing?</label>
+              <input id="surface" placeholder="Why the porch light was left on">
+              <label for="forbidden">Words they are forbidden to use <span class="tiny">(separate with commas)</span></label>
+              <input id="forbidden" placeholder="lie, last night, sister, trust">
+              <label for="stakes">What happens if someone finally says the quiet part?</label>
+              <textarea id="stakes" placeholder="The polite conversation becomes an open confrontation"></textarea>
+            </div>
+          </div>
+          <div class="actions">
+            <button class="btn primary" id="startWriting">Start the conversation →</button>
+            <button class="btn" id="loadSample">Load an example</button>
+          </div>
+        </section>
+
+        <section class="panel" id="write">
+          <h2>Write the scene</h2>
+          <p class="lede">Every line should do two jobs: participate in the surface conversation and quietly pursue the character's real goal.</p>
+          <div class="progress-wrap">
+            <div class="progress-label"><span>Conversation pressure</span><span id="progressText">0 turns</span></div>
+            <div class="progress"><div id="progressBar"></div></div>
+          </div>
+          <div class="brief" id="brief">Complete the setup to see your scene brief.</div>
+          <div id="turns"></div>
+          <div class="actions">
+            <button class="btn primary" id="addTurn">+ Add next line</button>
+            <button class="btn pink" id="viewResult">View reader version →</button>
+          </div>
+        </section>
+
+        <section class="panel" id="read">
+          <h2>Reader view</h2>
+          <p class="lede">The scaffolding disappears. Does the hidden conversation remain perceptible beneath the spoken one?</p>
+          <div class="reader-paper" id="reader"></div>
+          <div class="actions">
+            <button class="btn aqua" id="toggleXray">Reveal the subtext</button>
+            <button class="btn" id="copyText">Copy clean dialogue</button>
+            <button class="btn" id="backToWriting">← Keep writing</button>
+            <button class="btn danger" id="resetAll">Reset everything</button>
+          </div>
+        </section>
+      </main>
+      <footer>THE RULE: THEY MAY DISCUSS ANYTHING EXCEPT WHAT THE SCENE IS ACTUALLY ABOUT.</footer>
+    </div>
+  </div>
+  <div class="status" id="status">COPIED!</div>
+
+  <script>
+    const tactics = ['Probe', 'Deflect', 'Accuse', 'Reassure', 'Conceal', 'Provoke', 'Bluff', 'Retreat', 'Surrender'];
+    const state = { turns: [], xray: false };
+    const fields = ['nameA','wantA','hideA','nameB','wantB','hideB','surface','forbidden','stakes'];
+
+    const $ = id => document.getElementById(id);
+    const esc = value => String(value ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+
+    function switchPanel(id) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === id));
+      document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.panel === id));
+      if (id === 'write') renderTurns();
+      if (id === 'read') renderReader();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => switchPanel(t.dataset.panel)));
+    fields.forEach(id => $(id).addEventListener('input', save));
+
+    function speakerFor(index) { return index % 2 === 0 ? 'A' : 'B'; }
+    function speakerName(who) { return $(`name${who}`).value.trim() || `Character ${who}`; }
+
+    function addTurn(data = {}) {
+      const who = speakerFor(state.turns.length);
+      state.turns.push({ who, said: data.said || '', meant: data.meant || '', tactic: data.tactic || tactics[0] });
+      renderTurns(); save();
+    }
+
+    function renderTurns() {
+      const surface = $('surface').value.trim() || 'the harmless surface topic';
+      $('brief').innerHTML = `<strong>SURFACE:</strong> ${esc(surface)}<br><strong>REAL OBJECTIVES:</strong> ${esc(speakerName('A'))} wants ${esc($('wantA').value || 'something')} / ${esc(speakerName('B'))} wants ${esc($('wantB').value || 'something else')}`;
+      $('turns').innerHTML = state.turns.map((turn, i) => {
+        const words = $('forbidden').value.split(',').map(w => w.trim().toLowerCase()).filter(Boolean);
+        const hits = words.filter(w => turn.said.toLowerCase().includes(w));
+        const hint = hits.length ? `⚠ TOO DIRECT: This line uses a forbidden word: <strong>${esc(hits.join(', '))}</strong>` : tacticHint(turn.tactic);
+        return `<article class="turn ${turn.who.toLowerCase()}">
+          <div class="turn-head"><span class="speaker">${esc(speakerName(turn.who))}</span><span><span class="turn-no">LINE ${i + 1}</span> <button class="remove" data-remove="${i}" aria-label="Remove line">×</button></span></div>
+          <div class="turn-body">
+            <div><label>What they say</label><textarea data-key="said" data-index="${i}" placeholder="The spoken line...">${esc(turn.said)}</textarea></div>
+            <div><label>What they mean</label><textarea data-key="meant" data-index="${i}" placeholder="The line underneath the line...">${esc(turn.meant)}</textarea></div>
+            <div><label>Tactic</label><select data-key="tactic" data-index="${i}">${tactics.map(t => `<option ${t === turn.tactic ? 'selected' : ''}>${t}</option>`).join('')}</select></div>
+          </div>
+          <div class="hint">${hint}</div>
+        </article>`;
+      }).join('');
+      document.querySelectorAll('[data-key]').forEach(el => el.addEventListener('input', e => {
+        state.turns[+e.target.dataset.index][e.target.dataset.key] = e.target.value;
+        save(); updateProgress();
+      }));
+      document.querySelectorAll('[data-remove]').forEach(el => el.addEventListener('click', () => {
+        state.turns.splice(+el.dataset.remove, 1);
+        state.turns.forEach((t, i) => t.who = speakerFor(i));
+        renderTurns(); save();
+      }));
+      updateProgress();
+    }
+
+    function tacticHint(t) {
+      const hints = {
+        Probe: 'Ask for information without revealing why you need it.', Deflect: 'Move attention away from the dangerous subject.',
+        Accuse: 'Assign blame without stating the real offense.', Reassure: 'Offer comfort that may also conceal or manipulate.',
+        Conceal: 'Give a technically true answer that leaves out the important part.', Provoke: 'Try to make the other person lose control first.',
+        Bluff: 'Behave as though you know more than you do.', Retreat: 'Reduce pressure without abandoning the objective.',
+        Surrender: 'Yield something—but decide whether it is the truth.'
+      };
+      return `<strong>${t.toUpperCase()}:</strong> ${hints[t]}`;
+    }
+
+    function updateProgress() {
+      const complete = state.turns.filter(t => t.said.trim() && t.meant.trim()).length;
+      $('progressText').textContent = `${complete} complete turn${complete === 1 ? '' : 's'}`;
+      $('progressBar').style.width = `${Math.min(100, complete / 8 * 100)}%`;
+    }
+
+    function renderReader() {
+      const useful = state.turns.filter(t => t.said.trim());
+      if (!useful.length) { $('reader').innerHTML = '<div class="empty">Your conversation has not started yet.</div>'; return; }
+      $('reader').innerHTML = `<div class="reader-title">${esc($('surface').value || 'An Untitled Conversation')}</div>` + useful.map(t => `
+        <p class="line"><strong>${esc(speakerName(t.who))}:</strong> ${esc(t.said)}</p>
+        ${state.xray ? `<div class="xray"><b>${esc(t.tactic)}</b> &nbsp; ${esc(t.meant || 'No hidden meaning recorded.')}</div>` : ''}
+      `).join('');
+      $('toggleXray').textContent = state.xray ? 'Hide the subtext' : 'Reveal the subtext';
+    }
+
+    function save() {
+      const data = { turns: state.turns, fields: Object.fromEntries(fields.map(id => [id, $(id).value])) };
+      localStorage.setItem('subtext-builder', JSON.stringify(data));
+    }
+
+    function load() {
+      try {
+        const data = JSON.parse(localStorage.getItem('subtext-builder'));
+        if (!data) return;
+        fields.forEach(id => $(id).value = data.fields?.[id] || '');
+        state.turns = Array.isArray(data.turns) ? data.turns : [];
+      } catch (_) {}
+    }
+
+    $('startWriting').addEventListener('click', () => { if (!state.turns.length) { addTurn(); addTurn(); } switchPanel('write'); });
+    $('addTurn').addEventListener('click', () => addTurn());
+    $('viewResult').addEventListener('click', () => switchPanel('read'));
+    $('backToWriting').addEventListener('click', () => switchPanel('write'));
+    $('toggleXray').addEventListener('click', () => { state.xray = !state.xray; renderReader(); });
+    $('copyText').addEventListener('click', async () => {
+      const text = state.turns.filter(t => t.said.trim()).map(t => `${speakerName(t.who)}: ${t.said}`).join('\n\n');
+      try { await navigator.clipboard.writeText(text); flash('COPIED!'); } catch (_) { flash('COPY FAILED'); }
+    });
+    $('resetAll').addEventListener('click', () => {
+      if (!confirm('Erase the entire conversation and start over?')) return;
+      fields.forEach(id => $(id).value = ''); state.turns = []; state.xray = false; localStorage.removeItem('subtext-builder'); switchPanel('setup');
+    });
+    $('loadSample').addEventListener('click', () => {
+      const sampleFields = {
+        nameA:'Mara', wantA:'Lee to admit where he was last night', hideA:'She already knows he lied',
+        nameB:'Lee', wantB:'To discover how much Mara knows', hideB:'He went to see Mara’s estranged sister',
+        surface:'The porch light', forbidden:'lie, last night, sister, trust', stakes:'Their careful politeness turns into an open confrontation'
+      };
+      Object.entries(sampleFields).forEach(([id, value]) => $(id).value = value);
+      state.turns = [
+        {who:'A', said:'You left the porch light on again.', meant:'I noticed you came home late.', tactic:'Probe'},
+        {who:'B', said:'I thought you preferred it that way.', meant:'Are you accusing me, or is this still deniable?', tactic:'Bluff'},
+        {who:'A', said:'Only when someone is expected.', meant:'I know you planned to be gone.', tactic:'Provoke'},
+        {who:'B', said:'Maybe I was expecting someone.', meant:'I know more about your family than you realize.', tactic:'Conceal'}
+      ];
+      save(); switchPanel('write');
+    });
+
+    function flash(message) { $('status').textContent = message; $('status').classList.add('show'); setTimeout(() => $('status').classList.remove('show'), 1400); }
+    load();
+  </script>
+</body>
+</html>

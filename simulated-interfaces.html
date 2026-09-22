@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Simulated Interface Components</title>
+  <style>
+    :root {
+      --ink: #17151e;
+      --paper: #f4f1ea;
+      --white: #fff;
+      --line: #d9d4cb;
+      --muted: #706b77;
+      --pink: #ff2bd6;
+      --lime: #39ff14;
+      --aqua: #00e5ff;
+      --yellow: #fffb00;
+      --purple: #8f5cff;
+      --shadow: 8px 8px 0 var(--ink);
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(rgba(23,21,30,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(23,21,30,.035) 1px, transparent 1px),
+        var(--paper);
+      background-size: 24px 24px;
+      font: 15px/1.5 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    a { color: inherit; }
+
+    .page-header {
+      padding: 64px max(24px, calc((100vw - 1180px) / 2)) 34px;
+      border-bottom: 3px solid var(--ink);
+      background: var(--yellow);
+    }
+    .eyebrow { margin: 0 0 8px; font-weight: 900; letter-spacing: .16em; text-transform: uppercase; }
+    h1 { max-width: 850px; margin: 0; font-size: clamp(44px, 8vw, 92px); line-height: .9; letter-spacing: -.06em; }
+    .intro { max-width: 680px; margin: 24px 0 0; font-size: 18px; }
+
+    .jump-nav {
+      display: flex; gap: 8px; padding: 14px max(24px, calc((100vw - 1180px) / 2));
+      overflow-x: auto; position: sticky; top: 0; z-index: 20;
+      background: rgba(244,241,234,.94); border-bottom: 2px solid var(--ink); backdrop-filter: blur(10px);
+    }
+    .jump-nav a { flex: 0 0 auto; padding: 7px 12px; border: 2px solid var(--ink); background: white; text-decoration: none; font-size: 12px; font-weight: 900; text-transform: uppercase; }
+    .jump-nav a:hover { background: var(--lime); }
+
+    main { width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 54px 0 100px; }
+    .demo { margin: 0 0 88px; scroll-margin-top: 76px; }
+    .demo-heading { display: flex; align-items: flex-end; gap: 14px; margin: 0 0 20px; }
+    .demo-number { font: 900 13px/1 ui-monospace, monospace; padding: 7px 9px; border: 2px solid var(--ink); background: var(--pink); }
+    .demo h2 { margin: 0; font-size: clamp(28px, 4vw, 44px); line-height: 1; letter-spacing: -.04em; }
+    .demo-frame { border: 3px solid var(--ink); box-shadow: var(--shadow); background: white; overflow: hidden; }
+
+    /* EMAIL */
+    .email-window { max-width: 920px; margin: auto; }
+    .window-bar { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 2px solid var(--ink); background: #ebe8f0; }
+    .dot { width: 12px; height: 12px; border: 2px solid var(--ink); border-radius: 50%; }
+    .dot:nth-child(1) { background: #ff6464; } .dot:nth-child(2) { background: #ffd84d; } .dot:nth-child(3) { background: var(--lime); }
+    .window-title { margin-left: 8px; font-size: 12px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
+    .email-toolbar { display: flex; gap: 8px; padding: 12px 18px; border-bottom: 1px solid var(--line); }
+    .icon-btn { border: 1px solid var(--line); border-radius: 7px; padding: 7px 11px; background: white; }
+    .email-body { padding: 28px clamp(22px, 5vw, 54px) 36px; }
+    .email-subject { margin: 0 0 20px; font-size: clamp(25px, 4vw, 36px); letter-spacing: -.03em; }
+    .sender-row { display: grid; grid-template-columns: 48px 1fr auto; gap: 12px; align-items: center; }
+    .avatar { display: grid; place-items: center; width: 48px; aspect-ratio: 1; border: 2px solid var(--ink); border-radius: 50%; background: var(--aqua); font-weight: 950; }
+    .sender-name { font-weight: 900; } .sender-meta, .email-time { color: var(--muted); font-size: 13px; }
+    .message-copy { max-width: 680px; margin: 28px 0; font-family: Georgia, serif; font-size: 17px; }
+    .attachment { display: flex; align-items: center; gap: 12px; max-width: 340px; padding: 12px; border: 2px solid var(--ink); background: #fafafa; }
+    .file-icon { display: grid; place-items: center; width: 42px; height: 48px; background: var(--pink); border: 2px solid var(--ink); font-size: 11px; font-weight: 900; }
+    .reply-btn { margin-top: 24px; padding: 9px 18px; border: 2px solid var(--ink); background: white; font-weight: 800; box-shadow: 3px 3px 0 var(--ink); }
+
+    /* SPREADSHEET */
+    .sheet { overflow-x: auto; }
+    .sheet-toolbar { min-width: 760px; display: flex; align-items: center; gap: 14px; padding: 10px 14px; border-bottom: 1px solid #bbb; background: #f5f5f5; }
+    .formula-badge { font-family: Georgia, serif; font-style: italic; font-weight: bold; }
+    .formula-input { flex: 1; min-height: 30px; padding: 5px 10px; border: 1px solid #bbb; background: white; font-family: ui-monospace, monospace; }
+    table.grid { width: 100%; min-width: 760px; border-collapse: collapse; font-size: 13px; }
+    .grid th, .grid td { min-width: 110px; height: 36px; padding: 7px 10px; border: 1px solid #d6d6d6; text-align: left; }
+    .grid thead th, .row-num { min-width: 42px !important; background: #ececec; color: #555; text-align: center !important; font-weight: 500; }
+    .grid .col-name { background: #dfffd9; font-weight: 800; }
+    .grid .money { text-align: right; font-variant-numeric: tabular-nums; }
+    .grid .selected { position: relative; background: #f2fff0; outline: 2px solid #209943; outline-offset: -2px; }
+    .grid .selected::after { content: ""; position: absolute; right: -3px; bottom: -3px; width: 7px; height: 7px; background: #209943; }
+    .sheet-tabs { min-width: 760px; display: flex; gap: 4px; padding: 10px 14px 0; background: #f3f3f3; }
+    .sheet-tab { padding: 8px 16px; border: 1px solid #bbb; border-bottom: 3px solid #209943; background: white; font-weight: 700; }
+
+    /* PLAYLIST */
+    .playlist { padding: clamp(20px, 5vw, 48px); color: white; background: radial-gradient(circle at 12% 0%, #6f266e 0, #201729 38%, #0d0c10 75%); }
+    .playlist-head { display: grid; grid-template-columns: 190px 1fr; gap: 28px; align-items: end; }
+    .album-art { aspect-ratio: 1; border: 2px solid white; background: linear-gradient(135deg, var(--pink), #25053e 50%, var(--aqua)); box-shadow: 12px 12px 0 rgba(0,0,0,.45); position: relative; overflow: hidden; }
+    .album-art::before { content: "1997"; position: absolute; right: -8px; bottom: 8px; font-size: 62px; font-weight: 950; transform: rotate(-90deg); opacity: .8; }
+    .playlist-label { margin: 0; font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: .14em; }
+    .playlist h3 { margin: 6px 0; font-size: clamp(38px, 7vw, 74px); line-height: .92; letter-spacing: -.06em; }
+    .playlist-meta { color: #c8c1cd; }
+    .play-controls { display: flex; gap: 12px; align-items: center; margin: 34px 0 18px; }
+    .play-main { width: 54px; aspect-ratio: 1; border: 0; border-radius: 50%; background: var(--lime); font-size: 22px; }
+    .ghost-control { color: white; border: 1px solid #777; border-radius: 99px; padding: 8px 14px; background: transparent; }
+    .track { display: grid; grid-template-columns: 34px 1fr minmax(80px, 1fr) 52px; gap: 12px; padding: 11px 8px; border-top: 1px solid #403a45; align-items: center; }
+    .track:hover { background: rgba(255,255,255,.08); }
+    .track-no, .track-album, .track-time { color: #aaa4ae; font-size: 13px; }
+    .track-title { font-weight: 750; } .track-artist { color: #aaa4ae; font-size: 12px; }
+
+    /* FLOWCHART */
+    .flowchart { padding: 50px 24px; background: #ede8ff; }
+    .flow-stack { width: min(700px, 100%); margin: auto; display: grid; justify-items: center; }
+    .flow-node { width: min(360px, 90%); padding: 17px 22px; border: 3px solid var(--ink); background: white; text-align: center; font-weight: 900; box-shadow: 4px 4px 0 var(--ink); }
+    .flow-node.start { width: 170px; border-radius: 999px; background: var(--lime); }
+    .flow-node.decision { width: 210px; min-height: 110px; display: grid; place-items: center; background: var(--yellow); clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); box-shadow: none; }
+    .connector { width: 3px; height: 35px; background: var(--ink); position: relative; }
+    .connector::after { content: ""; position: absolute; left: -5px; bottom: -1px; border: 6px solid transparent; border-top-color: var(--ink); }
+    .branch { width: min(640px, 100%); display: grid; grid-template-columns: 1fr 1fr; gap: 40px; position: relative; padding-top: 38px; }
+    .branch::before { content: ""; position: absolute; top: 0; left: 25%; right: 25%; height: 38px; border: 3px solid var(--ink); border-bottom: 0; }
+    .branch-item { display: grid; justify-items: center; gap: 9px; }
+    .branch-label { font: 900 11px/1 ui-monospace, monospace; background: var(--pink); padding: 5px 8px; border: 2px solid var(--ink); }
+
+    /* BUSINESS CARD */
+    .card-stage { display: grid; grid-template-columns: repeat(2, minmax(280px, 1fr)); gap: 34px; padding: clamp(24px, 5vw, 60px); background: #dcd7d0; }
+    .business-card { aspect-ratio: 1.75/1; padding: clamp(20px, 3vw, 34px); border: 3px solid var(--ink); box-shadow: 8px 8px 0 rgba(23,21,30,.25); position: relative; overflow: hidden; }
+    .card-front { display: flex; flex-direction: column; justify-content: space-between; background: var(--ink); color: white; }
+    .card-front::after { content: ""; position: absolute; width: 180px; height: 180px; right: -50px; top: -50px; border: 30px solid var(--pink); border-radius: 50%; }
+    .card-mark { font-size: 16px; font-weight: 950; letter-spacing: .13em; text-transform: uppercase; }
+    .card-name { margin: 0; font-size: clamp(32px, 5vw, 60px); line-height: .82; letter-spacing: -.06em; position: relative; z-index: 1; }
+    .card-role { margin-top: 10px; color: var(--lime); font: 800 12px/1.3 ui-monospace, monospace; text-transform: uppercase; }
+    .card-back { background: var(--lime); display: grid; align-content: center; gap: 8px; }
+    .card-back::before { content: "+"; position: absolute; right: 22px; top: 3px; font-size: 70px; font-weight: 200; }
+    .contact-line { width: fit-content; padding: 5px 8px; background: white; border: 2px solid var(--ink); font-weight: 800; }
+    .card-note { max-width: 230px; margin-top: 12px; font-size: 12px; }
+
+    /* FORM */
+    .form-wrap { display: grid; grid-template-columns: .7fr 1.3fr; }
+    .form-aside { padding: 42px; color: white; background: var(--ink); }
+    .form-aside h3 { margin: 0 0 12px; font-size: 42px; line-height: .95; }
+    .form-aside p { color: #c9c5cf; }
+    .step-pill { display: inline-block; margin-bottom: 50px; padding: 5px 9px; color: var(--ink); background: var(--aqua); font: 900 11px/1 ui-monospace, monospace; }
+    .web-form { padding: clamp(24px, 5vw, 48px); display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .field { display: grid; gap: 7px; }
+    .field.full { grid-column: 1 / -1; }
+    .field label { font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: .08em; }
+    .field input, .field select, .field textarea { width: 100%; padding: 12px 13px; border: 2px solid var(--ink); border-radius: 0; background: #fafafa; outline: 0; }
+    .field textarea { min-height: 110px; resize: vertical; }
+    .field input:focus, .field select:focus, .field textarea:focus { box-shadow: 4px 4px 0 var(--aqua); }
+    .checkbox { grid-column: 1/-1; display: flex; gap: 10px; align-items: flex-start; }
+    .checkbox input { accent-color: var(--pink); width: 18px; height: 18px; }
+    .submit { grid-column: 1/-1; justify-self: start; padding: 12px 24px; border: 3px solid var(--ink); background: var(--pink); box-shadow: 5px 5px 0 var(--ink); font-weight: 950; }
+
+    /* CHAT */
+    .chat-app { width: min(760px, 100%); margin: auto; background: #f8f7fa; }
+    .chat-head { display: flex; align-items: center; gap: 12px; padding: 14px 18px; color: white; background: #302b3c; }
+    .chat-head .avatar { width: 40px; background: var(--pink); color: var(--ink); }
+    .online { color: var(--lime); font-size: 12px; }
+    .messages { display: flex; flex-direction: column; gap: 12px; min-height: 430px; padding: 28px; background: linear-gradient(135deg, #f7f4ff, #fff); }
+    .bubble { max-width: 72%; padding: 11px 14px; border: 2px solid var(--ink); box-shadow: 3px 3px 0 rgba(23,21,30,.18); }
+    .bubble.them { align-self: flex-start; border-radius: 4px 16px 16px 16px; background: white; }
+    .bubble.me { align-self: flex-end; border-radius: 16px 4px 16px 16px; background: #d8ffcf; }
+    .bubble-time { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; text-align: right; }
+    .typing { align-self: flex-start; padding: 8px 13px; border-radius: 99px; color: var(--muted); background: #e6e3e9; letter-spacing: 4px; }
+    .chat-compose { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; padding: 14px; border-top: 2px solid var(--ink); background: white; }
+    .chat-compose input { min-width: 0; padding: 10px 14px; border: 2px solid #bbb; border-radius: 99px; }
+    .send-btn { border: 2px solid var(--ink); border-radius: 50%; width: 42px; background: var(--aqua); font-weight: 900; }
+
+    /* SLIDES */
+    .slides-app { display: grid; grid-template-columns: 180px 1fr; min-height: 550px; background: #e6e4ea; }
+    .slide-rail { padding: 16px; border-right: 2px solid var(--ink); overflow: hidden; }
+    .slide-thumb { display: grid; grid-template-columns: 20px 1fr; gap: 7px; margin-bottom: 16px; font-size: 11px; }
+    .thumb-canvas { aspect-ratio: 16/9; border: 2px solid #999; background: white; padding: 8px; }
+    .slide-thumb.active .thumb-canvas { outline: 3px solid var(--pink); }
+    .thumb-line { height: 5px; margin-bottom: 5px; background: #ccc; }
+    .thumb-line.short { width: 60%; background: var(--purple); }
+    .slide-workspace { display: grid; place-items: center; padding: 38px; }
+    .current-slide { width: min(760px, 100%); aspect-ratio: 16/9; padding: clamp(24px, 5vw, 54px); color: white; background: #17151e; box-shadow: 0 8px 24px rgba(0,0,0,.25); position: relative; overflow: hidden; }
+    .current-slide::after { content: ""; width: 42%; aspect-ratio: 1; position: absolute; right: -7%; bottom: -35%; border: 40px solid var(--pink); border-radius: 50%; }
+    .slide-kicker { color: var(--aqua); font: 900 12px/1 ui-monospace, monospace; text-transform: uppercase; }
+    .current-slide h3 { max-width: 620px; margin: 16px 0; font-size: clamp(35px, 6vw, 70px); line-height: .9; letter-spacing: -.055em; position: relative; z-index: 1; }
+    .slide-rule { width: 90px; height: 8px; background: var(--lime); }
+    .slide-footer { position: absolute; left: clamp(24px, 5vw, 54px); bottom: 28px; font-size: 11px; color: #aaa; }
+
+    /* SEARCH */
+    .search-page { background: white; }
+    .search-top { padding: 28px clamp(20px, 5vw, 60px) 16px; border-bottom: 1px solid #ddd; }
+    .search-brand { display: inline-block; margin-right: 24px; font-size: 25px; font-weight: 950; letter-spacing: -.06em; }
+    .search-brand span { color: var(--pink); }
+    .search-box { display: inline-flex; width: min(620px, 75%); padding: 10px 16px; border: 2px solid var(--ink); border-radius: 999px; box-shadow: 3px 3px 0 var(--aqua); vertical-align: middle; }
+    .search-box input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; }
+    .search-tabs { display: flex; gap: 24px; margin: 22px 0 0 95px; font-size: 12px; font-weight: 800; }
+    .search-tabs .active { padding-bottom: 8px; border-bottom: 3px solid var(--pink); }
+    .results { width: min(760px, 100%); padding: 26px clamp(20px, 7vw, 105px) 50px; }
+    .result-count { margin-bottom: 22px; color: var(--muted); font-size: 12px; }
+    .result { margin-bottom: 30px; }
+    .result-source { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+    .favicon { display: grid; place-items: center; width: 25px; height: 25px; border: 1px solid #ccc; border-radius: 50%; font-weight: 900; background: #f3f3f3; }
+    .result h3 { margin: 7px 0 4px; color: #5533cc; font-size: 21px; font-weight: 600; }
+    .result h3 a { text-decoration: none; } .result h3 a:hover { text-decoration: underline; }
+    .result p { margin: 0; color: #4d4b52; }
+    .result strong { color: var(--ink); }
+
+    footer { padding: 30px; border-top: 3px solid var(--ink); text-align: center; background: var(--ink); color: white; }
+
+    @media (max-width: 720px) {
+      .playlist-head, .form-wrap, .card-stage { grid-template-columns: 1fr; }
+      .album-art { width: 150px; }
+      .track { grid-template-columns: 24px 1fr 44px; }
+      .track-album { display: none; }
+      .form-aside { padding: 28px; }
+      .web-form { grid-template-columns: 1fr; }
+      .field, .field.full { grid-column: 1; }
+      .slides-app { grid-template-columns: 82px 1fr; min-height: 390px; }
+      .slide-rail { padding: 9px; }
+      .slide-thumb { grid-template-columns: 1fr; }
+      .slide-thumb > span { display: none; }
+      .slide-workspace { padding: 14px; }
+      .search-box { width: 100%; margin-top: 12px; }
+      .search-tabs { margin-left: 0; overflow-x: auto; }
+      .sender-row { grid-template-columns: 48px 1fr; }
+      .email-time { grid-column: 2; }
+      .branch { gap: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="page-header">
+    <p class="eyebrow">HTML + CSS component collection</p>
+    <h1>Simulated Interfaces</h1>
+    <p class="intro">Nine self-contained visual representations you can copy, customize, and drop into a webpage or an Obsidian HTML block.</p>
+  </header>
+
+  <nav class="jump-nav" aria-label="Component navigation">
+    <a href="#email">Email</a><a href="#spreadsheet">Spreadsheet</a><a href="#playlist">Playlist</a>
+    <a href="#flowchart">Flowchart</a><a href="#business-card">Business card</a><a href="#form">Web form</a>
+    <a href="#chat">Chat</a><a href="#slideshow">Slideshow</a><a href="#search">Search</a>
+  </nav>
+
+  <main>
+    <section class="demo" id="email">
+      <div class="demo-heading"><span class="demo-number">01</span><h2>Email message</h2></div>
+      <article class="demo-frame email-window">
+        <div class="window-bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="window-title">Message</span></div>
+        <div class="email-toolbar"><button class="icon-btn">←</button><button class="icon-btn">Archive</button><button class="icon-btn">Delete</button><button class="icon-btn">•••</button></div>
+        <div class="email-body">
+          <h3 class="email-subject">Re: The archive is finally taking shape</h3>
+          <div class="sender-row">
+            <div class="avatar">JM</div>
+            <div><div class="sender-name">June Mercer &lt;june@example.com&gt;</div><div class="sender-meta">to Ashly · view details⌄</div></div>
+            <time class="email-time">Aug 21, 2026 · 10:42 AM</time>
+          </div>
+          <div class="message-copy">
+            <p>Hi Ashly,</p><p>I reviewed the catalog structure. The strange little cross-references are my favorite part—it feels less like a filing cabinet and more like a place someone could actually wander through.</p><p>I attached the revised index. Let me know what you think.</p><p>— June</p>
+          </div>
+          <div class="attachment"><span class="file-icon">PDF</span><span><strong>archive-index-v3.pdf</strong><br><small>2.4 MB · PDF document</small></span></div>
+          <button class="reply-btn">↩ Reply</button>
+        </div>
+      </article>
+    </section>
+
+    <section class="demo" id="spreadsheet">
+      <div class="demo-heading"><span class="demo-number">02</span><h2>Spreadsheet</h2></div>
+      <div class="demo-frame sheet">
+        <div class="sheet-toolbar"><strong>B6</strong><span class="formula-badge">fx</span><div class="formula-input">=SUM(B2:B5)</div></div>
+        <table class="grid"><thead><tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th></tr></thead>
+          <tbody>
+            <tr><th class="row-num">1</th><td class="col-name">Category</td><td class="col-name">Budget</td><td class="col-name">Spent</td><td class="col-name">Remaining</td><td class="col-name">Status</td></tr>
+            <tr><th class="row-num">2</th><td>Materials</td><td class="money">$480.00</td><td class="money">$312.45</td><td class="money">$167.55</td><td>On track</td></tr>
+            <tr><th class="row-num">3</th><td>Printing</td><td class="money">$225.00</td><td class="money">$198.00</td><td class="money">$27.00</td><td>Watch</td></tr>
+            <tr><th class="row-num">4</th><td>Hosting</td><td class="money">$96.00</td><td class="money">$24.00</td><td class="money">$72.00</td><td>On track</td></tr>
+            <tr><th class="row-num">5</th><td>Shipping</td><td class="money">$150.00</td><td class="money">$88.70</td><td class="money">$61.30</td><td>On track</td></tr>
+            <tr><th class="row-num">6</th><td><strong>Total</strong></td><td class="money selected"><strong>$951.00</strong></td><td class="money"><strong>$623.15</strong></td><td class="money"><strong>$327.85</strong></td><td>—</td></tr>
+          </tbody>
+        </table>
+        <div class="sheet-tabs"><span class="sheet-tab">Overview</span><span class="sheet-tab">Transactions</span><span class="sheet-tab">Notes</span></div>
+      </div>
+    </section>
+
+    <section class="demo" id="playlist">
+      <div class="demo-heading"><span class="demo-number">03</span><h2>Audio playlist</h2></div>
+      <div class="demo-frame playlist">
+        <div class="playlist-head"><div class="album-art"></div><div><p class="playlist-label">Playlist</p><h3>1997, in order</h3><div class="playlist-meta">A year reconstructed from radio, CD binders, and unreliable memory · 3 hr 18 min</div></div></div>
+        <div class="play-controls"><button class="play-main">▶</button><button class="ghost-control">♡ Save</button><button class="ghost-control">•••</button></div>
+        <div class="track"><span class="track-no">01</span><span><span class="track-title">The City After Midnight</span><br><span class="track-artist">Glass Static</span></span><span class="track-album">Streetlight Weather</span><span class="track-time">4:12</span></div>
+        <div class="track"><span class="track-no">02</span><span><span class="track-title">Everything in Blue</span><br><span class="track-artist">Remainder House</span></span><span class="track-album">Everything in Blue</span><span class="track-time">3:48</span></div>
+        <div class="track"><span class="track-no">03</span><span><span class="track-title">Answering Machine</span><br><span class="track-artist">Soft Exit</span></span><span class="track-album">Local Calls</span><span class="track-time">5:01</span></div>
+        <div class="track"><span class="track-no">04</span><span><span class="track-title">Borrowed Summer</span><br><span class="track-artist">Mara Vale</span></span><span class="track-album">Heat Index</span><span class="track-time">3:36</span></div>
+      </div>
+    </section>
+
+    <section class="demo" id="flowchart">
+      <div class="demo-heading"><span class="demo-number">04</span><h2>Flowchart</h2></div>
+      <div class="demo-frame flowchart"><div class="flow-stack">
+        <div class="flow-node start">NEW IDEA</div><div class="connector"></div>
+        <div class="flow-node">Capture it in the inbox</div><div class="connector"></div>
+        <div class="flow-node decision">Worth developing?</div>
+        <div class="branch">
+          <div class="branch-item"><span class="branch-label">YES</span><div class="flow-node">Create a project note</div></div>
+          <div class="branch-item"><span class="branch-label">NOT YET</span><div class="flow-node">Archive with context</div></div>
+        </div>
+      </div></div>
+    </section>
+
+    <section class="demo" id="business-card">
+      <div class="demo-heading"><span class="demo-number">05</span><h2>Business card design</h2></div>
+      <div class="demo-frame card-stage">
+        <div class="business-card card-front"><div class="card-mark">A/L Studio</div><div><h3 class="card-name">ASHLY<br>LORENZANA</h3><div class="card-role">Designer · archivist · systems maker</div></div></div>
+        <div class="business-card card-back"><div class="contact-line">ashly@example.com</div><div class="contact-line">ashlylorenzana.com</div><div class="contact-line">Portland, Oregon</div><div class="card-note">Making strange, useful systems for stories, archives, and the internet.</div></div>
+      </div>
+    </section>
+
+    <section class="demo" id="form">
+      <div class="demo-heading"><span class="demo-number">06</span><h2>Web form</h2></div>
+      <div class="demo-frame form-wrap">
+        <aside class="form-aside"><span class="step-pill">STEP 01 / 01</span><h3>Tell us what you’re making.</h3><p>A compact, accessible form with visible labels, strong focus states, and room for actual answers.</p></aside>
+        <form class="web-form">
+          <div class="field"><label for="name">Your name</label><input id="name" type="text" placeholder="Ashly Lorenzana"></div>
+          <div class="field"><label for="email-address">Email address</label><input id="email-address" type="email" placeholder="you@example.com"></div>
+          <div class="field full"><label for="project-type">Project type</label><select id="project-type"><option>Select one…</option><option>Website</option><option>Archive</option><option>Interactive story</option><option>Something difficult to categorize</option></select></div>
+          <div class="field full"><label for="description">Describe the idea</label><textarea id="description" placeholder="What should it do, feel like, or make possible?"></textarea></div>
+          <label class="checkbox"><input type="checkbox"> <span>I’m comfortable being contacted about this request.</span></label>
+          <button class="submit" type="button">SEND REQUEST →</button>
+        </form>
+      </div>
+    </section>
+
+    <section class="demo" id="chat">
+      <div class="demo-heading"><span class="demo-number">07</span><h2>Instant message</h2></div>
+      <div class="demo-frame chat-app">
+        <div class="chat-head"><div class="avatar">P</div><div><strong>Paul Emerson</strong><div class="online">● online</div></div></div>
+        <div class="messages">
+          <div class="bubble them">I forwarded you the listener email.<span class="bubble-time">2:14 PM</span></div>
+          <div class="bubble me">The one with the 14-page attachment?<span class="bubble-time">2:15 PM · read</span></div>
+          <div class="bubble them">Yes. She made a spreadsheet.<span class="bubble-time">2:15 PM</span></div>
+          <div class="bubble me">Of course she did.<span class="bubble-time">2:16 PM · read</span></div>
+          <div class="bubble them">There are color-coded tabs.<span class="bubble-time">2:16 PM</span></div>
+          <div class="typing">•••</div>
+        </div>
+        <div class="chat-compose"><button class="icon-btn">＋</button><input aria-label="Message" placeholder="Message Paul…"><button class="send-btn">➤</button></div>
+      </div>
+    </section>
+
+    <section class="demo" id="slideshow">
+      <div class="demo-heading"><span class="demo-number">08</span><h2>Slideshow presentation</h2></div>
+      <div class="demo-frame slides-app">
+        <aside class="slide-rail">
+          <div class="slide-thumb active"><span>1</span><div class="thumb-canvas"><div class="thumb-line short"></div><div class="thumb-line"></div><div class="thumb-line"></div></div></div>
+          <div class="slide-thumb"><span>2</span><div class="thumb-canvas"><div class="thumb-line"></div><div class="thumb-line short"></div></div></div>
+          <div class="slide-thumb"><span>3</span><div class="thumb-canvas"><div class="thumb-line short"></div><div class="thumb-line"></div><div class="thumb-line"></div></div></div>
+          <div class="slide-thumb"><span>4</span><div class="thumb-canvas"><div class="thumb-line"></div><div class="thumb-line"></div></div></div>
+        </aside>
+        <div class="slide-workspace"><div class="current-slide"><span class="slide-kicker">Digital archives / 2026</span><h3>What if an archive felt like a place?</h3><div class="slide-rule"></div><div class="slide-footer">ASHLY LORENZANA — 01</div></div></div>
+      </div>
+    </section>
+
+    <section class="demo" id="search">
+      <div class="demo-heading"><span class="demo-number">09</span><h2>Search results page</h2></div>
+      <div class="demo-frame search-page">
+        <div class="search-top"><span class="search-brand">FIND<span>R</span></span><label class="search-box"><input value="forgotten websites from 2009" aria-label="Search"><span>⌕</span></label><div class="search-tabs"><span class="active">All results</span><span>Images</span><span>Archives</span><span>Discussions</span></div></div>
+        <div class="results"><div class="result-count">About 18,400 results (0.42 seconds)</div>
+          <article class="result"><div class="result-source"><span class="favicon">W</span><span>Web Memory Project<br><small>webmemory.example.org › collections › 2009</small></span></div><h3><a href="#">The websites we left behind: a 2009 index</a></h3><p>A browsable collection of <strong>forgotten websites from 2009</strong>, including social networks, personal homepages, widgets, games, and abandoned tools.</p></article>
+          <article class="result"><div class="result-source"><span class="favicon">A</span><span>Archive Catalogue<br><small>archive.example.net › internet-history</small></span></div><h3><a href="#">Before every website looked the same</a></h3><p>Explore captures of the strange, colorful, highly specific web interfaces that defined the late 2000s.</p></article>
+          <article class="result"><div class="result-source"><span class="favicon">F</span><span>Forum Thread<br><small>oldwebtalk.example.com › thread › 4821</small></span></div><h3><a href="#">Which defunct site do you still think about?</a></h3><p>“There was one that let you build a tiny underwater city. I’ve been trying to remember its name for years…”</p></article>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer>SIMULATED INTERFACES · BUILT WITH PLAIN HTML + CSS</footer>
+</body>
+</html>
