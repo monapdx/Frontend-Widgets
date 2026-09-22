@@ -1,0 +1,476 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comic Page Maker</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 30px;
+  background:
+    repeating-linear-gradient(
+      45deg,
+      #f3f3f3 0px,
+      #f3f3f3 10px,
+      #ececec 10px,
+      #ececec 20px
+    );
+  font-family: Arial, sans-serif;
+}
+
+.toolbar,
+.panel-buttons {
+  max-width: 1100px;
+  margin: 0 auto 20px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.panel-buttons {
+  margin-top: 20px;
+}
+
+button,
+.upload-label {
+  background: white;
+  color: black;
+  border: 4px solid black;
+  box-shadow: 5px 5px 0 #d40000;
+  padding: 12px 16px;
+  font-weight: 900;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.upload-label input {
+  display: none;
+}
+
+.comic-wrap {
+  max-width: 1100px;
+  margin: auto;
+  background: #fffdf4;
+  border: 8px solid black;
+  box-shadow: 14px 14px 0 #d40000;
+  padding: 18px;
+}
+
+.comic-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 11 / 8.5;
+  overflow: hidden;
+}
+
+.frame {
+  position: absolute;
+  background: white;
+  border: 8px solid black;
+  box-shadow: 7px 7px 0 #d40000;
+  overflow: hidden;
+}
+
+.frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;
+}
+
+.frame.has-image img {
+  display: block;
+}
+
+.placeholder {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  text-align: center;
+  font-weight: 900;
+  color: #666;
+  background:
+    linear-gradient(45deg, #fff 25%, transparent 25%),
+    linear-gradient(-45deg, #fff 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #fff 75%),
+    linear-gradient(-45deg, transparent 75%, #fff 75%),
+    #eee;
+  background-size: 24px 24px;
+}
+
+.frame.has-image .placeholder {
+  display: none;
+}
+
+.frame-1 {
+  left: 2%;
+  top: 3%;
+  width: 61%;
+  height: 52%;
+  transform: rotate(-1deg);
+}
+
+.frame-2 {
+  right: 2%;
+  top: 4%;
+  width: 31%;
+  height: 23%;
+  transform: rotate(1.5deg);
+}
+
+.frame-3 {
+  right: 2%;
+  top: 31%;
+  width: 31%;
+  height: 24%;
+  transform: rotate(-1deg);
+}
+
+.frame-4 {
+  left: 2%;
+  bottom: 3%;
+  width: 96%;
+  height: 34%;
+  transform: rotate(0.5deg);
+}
+
+.bubble {
+  position: absolute;
+  min-width: 140px;
+  max-width: 260px;
+  min-height: 70px;
+  padding: 18px 22px;
+  background: white;
+  border: 5px solid black;
+  border-radius: 50%;
+  box-shadow: 5px 5px 0 #d40000;
+  font-weight: 900;
+  text-align: center;
+  cursor: move;
+  user-select: none;
+  z-index: 20;
+}
+
+.bubble::after {
+  content: "";
+  position: absolute;
+  bottom: -18px;
+  left: 45px;
+  width: 28px;
+  height: 28px;
+  background: white;
+  border-right: 5px solid black;
+  border-bottom: 5px solid black;
+  transform: rotate(45deg);
+}
+
+.bubble:focus {
+  outline: 4px dashed #d40000;
+}
+
+@media (max-width: 800px) {
+  body {
+    padding: 15px;
+  }
+
+  .comic-stage {
+    aspect-ratio: auto;
+    height: 900px;
+  }
+}
+
+
+
+</style>
+</head>
+
+<body>
+
+<!-- TOP TOOLBAR -->
+
+<div class="toolbar">
+
+  <button id="addBubble">
+    Add Speech Bubble
+  </button>
+
+  <button id="clearBubbles">
+    Clear Bubbles
+  </button>
+
+  <label class="upload-label">
+
+    Import Images
+
+    <input
+      id="bulkImport"
+      type="file"
+      accept="image/*"
+      multiple
+    >
+
+  </label>
+
+  <button id="clearImages">
+    Clear Images
+  </button>
+
+</div>
+
+<!-- COMIC PAGE -->
+
+<div class="comic-wrap">
+
+  <div
+    class="comic-stage"
+    id="comicStage"
+  >
+
+    <!-- PANEL 1 -->
+
+    <div class="frame frame-1">
+
+      <img id="img1" alt="">
+
+      <div class="placeholder">
+        Panel 1
+      </div>
+
+    </div>
+
+    <!-- PANEL 2 -->
+
+    <div class="frame frame-2">
+
+      <img id="img2" alt="">
+
+      <div class="placeholder">
+        Panel 2
+      </div>
+
+    </div>
+
+    <!-- PANEL 3 -->
+
+    <div class="frame frame-3">
+
+      <img id="img3" alt="">
+
+      <div class="placeholder">
+        Panel 3
+      </div>
+
+    </div>
+
+    <!-- PANEL 4 -->
+
+    <div class="frame frame-4">
+
+      <img id="img4" alt="">
+
+      <div class="placeholder">
+        Panel 4
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- IMPORT BUTTONS -->
+
+
+
+<script>
+
+/* ELEMENTS */
+
+const stage =
+  document.getElementById("comicStage");
+
+const panelImageIds = [
+  "img1",
+  "img2",
+  "img3",
+  "img4"
+];
+
+const bulkImport =
+  document.getElementById("bulkImport");
+
+const clearImages =
+  document.getElementById("clearImages");
+
+const addBubble =
+  document.getElementById("addBubble");
+
+const clearBubbles =
+  document.getElementById("clearBubbles");
+
+/* IMPORT IMAGES */
+
+bulkImport.addEventListener(
+  "change",
+  event => {
+
+    const files =
+      Array.from(event.target.files);
+
+    if (!files.length) return;
+
+    files
+      .slice(0, panelImageIds.length)
+      .forEach((file, index) => {
+
+        const reader =
+          new FileReader();
+
+        reader.onload = e => {
+
+          const img =
+            document.getElementById(
+              panelImageIds[index]
+            );
+
+          const frame =
+            img.closest(".frame");
+
+          img.src = e.target.result;
+
+          frame.classList.add(
+            "has-image"
+          );
+        };
+
+        reader.readAsDataURL(file);
+      });
+
+    bulkImport.value = "";
+  }
+);
+
+/* CLEAR IMAGES */
+
+clearImages.addEventListener(
+  "click",
+  () => {
+
+    panelImageIds.forEach(id => {
+
+      const img =
+        document.getElementById(id);
+
+      const frame =
+        img.closest(".frame");
+
+      img.src = "";
+
+      frame.classList.remove(
+        "has-image"
+      );
+    });
+  }
+);
+
+/* ADD SPEECH BUBBLE */
+
+addBubble.addEventListener(
+  "click",
+  () => {
+
+    const bubble =
+      document.createElement("div");
+
+    bubble.className = "bubble";
+
+    bubble.contentEditable = "true";
+
+    bubble.innerText = "Type here";
+
+    bubble.style.left = "80px";
+    bubble.style.top = "80px";
+
+    makeDraggable(bubble);
+
+    stage.appendChild(bubble);
+
+    bubble.focus();
+  }
+);
+
+/* CLEAR BUBBLES */
+
+clearBubbles.addEventListener(
+  "click",
+  () => {
+
+    document
+      .querySelectorAll(".bubble")
+      .forEach(bubble =>
+        bubble.remove()
+      );
+  }
+);
+
+/* DRAGGING */
+
+function makeDraggable(el) {
+
+  let offsetX = 0;
+  let offsetY = 0;
+
+  let dragging = false;
+
+  el.addEventListener(
+    "mousedown",
+    e => {
+
+      dragging = true;
+
+      offsetX =
+        e.clientX - el.offsetLeft;
+
+      offsetY =
+        e.clientY - el.offsetTop;
+
+      el.style.zIndex = 1000;
+    }
+  );
+
+  document.addEventListener(
+    "mousemove",
+    e => {
+
+      if (!dragging) return;
+
+      el.style.left =
+        `${e.clientX - offsetX}px`;
+
+      el.style.top =
+        `${e.clientY - offsetY}px`;
+    }
+  );
+
+  document.addEventListener(
+    "mouseup",
+    () => {
+      dragging = false;
+    }
+  );
+}
+
+</script>
+
+</body>
+</html>
+```
