@@ -1,0 +1,131 @@
+<!doctype html>
+<html class="nb-skin" lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kindle Cookbook Formatter</title>
+  <link rel="stylesheet" href="neo-brutal.css" />
+  <link rel="stylesheet" href="styles-vanilla.css" />
+  <style>
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+img, video, canvas, svg { max-width: 100%; height: auto; }
+  </style>
+  <link rel="stylesheet" href="cookbook-shared.css">
+  <link rel="stylesheet" href="neo-brutal-overrides.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
+      <h1>Kindle Cookbook Formatter</h1>
+      <p class="page-description">Generate your Kindle cookbook with ease.</p>
+    </header>
+
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
+      </div>
+
+      <div class="widget-grid">
+        <section class="panel">
+          <form id="cookbookForm">
+            <div class="form-group">
+              <label for="authorName">Author Name</label>
+              <input type="text" id="authorName" name="authorName" required>
+            </div>
+
+            <div class="form-group">
+              <label for="bookTitle">Book Title</label>
+              <input type="text" id="bookTitle" name="bookTitle" required>
+            </div>
+
+            <div class="form-group">
+              <label for="bookUrl">Book URL</label>
+              <input type="url" id="bookUrl" name="bookUrl" required>
+            </div>
+
+            <div class="form-group">
+              <label for="numRecipes">Number of Recipes</label>
+              <input type="number" id="numRecipes" name="numRecipes" min="1" required>
+            </div>
+
+            <button type="submit">Generate Cookbook</button>
+          </form>
+
+          <div id="recipesSection" class="recipes-section"></div>
+        </section>
+
+        <section class="panel">
+          <div id="htmlOutput">
+            <h2>Generated HTML</h2>
+            <pre id="htmlCode"></pre>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('numRecipes').addEventListener('input', function() {
+      const numRecipes = parseInt(this.value, 10);
+      const recipesSection = document.getElementById('recipesSection');
+      recipesSection.innerHTML = '';
+
+      for (let i = 1; i <= numRecipes; i++) {
+        const recipeDiv = document.createElement('div');
+        recipeDiv.classList.add('form-group');
+        recipeDiv.innerHTML = `
+          <label for="recipe${i}">Recipe ${i} Name</label>
+          <input type="text" id="recipe${i}" name="recipe${i}" required>
+        `;
+        recipesSection.appendChild(recipeDiv);
+      }
+    });
+
+    document.getElementById('cookbookForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const authorName = document.getElementById('authorName').value;
+      const bookTitle = document.getElementById('bookTitle').value;
+      const bookUrl = document.getElementById('bookUrl').value;
+      const numRecipes = parseInt(document.getElementById('numRecipes').value, 10);
+
+      let tocHtml = '<h2>Table of Contents</h2><ul>';
+      let recipesHtml = '';
+
+      for (let i = 1; i <= numRecipes; i++) {
+        const recipeName = document.getElementById(`recipe${i}`).value;
+        tocHtml += `<li><a href="#recipe${i}">${recipeName}</a></li>`;
+        recipesHtml += `
+          <section id="recipe${i}" class="recipe">
+            <h2>${recipeName}</h2>
+            <h3>Ingredients</h3>
+            <ul>
+              <li>Insert ingredients here...</li>
+            </ul>
+            <h3>Instructions</h3>
+            <ol>
+              <li>Insert instructions here...</li>
+            </ol>
+          </section>
+        `;
+      }
+      tocHtml += '</ul>';
+
+      const finalHtml = `
+        <header>
+          <h1>${bookTitle}</h1>
+          <p>By ${authorName}</p>
+          <p><a href="${bookUrl}">Book URL</a></p>
+        </header>
+        ${tocHtml}
+        ${recipesHtml}
+      `;
+
+      document.getElementById('htmlCode').textContent = finalHtml;
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!doctype html>
+<html class="nb-skin" lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Editable Table Generator</title>
+  <link rel="stylesheet" href="neo-brutal.css" />
+  <link rel="stylesheet" href="styles-vanilla.css" />
+  <style>
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+img, video, canvas, svg { max-width: 100%; height: auto; }
+
+   @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+   @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+   @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
+
+    .table-panel {
+      font-family: "Oswald", serif;
+    }
+    #table-container {
+      margin-top: 1.25rem;
+    }
+    .grid-table {
+      display: grid;
+      border: 1px solid #dcdcdc;
+    }
+    .grid-table div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      border: 1px solid #dcdcdc;
+    }
+    .editable {
+      cursor: pointer;
+    }
+    .grid-table .header-cell {
+      font-weight: bold;
+      background-color: #dcdcdc;
+    }
+
+    label {
+      font-family: "Lobster", serif;
+      font-weight: bold;
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.875rem;
+      color: #555;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.625rem;
+      font-size: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 0.25rem;
+    }
+
+    button {
+      font-family: "Lobster", serif;
+      margin-top: 0.625rem;
+      width: 100%;
+      background: #007bff;
+      color: #fff;
+      font-size: 1rem;
+      padding: 0.625rem;
+      border: none;
+      border-radius: 0.25rem;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+  </style>
+  <link rel="stylesheet" href="neo-brutal-overrides.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
+      <h1>Editable Table Generator</h1>
+      <p class="page-description">Define columns and rows, then edit cell contents inline in a CSS grid table.</p>
+    </header>
+
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
+      </div>
+
+      <div class="widget-grid">
+        <section class="panel table-panel">
+          <form id="tableForm">
+            <label for="columns">Number of Columns:</label>
+            <input type="number" id="columns" min="1" value="3" required><br><br>
+
+            <label for="rows">Number of Rows:</label>
+            <input type="number" id="rows" min="1" value="10" required><br><br>
+
+            <label for="headings">Column Headings (comma-separated):</label>
+            <input type="text" id="headings" value="Column 1, Column 2, Column 3"><br><br>
+
+            <button type="button" id="generateTable">Generate Table</button>
+          </form>
+        </section>
+
+        <section class="panel table-panel">
+          <div id="table-container"></div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('generateTable').addEventListener('click', () => {
+      const columns = parseInt(document.getElementById('columns').value, 10);
+      const rows = parseInt(document.getElementById('rows').value, 10);
+      const headings = document.getElementById('headings').value.split(',');
+
+      const tableContainer = document.getElementById('table-container');
+      tableContainer.innerHTML = '';
+
+      const table = document.createElement('div');
+      table.className = 'grid-table';
+      table.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+
+      headings.forEach((heading, index) => {
+        if (index < columns) {
+          const cell = document.createElement('div');
+          cell.textContent = heading.trim();
+          styleCell(cell, 0);
+          cell.classList.add('header-cell');
+          table.appendChild(cell);
+        }
+      });
+
+      for (let r = 1; r < rows + 1; r++) {
+        for (let c = 0; c < columns; c++) {
+          const cell = document.createElement('div');
+          cell.textContent = '';
+          styleCell(cell, r);
+          makeEditable(cell);
+          table.appendChild(cell);
+        }
+      }
+
+      tableContainer.appendChild(table);
+
+      function styleCell(cell, row) {
+        cell.style.padding = '5px';
+        cell.style.backgroundColor = row === 0 ? '#dcdcdc' : 'white';
+      }
+
+      function makeEditable(cell) {
+        cell.classList.add('editable');
+        cell.contentEditable = true;
+        cell.addEventListener('click', () => {
+          cell.focus();
+        });
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!doctype html>
+<html class="nb-skin" lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Voice Memo Recorder</title>
+  <link rel="stylesheet" href="neo-brutal.css" />
+  <link rel="stylesheet" href="styles-vanilla.css" />
+  <style>
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+img, video, canvas, svg { max-width: 100%; height: auto; }
+
+    @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+
+    .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+    button.record {
+      font-family: "Oswald", serif;
+      margin-top: 0.625rem; width: 100%;
+      background: #007bff; color: #fff; font-size: 1rem; padding: 0.625rem;
+      border: none; border-radius: 0.25rem; cursor: pointer; font-weight: bold;
+      transition: background .3s ease;
+    }
+    button.record:hover { background: #0056b3; }
+    button.record:disabled {
+      background: #7aaef0; cursor: not-allowed;
+    }
+    audio { margin-top: 1rem; width: 100%; display: block; }
+    #downloadButton {
+      font-family: "Oswald", serif;
+      display: none; margin-top: 0.625rem; padding: 0.625rem 0.75rem; border-radius: 0.25rem;
+      background-color: #0056b3; color: #fff; text-decoration: none; font-weight: 700;
+      text-align: center; display: inline-block;
+    }
+    #status { margin-top: 0.5rem; font-size: 0.875rem; opacity: .8; }
+  </style>
+  <link rel="stylesheet" href="neo-brutal-overrides.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
+      <h1>Voice Memo Recorder</h1>
+      <p class="page-description">Record short voice memos in the browser, play them back, and download as WebM, OGG, or M4A.</p>
+    </header>
+
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
+      </div>
+
+      <div class="widget-grid">
+        <section class="panel">
+          <div class="controls">
+            <button id="startButton" class="record">RECORD</button>
+            <button id="stopButton" class="record" disabled>STOP</button>
+          </div>
+
+          <div id="status" aria-live="polite"></div>
+
+          <audio id="audioPlayback" controls></audio>
+          <a id="downloadButton" download="voice-memo.webm">DOWNLOAD</a>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const startButton = document.getElementById("startButton");
+    const stopButton = document.getElementById("stopButton");
+    const audioPlayback = document.getElementById("audioPlayback");
+    const downloadButton = document.getElementById("downloadButton");
+    const statusEl = document.getElementById("status");
+
+    let mediaRecorder;
+    let audioChunks = [];
+    let stream;
+    let chosenMimeType = null;
+
+    function pickMimeType() {
+      if (!window.MediaRecorder) return null;
+      const prefs = [
+        "audio/webm;codecs=opus",
+        "audio/webm",
+        "audio/ogg;codecs=opus",
+        "audio/ogg",
+        "audio/mp4" // Safari (iOS 14+)
+      ];
+      for (const t of prefs) {
+        if (MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) return t;
+      }
+      return null; // Let the browser choose default
+    }
+
+    function updateStatus(msg) { statusEl.textContent = msg || ""; }
+
+    function setUIRecordingState(isRecording) {
+      startButton.disabled = isRecording;
+      stopButton.disabled = !isRecording;
+      if (isRecording) {
+        downloadButton.style.display = "none";
+        updateStatus("Recording… press STOP when you’re done.");
+      } else {
+        updateStatus("");
+      }
+    }
+
+    async function startRecording() {
+      if (!navigator.mediaDevices?.getUserMedia) {
+        alert("getUserMedia is not supported in this browser.");
+        return;
+      }
+
+      // Secure context check
+      if (location.protocol !== "https:" && location.hostname !== "localhost") {
+        updateStatus("Tip: Recording requires HTTPS (or http://localhost).");
+      }
+
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+          }
+        });
+
+        chosenMimeType = pickMimeType();
+        mediaRecorder = chosenMimeType
+          ? new MediaRecorder(stream, { mimeType: chosenMimeType })
+          : new MediaRecorder(stream);
+
+        audioChunks = [];
+
+        mediaRecorder.addEventListener("dataavailable", (event) => {
+          if (event.data && event.data.size > 0) audioChunks.push(event.data);
+        });
+
+        mediaRecorder.addEventListener("stop", () => {
+          const type = chosenMimeType || "audio/webm";
+          const audioBlob = new Blob(audioChunks, { type });
+
+          const audioURL = URL.createObjectURL(audioBlob);
+          audioPlayback.src = audioURL;
+
+          // File extension based on mime
+          const ext = type.includes("ogg") ? "ogg"
+                    : type.includes("mp4") ? "m4a"
+                    : "webm";
+          downloadButton.download = `voice-memo.${ext}`;
+          downloadButton.href = audioURL;
+          downloadButton.style.display = "inline-block";
+
+          // Release mic
+          if (stream) {
+            stream.getTracks().forEach(t => t.stop());
+            stream = null;
+          }
+
+          setUIRecordingState(false);
+          updateStatus("Recording ready. You can play or download it.");
+        });
+
+        mediaRecorder.start(); // you can pass a timeslice (ms) if you want periodic dataavailable
+        setUIRecordingState(true);
+
+      } catch (error) {
+        console.error("Microphone access error:", error);
+        alert("Could not access your microphone. Please check site permissions and that you’re on HTTPS (or localhost).");
+        setUIRecordingState(false);
+      }
+    }
+
+    function stopRecording() {
+      try {
+        if (mediaRecorder && mediaRecorder.state === "recording") {
+          mediaRecorder.stop();
+          updateStatus("Finishing up…");
+        } else {
+          updateStatus("No active recording to stop.");
+        }
+      } catch (e) {
+        console.error("Stop error:", e);
+        updateStatus("Couldn’t stop recording. See console for details.");
+      }
+    }
+
+    startButton.addEventListener("click", startRecording);
+    stopButton.addEventListener("click", stopRecording);
+  </script>
+</body>
+</html>

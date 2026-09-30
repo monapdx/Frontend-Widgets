@@ -1,0 +1,98 @@
+/* Signature dark skin shared by every widget. Edit these tokens to retheme the set. */
+:root {
+  color-scheme: dark;
+  --ink: #08070e;
+  --void: #0d0b15;
+  --panel: #191625;
+  --panel-2: #252035;
+  --paper: #f7f4ff;
+  --muted: #bdb5cf;
+  --hot-pink: #ff2bd6;
+  --electric-lime: #c6ff00;
+  --sky-blue: #00e5ff;
+  --purple: #a16bff;
+  --line: #514960;
+  --bg: #0d0b15;
+  --text: #f7f4ff;
+  --accent: #ff2bd6;
+  --accent-2: #00e5ff;
+  --lime: #c6ff00;
+  --pink: #ff2bd6;
+  --aqua: #00e5ff;
+  --nb-paper: #191625;
+  --nb-card: #252035;
+  --nb-soft: #252035;
+  --nb-ink: #f7f4ff;
+  --nb-muted: #bdb5cf;
+  --nb-lime: #c6ff00;
+  --nb-pink: #ff2bd6;
+  --nb-cyan: #00e5ff;
+  --nb-purple: #a16bff;
+}
+html { color-scheme: dark; }
+html body {
+  color: var(--paper) !important;
+  background: radial-gradient(circle at 10% 0%, #60214b 0, transparent 30rem),
+              radial-gradient(circle at 90% 5%, #163e52 0, transparent 28rem),
+              radial-gradient(circle at 60% 100%, #32235b 0, transparent 35rem),
+              var(--void) !important;
+  font-family: Inter, Arial, sans-serif;
+}
+html body :is(h1,h2,h3,h4,strong,label,legend,th) { color: var(--paper); }
+html body :is(p,.hint,.small,.page-description,.muted-box,.meta) { color: var(--muted); }
+html body h1 { color: var(--paper); letter-spacing: -.045em; }
+html body a { color: var(--sky-blue); }
+html body a:hover { color: var(--electric-lime); }
+html body :is(button,.btn,input[type="submit"],.upload-label,.back-link) {
+  border: 3px solid #050408;
+  border-radius: 8px;
+  box-shadow: 5px 5px 0 #050408;
+  font-weight: 800;
+}
+html body :is(button,.btn,input[type="submit"],.upload-label) { background: var(--electric-lime); color: #0c0912; cursor: pointer; }
+html body :is(button,.btn,input[type="submit"],.upload-label):hover { background: var(--sky-blue); transform: translate(-2px,-2px); box-shadow: 7px 7px 0 #050408; }
+html body :is(button.secondary,.btn.secondary,.ghost) { background: var(--panel-2); color: var(--paper); }
+html body :is(button.primary,.btn.primary) { background: var(--hot-pink); color: #0c0912; }
+html body :is(input:not([type="checkbox"]):not([type="radio"]):not([type="color"]):not([type="range"]),textarea,select) {
+  color: var(--paper); background: #100e1a; border: 2px solid #766b89; border-radius: 7px;
+}
+html body :is(input,textarea,select,button,a):focus-visible { outline: 3px solid var(--sky-blue); outline-offset: 3px; }
+html body :is(input,textarea)::placeholder { color: #a9a1ba; opacity: 1; }
+html body :is(input[type="checkbox"],input[type="radio"]) { accent-color: var(--hot-pink); }
+html body :is(.panel,.card,.widget-shell,.shell,.comic-wrap,.canvasWrap,.countdown-wrapper,.reader-paper,#record-output,#final-record-preview) {
+  color: var(--paper); background: var(--panel); border: 3px solid #050408;
+  border-radius: 12px; box-shadow: 8px 8px 0 #050408;
+}
+html body :is(pre,code,.output,.preview-box,.result,.results) { color: var(--paper); }
+html body pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+html body :is(.eyebrow,.kicker,.stamp,.tag,.pill,.badge) { color: #100b18; background: var(--sky-blue); }
+html body :is(hr,.widget-topbar) { border-color: var(--line); }
+html body .page-shell { width: min(1180px,calc(100% - 32px)); margin: 0 auto; }
+html body .widget-grid { display: grid; gap: 24px; }
+html body .widget-grid > * { min-width: 0; }
+
+/* Free-form tools keep their specialized canvas and output layouts. */
+html body .comic-stage, html body .frame { background: #f5f0e7; color: #101010; }
+html body .comic-stage .placeholder { color: #34313a; }
+html body .paper-receipt, html body .paper-receipt * { color: #17131a; }
+html body .paper-receipt { background: #fffef5; }
+html body .reader-paper { background: #e9e5d9; color: #1b1720; }
+html body .reader-paper * { color: inherit; }
+html body .tab.active { background: var(--electric-lime); color: #0c0912; }
+html body .panel.active { display: block; }
+html body .panel:not(.active) { /* Existing tool-specific visibility rules remain in force. */ }
+html body .progress, html body .bar { accent-color: var(--hot-pink); }
+html body #record-output, html body #final-record-preview { padding: 18px; margin: 16px 0 28px; }
+html body:has(#generator-form) { max-width: 1050px; margin: auto; padding: 32px 20px 80px; }
+html body:has(#generator-form) #generator-form { padding: 22px; background: var(--panel); border: 3px solid #050408; box-shadow: 8px 8px 0 #050408; }
+html body:has(#generator-form) #generator-form p { margin: 0 0 18px; }
+html body:has(#generator-form) #generator-form label { display: inline-block; margin-bottom: 7px; }
+html body:has(#generator-form) #generator-form button { margin: 6px 12px 6px 0; }
+html body:has(#generator-form) section { margin-top: 30px; }
+html body:has(.comic-wrap) { padding: 24px; }
+html body:has(.comic-wrap) .toolbar { padding: 16px; background: var(--panel); border: 3px solid #050408; box-shadow: 6px 6px 0 #050408; }
+html body:has(.comic-wrap) .comic-wrap { background: var(--panel); }
+html body:has(.comic-wrap) .frame { border-color: #050408; }
+html body:has(.countdown-wrapper) .countdown-wrapper { padding: 28px; }
+@media (min-width: 880px) { html body .widget-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media (max-width: 640px) { html body .page-shell { width: min(100% - 20px,1180px); } html body:has(.comic-wrap) { padding: 12px; } }

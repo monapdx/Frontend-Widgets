@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html class="nb-skin" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QR codes</title>
+  <link rel="stylesheet" href="neo-brutal.css" />
+  <link rel="stylesheet" href="styles-vanilla.css" />
+  <style>
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+img, video, canvas, svg { max-width: 100%; height: auto; }
+
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+
+.qr-page .field-label {
+  font-family: "Oswald", serif;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+}
+.qr-page #qr-code {
+  display: block;
+  margin-top: 1rem;
+  border: 3px solid #0a0a0a;
+  box-shadow: 4px 4px 0 #0a0a0a;
+  background: #fff;
+}
+  </style>
+  <link rel="stylesheet" href="neo-brutal-overrides.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+</head>
+<body class="qr-page">
+
+  <div class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widget</p>
+      <h1>QR code generator</h1>
+      <p class="page-description">Enter text or a URL to generate a QR code you can preview and download as PNG.</p>
+    </header>
+
+    <div class="widget-shell">
+      <div class="widget-topbar">
+        <a class="back-link" href="index.html">← Back to all widgets</a>
+      </div>
+
+      <div class="widget-grid">
+        <section class="panel">
+          <div class="field">
+            <label class="field-label" for="qr-text">Text or URL</label>
+            <input type="text" id="qr-text" placeholder="Enter text or URL" />
+          </div>
+          <div class="actions">
+            <button id="generate-btn" type="button">Generate</button>
+            <button id="download-btn" class="secondary" type="button" disabled>Download PNG</button>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>Preview</h2>
+          <canvas id="qr-code" width="200" height="200" aria-label="Generated QR code"></canvas>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('generate-btn').addEventListener('click', () => {
+      const qrText = document.getElementById('qr-text').value;
+
+      if (qrText.trim() === '') {
+        alert('Please enter text or a URL!');
+        return;
+      }
+
+      new QRious({
+        element: document.getElementById('qr-code'),
+        value: qrText,
+        size: 200,
+      });
+
+      const downloadBtn = document.getElementById('download-btn');
+      downloadBtn.disabled = false;
+
+      downloadBtn.onclick = () => {
+        const canvas = document.getElementById('qr-code');
+        const dataURL = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.href = dataURL;
+        link.download = 'qr-code.png';
+        link.click();
+      };
+    });
+  </script>
+</body>
+</html>

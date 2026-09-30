@@ -1,0 +1,139 @@
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap");
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+img,
+video,
+canvas,
+svg {
+  max-width: 100%;
+  height: auto;
+}
+
+body {
+  font-family: "Oswald", serif;
+  background-color: #f9f9f9;
+  padding: 1.25rem;
+  line-height: 1.5;
+}
+
+header {
+  font-family: "Oswald", serif;
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+header h1 {
+  font-size: clamp(1.75rem, 4vw + 1rem, 2.5rem);
+  color: #333;
+}
+
+header p {
+  font-size: 1.2rem;
+  color: #666;
+}
+
+form {
+  max-width: 37.5rem;
+  margin: 0 auto;
+  background-color: #fff;
+  padding: 1.25rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+label {
+  display: block;
+  font-size: 1rem;
+  margin-bottom: 0.3125rem;
+  color: #333;
+}
+
+input {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border-radius: 0.3125rem;
+  background-color: #f2f2f2;
+  border: 1px solid #ccc;
+  min-height: 2.75rem;
+}
+
+input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0.3125rem rgba(37, 99, 235, 0.35);
+}
+
+button {
+  font-family: "Oswald", serif;
+  background-color: #007bff;
+  color: #fff;
+  font-size: 1.1rem;
+  padding: 0.625rem 1.25rem;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  min-height: 2.75rem;
+  touch-action: manipulation;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.recipes-section {
+  margin-top: 2.5rem;
+}
+
+#htmlOutput {
+  margin-top: 2.5rem;
+}
+
+pre {
+  background-color: #f1f1f1;
+  padding: 0.9375rem;
+  border-radius: 0.5rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-x: auto;
+}
+
+footer {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #888;
+  margin-top: 2.5rem;
+}
+
+@media (max-width: 36rem) {
+  body {
+    padding: 0.75rem;
+  }
+
+  form {
+    padding: 1rem;
+  }
+
+  button {
+    width: 100%;
+  }
+}

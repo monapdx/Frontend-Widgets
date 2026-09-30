@@ -1,0 +1,743 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fictional Record Generator</title>
+  <link rel="stylesheet" href="fictional-record-generator.css">
+</head>
+<body>
+  <h1>Fictional Record Generator</h1>
+
+  <form id="generator-form">
+    <p>
+      <label for="subject-name">Name</label><br>
+      <input id="subject-name" name="subject-name" type="text" placeholder="Enter a name">
+    </p>
+
+    <p>
+      <label for="record-type">Record type</label><br>
+      <select id="record-type" name="record-type">
+        <option value="call-received">Call received</option>
+        <option value="message-sent">Message sent</option>
+        <option value="search-history">Search history</option>
+        <option value="receipt">Receipt</option>
+      </select>
+    </p>
+
+    <div id="record-inputs"></div>
+
+    <p>
+      <button type="submit">Generate record</button>
+      <button type="button" id="regenerate-all">Regenerate generated details</button>
+    </p>
+  </form>
+
+  <hr>
+
+  <section>
+    <h2>Generated record</h2>
+    <div id="record-output">
+      <p>No record generated yet.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Copyable record</h2>
+    <button type="button" id="copy-record">Copy to clipboard</button>
+    <div id="final-record-preview">
+      <pre><code id="copyable-record">No record generated yet.</code></pre>
+    </div>
+  </section>
+
+  <script>
+    const state = {
+      recordType: "call-received",
+      values: {},
+      locked: {},
+      generated: false
+    };
+
+    const form = document.getElementById("generator-form");
+    const recordTypeSelect = document.getElementById("record-type");
+    const recordInputs = document.getElementById("record-inputs");
+    const recordOutput = document.getElementById("record-output");
+    const regenerateAllButton = document.getElementById("regenerate-all");
+    const copyRecordButton = document.getElementById("copy-record");
+    const copyableRecord = document.getElementById("copyable-record");
+    const finalRecordPreview = document.getElementById("final-record-preview");
+
+    const generators = {
+      date() {
+        const start = new Date(2018, 0, 1);
+        const end = new Date(2026, 11, 31);
+        const date = new Date(
+          start.getTime() + Math.random() * (end.getTime() - start.getTime())
+        );
+
+        return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+      },
+
+      time() {
+        const hour = Math.floor(Math.random() * 24);
+        const minute = Math.floor(Math.random() * 60);
+        const suffix = hour >= 12 ? "PM" : "AM";
+        const displayHour = hour % 12 || 12;
+
+        return `${displayHour}:${String(minute).padStart(2, "0")} ${suffix}`;
+      },
+
+      phone() {
+        const area = `${randomDigit(2, 9)}${randomDigits(2)}`;
+        const prefix = `${randomDigit(2, 9)}${randomDigits(2)}`;
+        const line = randomDigits(4);
+        return `(${area}) ${prefix}-${line}`;
+      },
+
+      ip() {
+        return [
+          randomDigit(1, 223),
+          randomDigit(0, 255),
+          randomDigit(0, 255),
+          randomDigit(1, 254)
+        ].join(".");
+      },
+
+      money(min = 1, max = 100) {
+        return (min + Math.random() * (max - min)).toFixed(2);
+      },
+
+      paymentType() {
+        const types = ["Visa", "Mastercard", "American Express", "Discover", "Cash", "Debit"];
+        return types[Math.floor(Math.random() * types.length)];
+      },
+
+      barcode() {
+        const base = randomDigits(12);
+        return base + ean13Checksum(base);
+      },
+
+      transactionNumber() {
+        return `${randomDigits(4)}-${randomDigits(6)}-${randomDigits(3)}`;
+      },
+
+      duration() {
+        const minutes = Math.floor(Math.random() * 18);
+        const seconds = Math.floor(Math.random() * 60);
+
+        if (minutes === 0) {
+          return `${seconds} sec`;
+        }
+
+        return `${minutes} min ${seconds} sec`;
+      }
+    };
+
+    const schemas = {
+      "call-received": {
+        title: "Call received",
+
+        inputs() {
+          return `
+            <p>
+              <label for="call-status">Call status</label><br>
+              <select id="call-status">
+                <option value="Call received">Call received</option>
+                <option value="Missed call">Missed call</option>
+                <option value="Call declined">Call declined</option>
+              </select>
+            </p>
+          `;
+        },
+
+        generate() {
+          return {
+            date: generators.date(),
+            time: generators.time(),
+            phone: generators.phone(),
+            duration: generators.duration()
+          };
+        },
+
+        render() {
+          const status = document.getElementById("call-status")?.value || "Call received";
+          const name = getSubjectName();
+
+          return `
+            <article>
+              <h3>${escapeHtml(status)}</h3>
+              ${name ? `<p><strong>Name:</strong> ${escapeHtml(name)}</p>` : ""}
+              ${renderGeneratedField("date", "Date")}
+              ${renderGeneratedField("time", "Time")}
+              ${renderGeneratedField("phone", "Phone number")}
+              ${status === "Call received" ? renderGeneratedField("duration", "Duration") : ""}
+            </article>
+          `;
+        },
+
+        copyText() {
+          const status = document.getElementById("call-status")?.value || "Call received";
+          const name = getSubjectName();
+
+          const lines = [
+            `**${status}:**`,
+            "",
+            name ? `**Name:** ${name}` : null,
+            `**Date:** ${state.values.date}`,
+            `**Time:** ${state.values.time}`,
+            `**Phone number:** ${state.values.phone}`,
+            status === "Call received" ? `**Duration:** ${state.values.duration}` : null
+          ].filter(line => line !== null);
+
+          return lines.join("\n");
+        }
+      },
+
+      "message-sent": {
+        title: "Message sent",
+
+        inputs() {
+          return `
+            <p>
+              <label for="message-text">Message</label><br>
+              <textarea id="message-text" rows="5" cols="50" placeholder="Enter the message"></textarea>
+            </p>
+          `;
+        },
+
+        generate() {
+          return {
+            date: generators.date(),
+            time: generators.time(),
+            sender: generators.phone()
+          };
+        },
+
+        render() {
+          const message = document.getElementById("message-text")?.value || "";
+          const name = getSubjectName();
+
+          return `
+            <article>
+              <h3>Message sent</h3>
+              ${name ? `<p><strong>Name:</strong> ${escapeHtml(name)}</p>` : ""}
+              ${renderGeneratedField("date", "Date")}
+              ${renderGeneratedField("time", "Time")}
+              ${renderGeneratedField("sender", "Sender")}
+              <p>
+                <strong>Message:</strong><br>
+                ${escapeHtml(message).replace(/\n/g, "<br>")}
+              </p>
+            </article>
+          `;
+        },
+
+        copyText() {
+          const message = document.getElementById("message-text")?.value || "";
+          const name = getSubjectName();
+
+          const lines = [
+            "**Message sent:**",
+            "",
+            name ? `**Name:** ${name}` : null,
+            `**Date:** ${state.values.date}`,
+            `**Time:** ${state.values.time}`,
+            `**Sender:** ${state.values.sender}`,
+            "**Message:**",
+            message
+          ].filter(line => line !== null);
+
+          return lines.join("\n");
+        }
+      },
+
+      "receipt": {
+        title: "Receipt",
+
+        inputs() {
+          return `
+            <p><label for="retailer">Retailer</label><br><input id="retailer" type="text" size="40" placeholder="Retailer name"></p>
+            <p><label for="receipt-items">Items purchased (one per line, format: item | $price)</label><br>
+            <textarea id="receipt-items" rows="6" cols="60" placeholder="16 oz coffee | $3.50\n1 package of skittles | $2.30"></textarea></p>
+          `;
+        },
+
+        generate() {
+          const items = parseReceiptItems();
+          const subtotal = items.reduce((sum, item) => sum + item.price, 0);
+          const taxRate = Math.random() * 0.10;
+          const tax = Number((subtotal * taxRate).toFixed(2));
+
+          return {
+            date: generators.date(),
+            time: generators.time(),
+            subtotal: subtotal.toFixed(2),
+            taxes: tax.toFixed(2),
+            total: (subtotal + tax).toFixed(2),
+            payment: generators.paymentType(),
+            transaction: generators.transactionNumber(),
+            barcode: generators.barcode()
+          };
+        },
+
+        render() {
+          const retailer = document.getElementById("retailer")?.value || "";
+          const items = parseReceiptItems();
+          const invalidLines = getInvalidReceiptItemLines();
+
+          const itemHtml = items.length
+            ? items.map(item => `${escapeHtml(item.name)} | $${item.price.toFixed(2)}`).join("<br>")
+            : "(No valid items entered)";
+
+          const warning = invalidLines.length
+            ? `<p><strong>Invalid item line(s):</strong> ${invalidLines.map(escapeHtml).join("; ")}<br>
+               Use: item | $price</p>`
+            : "";
+
+          return `<article>
+            <h3>Receipt</h3>
+            <p><strong>Retailer:</strong> ${escapeHtml(retailer)}</p>
+            ${renderGeneratedField("date","Date")}
+            ${renderGeneratedField("time","Time")}
+            <p><strong>Items purchased:</strong><br>${itemHtml}</p>
+            ${warning}
+            <p><strong>Subtotal:</strong> $${escapeHtml(state.values.subtotal)}</p>
+            ${renderGeneratedField("taxes","Taxes")}
+            <p><strong>Total:</strong> $${escapeHtml(state.values.total)}</p>
+            ${renderGeneratedField("payment","Payment type")}
+            ${renderGeneratedField("transaction","Transaction number")}
+            ${renderGeneratedField("barcode","Barcode number")}
+            ${renderEAN13Svg(state.values.barcode)}
+          </article>`;
+        },
+
+        copyText() {
+          const retailer = document.getElementById("retailer")?.value || "";
+          const items = parseReceiptItems()
+            .map(item => `${item.name} | $${item.price.toFixed(2)}`)
+            .join("\n");
+
+          return [
+            "**Receipt:**","",
+            `**Retailer:** ${retailer}`,"",
+            `**Date/Time:** ${state.values.date} ${state.values.time}`,"",
+            "**Items purchased:**", items,"",
+            `**Subtotal:** $${state.values.subtotal}`,"",
+            `**Taxes:** $${state.values.taxes}`,"",
+            `**Total:** $${state.values.total}`,"",
+            `**Payment type:** ${state.values.payment}`,"",
+            `**Transaction number:** ${state.values.transaction}`,"",
+            `**Barcode:** ${state.values.barcode}`
+          ].join("\n");
+        }
+      },
+
+      "search-history": {
+        title: "Search history",
+
+        inputs() {
+          return `
+            <p>
+              <label for="search-query">Searched for</label><br>
+              <input id="search-query" type="text" size="50" placeholder="Enter search query">
+            </p>
+          `;
+        },
+
+        generate() {
+          return {
+            date: generators.date(),
+            time: generators.time(),
+            ip: generators.ip()
+          };
+        },
+
+        render() {
+          const query = document.getElementById("search-query")?.value || "";
+
+          return `
+            <article>
+              <h3>Search History</h3>
+              ${renderGeneratedField("date", "Date")}
+              ${renderGeneratedField("time", "Time")}
+              ${renderGeneratedField("ip", "IP Address")}
+              <p>
+                <strong>Searched for:</strong><br>
+                ${escapeHtml(query)}
+              </p>
+            </article>
+          `;
+        },
+
+        copyText() {
+          const query = document.getElementById("search-query")?.value || "";
+
+          const lines = [
+            "**Search History:**",
+            "",
+            "**Date:**",
+            "",
+            `\`${state.values.date}\``,
+            "",
+            "**Time:**",
+            "",
+            `\`${state.values.time.replace(" ", "")}\``,
+            "",
+            "**IP Address:**",
+            "",
+            `\`${state.values.ip}\``,
+            "",
+            "**Searched for:**",
+            "",
+            `\`${query}\``
+          ].filter(line => line !== null);
+
+          return lines.join("\n");
+        }
+      }
+    };
+
+    function randomDigit(min = 0, max = 9) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function randomDigits(length) {
+      let result = "";
+
+      for (let i = 0; i < length; i++) {
+        result += randomDigit();
+      }
+
+      return result;
+    }
+
+    function ean13Checksum(firstTwelve) {
+      const digits = String(firstTwelve).split("").map(Number);
+      const sum = digits.reduce((total, digit, index) => {
+        return total + digit * (index % 2 === 0 ? 1 : 3);
+      }, 0);
+
+      return String((10 - (sum % 10)) % 10);
+    }
+
+    function renderEAN13Svg(code) {
+      const value = String(code);
+      if (!/^\d{13}$/.test(value)) return "";
+
+      const L = {
+        "0":"0001101","1":"0011001","2":"0010011","3":"0111101","4":"0100011",
+        "5":"0110001","6":"0101111","7":"0111011","8":"0110111","9":"0001011"
+      };
+      const G = {
+        "0":"0100111","1":"0110011","2":"0011011","3":"0100001","4":"0011101",
+        "5":"0111001","6":"0000101","7":"0010001","8":"0001001","9":"0010111"
+      };
+      const R = {
+        "0":"1110010","1":"1100110","2":"1101100","3":"1000010","4":"1011100",
+        "5":"1001110","6":"1010000","7":"1000100","8":"1001000","9":"1110100"
+      };
+      const parity = {
+        "0":"LLLLLL","1":"LLGLGG","2":"LLGGLG","3":"LLGGGL","4":"LGLLGG",
+        "5":"LGGLLG","6":"LGGGLL","7":"LGLGLG","8":"LGLGGL","9":"LGGLGL"
+      };
+
+      let bits = "101";
+      const pattern = parity[value[0]];
+      for (let i = 1; i <= 6; i++) bits += pattern[i-1] === "L" ? L[value[i]] : G[value[i]];
+      bits += "01010";
+      for (let i = 7; i <= 12; i++) bits += R[value[i]];
+      bits += "101";
+
+      const moduleWidth = 2;
+      const quietZone = 10;
+      const barHeight = 74;
+      const guardHeight = 82;
+      const width = (bits.length + quietZone * 2) * moduleWidth;
+      let bars = "";
+
+      for (let i = 0; i < bits.length; i++) {
+        if (bits[i] !== "1") continue;
+        const isGuard = i < 3 || (i >= 45 && i < 50) || i >= 92;
+        const x = (i + quietZone) * moduleWidth;
+        const height = isGuard ? guardHeight : barHeight;
+        bars += `<rect x="${x}" y="0" width="${moduleWidth}" height="${height}"></rect>`;
+      }
+
+      return `
+        <div class="barcode-visual">
+          <svg class="ean13-barcode" viewBox="0 0 ${width} 108" role="img" aria-label="EAN-13 barcode ${escapeHtml(value)}" preserveAspectRatio="xMidYMid meet">
+            <rect width="${width}" height="108" fill="#ffffff"></rect>
+            <g fill="#000000">${bars}</g>
+            <text x="${width/2}" y="102" text-anchor="middle" font-family="monospace" font-size="13" fill="#000000">${escapeHtml(value)}</text>
+          </svg>
+        </div>`;
+    }
+
+    function renderFinalReceipt() {
+      const retailer = document.getElementById("retailer")?.value.trim() || "RETAILER";
+      const items = parseReceiptItems();
+      const itemRows = items.length
+        ? items.map(item => `
+            <div class="receipt-line receipt-item">
+              <span>${escapeHtml(item.name)}</span>
+              <span>$${item.price.toFixed(2)}</span>
+            </div>`).join("")
+        : `<div class="receipt-empty">NO ITEMS</div>`;
+
+      return `
+        <article class="paper-receipt" aria-label="Generated receipt">
+          <header class="paper-receipt-header">
+            <div class="receipt-retailer">${escapeHtml(retailer)}</div>
+            <div class="receipt-meta">${escapeHtml(state.values.date)} &nbsp; ${escapeHtml(state.values.time)}</div>
+            <div class="receipt-meta">TRANS # ${escapeHtml(state.values.transaction)}</div>
+          </header>
+
+          <div class="receipt-rule"></div>
+          <div class="receipt-items">${itemRows}</div>
+          <div class="receipt-rule"></div>
+
+          <div class="receipt-totals">
+            <div class="receipt-line"><span>SUBTOTAL</span><span>$${escapeHtml(state.values.subtotal)}</span></div>
+            <div class="receipt-line"><span>TAX</span><span>$${escapeHtml(state.values.taxes)}</span></div>
+            <div class="receipt-line receipt-grand-total"><span>TOTAL</span><span>$${escapeHtml(state.values.total)}</span></div>
+          </div>
+
+          <div class="receipt-rule"></div>
+          <div class="receipt-line"><span>PAYMENT</span><span>${escapeHtml(state.values.payment)}</span></div>
+          <div class="receipt-thanks">THANK YOU</div>
+
+          <div class="receipt-barcode">${renderEAN13Svg(state.values.barcode)}</div>
+        </article>
+      `;
+    }
+
+    function parseReceiptItems() {
+      const raw = document.getElementById("receipt-items")?.value || "";
+
+      return raw
+        .split("\n")
+        .map(line => line.trim())
+        .filter(Boolean)
+        .map(line => {
+          const match = line.match(/^(.*?)\s*\|\s*\$?([0-9]+(?:\.[0-9]{1,2})?)$/);
+          if (!match) return null;
+
+          return {
+            name: match[1].trim(),
+            price: Number(match[2])
+          };
+        })
+        .filter(item => item && item.name);
+    }
+
+    function getInvalidReceiptItemLines() {
+      const raw = document.getElementById("receipt-items")?.value || "";
+
+      return raw
+        .split("\n")
+        .map(line => line.trim())
+        .filter(Boolean)
+        .filter(line => !/^(.*?)\s*\|\s*\$?([0-9]+(?:\.[0-9]{1,2})?)$/.test(line));
+    }
+
+    function recalculateReceiptTotals() {
+      const items = parseReceiptItems();
+      const subtotal = items.reduce((sum, item) => sum + item.price, 0);
+      state.values.subtotal = subtotal.toFixed(2);
+
+      const currentTax = Number(state.values.taxes || 0);
+      if (!state.locked.total) {
+        state.values.total = (subtotal + currentTax).toFixed(2);
+      }
+    }
+
+    function getSubjectName() {
+      return document.getElementById("subject-name").value.trim();
+    }
+
+    function renderInputs() {
+      recordInputs.innerHTML = schemas[state.recordType].inputs();
+
+      const nameInput = document.getElementById("subject-name");
+      const nameContainer = nameInput.closest("p");
+      const usesName = !["receipt", "search-history"].includes(state.recordType);
+      nameContainer.hidden = !usesName;
+
+      if (state.recordType === "receipt") {
+        const itemsInput = document.getElementById("receipt-items");
+        itemsInput.addEventListener("input", () => {
+          if (!state.generated) return;
+          recalculateReceiptTotals();
+          renderRecord();
+        });
+      }
+    }
+
+    function generateRecord({ preserveLocked = false } = {}) {
+      const freshValues = schemas[state.recordType].generate();
+
+      if (preserveLocked) {
+        for (const key of Object.keys(freshValues)) {
+          if (!state.locked[key]) {
+            state.values[key] = freshValues[key];
+          }
+        }
+      } else {
+        state.values = freshValues;
+        state.locked = {};
+      }
+
+      state.generated = true;
+      renderRecord();
+    }
+
+    function renderRecord() {
+      if (!state.generated) {
+        recordOutput.innerHTML = "<p>No record generated yet.</p>";
+        finalRecordPreview.classList.remove("receipt-preview");
+        finalRecordPreview.innerHTML = `<pre><code id="copyable-record">No record generated yet.</code></pre>`;
+        return;
+      }
+
+      recordOutput.innerHTML = schemas[state.recordType].render();
+
+      if (state.recordType === "receipt") {
+        finalRecordPreview.classList.add("receipt-preview");
+        finalRecordPreview.innerHTML = renderFinalReceipt();
+      } else {
+        finalRecordPreview.classList.remove("receipt-preview");
+        finalRecordPreview.innerHTML = `<pre><code id="copyable-record"></code></pre>`;
+        document.getElementById("copyable-record").textContent = schemas[state.recordType].copyText();
+      }
+
+      document.querySelectorAll("[data-reroll]").forEach(button => {
+        button.addEventListener("click", () => {
+          rerollField(button.dataset.reroll);
+        });
+      });
+
+      document.querySelectorAll("[data-lock]").forEach(button => {
+        button.addEventListener("click", () => {
+          toggleLock(button.dataset.lock);
+        });
+      });
+    }
+
+    function renderGeneratedField(key, label) {
+      const value = state.values[key] ?? "";
+      const isLocked = Boolean(state.locked[key]);
+
+      return `
+        <p>
+          <strong>${escapeHtml(label)}:</strong>
+          <span>${escapeHtml(value)}</span>
+          <button type="button" data-reroll="${escapeHtml(key)}">Reroll</button>
+          <button type="button" data-lock="${escapeHtml(key)}">
+            ${isLocked ? "Unlock" : "Lock"}
+          </button>
+        </p>
+      `;
+    }
+
+    function rerollField(key) {
+      if (state.locked[key]) {
+        return;
+      }
+
+      const fieldGenerators = {
+        date: generators.date,
+        time: generators.time,
+        phone: generators.phone,
+        sender: generators.phone,
+        duration: generators.duration,
+        ip: generators.ip,
+        payment: generators.paymentType,
+        transaction: generators.transactionNumber,
+        barcode: generators.barcode
+      };
+
+      if (state.recordType === "receipt" && ["taxes", "total"].includes(key)) {
+        if (key === "taxes") {
+          state.values.taxes = (Number(state.values.subtotal) * (Math.random() * 0.10)).toFixed(2);
+          if (!state.locked.total) {
+            state.values.total = (Number(state.values.subtotal) + Number(state.values.taxes)).toFixed(2);
+          }
+        } else {
+          state.values.total = (Number(state.values.subtotal) + Number(state.values.taxes)).toFixed(2);
+        }
+        renderRecord();
+        return;
+      }
+
+      if (!fieldGenerators[key]) return;
+
+      state.values[key] = fieldGenerators[key]();
+      renderRecord();
+    }
+
+    function toggleLock(key) {
+      state.locked[key] = !state.locked[key];
+      renderRecord();
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    recordTypeSelect.addEventListener("change", () => {
+      state.recordType = recordTypeSelect.value;
+      state.values = {};
+      state.locked = {};
+      state.generated = false;
+      renderInputs();
+      renderRecord();
+    });
+
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+      generateRecord();
+    });
+
+    regenerateAllButton.addEventListener("click", () => {
+      if (!state.generated) {
+        generateRecord();
+        return;
+      }
+
+      generateRecord({ preserveLocked: true });
+    });
+
+    copyRecordButton.addEventListener("click", async () => {
+      if (!state.generated) {
+        return;
+      }
+
+      const text = schemas[state.recordType].copyText();
+
+      try {
+        await navigator.clipboard.writeText(text);
+        copyRecordButton.textContent = "Copied!";
+      } catch (error) {
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        textarea.remove();
+        copyRecordButton.textContent = "Copied!";
+      }
+
+      setTimeout(() => {
+        copyRecordButton.textContent = "Copy to clipboard";
+      }, 1200);
+    });
+
+    renderInputs();
+  </script>
+</body>
+</html>
