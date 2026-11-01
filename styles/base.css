@@ -1,0 +1,226 @@
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: clamp(1rem, 3vw, 2rem);
+  background: var(--fw-page);
+  color: var(--fw-ink);
+  font: 400 1rem/1.6 var(--fw-font);
+}
+::selection {
+  background: var(--fw-accent);
+  color: var(--fw-on-accent);
+}
+h1,
+h2,
+h3 {
+  color: var(--fw-ink);
+  line-height: 1.15;
+  text-wrap: balance;
+}
+h1 {
+  margin: 0 0 1rem;
+  font: 850 clamp(2rem, 5vw, 3.5rem) / 1.08 var(--fw-font);
+  letter-spacing: -0.045em;
+}
+h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.5rem;
+  letter-spacing: -0.025em;
+}
+h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.125rem;
+}
+p {
+  margin: 0 0 1rem;
+}
+a:not(.genButton) {
+  color: var(--fw-link);
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 0.1em;
+}
+a:not(.genButton):hover {
+  text-decoration-thickness: 0.16em;
+}
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+/* Do not resize canvases/SVGs globally: their coordinate systems belong to widgets. */
+canvas,
+svg {
+  max-width: 100%;
+}
+audio {
+  max-width: 100%;
+}
+hr {
+  border: 0;
+  border-top: 1px solid var(--fw-muted);
+  margin-block: 1.5rem;
+}
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font: 650 0.9375rem/1.5 var(--fw-font);
+  color: var(--fw-ink);
+}
+fieldset {
+  min-width: 0;
+  margin: 0 0 1rem;
+  padding: 1rem;
+  border: var(--fw-stroke);
+  border-radius: var(--fw-radius);
+}
+legend {
+  padding-inline: 0.4rem;
+  font-weight: 700;
+}
+button:not(.genButton),
+input,
+select,
+textarea {
+  font: inherit;
+}
+button:not(.genButton),
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+.btn,
+.ui-btn {
+  appearance: none;
+  min-height: 44px;
+  max-width: 100%;
+  padding: 0.6rem 1rem;
+  border: var(--fw-stroke);
+  border-radius: var(--fw-radius);
+  background: var(--fw-accent);
+  color: var(--fw-on-accent);
+  box-shadow: var(--fw-shadow-small);
+  font: 750 0.9375rem/1.4 var(--fw-font);
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition:
+    translate 120ms ease,
+    box-shadow 120ms ease;
+}
+button:not(.genButton):hover:enabled,
+.btn:hover,
+.ui-btn:hover {
+  translate: -1px -1px;
+  box-shadow: var(--fw-shadow);
+}
+button:not(.genButton):active:enabled,
+.btn:active,
+.ui-btn:active {
+  translate: 2px 2px;
+  box-shadow: none;
+}
+button:not(.genButton):disabled,
+input:disabled,
+select:disabled,
+textarea:disabled,
+[aria-disabled="true"] {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+input:not(
+    [type="checkbox"],
+    [type="radio"],
+    [type="range"],
+    [type="file"],
+    [type="hidden"],
+    [type="button"],
+    [type="submit"],
+    [type="reset"],
+    [type="image"],
+    [type="color"]
+  ),
+select,
+textarea {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0.65rem 0.75rem;
+  border: var(--fw-stroke);
+  border-radius: var(--fw-radius);
+  background: var(--fw-surface);
+  color: var(--fw-ink);
+  box-shadow: none;
+  font: 400 1rem/1.5 var(--fw-font);
+}
+input::placeholder,
+textarea::placeholder {
+  color: var(--fw-muted);
+  opacity: 1;
+}
+textarea {
+  min-height: 10rem;
+  resize: vertical;
+}
+input[type="checkbox"],
+input[type="radio"] {
+  width: 1.2rem;
+  height: 1.2rem;
+  min-height: 0;
+  margin: 0 0.35rem 0 0;
+  padding: 0;
+  accent-color: var(--fw-link);
+  vertical-align: middle;
+  box-shadow: none;
+}
+input[type="range"] {
+  max-width: 100%;
+  accent-color: var(--fw-link);
+}
+input[type="color"] {
+  width: 3.5rem;
+  height: 2.75rem;
+  padding: 0.25rem;
+  border: var(--fw-stroke);
+  border-radius: var(--fw-radius);
+  background: var(--fw-surface);
+}
+input[type="file"] {
+  max-width: 100%;
+  color: var(--fw-ink);
+}
+input[type="file"]::file-selector-button {
+  min-height: 44px;
+  margin-right: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border: var(--fw-stroke);
+  border-radius: var(--fw-radius);
+  background: var(--fw-aqua);
+  color: var(--fw-on-accent);
+  font: inherit;
+  cursor: pointer;
+}
+:focus-visible {
+  outline: 3px solid var(--fw-focus);
+  outline-offset: 3px;
+}
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 3px solid var(--fw-focus);
+  outline-offset: 3px;
+}
+pre,
+code,
+kbd {
+  font-family: var(--fw-mono);
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+summary {
+  cursor: pointer;
+  font-weight: 700;
+}

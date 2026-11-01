@@ -1,12 +1,17 @@
 <!doctype html>
-<html class="nb-skin" lang="en">
+<html lang="en">
 <head>
+  <link rel="stylesheet" href="styles/widgets.css">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Simple Shopping List App</title>
-  <link rel="stylesheet" href="neo-brutal.css" />
-  <link rel="stylesheet" href="styles-vanilla.css" />
+
+
   <style>
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+@layer widgets {
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
@@ -55,9 +60,9 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       margin-top: 1.25rem;
     }
 
-    @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
-    @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
-    @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+
+
+
 
     #export-btn { font-family: "Lobster", serif; font-size: 1.25rem; }
     #new-item {
@@ -83,8 +88,9 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       box-shadow: 0 0 0.3125rem rgba(0, 0, 255, 0.5);
     }
     label { font-family: "Oswald", serif; font-size: 1.125rem; font-weight: bold; }
-  </style>
-  <link rel="stylesheet" href="neo-brutal-overrides.css" />
+}
+</style>
+
 </head>
 <body>
   <div class="page-shell">
@@ -178,7 +184,7 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
 
     exportBtn.addEventListener('click', function() {
       let html = `<!DOCTYPE html>
-  <html class="nb-skin" lang="en">
+  <html lang="en">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -189,7 +195,7 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       .list-item { display: block; margin: 0.625rem 0; padding: 0.3125rem; border-bottom: 1px solid #ddd; }
       .crossed { text-decoration: line-through; color: grey; }
     </style>
-  <link rel="stylesheet" href="neo-brutal-overrides.css" />
+
 </head>
   <body>
     <h1>${listTitle || "Shopping List"}</h1>

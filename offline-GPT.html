@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html class="nb-skin" lang="en">
+<html lang="en">
 <head>
+  <link rel="stylesheet" href="styles/widgets.css">
 <meta charset="utf-8">
 <title>Chat Archive Viewer — Flat View</title>
-  <link rel="stylesheet" href="neo-brutal.css" />
-  <link rel="stylesheet" href="styles-vanilla.css" />
+
+
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
+
+@layer widgets {
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
 
@@ -25,7 +28,7 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
   html, body { height: 100%; margin: 0; }
   body {
     font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
-    background: linear-gradient(180deg, #0b0c10, #0b0c10 12.5rem, #0d0f14);
+    background: linear-gradient(180deg, #0b0c10, #0b0c10 12.5rem, var(--fw-surface));
     color: var(--text);
   }
   header {
@@ -43,8 +46,8 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
   .pill { font-size: 0.75rem; color: var(--muted); padding: 0.125rem 0.5rem; border: 1px solid var(--border); border-radius: 62.4375rem; }
   #wrap, .widget-grid { display: grid; grid-template-columns: 20rem 1fr; min-height: 28rem; }
   #left, #right { overflow: auto; }
-  #left { border-right: 1px solid var(--border); background: #0d0f14; }
-  .pane-title { display:flex; align-items:center; justify-content:space-between; padding: 0.625rem 0.75rem; position: sticky; top: 0; background:#0d0f14; z-index:2; border-bottom: 1px solid var(--border);}
+  #left { border-right: 1px solid var(--border); background: var(--fw-surface); }
+  .pane-title { display:flex; align-items:center; justify-content:space-between; padding: 0.625rem 0.75rem; position: sticky; top: 0; background:var(--fw-surface); z-index:2; border-bottom: 1px solid var(--border);}
   .search { margin: 0.625rem 0.75rem; }
   .search input {
     width: 100%; padding: 0.625rem 0.75rem; border-radius: 0.625rem; border: 1px solid var(--border);
@@ -52,9 +55,9 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
   }
   .list { padding: 0.375rem 0.375rem 5rem; }
   .chat {
-    display:flex; gap:0.625rem; align-items:flex-start; padding: 0.625rem; margin: 0.375rem; border:1px solid var(--border); border-radius: 0.75rem; background: #0f131a; cursor: pointer;
+    display:flex; gap:0.625rem; align-items:flex-start; padding: 0.625rem; margin: 0.375rem; border:1px solid var(--border); border-radius: 0.75rem; background: var(--fw-surface); cursor: pointer;
   }
-  .chat:hover { border-color: #2a3140; background:#0f151f; }
+  .chat:hover { border-color: #2a3140; background:var(--fw-surface); }
   .chat-title { font-weight: 600; font-size: 0.875rem; line-height: 1.25; }
   .chat-sub { font-size: 0.75rem; color: var(--muted); }
   .tag { border:1px solid var(--border); color: var(--muted); font-size: 0.6875rem; padding: 0.125rem 0.375rem; border-radius: 0.5rem; }
@@ -63,22 +66,22 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
     margin: 18vh auto; max-width: 40rem; text-align: center; color: var(--muted);
   }
   #drop {
-    margin-top: 1rem; padding: 1.625rem; border: 0.125rem dashed #2a3140; border-radius: 1rem; color: var(--muted); background: #0f131a;
+    margin-top: 1rem; padding: 1.625rem; border: 0.125rem dashed #2a3140; border-radius: 1rem; color: var(--muted); background: var(--fw-surface);
   }
   /* FLAT CHAT VIEW */
   .conv-header {
-    border: 1px solid var(--border); border-radius: 0.75rem; background:#0f131a; padding: 0.75rem 0.875rem; margin-bottom: 0.75rem;
+    border: 1px solid var(--border); border-radius: 0.75rem; background:var(--fw-surface); padding: 0.75rem 0.875rem; margin-bottom: 0.75rem;
   }
   .conv-title { font-weight: 700; font-size: 1.125rem; margin-bottom: 0.25rem; }
   .conv-meta { font-size: 0.75rem; color: var(--muted); display:flex; gap:0.625rem; flex-wrap:wrap; }
   .toolbar { display:flex; gap: 0.625rem; margin: 0.5rem 0 0.875rem; flex-wrap: wrap; }
-  .toolbar label { display:flex; align-items:center; gap:0.375rem; border:1px solid var(--border); background:#0f131a; padding:0.375rem 0.625rem; border-radius:0.625rem; font-size:0.8125rem; color: var(--muted); cursor:pointer; }
+  .toolbar label { display:flex; align-items:center; gap:0.375rem; border:1px solid var(--border); background:var(--fw-surface); padding:0.375rem 0.625rem; border-radius:0.625rem; font-size:0.8125rem; color: var(--muted); cursor:pointer; }
   .messages {
     display: grid; gap: 0.625rem;
   }
   .msg {
     border: 1px solid var(--border);
-    background: #121722;
+    background: var(--fw-surface);
     border-radius: 0.875rem;
     padding: 0.625rem 0.75rem;
   }
@@ -88,14 +91,15 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
   .role {
     font-size: 0.75rem; border:1px solid var(--border); border-radius: 62.4375rem; padding: 0.125rem 0.5rem; color: var(--muted);
   }
-  .role.user { border-color: rgba(122,162,247,.35); color:#a7c0ff; }
-  .role.assistant { border-color: rgba(158,206,106,.35); color:#bce48e; }
-  .role.system { border-color: rgba(224,175,104,.35); color:#f0d39b; }
+  .role.user { border-color: rgba(122,162,247,.35); color:var(--fw-link); }
+  .role.assistant { border-color: rgba(158,206,106,.35); color:var(--fw-link); }
+  .role.system { border-color: rgba(224,175,104,.35); color:var(--fw-link); }
   .msg-meta { font-size: 0.6875rem; color: var(--muted); }
   .msg-body { white-space: pre-wrap; }
-  .kbd { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; background:#0f131a; border:1px solid var(--border); padding:1px 0.375rem; border-radius:0.375rem;}
+  .kbd { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; background:var(--fw-surface); border:1px solid var(--border); padding:1px 0.375rem; border-radius:0.375rem;}
+}
 </style>
-  <link rel="stylesheet" href="neo-brutal-overrides.css" />
+
 </head>
 <body>
 <div class="page-shell">

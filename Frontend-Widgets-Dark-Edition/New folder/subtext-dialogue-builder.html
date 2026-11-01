@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html data-theme="dark" lang="en">
 <head>
+  <link rel="stylesheet" href="../../styles/widgets.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Say Something Else — A Subtext Dialogue Builder</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Oswald:wght@500;600;700&display=swap');
-
-    :root {
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Oswald:wght@500;600;700&display=swap');
+@layer widgets {
+:root {
       --ink: #151515;
       --paper: #fffdf8;
       --lime: #39ff14;
@@ -113,8 +114,9 @@
       h1 { font-size: 49px; }
       .tab { min-width: 33%; padding: 13px 6px; font-size: 11px; }
     }
-  </style>
-  <link rel="stylesheet" href="signature-dark.css">
+}
+</style>
+
 </head>
 <body>
   <div class="page">

@@ -1,17 +1,20 @@
 <!doctype html>
-<html class="nb-skin" lang="en">
+<html lang="en">
 <head>
+  <link rel="stylesheet" href="../styles/widgets.css">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Voice Memo Recorder</title>
-  <link rel="stylesheet" href="neo-brutal.css" />
-  <link rel="stylesheet" href="styles-vanilla.css" />
+
+
   <style>
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+@layer widgets {
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
 
-    @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+
 
     .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
     button.record {
@@ -29,12 +32,13 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
     #downloadButton {
       font-family: "Oswald", serif;
       display: none; margin-top: 0.625rem; padding: 0.625rem 0.75rem; border-radius: 0.25rem;
-      background-color: #0056b3; color: #fff; text-decoration: none; font-weight: 700;
+      background-color: var(--fw-accent); color: var(--fw-on-accent); text-decoration: none; font-weight: 700;
       text-align: center; display: inline-block;
     }
     #status { margin-top: 0.5rem; font-size: 0.875rem; opacity: .8; }
-  </style>
-  <link rel="stylesheet" href="neo-brutal-overrides.css" />
+}
+</style>
+
 </head>
 <body>
   <div class="page-shell">
@@ -59,7 +63,7 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
           <div id="status" aria-live="polite"></div>
 
           <audio id="audioPlayback" controls></audio>
-          <a id="downloadButton" download="voice-memo.webm">DOWNLOAD</a>
+          <a id="downloadButton" class="btn" download="voice-memo.webm">DOWNLOAD</a>
         </section>
       </div>
     </div>

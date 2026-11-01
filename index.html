@@ -1,10 +1,7 @@
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
 <!DOCTYPE html>
-    <html class="nb-skin" lang="en">
+    <html lang="en">
     <head>
+  <link rel="stylesheet" href="styles/widgets.css">
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>Frontend Tools & Widgets</title>
@@ -12,12 +9,15 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="neo-brutal.css" />
+
         <style>
-            .card-header { display: flex; flex-direction: column; gap: 0.4rem; }
+
+@layer widgets {
+.card-header { display: flex; flex-direction: column; gap: 0.4rem; }
             .card { display: flex; flex-direction: column; gap: 0.65rem; min-height: 100%; }
             .blurb { min-height: 3rem; }
-        </style>
+}
+</style>
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-KWT5FFXTS7"></script>
         <script>
           window.dataLayer = window.dataLayer || [];
@@ -26,13 +26,13 @@
           gtag('config', 'G-KWT5FFXTS7');
         </script>
 </head>
-    <body>
+    <body class="catalog">
         <div class="wrap">
             <header class="hero">
                 <h1>Frontend Tools & Widgets</h1>
                 <p>Collection of frontend HTML/CSS/Javascript projects, widgets & standalone tools.</p>
             </header>
-            
+
             <div class="toolbar">
                 <div class="input">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -43,9 +43,9 @@
                 </div>
                 <div class="hint">Tip: press <span class="kbd">/</span> to focus search</div>
             </div>
-            
+
             <section id="grid" class="grid">
-                
+
                 <article class="card" data-name="html-projects cozy pixel city —">
                     <header class="card-header">
                         <h3>Personal Palette Generator</h3>
@@ -57,12 +57,12 @@
                         <a class="btn" href="personal-palette.html">View Folder</a>
                     </div>
                 </article>
-                
+
                 <article class="card" data-name="html-projects cozy pixel city —">
                     <header class="card-header">
                         <h3>Pixel Art Palette Extractor</h3>
                         <code class="path">color tools</code>
-                        
+
                     </header>
                     <p class="blurb">Upload pixel art ---> color palette extracted</p>
                     <div class="actions">
@@ -70,7 +70,7 @@
                         <a class="btn" href="pixel-art-palette-grabber.html">View Folder</a>
                     </div>
                 </article>
-                
+
                 <article class="card" data-name="html-projects cozy pixel city —">
                     <header class="card-header">
                         <h3>Link List Generator</h3>
@@ -82,8 +82,8 @@
                         <a class="btn" href="link-list-generator.html">View Folder</a>
                     </div>
                 </article>
-                
-                
+
+
                 <article class="card" data-name="html-projects cozy pixel city —">
                     <header class="card-header">
                         <h3>Offline ChatGPT</h3>
@@ -95,9 +95,9 @@
                         <a class="btn" href="offline-GPT.html">View Folder</a>
                     </div>
                 </article>
-                
-                
-                
+
+
+
                 <article class="card" data-name="html-projects/demos kindle cookbook formatter kindle cookbook formatter">
                     <header class="card-header">
                         <h3>.mbox Viewer</h3>
@@ -109,8 +109,8 @@
                         <a class="btn" href="email-viewer.html">View Folder</a>
                     </div>
                 </article>
-                
-                
+
+
                 <article class="card" data-name="html-projects/goal-tracker.html goal progress tracker goal progress tracker">
                     <header class="card-header">
                         <h3>Quiz Builder</h3>
@@ -122,8 +122,8 @@
                         <a class="btn" href="quiz-builder.html">View Folder</a>
                     </div>
                 </article>
-                
-                
+
+
                 <article class="card" data-name="html-projects/html5-quiz.html html5 tags quiz html5 element quiz">
                     <header class="card-header">
                         <h3>HTML5 Tags Quiz</h3>
@@ -135,7 +135,7 @@
                         <a class="btn" href="html5-quiz.html">View Folder</a>
                     </div>
                 </article>
-                
+
                 <article class="card" data-name="html-projects/notes.html notes.html —">
                     <header class="card-header">
                         <h3>Snippet Saver</h3>
@@ -147,8 +147,8 @@
                         <a class="btn" href="notes.html">View Folder</a>
                     </div>
                 </article>
-                
-                
+
+
                 <article class="card" data-name="html-projects/philosophy-quiz.html which philosophical movements align with you? which philosophical movements align with you?">
                     <header class="card-header">
                         <h3>Which Philosophical Movements Align With You?</h3>
@@ -160,9 +160,9 @@
                         <a class="btn" href="philosophy-quiz.html">View Folder</a>
                     </div>
                 </article>
-                
-                
-                
+
+
+
                 <article class="card" data-name="html-projects/poetry-grid poetry grid helper poetry squared">
                     <header class="card-header">
                         <h3>Poetry Squared</h3>
@@ -174,8 +174,8 @@
                         <a class="btn" href="poetry-grid/index.html">View Folder</a>
                     </div>
                 </article>
-                
-                
+
+
                 <article class="card" data-name="html-projects/qr-codes.html qr-codes.html —">
                     <header class="card-header">
                         <h3>URL to QR Code</h3>
@@ -187,8 +187,8 @@
                         <a class="btn" href="qr-codes.html">View Folder</a>
                     </div>
                 </article>
-                
-                
+
+
                 <article class="card" data-name="html-projects/quote-image-generator.html quote graphic generator —">
                     <header class="card-header">
                         <h3>Quote Graphic Generator</h3>
@@ -200,8 +200,8 @@
                         <a class="btn" href="quote-image-generator.html">View Folder</a>
                     </div>
                 </article>
-                
-                
+
+
                 <article class="card" data-name="html-projects/random-palette.html random color palette generator random color palette generator">
                     <header class="card-header">
                         <h3>Random Color Palette</h3>
@@ -213,9 +213,9 @@
                         <a class="btn" href="random-palette.html">View Folder</a>
                     </div>
                 </article>
-                
-                
-                
+
+
+
                 <article class="card" data-name="html-projects/rhymes.html rhyme finder · datamuse api —">
                     <header class="card-header">
                         <h3>Pixel Drawing Board</h3>
@@ -227,8 +227,8 @@
                         <a class="btn" href="pixel-art-draw.html">View Folder</a>
                     </div>
                 </article>
-                
-                
+
+
                 <article class="card" data-name="html-projects/table-generator.html editable table generator —">
                     <header class="card-header">
                         <h3>Editable Table Generator</h3>
@@ -240,8 +240,8 @@
                         <a class="btn" href="table-generator.html">View Folder</a>
                     </div>
                 </article>
-                
-                
+
+
                 <article class="card" data-name="html-projects/table-generator.html editable table generator —">
                     <header class="card-header">
                         <h3>Placeholder Image Generator</h3>
@@ -253,9 +253,9 @@
                         <a class="btn" href="placeholder-image-generator.html">View Folder</a>
                     </div>
                 </article>
-                
-                
-                
+
+
+
                 <article class="card" data-name="kindle-cookbooks/formatter.html">
                     <header class="card-header">
                         <h3>Cookbook Formatter</h3>
@@ -267,8 +267,8 @@
                         <a class="btn" href="kindle-cookbooks/formatter.html">View Folder</a>
                     </div>
                 </article>
-                
-                
+
+
                 <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
                     <header class="card-header">
                         <h3>Voice Recorder</h3>
@@ -280,7 +280,7 @@
                         <a class="btn" href="voice-record.html">View Folder</a>
                     </div>
                 </article>
-                
+
                 <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
                     <header class="card-header">
                         <h3>Pixel Art to SVG</h3>
@@ -291,9 +291,9 @@
                         <a class="btn primary" href="pixel-art-to-svg.html">Open Demo</a>
                         <a class="btn" href="pixel-art-to-svg.html">View Folder</a>
                     </div>
-                </article> 
-            
-                
+                </article>
+
+
                 <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
                     <header class="card-header">
                         <h3>JSON to Typescript</h3>
@@ -304,8 +304,8 @@
                         <a class="btn primary" href="json-schema-to-typescript.html">Open Demo</a>
                         <a class="btn" href="json-schema-to-typescript.html">View Folder</a>
                     </div>
-                </article> 
-                
+                </article>
+
                 <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
                     <header class="card-header">
                         <h3>Boggle Board Generator</h3>
@@ -317,8 +317,8 @@
                         <a class="btn" href="boggleish.html">View Folder</a>
                     </div>
                 </article>
-                
-                
+
+
                 <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
                     <header class="card-header">
                         <h3>Alt Text Generator</h3>
@@ -330,7 +330,7 @@
                         <a class="btn" href="alt-text-generator.html">View Folder</a>
                     </div>
                 </article>
-                
+
                 <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
                     <header class="card-header">
                         <h3>Fake Data Generator</h3>
@@ -342,7 +342,7 @@
                         <a class="btn" href="fake-data-generator.html">View Folder</a>
                     </div>
                 </article>
-                
+
                 <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
                     <header class="card-header">
                         <h3>File Naming Generator</h3>
@@ -354,7 +354,7 @@
                         <a class="btn" href="file-naming-generator.html">View Folder</a>
                     </div>
                 </article>
-                
+
                 <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
                     <header class="card-header">
                         <h3>RegEx Explainer</h3>
@@ -366,8 +366,8 @@
                         <a class="btn" href="regex-explainer.html">View Folder</a>
                     </div>
                 </article>
-            
-                
+
+
                 <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
                     <header class="card-header">
                         <h3>CSV to SQL Generator</h3>
@@ -379,8 +379,8 @@
                         <a class="btn" href="csv-to-sql.html">View Folder</a>
                     </div>
                 </article>
-                
-                
+
+
                         <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
                     <header class="card-header">
                         <h3>Dictionary Definition Generator</h3>
@@ -392,7 +392,7 @@
                         <a class="btn" href="dictionary-definition-generator.html">View Folder</a>
                     </div>
                 </article>
-                
+
                 <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
                     <header class="card-header">
                         <h3>Chat Messages Generator</h3>
@@ -404,7 +404,7 @@
                         <a class="btn" href="chat-generator.html">View Folder</a>
                     </div>
                 </article>
-                
+
                 <article class="card" data-name="activity-tracker">
                     <header class="card-header">
                         <h3>Daily Activity Tracker</h3>
@@ -416,8 +416,8 @@
                         <a class="btn" href="">View Folder</a>
                     </div>
                 </article>
-                
-                
+
+
                 <article class="card" data-name="kanban">
     <header class="card-header">
         <h3>Kanban Board</h3>
@@ -563,21 +563,21 @@
 </article>
 
 
-                
+
 
             </section>
-            
+
             <footer>
                 <p>MIT Licensed. Built by Ashly. See <a href="./README.md">README</a> for an overview of this repo.</p>
             </footer>
         </div>
-        
+
         <script>
             // Quick search / filter
             const input = document.getElementById('search');
             const grid = document.getElementById('grid');
             const cards = Array.from(grid.querySelectorAll('.card'));
-            
+
             function filter() {
                 const q = (input.value || '').trim().toLowerCase();
                 for (const card of cards) {

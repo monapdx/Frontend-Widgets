@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html class="nb-skin" lang="en">
+<html data-theme="dark" lang="en">
 <head>
+  <link rel="stylesheet" href="../../styles/widgets.css">
   <meta charset="UTF-8" />
   <title>Quiz Builder</title>
-  <link rel="stylesheet" href="neo-brutal.css" />
-  <link rel="stylesheet" href="styles-vanilla.css" />
+
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
+
+@layer widgets {
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
 
@@ -109,9 +112,10 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       min-height: 180px;
       white-space: pre;
     }
-  </style>
-  <link rel="stylesheet" href="neo-brutal-overrides.css" />
-  <link rel="stylesheet" href="signature-dark.css">
+}
+</style>
+
+
 </head>
 <body>
   <div class="page-shell">

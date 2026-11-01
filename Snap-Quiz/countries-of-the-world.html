@@ -1,17 +1,20 @@
 <!DOCTYPE html>
-<html class="nb-skin" lang="en">
+<html lang="en">
 <head>
+  <link rel="stylesheet" href="../styles/widgets.css">
   <meta charset="UTF-8">
   <title>Countries of the World</title>
-  <link rel="stylesheet" href="../neo-brutal.css" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+@layer widgets {
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
 
 
-    @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+
     body { font-family: "Oswald", serif; margin: 1.25rem; text-align: center; }
     #correct-words { margin-top: 1.25rem; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; }
     #correct-words li { list-style-type: none; margin: 0.3125rem; padding: 0.625rem; background-color: #a8e6ce; border-radius: 0.3125rem; }
@@ -22,8 +25,9 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
     input:focus { outline: none; border-color: blue; box-shadow: 0 0 0.3125rem rgba(0, 0, 255, 0.5); }
     button.answer { margin-top: 0.625rem; width: 100%; background: #007bff; color: #fff; font-size: 1rem; padding: 0.625rem; border: none; border-radius: 0.25rem; cursor: pointer; font-weight: bold; touch-action: manipulation; min-height: 2.75rem; transition: background 0.3s ease; }
     button.answer:hover { background: #0056b3; }
-  </style>
-  <link rel="stylesheet" href="../neo-brutal-overrides.css" />
+}
+</style>
+
 </head>
 <body>
   <h1>Countries of the World</h1>

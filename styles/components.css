@@ -1,0 +1,228 @@
+/* Shared UI only. Avoid broad selectors such as header, footer, .row or .grid. */
+.page-shell,
+.site-shell,
+.wrap,
+.ui-wrap {
+  width: min(var(--fw-content), 100%);
+  margin-inline: auto;
+}
+.ui-wrap {
+  padding: 0;
+}
+.page-header,
+.site-header {
+  display: block;
+  position: static;
+  padding: 0;
+  margin-bottom: 2rem;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+.eyebrow {
+  margin: 0 0 0.75rem;
+  color: var(--fw-muted);
+  font: 750 0.75rem/1.4 var(--fw-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+.page-description,
+.lede {
+  max-width: 70ch;
+  margin: 0;
+  color: var(--fw-muted);
+}
+.widget-shell,
+.ui-card,
+.tool-card {
+  padding: clamp(1rem, 2.5vw, 1.5rem);
+  background: var(--fw-surface);
+  color: var(--fw-ink);
+  border: var(--fw-stroke);
+  border-radius: var(--fw-radius);
+  box-shadow: var(--fw-shadow);
+}
+.widget-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.back-link {
+  font-weight: 700;
+}
+.widget-grid > * {
+  min-width: 0;
+}
+.panel,
+.panelish {
+  min-width: 0;
+  box-shadow: none;
+  background: var(--fw-surface-soft);
+  color: var(--fw-ink);
+  border: var(--fw-stroke);
+  border-radius: var(--fw-radius);
+}
+.panel h2,
+.panel h3 {
+  margin-top: 0;
+}
+.actions,
+.inline-actions,
+.option-row,
+.ui-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+.actions {
+  margin-top: 1rem;
+}
+.btn,
+.ui-btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+button.secondary,
+.btn.secondary,
+.ui-btn:not(.primary) {
+  background: var(--fw-surface);
+  color: var(--fw-ink);
+}
+button.ghost,
+.btn.ghost {
+  background: transparent;
+  color: var(--fw-ink);
+  box-shadow: none;
+}
+button.danger,
+.btn.danger {
+  background: var(--fw-danger);
+  color: var(--fw-surface);
+}
+.output-box,
+.preview-box,
+.code-box {
+  min-width: 0;
+  min-height: 12rem;
+  max-width: 100%;
+  overflow: auto;
+  padding: 1rem;
+  border: var(--fw-stroke);
+  border-radius: var(--fw-radius);
+  background: var(--fw-surface);
+  color: var(--fw-ink);
+}
+.output-box {
+  max-height: 24rem;
+}
+.code-box,
+.output-box pre,
+.ui-textarea {
+  font-family: var(--fw-mono);
+}
+.small,
+.hint,
+.ui-help {
+  color: var(--fw-muted);
+  font-size: 0.875rem;
+}
+.note {
+  color: var(--fw-muted);
+  margin-top: 0.75rem;
+}
+.ui-error {
+  color: var(--fw-danger);
+}
+.ui-field,
+.form-group {
+  margin-bottom: 1rem;
+}
+.ui-check,
+.ui-switch,
+.checkbox-line {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.checkbox-line label {
+  margin: 0;
+}
+.ui-kbd,
+.kbd {
+  padding: 0.1rem 0.35rem;
+  border: 1px solid var(--fw-border);
+  border-radius: 3px;
+  background: var(--fw-surface);
+  color: var(--fw-ink);
+  font-family: var(--fw-mono);
+}
+.match-list,
+.checkbox-list {
+  display: grid;
+  gap: 0.75rem;
+}
+.match-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border: var(--fw-stroke);
+  background: var(--fw-surface);
+}
+.match-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.tiny-swatch {
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 1px solid var(--fw-border);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.swatch {
+  min-height: 7rem;
+  border: var(--fw-stroke);
+  border-radius: var(--fw-radius);
+}
+.kv {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.svg-preview {
+  display: grid;
+  place-items: center;
+  min-height: 12rem;
+}
+@media (max-width: 800px) {
+  .widget-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (forced-colors: active) {
+  .widget-shell,
+  .ui-card,
+  button,
+  .btn {
+    box-shadow: none;
+  }
+}
+
+.widget-shell .card {
+  background: var(--fw-surface);
+  color: var(--fw-ink);
+  border: var(--fw-stroke);
+  border-radius: var(--fw-radius);
+}
