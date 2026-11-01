@@ -1,21 +1,26 @@
 <!doctype html>
-<html class="nb-skin" lang="en">
+<html data-theme="dark" lang="en">
 <head>
+  <link rel="stylesheet" href="../../styles/widgets.css">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Kindle Cookbook Formatter</title>
-  <link rel="stylesheet" href="neo-brutal.css" />
-  <link rel="stylesheet" href="styles-vanilla.css" />
+
+
   <style>
+
+@layer widgets {
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
-  </style>
-  <link rel="stylesheet" href="cookbook-shared.css">
-  <link rel="stylesheet" href="neo-brutal-overrides.css" />
-  <link rel="stylesheet" href="signature-dark.css">
+}
+</style>
+
+
+
+  <link rel="stylesheet" href="../../styles/cookbook.css">
 </head>
-<body>
+<body class="cookbook-page">
   <div class="page-shell">
     <header class="page-header">
       <p class="eyebrow">Frontend Widget</p>

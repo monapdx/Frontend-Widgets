@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html class="nb-skin" lang="en">
+<html lang="en">
 <head>
+  <link rel="stylesheet" href="styles/widgets.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset="UTF-8" />
   <title>Placeholdr Image Tool</title>
-  <link rel="stylesheet" href="neo-brutal.css" />
-  <link rel="stylesheet" href="styles-vanilla.css" />
+
+
   <style>
+
+@layer widgets {
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
 
@@ -174,8 +177,9 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       margin: 0 auto;
       width: 100%;
     }
-  </style>
-  <link rel="stylesheet" href="neo-brutal-overrides.css" />
+}
+</style>
+
 </head>
 <body>
   <div class="page-shell">
@@ -201,7 +205,7 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
         <label for="height">Height (px)</label>
         <input id="height" type="number" min="1" max="2048" value="512" required />
       </div>
-      <div class="field" style="grid-column: span 2;">
+      <div class="field" style="grid-column: 1 / -1;">
         <label for="prompt">Prompt</label>
         <input
           id="prompt"

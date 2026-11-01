@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html class="nb-skin" lang="en">
+<html lang="en">
 <head>
+  <link rel="stylesheet" href="styles/widgets.css">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Chat Message Animation Generator</title>
-  <link rel="stylesheet" href="neo-brutal.css" />
-  <link rel="stylesheet" href="styles-vanilla.css" />
+
+
   <style>
+
+@layer widgets {
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
 
@@ -529,8 +532,9 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
         height: 660px;
       }
     }
-  </style>
-  <link rel="stylesheet" href="neo-brutal-overrides.css" />
+}
+</style>
+
 </head>
 <body>
   <div class="page-shell">

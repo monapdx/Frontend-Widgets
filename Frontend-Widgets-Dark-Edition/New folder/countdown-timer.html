@@ -1,18 +1,21 @@
 <!DOCTYPE html>
-<html class="nb-skin" lang="en">
+<html data-theme="dark" lang="en">
 <head>
+  <link rel="stylesheet" href="../../styles/widgets.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset="UTF-8">
   <title>Countdown to Apr 20, 2026 (EST)</title>
-  <link rel="stylesheet" href="neo-brutal.css" />
+
   <style>
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+@layer widgets {
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
 
 
 
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+
 .label {
 font-family: "Oswald", serif;
 	font-size: 1.5em;
@@ -51,12 +54,13 @@ text-transform: uppercase;
 color:#FFFACD;
       margin-top: 0.625rem;
       font-size: 0.9rem;
-      
-      
+
+
     }
-  </style>
-  <link rel="stylesheet" href="neo-brutal-overrides.css" />
-  <link rel="stylesheet" href="signature-dark.css">
+}
+</style>
+
+
 </head>
 <body>
     <div class="countdown-wrapper">

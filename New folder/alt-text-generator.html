@@ -1,14 +1,17 @@
 <!DOCTYPE html>
-<html class="nb-skin" lang="en">
+<html lang="en">
 <head>
+  <link rel="stylesheet" href="../styles/widgets.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Alt text generator</title>
-  <link rel="stylesheet" href="neo-brutal.css" />
-  <link rel="stylesheet" href="styles-vanilla.css" />
-  <link rel="stylesheet" href="neo-brutal-overrides.css" />
+
+
+
   <style>
-    /* Page layout: balanced width, form + preview/output side-by-side on wide screens */
+
+@layer widgets {
+/* Page layout: balanced width, form + preview/output side-by-side on wide screens */
     .alt-gen-page .alt-gen-side {
       display: flex;
       flex-direction: column;
@@ -96,7 +99,8 @@
       min-height: 6rem;
       max-height: 12rem;
     }
-  </style>
+}
+</style>
 </head>
 <body class="alt-gen-page">
 

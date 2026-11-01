@@ -1,14 +1,17 @@
 <!doctype html>
-<html class="nb-skin" lang="en">
+<html lang="en">
   <head>
+  <link rel="stylesheet" href="styles/widgets.css">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Cozy Pixel City</title>
-  <link rel="stylesheet" href="neo-brutal.css" />
-  <link rel="stylesheet" href="styles-vanilla.css" />
+
+
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-      *, *::before, *::after { box-sizing: border-box; }
+
+@layer widgets {
+*, *::before, *::after { box-sizing: border-box; }
       html { -webkit-text-size-adjust: 100%; }
       img, video, canvas, svg { max-width: 100%; height: auto; }
       body {
@@ -27,8 +30,9 @@
       .city-panel #root {
         min-height: 32rem;
       }
-    </style>
-  <link rel="stylesheet" href="neo-brutal-overrides.css" />
+}
+</style>
+
 </head>
   <body>
     <div class="page-shell">

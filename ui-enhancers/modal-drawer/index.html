@@ -1,18 +1,21 @@
 <!doctype html>
 <html lang="en" data-theme="neon-dark">
 <head>
+  <link rel="stylesheet" href="../../styles/widgets.css">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Modal + Drawer Demo</title>
-  <link rel="stylesheet" href="../../ui-core/theme.css" />
+
   <link rel="stylesheet" href="../toast/toast.css" />
   <link rel="stylesheet" href="./modal.css" />
     <style>
+
+@layer widgets {
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
-
-    </style>
+}
+</style>
 </head>
 <body>
   <div class="ui-wrap">

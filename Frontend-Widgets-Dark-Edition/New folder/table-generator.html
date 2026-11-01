@@ -1,19 +1,24 @@
 <!doctype html>
-<html class="nb-skin" lang="en">
+<html data-theme="dark" lang="en">
 <head>
+  <link rel="stylesheet" href="../../styles/widgets.css">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Editable Table Generator</title>
-  <link rel="stylesheet" href="neo-brutal.css" />
-  <link rel="stylesheet" href="styles-vanilla.css" />
+
+
   <style>
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
+@layer widgets {
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
 
-   @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
-   @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
-   @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
+
+
+
 
     .table-panel {
       font-family: "Oswald", serif;
@@ -75,9 +80,10 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
     button:hover {
       background: #0056b3;
     }
-  </style>
-  <link rel="stylesheet" href="neo-brutal-overrides.css" />
-  <link rel="stylesheet" href="signature-dark.css">
+}
+</style>
+
+
 </head>
 <body>
   <div class="page-shell">

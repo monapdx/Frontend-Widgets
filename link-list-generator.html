@@ -1,12 +1,15 @@
 <!doctype html>
-<html class="nb-skin" lang="en">
+<html lang="en">
 <head>
+  <link rel="stylesheet" href="styles/widgets.css">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>List of Links Generator</title>
-  <link rel="stylesheet" href="neo-brutal.css" />
-  <link rel="stylesheet" href="styles-vanilla.css" />
+
+
   <style>
+
+@layer widgets {
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
@@ -21,8 +24,9 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
     .spacer { height: .5rem; }
     .actions { display: flex; gap: .75rem; flex-wrap: wrap; margin-top: .75rem; }
     .toast { margin-left: .5rem; color: #1a7f37; font-weight: 600; display: none; }
-  </style>
-  <link rel="stylesheet" href="neo-brutal-overrides.css" />
+}
+</style>
+
 </head>
 <body>
   <div class="page-shell">
@@ -175,13 +179,13 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
     if (!snippet.trim()) return;
 
     const fullDoc = `<!DOCTYPE html>
-<html class="nb-skin" lang="en">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Generated List</title>
-  <link rel="stylesheet" href="neo-brutal.css" />
-  <link rel="stylesheet" href="neo-brutal-overrides.css" />
+
+
 </head>
 <body>
 ${snippet}
