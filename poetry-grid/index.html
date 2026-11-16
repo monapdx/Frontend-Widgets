@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html class="nb-skin" lang="en">
+<html lang="en">
 <head>
+  <link rel="stylesheet" href="../styles/widgets.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Poetry Grid Helper</title>
-    <link rel="stylesheet" href="../neo-brutal.css" />
+
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
     <style>
+
+@layer widgets {
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
@@ -116,7 +119,7 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
             font-size: 18px;
             color: #2c3e50;
         }
-        
+
         #table-container {
     width: auto;
     height: auto;
@@ -159,10 +162,11 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
                 padding: 5px;
             }
         }
-        
+
         a {text-decoration:none;}
-    </style>
-  <link rel="stylesheet" href="../neo-brutal-overrides.css" />
+}
+</style>
+
 </head>
 <body>
     <header>
@@ -171,9 +175,9 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
     <main>
         <section class="product-info">
             <h2>Can You Write a Poem That Reads The Same Both Horizontally and Vertically?</h2>
-           
+
             <h3>It's <em>Harder</em> Than it Looks...</h3>
-            
+
         <p><details><summary><mark> Click here to read one by Louis Carroll</mark></summary><img src="square-stanza.png"><p>Credit for this find goes to <em><a href="https://www.futilitycloset.com/2009/05/18/7669/">Futility Closet</a></em>!</p></details></p><hr>
 
             <div class="container">
@@ -186,7 +190,7 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
                 <div id="statusMessage"></div>
                 <button id="download" class="cta-button">Save Your Poem!</button>
             </div>
-       
+
     </main>
     <footer>
         <p>&copy; 2024 Poetry Grid Helper. All rights reserved.</p>

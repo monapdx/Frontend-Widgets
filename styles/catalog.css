@@ -1,0 +1,98 @@
+/* Collection index; deliberately scoped so widget grids/cards keep their layout. */
+.catalog .wrap {
+  padding-block: 1rem 3rem;
+}
+.catalog .hero {
+  padding: clamp(1.5rem, 5vw, 3rem);
+  margin-bottom: 2rem;
+  border: var(--fw-stroke);
+  border-radius: var(--fw-radius);
+  background: var(--fw-accent);
+  color: var(--fw-on-accent);
+  box-shadow: 6px 6px 0 var(--fw-border);
+}
+.catalog .hero h1 {
+  max-width: 18ch;
+  color: inherit;
+}
+.catalog .hero p {
+  max-width: 62ch;
+  margin: 0;
+  font-size: 1.125rem;
+}
+.catalog .toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.catalog .input {
+  position: relative;
+  flex: 1 1 18rem;
+}
+.catalog .input svg {
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  translate: 0 -50%;
+  pointer-events: none;
+}
+.catalog .input input {
+  padding-left: 3rem;
+}
+.catalog #grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 1.5rem;
+}
+.catalog .card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+  padding: 1.25rem;
+  border: var(--fw-stroke);
+  border-radius: var(--fw-radius);
+  background: var(--fw-surface);
+  box-shadow: var(--fw-shadow);
+}
+.catalog .card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.catalog .card h3 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+.catalog .path {
+  width: fit-content;
+  max-width: 100%;
+  padding: 0.15rem 0.5rem;
+  border: 1px solid var(--fw-border);
+  border-radius: 3px;
+  background: var(--fw-surface-soft);
+  color: var(--fw-ink);
+  font-size: 0.75rem;
+  overflow-wrap: anywhere;
+}
+.catalog .blurb {
+  margin: 0;
+  color: var(--fw-muted);
+}
+.catalog .card .actions {
+  margin-top: auto;
+  padding-top: 0.5rem;
+}
+.catalog .card .btn {
+  flex: 1 1 8rem;
+}
+.catalog .card .btn:not(.primary) {
+  background: var(--fw-surface);
+  color: var(--fw-ink);
+}
+.catalog footer {
+  margin-top: 2rem;
+  color: var(--fw-muted);
+}

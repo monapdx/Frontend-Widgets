@@ -1,0 +1,59 @@
+/* One entry point. Widget artwork/layout lives in the widgets layer. */
+@layer reset, layout, widgets, tokens, base, components, artwork, utilities;
+@import url("./tokens.css") layer(tokens);
+@import url("./base.css") layer(base);
+@import url("./components.css") layer(components);
+@import url("./catalog.css") layer(components);
+
+@layer reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+}
+@layer utilities {
+  /* Visibility is behavior: no component should override it. */
+  [hidden] {
+    display: none !important;
+  }
+  .sr-only,
+  .sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer layout {
+  /* Default geometry stays below widget-specific layout rules. */
+  .widget-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+    align-items: start;
+  }
+  .panel,
+  .panelish {
+    padding: 1rem;
+  }
+}

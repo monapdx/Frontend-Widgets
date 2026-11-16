@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Widget style foundation</title>
+  <link rel="stylesheet" href="widgets.css">
+</head>
+<body>
+  <main class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">Frontend Widgets / Style foundation</p>
+      <h1>Small tools.<br>One fresh start.</h1>
+      <p class="page-description">A shared language for the collection: purple, paper, solid borders, and controls that feel like controls.</p>
+      <div class="actions"><a class="back-link" href="../index.html">← All widgets</a><button id="theme" class="secondary" type="button">Switch to dark</button></div>
+    </header>
+    <div class="widget-shell">
+      <div class="widget-topbar"><h2>Build something useful.</h2><span class="small">CSS only · no framework</span></div>
+      <div class="widget-grid">
+        <section class="panel" aria-labelledby="controls-title">
+          <h3 id="controls-title">The essentials</h3>
+          <div class="form-group"><label for="name">Project name</label><input id="name" placeholder="Your next little tool"></div>
+          <div class="form-group"><label for="category">Category</label><select id="category"><option>Art & color</option><option>Code generators</option><option>Writing</option></select></div>
+          <div class="form-group"><label for="notes">Notes</label><textarea id="notes" placeholder="Make it yours."></textarea></div>
+          <div class="checkbox-line"><input id="standalone" type="checkbox" checked><label for="standalone">Keep it simple</label></div>
+          <div class="actions"><button type="button">Primary action</button><button class="secondary" type="button">Secondary</button><button disabled type="button">Disabled</button></div>
+        </section>
+        <section class="panel" aria-labelledby="output-title">
+          <h3 id="output-title">Room for the result</h3>
+          <p class="small">Inputs stay readable. Outputs have space. Keyboard focus stays visible.</p>
+          <div class="output-box"><pre><code>&lt;link rel="stylesheet"
+      href="styles/widgets.css"&gt;
+
+/* Your favorite purple */
+--fw-accent: #e69dfc;</code></pre></div>
+          <div class="form-group"><label for="upload">Upload a file</label><input id="upload" type="file"></div>
+          <div class="form-group"><label for="color">Accent</label><input id="color" type="color" value="#e69dfc"></div>
+          <a href="../table-generator.html">Try the table generator →</a>
+        </section>
+      </div>
+    </div>
+  </main>
+  <script>
+    document.getElementById('theme').addEventListener('click', function () {
+      const dark = document.documentElement.dataset.theme !== 'dark';
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      this.textContent = dark ? 'Switch to light' : 'Switch to dark';
+    });
+  </script>
+</body>
+</html>

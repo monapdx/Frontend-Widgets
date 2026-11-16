@@ -365,6 +365,10 @@ Generate and customize Github links based on URL patterns.
 
 ---
 
+## Styling
+
+The collection now uses a fresh shared CSS foundation. [Preview the controls](styles/preview.html) or read the [styling guide](docs/styling.md). When downloading a widget, include the `styles` folder with its HTML file.
+
 ## License
 
 Unless otherwise noted inside a project folder, this repository is released under the **MIT License**.  

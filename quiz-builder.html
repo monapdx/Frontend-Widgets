@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html class="nb-skin" lang="en">
+<html lang="en">
 <head>
+  <link rel="stylesheet" href="styles/widgets.css">
   <meta charset="UTF-8" />
   <title>Quiz Builder</title>
-  <link rel="stylesheet" href="neo-brutal.css" />
-  <link rel="stylesheet" href="styles-vanilla.css" />
+
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
+
+@layer widgets {
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
 
@@ -109,8 +112,9 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       min-height: 180px;
       white-space: pre;
     }
-  </style>
-  <link rel="stylesheet" href="neo-brutal-overrides.css" />
+}
+</style>
+
 </head>
 <body>
   <div class="page-shell">
@@ -213,7 +217,7 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       // Build final HTML string with simple concatenation (no template literals)
       var html = "";
       html += "<!DOCTYPE html>\n";
-      html += "<html class="nb-skin" lang=\"en\">\n";
+      html += "<html lang=\"en\">\n";
       html += "<head>\n";
       html += "  <meta charset=\"UTF-8\">\n";
       html += "  <title>" + safeTitle + "</title>\n";
@@ -231,8 +235,7 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       html += "    button.answer { margin-top: 0.625rem; width: 100%; background: #007bff; color: #fff; font-size: 1rem; padding: 0.625rem; border: none; border-radius: 0.25rem; cursor: pointer; font-weight: bold; transition: background 0.3s ease; }\n";
       html += "    button.answer:hover { background: #0056b3; }\n";
       html += "  </style>\n";
-      html += "  <link rel="stylesheet" href="neo-brutal-overrides.css" />
-</head>\n";
+      html += "</head>\n";
       html += "<body>\n";
       html += "  <h1>" + safeTitle + "</h1>\n";
       html += "  <p>" + safeDescription + "</p>\n";

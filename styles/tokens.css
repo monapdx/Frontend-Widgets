@@ -1,0 +1,80 @@
+/* Edit these values to theme every widget. No external fonts or dependencies. */
+:root {
+  color-scheme: light;
+  --fw-page: #f7f3fa;
+  --fw-surface: #ffffff;
+  --fw-surface-soft: #f1eaf5;
+  --fw-ink: #17131c;
+  --fw-muted: #5d5366;
+  --fw-border: #17131c;
+  --fw-purple: #e69dfc;
+  --fw-pink: #ff85c8;
+  --fw-aqua: #a4f0e8;
+  --fw-accent: var(--fw-purple);
+  --fw-on-accent: #17131c;
+  --fw-link: #72268b;
+  --fw-focus: #087c83;
+  --fw-success: #17613d;
+  --fw-danger: #a51f46;
+  --fw-radius: 6px;
+  --fw-stroke: 2px solid var(--fw-border);
+  --fw-shadow: 4px 4px 0 var(--fw-border);
+  --fw-shadow-small: 2px 2px 0 var(--fw-border);
+  --fw-font:
+    "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --fw-mono: "Cascadia Code", Consolas, monospace;
+  --fw-space-1: 0.25rem;
+  --fw-space-2: 0.5rem;
+  --fw-space-3: 0.75rem;
+  --fw-space-4: 1rem;
+  --fw-space-6: 1.5rem;
+  --fw-space-8: 2rem;
+  --fw-content: 1180px;
+
+  /* Existing widget scripts and component CSS use these public aliases. */
+  --bg: var(--fw-page);
+  --bg-0: var(--fw-page);
+  --page: var(--fw-page);
+  --bg-1: var(--fw-surface);
+  --paper: var(--fw-surface);
+  --panel: var(--fw-surface);
+  --panel-2: var(--fw-surface-soft);
+  --card: var(--fw-surface);
+  --surface: var(--fw-surface);
+  --fg: var(--fw-ink);
+  --ink: var(--fw-ink);
+  --text: var(--fw-ink);
+  --ink-dim: var(--fw-muted);
+  --chip: var(--fw-surface-soft);
+  --muted: var(--fw-muted);
+  --border: var(--fw-border);
+  --line: var(--fw-border);
+  --accent: var(--fw-accent);
+  --accent-2: var(--fw-pink);
+  --pink: var(--fw-pink);
+  --purple: var(--fw-purple);
+  --aqua: var(--fw-aqua);
+  --success: var(--fw-success);
+  --danger: var(--fw-danger);
+  --radius: var(--fw-radius);
+  --shadow: var(--fw-shadow);
+  --font: var(--fw-font);
+  --mono: var(--fw-mono);
+  --focus: 0 0 0 3px var(--fw-focus);
+}
+
+/* Explicit opt-in, also used by the archived dark collection and UI demos. */
+:root[data-theme="dark"],
+:root[data-theme="neon-dark"] {
+  color-scheme: dark;
+  --fw-page: #1b1621;
+  --fw-surface: #292231;
+  --fw-surface-soft: #372e41;
+  --fw-ink: #faf4ff;
+  --fw-muted: #cec0d9;
+  --fw-border: #c3a8d2;
+  --fw-link: #e69dfc;
+  --fw-focus: #a4f0e8;
+  --fw-success: #90e7b3;
+  --fw-danger: #ffadc5;
+}

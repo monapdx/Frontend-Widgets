@@ -1,4 +1,6 @@
   <style>
+@layer widgets {
+
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
 
@@ -276,7 +278,9 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
         position: static;
       }
     }
-  </style>
+  
+}
+</style>
 
 <div class="app">
     <section class="panel controls">
@@ -425,6 +429,8 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Countdown Timer</title>
   <style>
+@layer widgets {
+
     * { box-sizing: border-box; }
     body {
       margin: 0;
@@ -472,9 +478,11 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       color: inherit;
       font-weight: 700;
     }
-  </style>
-  <link rel="stylesheet" href="neo-brutal-overrides.css" />
-</head>
+  
+}
+</style>
+  
+<link rel="stylesheet" href="styles/widgets.css"></head>
 <body>
   <div class="countdown-wrapper">
     <div class="label">${title}</div>

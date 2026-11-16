@@ -1,17 +1,20 @@
 <!doctype html>
-<html class="nb-skin" lang="en">
+<html lang="en">
 <head>
+  <link rel="stylesheet" href="styles/widgets.css">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Merged Tag Generator</title>
-  <link rel="stylesheet" href="neo-brutal.css" />
-  <link rel="stylesheet" href="styles-vanilla.css" />
+
+
   <style>
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+@layer widgets {
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
 
-    @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+
 
     .tag-controls {
       font-family: "Oswald", serif;
@@ -73,8 +76,9 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       margin-top: -0.5rem;
       margin-bottom: 1rem;
     }
-  </style>
-  <link rel="stylesheet" href="neo-brutal-overrides.css" />
+}
+</style>
+
 </head>
 <body>
   <div class="page-shell">

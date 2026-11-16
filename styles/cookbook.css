@@ -1,0 +1,24 @@
+/* Cookbook-specific layout. Form controls come from widgets.css. */
+@layer widgets {
+  .cookbook-page form {
+    max-width: 44rem;
+    margin-inline: auto;
+  }
+  .cookbook-page .form-group {
+    margin-bottom: 1.25rem;
+  }
+  .cookbook-page .recipes-section,
+  .cookbook-page #htmlOutput {
+    margin-top: 2rem;
+  }
+  .cookbook-page pre {
+    padding: 1rem;
+    background: var(--fw-surface);
+    border: var(--fw-stroke);
+  }
+  .cookbook-page footer {
+    margin-top: 2rem;
+    text-align: center;
+    color: var(--fw-muted);
+  }
+}

@@ -1,13 +1,16 @@
 <!DOCTYPE html>
-<html class="nb-skin" lang="en">
+<html lang="en">
 <head>
+  <link rel="stylesheet" href="../styles/widgets.css">
   <meta charset="UTF-8" />
   <title>Favorite Colors Palette</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="neo-brutal.css" />
-  <link rel="stylesheet" href="styles-vanilla.css" />
+
+
   <style>
-    *, *::before, *::after { box-sizing: border-box; }
+
+@layer widgets {
+*, *::before, *::after { box-sizing: border-box; }
     html { -webkit-text-size-adjust: 100%; }
     img, video, canvas, svg { max-width: 100%; height: auto; }
 
@@ -142,8 +145,9 @@
       white-space: nowrap;
       border: 0;
     }
-  </style>
-  <link rel="stylesheet" href="neo-brutal-overrides.css" />
+}
+</style>
+
 </head>
 <body class="palette-page">
 

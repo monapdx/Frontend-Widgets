@@ -1,23 +1,26 @@
 
 
 <!DOCTYPE html>
-<html class="nb-skin" lang="en">
+<html lang="en">
 <head>
+  <link rel="stylesheet" href="../styles/widgets.css">
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+@layer widgets {
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
-
-
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+}
 </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz</title>
-  <link rel="stylesheet" href="../neo-brutal.css" />
+
     <style>
-        body {
+
+@layer widgets {
+body {
             font-family: "Oswald", serif;
             margin: 1.25rem;
             text-align: center;
@@ -76,9 +79,9 @@ font-family: "Oswald", serif;
 button.answer:hover {
   background: #0056b3; /* Darker blue on hover */
 }
+}
+</style>
 
-    </style>
-  <link rel="stylesheet" href="../neo-brutal-overrides.css" />
 </head>
 <body>
    <h1></h1>

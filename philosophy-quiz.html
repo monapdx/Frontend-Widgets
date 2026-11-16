@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html class="nb-skin" lang="en">
+<html lang="en">
 <head>
+  <link rel="stylesheet" href="styles/widgets.css">
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Which Philosophical Movements Align With You?</title>
-  <link rel="stylesheet" href="neo-brutal.css" />
-  <link rel="stylesheet" href="styles-vanilla.css" />
+
+
 <style>
+
+@layer widgets {
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
 
@@ -63,8 +66,9 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
   .share{display:flex; gap:8px; flex-wrap:wrap}
   @keyframes fade{from{opacity:.4; transform:translateY(4px)} to{opacity:1; transform:none}}
   @media (max-width:600px){ .opt{font-size:15px} }
+}
 </style>
-  <link rel="stylesheet" href="neo-brutal-overrides.css" />
+
 </head>
 <body>
 <div class="page-shell">

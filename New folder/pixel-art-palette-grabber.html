@@ -1,12 +1,15 @@
 <!doctype html>
-<html class="nb-skin" lang="en">
+<html lang="en">
 <head>
+  <link rel="stylesheet" href="../styles/widgets.css">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Pixel Palette Extractor</title>
-  <link rel="stylesheet" href="neo-brutal.css" />
-  <link rel="stylesheet" href="styles-vanilla.css" />
+
+
   <style>
+
+@layer widgets {
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
@@ -118,10 +121,10 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
   margin-top: 8px;
   font-size: 12px;
 }
+}
+@layer widgets { .row > * { min-width: 0; max-width: 100%; } }
+</style>
 
-	
-  </style>
-  <link rel="stylesheet" href="neo-brutal-overrides.css" />
 </head>
 <body>
   <div class="page-shell">

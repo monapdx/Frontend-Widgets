@@ -1,10 +1,7 @@
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
 <!DOCTYPE html>
-    <html class="nb-skin" lang="en">
+    <html lang="en">
     <head>
+  <link rel="stylesheet" href="styles/widgets.css">
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>Frontend Tools & Widgets</title>
@@ -12,12 +9,15 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="neo-brutal.css" />
+
         <style>
-            .card-header { display: flex; flex-direction: column; gap: 0.4rem; }
+
+@layer widgets {
+.card-header { display: flex; flex-direction: column; gap: 0.4rem; }
             .card { display: flex; flex-direction: column; gap: 0.65rem; min-height: 100%; }
             .blurb { min-height: 3rem; }
-        </style>
+}
+</style>
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-KWT5FFXTS7"></script>
         <script>
           window.dataLayer = window.dataLayer || [];
@@ -26,13 +26,13 @@
           gtag('config', 'G-KWT5FFXTS7');
         </script>
 </head>
-    <body>
+    <body class="catalog">
         <div class="wrap">
             <header class="hero">
                 <h1>Frontend Tools & Widgets</h1>
                 <p>Collection of frontend HTML/CSS/Javascript projects, widgets & standalone tools.</p>
             </header>
-            
+
             <div class="toolbar">
                 <div class="input">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -43,10 +43,10 @@
                 </div>
                 <div class="hint">Tip: press <span class="kbd">/</span> to focus search</div>
             </div>
-            
+
             <section id="grid" class="grid">
-                
-                <article class="card" data-name="html-projects cozy pixel city —">
+
+                <article class="card" data-name="personal palette generator color tools choose your favorites with color picker + generate your custom palette open demo view source">
                     <header class="card-header">
                         <h3>Personal Palette Generator</h3>
                         <code class="path">color tools</code>
@@ -54,24 +54,24 @@
                     <p class="blurb">Choose your favorites with color picker + generate your custom palette</p>
                     <div class="actions">
                         <a class="btn primary" href="personal-palette.html">Open Demo</a>
-                        <a class="btn" href="personal-palette.html">View Folder</a>
+                        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/personal-palette.html">View Source</a>
                     </div>
                 </article>
-                
-                <article class="card" data-name="html-projects cozy pixel city —">
+
+                <article class="card" data-name="pixel art palette extractor color tools upload pixel art ---&gt; color palette extracted open demo view source">
                     <header class="card-header">
                         <h3>Pixel Art Palette Extractor</h3>
                         <code class="path">color tools</code>
-                        
+
                     </header>
                     <p class="blurb">Upload pixel art ---> color palette extracted</p>
                     <div class="actions">
                         <a class="btn primary" href="pixel-art-palette-grabber.html">Open Demo</a>
-                        <a class="btn" href="pixel-art-palette-grabber.html">View Folder</a>
+                        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/pixel-art-palette-grabber.html">View Source</a>
                     </div>
                 </article>
-                
-                <article class="card" data-name="html-projects cozy pixel city —">
+
+                <article class="card" data-name="link list generator code generators html list of links generator with optional css class + placeholder text. open demo view source">
                     <header class="card-header">
                         <h3>Link List Generator</h3>
                         <code class="path">code generators</code>
@@ -79,12 +79,12 @@
                     <p class="blurb">HTML list of links generator with optional CSS class + placeholder text.</p>
                     <div class="actions">
                         <a class="btn primary" href="link-list-generator.html">Open Demo</a>
-                        <a class="btn" href="link-list-generator.html">View Folder</a>
+                        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/link-list-generator.html">View Source</a>
                     </div>
                 </article>
-                
-                
-                <article class="card" data-name="html-projects cozy pixel city —">
+
+
+                <article class="card" data-name="offline chatgpt browser tools load + browse your chatgpt conversations.json offline. open demo view source">
                     <header class="card-header">
                         <h3>Offline ChatGPT</h3>
                         <code class="path">browser tools</code>
@@ -92,13 +92,13 @@
                     <p class="blurb">Load + browse your ChatGPT conversations.json offline.</p>
                     <div class="actions">
                         <a class="btn primary" href="offline-GPT.html">Open Demo</a>
-                        <a class="btn" href="offline-GPT.html">View Folder</a>
+                        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/offline-GPT.html">View Source</a>
                     </div>
                 </article>
-                
-                
-                
-                <article class="card" data-name="html-projects/demos kindle cookbook formatter kindle cookbook formatter">
+
+
+
+                <article class="card" data-name=".mbox viewer email tools load + browse any .mbox file. open demo view source">
                     <header class="card-header">
                         <h3>.mbox Viewer</h3>
                         <code class="path">email tools</code>
@@ -106,12 +106,12 @@
                     <p class="blurb">Load + browse any .mbox file.</p>
                     <div class="actions">
                         <a class="btn primary" href="email-viewer.html">Open Demo</a>
-                        <a class="btn" href="email-viewer.html">View Folder</a>
+                        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/email-viewer.html">View Source</a>
                     </div>
                 </article>
-                
-                
-                <article class="card" data-name="html-projects/goal-tracker.html goal progress tracker goal progress tracker">
+
+
+                <article class="card" data-name="quiz builder code generators dead simple + fast quiz generator. open demo view source">
                     <header class="card-header">
                         <h3>Quiz Builder</h3>
                         <code class="path">code generators</code>
@@ -119,12 +119,12 @@
                     <p class="blurb">Dead simple + fast quiz generator.</p>
                     <div class="actions">
                         <a class="btn primary" href="quiz-builder.html">Open Demo</a>
-                        <a class="btn" href="quiz-builder.html">View Folder</a>
+                        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/quiz-builder.html">View Source</a>
                     </div>
                 </article>
-                
-                
-                <article class="card" data-name="html-projects/html5-quiz.html html5 tags quiz html5 element quiz">
+
+
+                <article class="card" data-name="html5 tags quiz quizzes how many of the 110 html5 tags can you name? open demo view source">
                     <header class="card-header">
                         <h3>HTML5 Tags Quiz</h3>
                         <code class="path">quizzes</code>
@@ -132,11 +132,11 @@
                     <p class="blurb">How many of the 110 HTML5 tags can you name?</p>
                     <div class="actions">
                         <a class="btn primary" href="html5-quiz.html">Open Demo</a>
-                        <a class="btn" href="html5-quiz.html">View Folder</a>
+                        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/html5-quiz.html">View Source</a>
                     </div>
                 </article>
-                
-                <article class="card" data-name="html-projects/notes.html notes.html —">
+
+                <article class="card" data-name="snippet saver browser tools save + delete notes &amp; snippets right in the browser. open demo view source">
                     <header class="card-header">
                         <h3>Snippet Saver</h3>
                         <code class="path">browser tools</code>
@@ -144,12 +144,12 @@
                     <p class="blurb">Save + delete notes & snippets right in the browser.</p>
                     <div class="actions">
                         <a class="btn primary" href="notes.html">Open Demo</a>
-                        <a class="btn" href="notes.html">View Folder</a>
+                        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/notes.html">View Source</a>
                     </div>
                 </article>
-                
-                
-                <article class="card" data-name="html-projects/philosophy-quiz.html which philosophical movements align with you? which philosophical movements align with you?">
+
+
+                <article class="card" data-name="which philosophical movements align with you? quizzes a fun + informative philosophy quiz. open demo view source">
                     <header class="card-header">
                         <h3>Which Philosophical Movements Align With You?</h3>
                         <code class="path">quizzes</code>
@@ -157,13 +157,13 @@
                     <p class="blurb">A fun + informative philosophy quiz.</p>
                     <div class="actions">
                         <a class="btn primary" href="philosophy-quiz.html">Open Demo</a>
-                        <a class="btn" href="philosophy-quiz.html">View Folder</a>
+                        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/philosophy-quiz.html">View Source</a>
                     </div>
                 </article>
-                
-                
-                
-                <article class="card" data-name="html-projects/poetry-grid poetry grid helper poetry squared">
+
+
+
+                <article class="card" data-name="poetry squared writing tools challenge yourself to write a poem that reads the same both horizontally + vertically. open demo view source">
                     <header class="card-header">
                         <h3>Poetry Squared</h3>
                         <code class="path">writing tools</code>
@@ -171,12 +171,12 @@
                     <p class="blurb">Challenge yourself to write a poem that reads the same both horizontally + vertically.</p>
                     <div class="actions">
                         <a class="btn primary" href="poetry-grid/index.html">Open Demo</a>
-                        <a class="btn" href="poetry-grid/index.html">View Folder</a>
+                        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/poetry-grid/index.html">View Source</a>
                     </div>
                 </article>
-                
-                
-                <article class="card" data-name="html-projects/qr-codes.html qr-codes.html —">
+
+
+                <article class="card" data-name="url to qr code code generators url ---&gt; qr code open demo view source">
                     <header class="card-header">
                         <h3>URL to QR Code</h3>
                         <code class="path">code generators</code>
@@ -184,12 +184,12 @@
                     <p class="blurb">URL ---> QR Code</p>
                     <div class="actions">
                         <a class="btn primary" href="qr-codes.html">Open Demo</a>
-                        <a class="btn" href="qr-codes.html">View Folder</a>
+                        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/qr-codes.html">View Source</a>
                     </div>
                 </article>
-                
-                
-                <article class="card" data-name="html-projects/quote-image-generator.html quote graphic generator —">
+
+
+                <article class="card" data-name="quote graphic generator image generators enter favorite quotes + choose font + pick gradient colors = export image. open demo view source">
                     <header class="card-header">
                         <h3>Quote Graphic Generator</h3>
                         <code class="path">image generators</code>
@@ -197,12 +197,12 @@
                     <p class="blurb">Enter favorite quotes + choose font + pick gradient colors = export image.</p>
                     <div class="actions">
                         <a class="btn primary" href="quote-image-generator.html">Open Demo</a>
-                        <a class="btn" href="quote-image-generator.html">View Folder</a>
+                        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/quote-image-generator.html">View Source</a>
                     </div>
                 </article>
-                
-                
-                <article class="card" data-name="html-projects/random-palette.html random color palette generator random color palette generator">
+
+
+                <article class="card" data-name="random color palette color tools dead simple random color palette generator. open demo view source">
                     <header class="card-header">
                         <h3>Random Color Palette</h3>
                         <code class="path">color tools</code>
@@ -210,13 +210,13 @@
                     <p class="blurb">Dead simple random color palette generator.</p>
                     <div class="actions">
                         <a class="btn primary" href="random-palette.html">Open Demo</a>
-                        <a class="btn" href="random-palette.html">View Folder</a>
+                        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/random-palette.html">View Source</a>
                     </div>
                 </article>
-                
-                
-                
-                <article class="card" data-name="html-projects/rhymes.html rhyme finder · datamuse api —">
+
+
+
+                <article class="card" data-name="pixel drawing board art tools drawing board + editor for creating + exporting pixel art. open demo view source">
                     <header class="card-header">
                         <h3>Pixel Drawing Board</h3>
                         <code class="path">art tools</code>
@@ -224,12 +224,12 @@
                     <p class="blurb">Drawing board + editor for creating + exporting pixel art.</p>
                     <div class="actions">
                         <a class="btn primary" href="pixel-art-draw.html">Open Demo</a>
-                        <a class="btn" href="pixel-art-draw.html">View Folder</a>
+                        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/pixel-art-draw.html">View Source</a>
                     </div>
                 </article>
-                
-                
-                <article class="card" data-name="html-projects/table-generator.html editable table generator —">
+
+
+                <article class="card" data-name="editable table generator code generators columns + rows + headings = generate html table. click in any table cell to edit content. open demo view source">
                     <header class="card-header">
                         <h3>Editable Table Generator</h3>
                         <code class="path">code generators</code>
@@ -237,12 +237,12 @@
                     <p class="blurb">Columns + rows + headings = generate HTML table. Click in any table cell to edit content.</p>
                     <div class="actions">
                         <a class="btn primary" href="table-generator.html">Open Demo</a>
-                        <a class="btn" href="table-generator.html">View Folder</a>
+                        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/table-generator.html">View Source</a>
                     </div>
                 </article>
-                
-                
-                <article class="card" data-name="html-projects/table-generator.html editable table generator —">
+
+
+                <article class="card" data-name="placeholder image generator image generators input dimensions + prompt + style = placeholder image open demo view source">
                     <header class="card-header">
                         <h3>Placeholder Image Generator</h3>
                         <code class="path">image generators</code>
@@ -250,13 +250,13 @@
                     <p class="blurb">Input dimensions + prompt + style = placeholder image</p>
                     <div class="actions">
                         <a class="btn primary" href="placeholder-image-generator.html">Open Demo</a>
-                        <a class="btn" href="placeholder-image-generator.html">View Folder</a>
+                        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/placeholder-image-generator.html">View Source</a>
                     </div>
                 </article>
-                
-                
-                
-                <article class="card" data-name="kindle-cookbooks/formatter.html">
+
+
+
+                <article class="card" data-name="cookbook formatter writing tools easily format + generate kindle-ready cookbooks. open demo view source">
                     <header class="card-header">
                         <h3>Cookbook Formatter</h3>
                         <code class="path">writing tools</code>
@@ -264,12 +264,12 @@
                     <p class="blurb">Easily format + generate Kindle-ready cookbooks.</p>
                     <div class="actions">
                         <a class="btn primary" href="kindle-cookbooks/formatter.html">Open Demo</a>
-                        <a class="btn" href="kindle-cookbooks/formatter.html">View Folder</a>
+                        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/kindle-cookbooks/formatter.html">View Source</a>
                     </div>
                 </article>
-                
-                
-                <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
+
+
+                <article class="card" data-name="voice recorder browser tools record + download audio and voice notes right in the browser. open demo view source">
                     <header class="card-header">
                         <h3>Voice Recorder</h3>
                         <code class="path">browser tools</code>
@@ -277,11 +277,11 @@
                     <p class="blurb">Record + download audio and voice notes right in the browser.</p>
                     <div class="actions">
                         <a class="btn primary" href="voice-record.html">Open Demo</a>
-                        <a class="btn" href="voice-record.html">View Folder</a>
+                        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/voice-record.html">View Source</a>
                     </div>
                 </article>
-                
-                <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
+
+                <article class="card" data-name="pixel art to svg art tools upload a pixel art image ---&gt; convert to svg open demo view source">
                     <header class="card-header">
                         <h3>Pixel Art to SVG</h3>
                         <code class="path">art tools</code>
@@ -289,12 +289,12 @@
                     <p class="blurb">Upload a pixel art image ---> convert to SVG</p>
                     <div class="actions">
                         <a class="btn primary" href="pixel-art-to-svg.html">Open Demo</a>
-                        <a class="btn" href="pixel-art-to-svg.html">View Folder</a>
+                        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/pixel-art-to-svg.html">View Source</a>
                     </div>
-                </article> 
-            
-                
-                <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
+                </article>
+
+
+                <article class="card" data-name="json to typescript code generators upload json file ---&gt; get typescript types open demo view source">
                     <header class="card-header">
                         <h3>JSON to Typescript</h3>
                         <code class="path">code generators</code>
@@ -302,11 +302,11 @@
                     <p class="blurb">Upload JSON file ---> get Typescript types</p>
                     <div class="actions">
                         <a class="btn primary" href="json-schema-to-typescript.html">Open Demo</a>
-                        <a class="btn" href="json-schema-to-typescript.html">View Folder</a>
+                        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/json-schema-to-typescript.html">View Source</a>
                     </div>
-                </article> 
-                
-                <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
+                </article>
+
+                <article class="card" data-name="boggle board generator word games boggle board generator with shake effect, timer &amp; basic scoring. open demo view source">
                     <header class="card-header">
                         <h3>Boggle Board Generator</h3>
                         <code class="path">word games</code>
@@ -314,12 +314,12 @@
                     <p class="blurb">Boggle board generator with shake effect, timer & basic scoring.</p>
                     <div class="actions">
                         <a class="btn primary" href="boggleish.html">Open Demo</a>
-                        <a class="btn" href="boggleish.html">View Folder</a>
+                        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/boggleish.html">View Source</a>
                     </div>
                 </article>
-                
-                
-                <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
+
+
+                <article class="card" data-name="alt text generator browser tools upload image ---&gt; describe ---&gt; generate alt text open demo view source">
                     <header class="card-header">
                         <h3>Alt Text Generator</h3>
                         <code class="path">browser tools</code>
@@ -327,11 +327,11 @@
                     <p class="blurb">Upload image ---> describe ---> generate ALT text</p>
                     <div class="actions">
                         <a class="btn primary" href="alt-text-generator.html">Open Demo</a>
-                        <a class="btn" href="alt-text-generator.html">View Folder</a>
+                        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/alt-text-generator.html">View Source</a>
                     </div>
                 </article>
-                
-                <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
+
+                <article class="card" data-name="fake data generator code generators write schema ---&gt; generate fake data ---&gt; export open demo view source">
                     <header class="card-header">
                         <h3>Fake Data Generator</h3>
                         <code class="path">code generators</code>
@@ -339,11 +339,11 @@
                     <p class="blurb">Write schema ---> generate fake data ---> export</p>
                     <div class="actions">
                         <a class="btn primary" href="fake-data-generator.html">Open Demo</a>
-                        <a class="btn" href="fake-data-generator.html">View Folder</a>
+                        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/fake-data-generator.html">View Source</a>
                     </div>
                 </article>
-                
-                <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
+
+                <article class="card" data-name="file naming generator code generators choose file naming conventions ---&gt; generate file names open demo view source">
                     <header class="card-header">
                         <h3>File Naming Generator</h3>
                         <code class="path">code generators</code>
@@ -351,11 +351,11 @@
                     <p class="blurb">Choose file naming conventions ---> generate file names</p>
                     <div class="actions">
                         <a class="btn primary" href="file-naming-generator.html">Open Demo</a>
-                        <a class="btn" href="file-naming-generator.html">View Folder</a>
+                        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/file-naming-generator.html">View Source</a>
                     </div>
                 </article>
-                
-                <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
+
+                <article class="card" data-name="regex explainer code generators enter regex ---&gt; decode in plain english open demo view source">
                     <header class="card-header">
                         <h3>RegEx Explainer</h3>
                         <code class="path">code generators</code>
@@ -363,12 +363,12 @@
                     <p class="blurb">Enter RegEx ---> decode in plain English</p>
                     <div class="actions">
                         <a class="btn primary" href="regex-explainer.html">Open Demo</a>
-                        <a class="btn" href="regex-explainer.html">View Folder</a>
+                        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/regex-explainer.html">View Source</a>
                     </div>
                 </article>
-            
-                
-                <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
+
+
+                <article class="card" data-name="csv to sql generator code generators upload csv ---&gt; sql open demo view source">
                     <header class="card-header">
                         <h3>CSV to SQL Generator</h3>
                         <code class="path">code generators</code>
@@ -376,12 +376,12 @@
                     <p class="blurb">Upload CSV ---> SQL</p>
                     <div class="actions">
                         <a class="btn primary" href="csv-to-sql.html">Open Demo</a>
-                        <a class="btn" href="csv-to-sql.html">View Folder</a>
+                        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/csv-to-sql.html">View Source</a>
                     </div>
                 </article>
-                
-                
-                        <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
+
+
+                        <article class="card" data-name="dictionary definition generator code generators enter word + part of speech + custom definition ---&gt; generate dictionary formatted entry open demo view source">
                     <header class="card-header">
                         <h3>Dictionary Definition Generator</h3>
                         <code class="path">code generators</code>
@@ -389,11 +389,11 @@
                     <p class="blurb">Enter word + part of speech + custom definition ---> generate dictionary formatted entry</p>
                     <div class="actions">
                         <a class="btn primary" href="dictionary-definition-generator.html">Open Demo</a>
-                        <a class="btn" href="dictionary-definition-generator.html">View Folder</a>
+                        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/dictionary-definition-generator.html">View Source</a>
                     </div>
                 </article>
-                
-                <article class="card" data-name="html-projects/voice-record.html voice memo recorder —">
+
+                <article class="card" data-name="chat messages generator code generators enter sender + recipent names + messages = chat app animation open demo view source">
                     <header class="card-header">
                         <h3>Chat Messages Generator</h3>
                         <code class="path">code generators</code>
@@ -401,187 +401,169 @@
                     <p class="blurb">Enter sender + recipent names + messages = chat app animation</p>
                     <div class="actions">
                         <a class="btn primary" href="chat-generator.html">Open Demo</a>
-                        <a class="btn" href="chat-generator.html">View Folder</a>
+                        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/chat-generator.html">View Source</a>
                     </div>
                 </article>
-                
-                <article class="card" data-name="activity-tracker">
-                    <header class="card-header">
-                        <h3>Daily Activity Tracker</h3>
-                        <code class="path">browser tools</code>
-                    </header>
-                    <p class="blurb">Click on activity tile + repeat = export for the day</p>
-                    <div class="actions">
-                        <a class="btn primary" href="">Open Demo</a>
-                        <a class="btn" href="">View Folder</a>
-                    </div>
-                </article>
-                
-                
-                <article class="card" data-name="kanban">
-    <header class="card-header">
-        <h3>Kanban Board</h3>
-        <code class="path">browser tools</code>
-    </header>
-    <p class="blurb">Manage your task backlog, current to-do items and future plans + drag and drop interface.</p>
-    <div class="actions">
-        <a class="btn primary" href="">Open Demo</a>
-        <a class="btn" href="">View Folder</a>
-    </div>
-</article>
 
-<article class="card" data-name="gif-importer">
-    <header class="card-header">
-        <h3>GIF Sticker Sheet</h3>
-        <code class="path">image generators</code>
-    </header>
-    <p class="blurb">Import your animated GIFs into a sticker sheet grid. Click on file names to edit. Export as HTML.</p>
-    <div class="actions">
-        <a class="btn primary" href="">Open Demo</a>
-        <a class="btn" href="">View Folder</a>
-    </div>
-</article>
 
-<article class="card" data-name="mindmapper">
-    <header class="card-header">
-        <h3>Mindmap Generator</h3>
-        <code class="path">browser tools</code>
-    </header>
-    <p class="blurb">Add notes, child nodes, click to edit, zoom in/out mindmapping tool.</p>
-    <div class="actions">
-        <a class="btn primary" href="">Open Demo</a>
-        <a class="btn" href="">View Folder</a>
-    </div>
-</article>
 
-<article class="card" data-name="swatch">
-    <header class="card-header">
-        <h3>Color Swatch Generator</h3>
-        <code class="path">color tools</code>
-    </header>
-    <p class="blurb">Generate color swatches by entering HEX codes.</p>
-    <div class="actions">
-        <a class="btn primary" href="">Open Demo</a>
-        <a class="btn" href="">View Folder</a>
-    </div>
-</article>
 
-<article class="card" data-name="comic">
+
+
+
+
+
+
+
+
+<article class="card" data-name="comic panel generator image generators import images into a comic book panel layout and add add speech bubbles with custom text. open demo view source">
     <header class="card-header">
         <h3>Comic Panel Generator</h3>
         <code class="path">image generators</code>
     </header>
     <p class="blurb">Import images into a comic book panel layout and add add speech bubbles with custom text.</p>
     <div class="actions">
-        <a class="btn primary" href="">Open Demo</a>
-        <a class="btn" href="">View Folder</a>
+        <a class="btn primary" href="comic-panels-generator.html">Open Demo</a>
+        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/comic-panels-generator.html">View Source</a>
     </div>
 </article>
 
-<article class="card" data-name="subtext">
+<article class="card" data-name="subtext dialogue generator writing tools build a conversation about one thing that is secretly about another. open demo view source">
     <header class="card-header">
         <h3>Subtext Dialogue Generator</h3>
         <code class="path">writing tools</code>
     </header>
     <p class="blurb">Build a conversation about one thing that is secretly about another.</p>
     <div class="actions">
-        <a class="btn primary" href="">Open Demo</a>
-        <a class="btn" href="">View Folder</a>
+        <a class="btn primary" href="subtext-dialogue-builder.html">Open Demo</a>
+        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/subtext-dialogue-builder.html">View Source</a>
     </div>
 </article>
 
-<article class="card" data-name="escalation">
+<article class="card" data-name="escalation ladder generator writing tools build an escalating chain in which every attempted solution creates the next problem. open demo view source">
     <header class="card-header">
         <h3>Escalation Ladder Generator</h3>
         <code class="path">writing tools</code>
     </header>
     <p class="blurb">Build an escalating chain in which every attempted solution creates the next problem.</p>
     <div class="actions">
-        <a class="btn primary" href="">Open Demo</a>
-        <a class="btn" href="">View Folder</a>
+        <a class="btn primary" href="escalation-ladder.html">Open Demo</a>
+        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/escalation-ladder.html">View Source</a>
     </div>
 </article>
 
-<article class="card" data-name="narrator">
+<article class="card" data-name="unreliable narrator generator writing tools write a narrator whose version of events cannot quite survive the evidence. open demo view source">
     <header class="card-header">
         <h3>Unreliable Narrator Generator</h3>
         <code class="path">writing tools</code>
     </header>
     <p class="blurb">Write a narrator whose version of events cannot quite survive the evidence.</p>
     <div class="actions">
-        <a class="btn primary" href="">Open Demo</a>
-        <a class="btn" href="">View Folder</a>
+        <a class="btn primary" href="unreliable-narrator-tracker.html">Open Demo</a>
+        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/unreliable-narrator-tracker.html">View Source</a>
     </div>
 </article>
 
-<article class="card" data-name="fictional-records">
+<article class="card" data-name="fictional record generator writing tools select type + enter details = generated records for fiction. open demo view source">
     <header class="card-header">
         <h3>Fictional Record Generator</h3>
         <code class="path">writing tools</code>
     </header>
     <p class="blurb">Select type + enter details = generated records for fiction.</p>
     <div class="actions">
-        <a class="btn primary" href="">Open Demo</a>
-        <a class="btn" href="">View Folder</a>
+        <a class="btn primary" href="fictional-record-generator.html">Open Demo</a>
+        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/fictional-record-generator.html">View Source</a>
     </div>
 </article>
 
-<article class="card" data-name="file-tree">
+<article class="card" data-name="folder directory generator code generators quick tool for creating codeblock folder + file directory listings. open demo view source">
     <header class="card-header">
         <h3>Folder Directory Generator</h3>
         <code class="path">code generators</code>
     </header>
     <p class="blurb">Quick tool for creating codeblock folder + file directory listings.</p>
     <div class="actions">
-        <a class="btn primary" href="">Open Demo</a>
-        <a class="btn" href="">View Folder</a>
+        <a class="btn primary" href="file-tree-generator/index.html">Open Demo</a>
+        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/file-tree-generator/index.html">View Source</a>
     </div>
 </article>
 
-<article class="card" data-name="ui-sequences">
+<article class="card" data-name="ui sequence generator code generators fast copy and paste tool for toolbar/menu selections in software interfaces. open demo view source">
     <header class="card-header">
         <h3>UI Sequence Generator</h3>
         <code class="path">code generators</code>
     </header>
     <p class="blurb">Fast copy and paste tool for toolbar/menu selections in software interfaces.</p>
     <div class="actions">
-        <a class="btn primary" href="">Open Demo</a>
-        <a class="btn" href="">View Folder</a>
+        <a class="btn primary" href="ui-sequence-generator/ui-sequence-generator.html">Open Demo</a>
+        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/ui-sequence-generator/ui-sequence-generator.html">View Source</a>
     </div>
 </article>
 
-<article class="card" data-name="worksheets">
+<article class="card" data-name="worksheet generator browser tools customizable worksheet with editable lists + export feature. open demo view source">
     <header class="card-header">
         <h3>Worksheet Generator</h3>
         <code class="path">browser tools</code>
     </header>
     <p class="blurb">Customizable worksheet with editable lists + export feature.</p>
     <div class="actions">
-        <a class="btn primary" href="">Open Demo</a>
-        <a class="btn" href="">View Folder</a>
+        <a class="btn primary" href="interactive-worksheet.html">Open Demo</a>
+        <a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/interactive-worksheet.html">View Source</a>
     </div>
 </article>
 
 
-                
 
-            </section>
-            
+
+            <article class="card" data-name="mini food alchemy"><header class="card-header"><h3>Mini Food Alchemy</h3></header><div class="actions"><a class="btn primary" href="alchemy-game.html">Open Demo</a><a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/alchemy-game.html">View Source</a></div></article>
+<article class="card" data-name="frontend button generator"><header class="card-header"><h3>Frontend Button Generator</h3></header><div class="actions"><a class="btn primary" href="button-generator.html">Open Demo</a><a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/button-generator.html">View Source</a></div></article>
+<article class="card" data-name="cozy pixel city"><header class="card-header"><h3>Cozy Pixel City</h3></header><div class="actions"><a class="btn primary" href="city-builder-polished.html">Open Demo</a><a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/city-builder-polished.html">View Source</a></div></article>
+<article class="card" data-name="kindle cookbook formatter"><header class="card-header"><h3>Kindle Cookbook Formatter</h3></header><div class="actions"><a class="btn primary" href="cookbook-formatter.html">Open Demo</a><a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/cookbook-formatter.html">View Source</a></div></article>
+<article class="card" data-name="countdown timer"><header class="card-header"><h3>Countdown Timer</h3></header><div class="actions"><a class="btn primary" href="countdown-timer-generator.html">Open Demo</a><a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/countdown-timer-generator.html">View Source</a></div></article>
+<article class="card" data-name="countdown to apr 20, 2026 (est)"><header class="card-header"><h3>Countdown to Apr 20, 2026 (EST)</h3></header><div class="actions"><a class="btn primary" href="countdown-timer.html">Open Demo</a><a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/countdown-timer.html">View Source</a></div></article>
+<article class="card" data-name="merged tag generator"><header class="card-header"><h3>Merged Tag Generator</h3></header><div class="actions"><a class="btn primary" href="empty-tag-generator.html">Open Demo</a><a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/empty-tag-generator.html">View Source</a></div></article>
+<article class="card" data-name="fringe ideology affinity quiz"><header class="card-header"><h3>Fringe Ideology Affinity Quiz</h3></header><div class="actions"><a class="btn primary" href="fringe-ideology-quiz.html">Open Demo</a><a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/fringe-ideology-quiz.html">View Source</a></div></article>
+<article class="card" data-name="goal progress tracker"><header class="card-header"><h3>Goal Progress Tracker</h3></header><div class="actions"><a class="btn primary" href="goal-tracker.html">Open Demo</a><a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/goal-tracker.html">View Source</a></div></article>
+<article class="card" data-name="pipeline hero diagram svg generator"><header class="card-header"><h3>Pipeline Hero Diagram SVG Generator</h3></header><div class="actions"><a class="btn primary" href="hero-diagram-generator.html">Open Demo</a><a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/hero-diagram-generator.html">View Source</a></div></article>
+<article class="card" data-name="hex → tailwind classes"><header class="card-header"><h3>HEX → Tailwind Classes</h3></header><div class="actions"><a class="btn primary" href="hex-to-tailwind.html">Open Demo</a><a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/hex-to-tailwind.html">View Source</a></div></article>
+<article class="card" data-name="simple shopping list app"><header class="card-header"><h3>Simple Shopping List App</h3></header><div class="actions"><a class="btn primary" href="list-maker.html">Open Demo</a><a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/list-maker.html">View Source</a></div></article>
+<article class="card" data-name="my movie poster grid"><header class="card-header"><h3>My Movie Poster Grid</h3></header><div class="actions"><a class="btn primary" href="posters.html">Open Demo</a><a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/posters.html">View Source</a></div></article>
+<article class="card" data-name="quiz spreadsheet builder"><header class="card-header"><h3>Quiz Spreadsheet Builder</h3></header><div class="actions"><a class="btn primary" href="responsive-quiz-widget.html">Open Demo</a><a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/responsive-quiz-widget.html">View Source</a></div></article>
+<article class="card" data-name="rhyme finder · datamuse api"><header class="card-header"><h3>Rhyme Finder · Datamuse API</h3></header><div class="actions"><a class="btn primary" href="rhymes.html">Open Demo</a><a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/rhymes.html">View Source</a></div></article>
+<article class="card" data-name="scratch-off card generator (image upload + hidden text)"><header class="card-header"><h3>Scratch-Off Card Generator (Image Upload + Hidden Text)</h3></header><div class="actions"><a class="btn primary" href="scratch-it-generator.html">Open Demo</a><a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/scratch-it-generator.html">View Source</a></div></article>
+<article class="card" data-name="sms templates"><header class="card-header"><h3>Sms Templates</h3></header><div class="actions"><a class="btn primary" href="sms-templates.html">Open Demo</a><a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/sms-templates.html">View Source</a></div></article>
+<article class="card" data-name="prefix word bubbles"><header class="card-header"><h3>Prefix Word Bubbles</h3></header><div class="actions"><a class="btn primary" href="word-bubbles.html">Open Demo</a><a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/word-bubbles.html">View Source</a></div></article>
+<article class="card" data-name="consumer products"><header class="card-header"><h3>Consumer Products</h3></header><div class="actions"><a class="btn primary" href="Snap-Quiz/consumer-products.html">Open Demo</a><a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/Snap-Quiz/consumer-products.html">View Source</a></div></article>
+<article class="card" data-name="consumer services"><header class="card-header"><h3>Consumer Services</h3></header><div class="actions"><a class="btn primary" href="Snap-Quiz/consumer-services.html">Open Demo</a><a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/Snap-Quiz/consumer-services.html">View Source</a></div></article>
+<article class="card" data-name="countries of the world"><header class="card-header"><h3>Countries of the World</h3></header><div class="actions"><a class="btn primary" href="Snap-Quiz/countries-of-the-world.html">Open Demo</a><a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/Snap-Quiz/countries-of-the-world.html">View Source</a></div></article>
+<article class="card" data-name="css color names"><header class="card-header"><h3>CSS Color Names</h3></header><div class="actions"><a class="btn primary" href="Snap-Quiz/css-color-names.html">Open Demo</a><a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/Snap-Quiz/css-color-names.html">View Source</a></div></article>
+<article class="card" data-name="css properties quiz"><header class="card-header"><h3>CSS Properties Quiz</h3></header><div class="actions"><a class="btn primary" href="Snap-Quiz/css-properties-quiz.html">Open Demo</a><a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/Snap-Quiz/css-properties-quiz.html">View Source</a></div></article>
+<article class="card" data-name="experience goods"><header class="card-header"><h3>Experience Goods</h3></header><div class="actions"><a class="btn primary" href="Snap-Quiz/experience-goods.html">Open Demo</a><a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/Snap-Quiz/experience-goods.html">View Source</a></div></article>
+<article class="card" data-name="four letter b words"><header class="card-header"><h3>Four Letter B Words</h3></header><div class="actions"><a class="btn primary" href="Snap-Quiz/four-letter-b-words.html">Open Demo</a><a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/Snap-Quiz/four-letter-b-words.html">View Source</a></div></article>
+<article class="card" data-name="four letter words 13+ score"><header class="card-header"><h3>Four Letter Words 13+ Score</h3></header><div class="actions"><a class="btn primary" href="Snap-Quiz/four-letter-words-13-score.html">Open Demo</a><a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/Snap-Quiz/four-letter-words-13-score.html">View Source</a></div></article>
+<article class="card" data-name="html attributes quiz"><header class="card-header"><h3>HTML Attributes Quiz</h3></header><div class="actions"><a class="btn primary" href="Snap-Quiz/html-attributes-quiz.html">Open Demo</a><a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/Snap-Quiz/html-attributes-quiz.html">View Source</a></div></article>
+<article class="card" data-name="industries"><header class="card-header"><h3>Industries</h3></header><div class="actions"><a class="btn primary" href="Snap-Quiz/industries.html">Open Demo</a><a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/Snap-Quiz/industries.html">View Source</a></div></article>
+<article class="card" data-name="negative behaviors"><header class="card-header"><h3>Negative Behaviors</h3></header><div class="actions"><a class="btn primary" href="Snap-Quiz/negative-behaviors.html">Open Demo</a><a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/Snap-Quiz/negative-behaviors.html">View Source</a></div></article>
+<article class="card" data-name="periodic table of elements"><header class="card-header"><h3>Periodic Table of Elements</h3></header><div class="actions"><a class="btn primary" href="Snap-Quiz/periodic-table-of-elements.html">Open Demo</a><a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/Snap-Quiz/periodic-table-of-elements.html">View Source</a></div></article>
+<article class="card" data-name="tech companies"><header class="card-header"><h3>Tech Companies</h3></header><div class="actions"><a class="btn primary" href="Snap-Quiz/tech-companies.html">Open Demo</a><a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/Snap-Quiz/tech-companies.html">View Source</a></div></article>
+<article class="card" data-name="tech skills"><header class="card-header"><h3>Tech Skills</h3></header><div class="actions"><a class="btn primary" href="Snap-Quiz/tech-skills.html">Open Demo</a><a class="btn" href="https://github.com/monapdx/Frontend-Widgets/blob/main/Snap-Quiz/tech-skills.html">View Source</a></div></article>
+</section>
+
             <footer>
                 <p>MIT Licensed. Built by Ashly. See <a href="./README.md">README</a> for an overview of this repo.</p>
             </footer>
         </div>
-        
+
         <script>
             // Quick search / filter
             const input = document.getElementById('search');
             const grid = document.getElementById('grid');
             const cards = Array.from(grid.querySelectorAll('.card'));
-            
+
             function filter() {
                 const q = (input.value || '').trim().toLowerCase();
                 for (const card of cards) {
-                    const hay = card.getAttribute('data-name') || '';
+                    const hay = card.textContent.toLowerCase() + ' ' + (card.getAttribute('data-name') || '');
                     card.style.display = hay.includes(q) ? '' : 'none';
                 }
             }

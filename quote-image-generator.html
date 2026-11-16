@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html class="nb-skin" lang="en">
+<html lang="en">
 <head>
+  <link rel="stylesheet" href="styles/widgets.css">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Quote Graphic Generator</title>
-  <link rel="stylesheet" href="neo-brutal.css" />
-  <link rel="stylesheet" href="styles-vanilla.css" />
+
+
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,6 +14,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Oswald:wght@200..700&family=Fjalla+One&family=Bebas+Neue&family=Sofia&display=swap" rel="stylesheet">
 
   <style>
+
+@layer widgets {
 html { -webkit-text-size-adjust: 100%; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
 
@@ -186,8 +189,9 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
       height: auto;
       max-width: 100%;
     }
-  </style>
-  <link rel="stylesheet" href="neo-brutal-overrides.css" />
+}
+</style>
+
 </head>
 
 <body>
